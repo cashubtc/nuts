@@ -2,15 +2,14 @@
 
 These documents each specify parts of the Cashu protocol.
 
-#### Wallet protocol
+## Wallet protocol
 
 A description of the steps of the protocol is given in the Cashu [wallet specs](/wallet/cashu_wallet_spec.md).
 
-
+## Specifications
+Wallets and mints `MUST` implement all mandatory specs and `MAY` implement optional specs.
 
 ### Mandatory
-Wallets and mints `MUST` implement all mandatory specs.
-
 | # | Description | Wallets | Mints |
 |--- | --- | --- | --- |
 | [00][00] | Cryptography and Models | [Cashu][py], [Feni][feni], [LNbits][lnbits], [Nutstash][ns], [JS][js] | [Cashu][py], [Feni][feni], [LNbits]
@@ -22,7 +21,6 @@ Wallets and mints `MUST` implement all mandatory specs.
 | [06][06] | Splitting tokens | [Cashu][py], [Feni][feni], [LNbits][lnbits], [Nutstash][ns], [JS][js] | [Cashu][py], [Feni][feni], [LNbits]
 
 ### Optional
-Wallets and mints `MAY` implement optional specs.
 | # | Description | Wallets | Mints
 |--- | --- | --- | --- |
 | TBD | Token spendable check | [Cashu][py], [Feni][feni], [LNbits][lnbits], [Nutstash][ns] | [Cashu][py], [Feni][feni], [LNbits]
