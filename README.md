@@ -1,17 +1,47 @@
 # Cashu NUTs (Notation, Usage, and Terminology)
 
+These documents each specify parts of the Cashu protocol.
 
-| Number   | Description                                                 | Wallets |
-|----------|-------------------------------------------------------------|---------|
-| [00][00] | Notation and Models                          | Python-CLI, Feni, LNbits
-| [01][01] | Mint public keys                           | Python-CLI, Feni, LNbits
-| [02][02] | Keysets and keyset IDs                           | Python-CLI, Feni, LNbits
-| [03][03] | Requesting a mint                           | Python-CLI, Feni, LNbits
-| [04][04] | Mint tokens                           | Python-CLI, Feni, LNbits
-| [05][05] | Melt tokens                           | Python-CLI, Feni, LNbits
-| [06][06] | Split tokens                           | Python-CLI, Feni, LNbits
+#### Wallet protocol
+
+A description of the steps of the protocol is given in the Cashu [wallet specs](/wallet/cashu_wallet_spec.md).
 
 
+
+### Mandatory
+Wallets and mints `MUST` implement all mandatory specs.
+
+| # | Description | Wallets | Mints |
+|--- | --- | --- | --- |
+| [00][00] | Cryptography and Models | [Cashu][py], [Feni][feni], [LNbits][lnbits], [Nutstash][ns], [JS][js] | [Cashu][py], [Feni][feni], [LNbits]
+| [01][01] | Mint public keys | [Cashu][py], [Feni][feni], [LNbits][lnbits], [Nutstash][ns], [JS][js] | [Cashu][py], [Feni][feni], [LNbits]
+| [02][02] | Keysets and keyset IDs | [Cashu][py], [Feni][feni], [LNbits][lnbits], [Nutstash][ns], [JS][js] | [Cashu][py], [Feni][feni], [LNbits]
+| [03][03] | Request minting | [Cashu][py], [Feni][feni], [LNbits][lnbits], [Nutstash][ns], [JS][js] | [Cashu][py], [Feni][feni], [LNbits]
+| [04][04] | Minting tokens | [Cashu][py], [Feni][feni], [LNbits][lnbits], [Nutstash][ns], [JS][js] | [Cashu][py], [Feni][feni], [LNbits]
+| [05][05] | Melting tokens | [Cashu][py], [Feni][feni], [LNbits][lnbits], [Nutstash][ns], [JS][js] | [Cashu][py], [Feni][feni], [LNbits]
+| [06][06] | Splitting tokens | [Cashu][py], [Feni][feni], [LNbits][lnbits], [Nutstash][ns], [JS][js] | [Cashu][py], [Feni][feni], [LNbits]
+
+### Optional
+Wallets and mints `MAY` implement optional specs.
+| # | Description | Wallets | Mints
+|--- | --- | --- | --- |
+| TBD | Token spendable check | [Cashu][py], [Feni][feni], [LNbits][lnbits], [Nutstash][ns] | [Cashu][py], [Feni][feni], [LNbits]
+| TBD | Lightning fees | [Cashu][py], [Feni][feni], [LNbits][lnbits], [Nutstash][ns] | [Cashu][py], [Feni][feni], [LNbits]
+| TBD | Multimint | [Cashu][py], [Nutstash][ns] | -
+| TBD | P2SH spending conditions | - | -
+| TBD | Token version prefixes | - | N/A
+| TBD | Cashu URI | - | N/A
+| TBD | Mint LN swap | - | N/A
+| TBD | Mint info | - | -
+| TBD | Token comment | - | N/A
+| TBD | Token sender information | - | N/A
+
+
+[py]: https://github.com/cashubtc/cashu
+[feni]: https://github.com/cashubtc/cashu-feni
+[lnbits]: https://github.com/lnbits/lnbits/tree/main/lnbits/extensions/cashu
+[ns]: https://nutstash.app/
+[js]: https://github.com/cashubtc/cashu-js
 
 [00]: 00.md
 [01]: 01.md
