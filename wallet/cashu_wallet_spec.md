@@ -108,7 +108,7 @@ Here we describe how `Alice` checks with the mint whether the tokens she sent `C
 Here we describe how `Alice` can request from `Bob` to make a Lightning payment for her and burn an appropriate amount of tokens in return. `Alice` wants to pay a bolt11 invoice with the amount `<invoice_amount>`. She has to add a fee to the request to account for the possible Lightning fees which results in a request with tokens with the total amount of `<total>`. 
 
 - `Alice` wants to pay the bolt11 invoice `<invoice>`.
-- `Alice` asks `Bob` for the Lightning fee via `GET /checkfee` with the body `CheckFeeRequest` being the json `{pr : <invoice>}`
+- `Alice` asks `Bob` for the Lightning fee via `POST /checkfee` with the body `CheckFeeRequest` being the json `{pr : <invoice>}`
 - `Alice` receives the `CheckFeeResponse` in the form of the json `{"fee" : <fee>}` resulting in `<total> = <invoice_amount> + <fee>`.
 - `Alice` now performs the same set of instructions as in Step 3.1 and 3.2 and splits her spendable tokens into a set `<keep_proofs>` that she keeps and and a set `<send_proofs>` with a sum of at least `<total>` that she can send for making the Lightning payment.
 - `Alice` constructs the JSON `PostMeltRequest` of the form `{"proofs" : <List[Proof]>, "invoice" : <invoice>}` [*NOTE: Maybe use notation List[Proof] everywhere. Used PostMeltRequest here, maybe define each payload at the beginning of each section.*]
