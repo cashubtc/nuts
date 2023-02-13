@@ -25,7 +25,7 @@ Wallets and mints `MUST` implement all mandatory specs and `MAY` implement optio
 |--- | --- | --- | --- |
 | TBD | Token spendable check | [Cashu][py], [Feni][feni], [LNbits][lnbits], [Nutstash][ns] | [Cashu][py], [Feni][feni], [LNbits]
 | TBD | Lightning fees | [Cashu][py], [Feni][feni], [LNbits][lnbits], [Nutstash][ns] | [Cashu][py], [Feni][feni], [LNbits]
-| TBD | Multimint | [Cashu][py], [Nutstash][ns] | -
+| TBD | Multimint | [Cashu][py], [LNbits][lnbits], [Nutstash][ns] | -
 | TBD | P2SH spending conditions | - | -
 | TBD | Token version prefixes | - | N/A
 | TBD | Cashu URI | - | N/A
