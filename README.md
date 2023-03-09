@@ -7,7 +7,7 @@ These documents each specify parts of the Cashu protocol.
 A description of the steps of the protocol is given in the Cashu [wallet specs](/wallet/cashu_wallet_spec.md).
 
 ## Specifications
-Wallets and mints `MUST` implement all mandatory specs and `MAY` implement optional specs.
+Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optional specs.
 
 ### Mandatory
 | # | Description | Wallets | Mints |
