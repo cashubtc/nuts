@@ -24,7 +24,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | # | Description | Wallets | Mints
 |--- | --- | --- | --- |
 | [07][07] | Token spendable check | [Nutshell][py], [Feni][feni], [Cashu.Me][cashume], [Nutstash][ns] | [Nutshell][py], [Feni][feni], [LNbits]
-| [08][08] | Overpaid Lightning fees | [Nutshell][py], [Cashu.Me][cashume], [Nutstash][ns] | [Nutshell][py], [LNbits]
+| [08][08] | Overpaid Lightning fees | [Nutshell][py], [Feni][feni], [Cashu.Me][cashume], [Nutstash][ns] | [Nutshell][py], [LNbits]
 | TBD | Multimint support | [Nutshell][py], [Cashu.Me][cashume], [Nutstash][ns] | N/A
 | TBD | DLEQ proofs | - | -
 | TBD | Bitcoin script | [Nutshell][py] | [Nutshell][py]
