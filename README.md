@@ -25,13 +25,13 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 |--- | --- | --- | --- |
 | [07][07] | Token spendable check | [Nutshell][py], [Feni][feni], [Cashu.Me][cashume], [Nutstash][ns] | [Nutshell][py], [Feni][feni], [LNbits]
 | [08][08] | Overpaid Lightning fees | [Nutshell][py], [Cashu.Me][cashume], [Nutstash][ns] | [Nutshell][py], [LNbits]
+| [09][09] | Mint info | - | [Nutshell][py]
 | TBD | Multimint support | [Nutshell][py], [Cashu.Me][cashume], [Nutstash][ns] | N/A
 | TBD | DLEQ proofs | - | -
 | TBD | Bitcoin script | [Nutshell][py] | [Nutshell][py]
 | TBD | Token version prefixes | - | N/A
 | TBD | Cashu URI | - | N/A
 | TBD | Mint LN swap | [Cashu.Me][cashume], [Nutstash][ns] | N/A
-| TBD | Mint info | - | -
 | TBD | Token comment | - | N/A
 | TBD | Token sender information | - | N/A
 
