@@ -38,7 +38,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 
 [py]: https://github.com/cashubtc/cashu
 [feni]: https://github.com/cashubtc/cashu-feni
-[lnbits]: https://github.com/lnbits/lnbits/tree/main/lnbits/extensions/cashu
+[lnbits]: https://github.com/lnbits/cashu
 [cashume]: https://cashu.me
 [ns]: https://nutstash.app/
 [js]: https://github.com/cashubtc/cashu-js
