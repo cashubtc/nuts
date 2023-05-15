@@ -99,9 +99,9 @@ Note that the following steps can also be performed by `Alice` herself if she wa
 ## 5 - Burn sent tokens
 Here we describe how `Alice` checks with the mint whether the tokens she sent `Carol` have been redeemed so she can safely delete them from her database. This step is optional but highly recommended so `Alice` can properly account for the tokens and adjust her balance accordingly.
 - `Alice` loads all `<send_proofs>` with `pending=True` from her database and might group them by the `send_id`.
-- `Alice` constructs a JSON of the form `{"proofs" : [{"amount" : <amount>, "secret" : s, "C" : Z}, ...]}` from these (grouped) tokens. [*TODO: this object is called CheckSpendableRequest*]
+- `Alice` constructs a JSON of the form `{"proofs" : [{"amount" : <amount>, "secret" : s, "C" : Z}, ...]}` from these (grouped) tokens (`CheckStateRequest`).
 - `Alice` sends them to the mint `Bob` via the endpoint `POST /check` with the JSON as the body of the request.
-- `Alice` receives a JSON of the form `{"spendable" : [true, false, ...]}` where each boolean value corresponds to the proof she sent to the mint before in the same order. The value is `True` if the token has not been claimed yet and `False` if it has already been claimed.
+- `Alice` receives a JSON of the form `{"spendable" : [true, false, ...], "pending": [false, false, ....]}` where each boolean value corresponds to the proof she sent to the mint before in the same order. The value is `True` if the token has not been claimed yet and `False` if it has already been claimed.
 - If `<spendable>` is `False`, `Alice` removes the proof from her list of spendable proofs.
 
 ## 6 - Pay a Lightning invoice
