@@ -1,4 +1,23 @@
 # NUT-00 Test Vectors
+## Blind Diffie-Hellman key exchange section
+The following are test vectors related to the [Blind Diffie-Hellman key exchange section](https://github.com/cashubtc/nuts/blob/main/00.md#blind-diffie-hellmann-key-exchange-bdhke).
+
+### Hash-to-curve function
+The hash to curve function takes a message of any length and outputs a valid point on the secp256k1 curve.
+```shell
+# Test 1 (hex encoded)
+Message: 0000000000000000000000000000000000000000000000000000000000000000
+Point:   0266687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925
+
+# Test 2 (hex encoded)
+Message: 0000000000000000000000000000000000000000000000000000000000000001
+Point:   02ec4916dd28fc4c10d78e287ca5d9cc51ee1ae73cbfde08c6b37324cbfaac8bc5
+
+# Test 3 (hex encoded)
+# Note that this message will take a few iterations of the loop before finding a valid point
+Message: 0000000000000000000000000000000000000000000000000000000000000002
+Point:   02076c988b353fcbb748178ecb286bc9d0b4acf474d4ba31ba62334e46c97c416a
+````
 
 ## Serialization of TokenV3
 The following are JSON-formatted v3 tokens and their serialized counterparts. Note that the JSON objects need to be stripped of all whitespace before the serialization step.
