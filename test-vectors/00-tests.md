@@ -19,6 +19,38 @@ Message: 0000000000000000000000000000000000000000000000000000000000000002
 Point:   02076c988b353fcbb748178ecb286bc9d0b4acf474d4ba31ba62334e46c97c416a
 ````
 
+### Blinded messages
+These are test vectors for the public key `B_` Alice will send to the mint Bob given secret `x`  and random blinding factor `r`.
+```shell
+# Test 1
+x: "test_message"
+r: 0000000000000000000000000000000000000000000000000000000000000001 # hex encoded
+B_: 02a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba2
+
+# Test 2
+x: "hello"
+r: 6d7e0abffc83267de28ed8ecc8760f17697e51252e13333ba69b4ddad1f95d05 # hex encoded
+B_: 0249eb5dbb4fac2750991cf18083388c6ef76cde9537a6ac6f3e6679d35cdf4b0c
+```
+
+### Blinded keys
+These are test vectors for the blinded key `C_` given the mint's private key `k` and Alice's blinded message containing `B_`.
+```shell
+# Test 1
+mint private key: 0000000000000000000000000000000000000000000000000000000000000001
+x: "test_message"
+r: 0000000000000000000000000000000000000000000000000000000000000001 # hex encoded
+B_: 02a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba2
+C_: 02a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba2
+
+# Test 2
+mint private key: 7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f
+x: "test_message"
+r: 0000000000000000000000000000000000000000000000000000000000000001 # hex encoded
+B_: 02a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba2
+C_: 0398bc70ce8184d27ba89834d19f5199c84443c31131e48d3c1214db24247d005d
+````
+
 ## Serialization of TokenV3
 The following are JSON-formatted v3 tokens and their serialized counterparts. Note that the JSON objects need to be stripped of all whitespace before the serialization step.
 ```shell
