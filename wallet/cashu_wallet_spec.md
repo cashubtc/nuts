@@ -25,7 +25,7 @@ Here we describe how `Alice` and `Bob` mint new tokens.
 ### Step 1: `Alice` requests mint ([NUT-03][03])
 `Alice` asks the mint `Bob` to generate
 - `Alice` requests the minting of tokens of value `amount : int` via `GET /mint?amount=<amount>` 
-- `Bob` responds with a JSON `{"pr": <payment_request>, "hash": <payment_hash>}` where `payment_request` is the bolt11 Lightning invoice that `Alice` needs to pay and `payment_hash` is the hash of the invoice which `Alice` needs to remember to request minting of tokens later. `Alice` stores `payment_hash`.
+- `Bob` responds with a JSON `{"pr": <payment_request>, "hash": <hash>}` where `payment_request` is the bolt11 Lightning invoice that `Alice` needs to pay and `hash` is a hash to refer to the invoice which `Alice` needs to remember to request minting of tokens later. `Alice` stores `hash`.
 - `Alice` pays bolt11 invoice `payment_request` using a Bitcoin Lightning wallet.
 
 ### Step 2: `Alice` generates secrets ([NUT-00][00])
@@ -49,7 +49,7 @@ Here we describe how `Alice` and `Bob` mint new tokens.
 `Alice` sends outputs to `Bob` and receives promises.
 
 - `Alice` constructs JSON of `BlindedMessage`'s, i.e. `{"outputs" : [{"amount" : <amount>, "B_" : <blinded_message>}, ...]}`.
-- `Alice` requests tokens via `POST /mint?payment_hash=<payment_hash>` with body being the JSON with the `BlindedMessage`'s.
+- `Alice` requests tokens via `POST /mint?hash=<hash>` with body being the JSON with the `BlindedMessage`'s.
 - `Alice` receives from `Bob` blinded signatures, i.e. `{"promises" : [{"amount" : <amount>, "C_" : <blinded_signature>}, ...]}`
 
 ### Step 5: Construct proofs ([NUT-00][00])
