@@ -79,7 +79,7 @@ Say, `Alice` has tokens of the amount `<alice_balance>` which is greater than `<
 
 **Comment on split.** The split operation is the most important operation for an ecash wallet to engage in with a mint. Like described above, the split operation initiates a transaction between `Alice` and `Carol`. It can be used to split a `Alices`'s tokens to the specific amount she wants to send.
 
-However, the split operation is also used to finalize the transaction. When `Carol` receives tokens from `Alice`, `Carol` needs to ask the mint to swap the tokens against new ones in order to prevent `Carol` from double spending them. In that case, the split amount `<total>` can simply be chosen as the total amount of the proofs supplied.
+However, the split operation is also used to finalize the transaction. When `Carol` receives tokens from `Alice`, `Carol` needs to ask the mint to swap the tokens against new ones in order to prevent `Alice` from double spending them. In that case, the split amount `<total>` can simply be chosen as the total amount of the proofs supplied.
 
 ### 3.3 - Serialize tokens for sending ([NUT-00][00])
 Here we describe how `Alice` serializes the proofs from the set `<send_proofs>` for sending to `Carol`.
