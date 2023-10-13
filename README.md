@@ -27,6 +27,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [08][08] | Overpaid Lightning fees | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts] | [Nutshell][py], [LNbits], [Moksha][cashume]
 | [09][09] | Mint info | - | [Nutshell][py]
 | [10][10] | Spending conditions | [Nutshell][py] | [Nutshell][py]
+| [11][11] | Pay-To-Pubkey (P2PK) | [Nutshell][py] | [Nutshell][py]
 | TBD | DLEQ proofs | - | -
 
 
