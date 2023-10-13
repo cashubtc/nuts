@@ -23,10 +23,11 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 ### Optional
 | # | Description | Wallets | Mints
 |--- | --- | --- | --- |
-| [07][07] | Token state check | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][cashume]
+| [07][07] | Token state check | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][cashume]
 | [08][08] | Overpaid Lightning fees | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts] | [Nutshell][py], [LNbits], [Moksha][cashume]
-| [09][09] | Mint info | - | [Nutshell][py]
+| [09][09] | Mint info | [Nutshell][py], [eNuts][enuts] | [Nutshell][py]
 | [10][10] | Spending conditions | [Nutshell][py] | [Nutshell][py]
+| [11][11] | Pay-To-Pubkey (P2PK) | [Nutshell][py] | [Nutshell][py]
 | TBD | DLEQ proofs | - | -
 
 
@@ -37,6 +38,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [cashume]: https://cashu.me
 [ns]: https://nutstash.app/
 [ts]: https://github.com/cashubtc/cashu-ts
+[enuts]: https://github.com/cashubtc/eNuts
 
 [00]: 00.md
 [01]: 01.md
