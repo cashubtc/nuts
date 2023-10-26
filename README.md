@@ -12,20 +12,20 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 ### Mandatory
 | # | Description | Wallets | Mints |
 |--- | --- | --- | --- |
-| [00][00] | Cryptography and Models | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][cashume]
-| [01][01] | Mint public keys | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][cashume]
-| [02][02] | Keysets and keyset IDs | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][cashume]
-| [03][03] | Request minting | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][cashume]
-| [04][04] | Minting tokens | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][cashume]
-| [05][05] | Melting tokens | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][cashume]
-| [06][06] | Splitting tokens | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][cashume]
+| [00][00] | Cryptography and Models | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][cashume], [cashu-rs-mint][cashu-rs-mint]
+| [01][01] | Mint public keys | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][cashume], [cashu-rs-mint][cashu-rs-mint]
+| [02][02] | Keysets and keyset IDs | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][cashume],[cashu-rs-mint][cashu-rs-mint]
+| [03][03] | Request minting | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][cashume], [cashu-rs-mint][cashu-rs-mint]
+| [04][04] | Minting tokens | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][cashume], [cashu-rs-mint][cashu-rs-mint]
+| [05][05] | Melting tokens | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][cashume], [cashu-rs-mint][cashu-rs-mint]
+| [06][06] | Splitting tokens | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][cashume], [cashu-rs-mint][cashu-rs-mint]
 
 ### Optional
 | # | Description | Wallets | Mints
 |--- | --- | --- | --- |
-| [07][07] | Token state check | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][cashume]
-| [08][08] | Overpaid Lightning fees | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts] | [Nutshell][py], [LNbits], [Moksha][cashume]
-| [09][09] | Mint info | [Nutshell][py], [eNuts][enuts] | [Nutshell][py]
+| [07][07] | Token state check | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][cashume], [cashu-rs-mint][cashu-rs-mint]
+| [08][08] | Overpaid Lightning fees | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [LNbits], [Moksha][cashume], [cashu-rs-mint][cashu-rs-mint]
+| [09][09] | Mint info | [Nutshell][py], [eNuts][enuts] | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint]
 | [10][10] | Spending conditions | [Nutshell][py] | [Nutshell][py]
 | [11][11] | Pay-To-Pubkey (P2PK) | [Nutshell][py] | [Nutshell][py]
 | TBD | DLEQ proofs | - | -
@@ -39,6 +39,8 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [ns]: https://nutstash.app/
 [ts]: https://github.com/cashubtc/cashu-ts
 [enuts]: https://github.com/cashubtc/eNuts
+[cashu-crab]: https://github.com/thesimplekid/cashu-crab
+[cashu-rs-mint]: https://github.com/thesimplekid/cashu-rs-mint
 
 [00]: 00.md
 [01]: 01.md
