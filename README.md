@@ -24,7 +24,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [09][09] | Mint info | [Nutshell][py], [eNuts][enuts] | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint]
 | [10][10] | Spending conditions | [Nutshell][py] | [Nutshell][py]
 | [11][11] | Pay-To-Pubkey (P2PK) | [Nutshell][py] | [Nutshell][py]
-| TBD | DLEQ proofs | - | -
+| [12][12] | DLEQ proofs | [Nutshell][py] | [Nutshell][py]
 
 [py]: https://github.com/cashubtc/cashu
 [feni]: https://github.com/cashubtc/cashu-feni
