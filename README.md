@@ -19,7 +19,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 ### Optional
 | # | Description | Wallets | Mints
 |--- | --- | --- | --- |
-| [06][06] | Deterministic wallets and backup restore | - | -
+| [06][06] | Deterministic backup and restore | - | -
 | [07][07] | Token state check | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][moksha], [cashu-rs-mint][cashu-rs-mint]
 | [08][08] | Overpaid Lightning fees | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [LNbits], [Moksha][moksha], [cashu-rs-mint][cashu-rs-mint]
 | [09][09] | Mint info | [Nutshell][py], [eNuts][enuts] | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint]
