@@ -1,6 +1,6 @@
 # Cashu NUTs (Notation, Usage, and Terminology)
 
-These documents each specify parts of the Cashu protocol.
+These documents each specify parts of the Cashu protocol. Read the specifications for the legacy API [here](https://github.com/cashubtc/nuts/tree/74f26b81b6617db710fa1081eebc0c7203711213).
 
 ## Specifications
 Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optional specs.
