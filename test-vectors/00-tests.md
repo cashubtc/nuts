@@ -79,7 +79,7 @@ The following are JSON-formatted v3 tokens and their serialized counterparts. No
 }
 
 # JSON ready for serialization
-{"token":[{"mint":"https://8333.space:3338","proofs":[{"id":"DSAl9nvvyfva","amount":2,"secret":"EhpennC9qB3iFlW8FZ_pZw","C":"02c020067db727d586bc3183aecf97fcb800c3f4cc4759f69c626c9db5d8f5b5d4"},{"id":"DSAl9nvvyfva","amount":8,"secret":"TmS6Cv0YT5PU_5ATVKnukw","C":"02ac910bef28cbe5d7325415d5c263026f15f9b967a079ca9779ab6e5c2db133a7"}]}],"memo":"Thankyou."}
+{"token":[{"mint":"https://8333.space:3338","proofs":[{"id":"DSAl9nvvyfva","amount":2,"secret":"EhpennC9qB3iFlW8FZ_pZw","C":"02c020067db727d586bc3183aecf97fcb800c3f4cc4759f69c626c9db5d8f5b5d4"},{"id":"DSAl9nvvyfva","amount":8,"secret":"TmS6Cv0YT5PU_5ATVKnukw","C":"02ac910bef28cbe5d7325415d5c263026f15f9b967a079ca9779ab6e5c2db133a7"}]}],"memo":"Thank you."}
 
 # Serialized token
 cashuAeyJ0b2tlbiI6W3sibWludCI6Imh0dHBzOi8vODMzMy5zcGFjZTozMzM4IiwicHJvb2ZzIjpbeyJpZCI6IkRTQWw5bnZ2eWZ2YSIsImFtb3VudCI6Miwic2VjcmV0IjoiRWhwZW5uQzlxQjNpRmxXOEZaX3BadyIsIkMiOiIwMmMwMjAwNjdkYjcyN2Q1ODZiYzMxODNhZWNmOTdmY2I4MDBjM2Y0Y2M0NzU5ZjY5YzYyNmM5ZGI1ZDhmNWI1ZDQifSx7ImlkIjoiRFNBbDludnZ5ZnZhIiwiYW1vdW50Ijo4LCJzZWNyZXQiOiJUbVM2Q3YwWVQ1UFVfNUFUVktudWt3IiwiQyI6IjAyYWM5MTBiZWYyOGNiZTVkNzMyNTQxNWQ1YzI2MzAyNmYxNWY5Yjk2N2EwNzljYTk3NzlhYjZlNWMyZGIxMzNhNyJ9XX1dLCJtZW1vIjoiVGhhbmt5b3UuIn0=
