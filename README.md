@@ -7,15 +7,15 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 
 ### Mandatory
 
-| # | Description | Wallets | Mints |
-| --- | --- | --- | --- |
-| [00][00] | Cryptography and Models | all | all |
-| [01][01] | Mint public keys | all | all |
-| [02][02] | Keysets and keyset IDs | all | all |
-| [03][03] | Swapping tokens | all | all |
-| [04][04] | Minting tokens | all | all |
-| [05][05] | Melting tokens | all | all |
-| [06][06] | Mint info |  [Nutshell][py], [eNuts][enuts] | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint] |
+| NUT #    | Description                       | Wallets | Mints |
+|----------|-----------------------------------|---------|-------|
+| [00][00] | Cryptography and Models           | all     | all   |
+| [01][01] | Mint public keys                  | all     | all   |
+| [02][02] | Keysets and keyset IDs            | all     | all   |
+| [03][03] | Swapping tokens                   | all     | all   |
+| [04][04] | Minting tokens                    | all     | all   |
+| [05][05] | Melting tokens                    | all     | all   |
+| [06][06] | Mint info                         | [Nutshell][py], [eNuts][enuts] | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint] |
 
 #### Wallets:
 
