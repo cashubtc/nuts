@@ -35,7 +35,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
  - [eNuts][enuts]
  - [Feni][feni]
  - [Moksha][cashume]
- - [Nutshell][py]
+ - [Nutshell][py] (The reference implementation)
  - [Nutstash][ns]
 
 #### Mints:
@@ -44,7 +44,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
  - [Feni][feni]
  - [LNbits][lnbits]
  - [Moksha][moksha]
- - [Nutshell][py]
+ - [Nutshell][py] (The reference implementation)
 
 
 [py]: https://github.com/cashubtc/cashu
