@@ -17,6 +17,17 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [05][05] | Melting tokens                    | all     | all   |
 | [06][06] | Mint info                         | [Nutshell][py], [eNuts][enuts] | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint] |
 
+### Optional
+
+| # | Description | Wallets | Mints |
+| --- | --- | --- | --- |
+| [07][07] | Token state check | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][moksha], [cashu-rs-mint][cashu-rs-mint] |
+| [08][08] | Overpaid Lightning fees | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [LNbits], [Moksha][moksha], [cashu-rs-mint][cashu-rs-mint] |
+| [09][09] | Deterministic backup and restore | - | -
+| [10][10] | Spending conditions | [Nutshell][py] | [Nutshell][py] |
+| [11][11] | Pay-To-Pubkey (P2PK) | [Nutshell][py] | [Nutshell][py] |
+| [12][12] | DLEQ proofs | [Nutshell][py] | [Nutshell][py] |
+
 #### Wallets:
 
  - [cashu-crab][cashu-crab]
@@ -35,16 +46,6 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
  - [Moksha][moksha]
  - [Nutshell][py]
 
-### Optional
-
-| # | Description | Wallets | Mints |
-| --- | --- | --- | --- |
-| [07][07] | Token state check | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][moksha], [cashu-rs-mint][cashu-rs-mint] |
-| [08][08] | Overpaid Lightning fees | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [LNbits], [Moksha][moksha], [cashu-rs-mint][cashu-rs-mint] |
-| [09][09] | Deterministic backup and restore | - | -
-| [10][10] | Spending conditions | [Nutshell][py] | [Nutshell][py] |
-| [11][11] | Pay-To-Pubkey (P2PK) | [Nutshell][py] | [Nutshell][py] |
-| [12][12] | DLEQ proofs | [Nutshell][py] | [Nutshell][py] |
 
 [py]: https://github.com/cashubtc/cashu
 [feni]: https://github.com/cashubtc/cashu-feni
