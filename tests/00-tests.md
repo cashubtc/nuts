@@ -6,16 +6,16 @@ The hash to curve function takes a message of any length and outputs a valid poi
 ```shell
 # Test 1 (hex encoded)
 Message: 0000000000000000000000000000000000000000000000000000000000000000
-Point:   0266687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925
+Point:   024cce997d3b518f739663b757deaec95bcd9473c30a14ac2fd04023a739d1a725
 
 # Test 2 (hex encoded)
 Message: 0000000000000000000000000000000000000000000000000000000000000001
-Point:   02ec4916dd28fc4c10d78e287ca5d9cc51ee1ae73cbfde08c6b37324cbfaac8bc5
+Point:   022e7158e11c9506f1aa4248bf531298daa7febd6194f003edcd9b93ade6253acf
 
 # Test 3 (hex encoded)
 # Note that this message will take a few iterations of the loop before finding a valid point
 Message: 0000000000000000000000000000000000000000000000000000000000000002
-Point:   02076c988b353fcbb748178ecb286bc9d0b4acf474d4ba31ba62334e46c97c416a
+Point:   026cdbe15362df59cd1dd3c9c11de8aedac2106eca69236ecd9fbe117af897be4f
 ````
 
 ### Blinded messages
