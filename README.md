@@ -23,9 +23,9 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | --- | --- | --- | --- |
 | [07][07] | Token state check | [Nutshell][py], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [LNbits], [Moksha][moksha], [cashu-rs-mint][cashu-rs-mint] |
 | [08][08] | Overpaid Lightning fees | [Nutshell][py], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [LNbits], [Moksha][moksha], [cashu-rs-mint][cashu-rs-mint] |
-| [09][09] | Signature restore | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint], [cashu-ts][ts] | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint]
-| [10][10] | Spending conditions | [Nutshell][py] | [Nutshell][py] |
-| [11][11] | Pay-To-Pubkey (P2PK) | [Nutshell][py] | [Nutshell][py] |
+| [09][09] | Signature restore | [Nutshell][py], [cashu-crab][cashu-crab], [cashu-ts][ts] | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint] |
+| [10][10] | Spending conditions | [Nutshell][py], [cashu-crab][cashu-crab] | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint] |
+| [11][11] | Pay-To-Pubkey (P2PK) | [Nutshell][py], [cashu-crab][cashu-crab] | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint] |
 | [12][12] | DLEQ proofs | [Nutshell][py] | [Nutshell][py] |
 | [13][13] | Deterministic secrets | [Nutshell][py], [Moksha][cashume], [cashu-ts][ts] | - |
 
