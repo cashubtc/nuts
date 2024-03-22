@@ -38,11 +38,12 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
  - [Moksha][moksha]
  - [Nutstash][ns]
  - [Cashu.me][cashume]
+ - [Gonuts][gonuts]
 
 #### Mints:
  
  - [Nutshell][py]
- - [GoNuts][gonuts]
+ - [Gonuts][gonuts]
  - [LNbits][lnbits]
  - [Moksha][moksha]
  - [cashu-rs-mint][cashu-rs-mint]
