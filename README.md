@@ -21,8 +21,8 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 
 | # | Description | Wallets | Mints |
 | --- | --- | --- | --- |
-| [07][07] | Token state check | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [Feni][feni], [LNbits], [Moksha][moksha], [cashu-rs-mint][cashu-rs-mint] |
-| [08][08] | Overpaid Lightning fees | [Nutshell][py], [Feni][feni], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [LNbits], [Moksha][moksha], [cashu-rs-mint][cashu-rs-mint] |
+| [07][07] | Token state check | [Nutshell][py], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [LNbits], [Moksha][moksha], [cashu-rs-mint][cashu-rs-mint] |
+| [08][08] | Overpaid Lightning fees | [Nutshell][py], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [LNbits], [Moksha][moksha], [cashu-rs-mint][cashu-rs-mint] |
 | [09][09] | Signature restore | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint], [cashu-ts][ts] | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint]
 | [10][10] | Spending conditions | [Nutshell][py] | [Nutshell][py] |
 | [11][11] | Pay-To-Pubkey (P2PK) | [Nutshell][py] | [Nutshell][py] |
@@ -35,7 +35,6 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
  - [cashu-crab][cashu-crab]
  - [cashu-ts][ts]
  - [eNuts][enuts]
- - [Feni][feni]
  - [Moksha][moksha]
  - [Nutstash][ns]
  - [Cashu.me][cashume]
@@ -44,14 +43,12 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
  
  - [Nutshell][py]
  - [GoNuts][gonuts]
- - [Feni][feni]
  - [LNbits][lnbits]
  - [Moksha][moksha]
  - [cashu-rs-mint][cashu-rs-mint]
  
 
 [py]: https://github.com/cashubtc/cashu
-[feni]: https://github.com/cashubtc/cashu-feni
 [lnbits]: https://github.com/lnbits/cashu
 [cashume]: https://cashu.me
 [ns]: https://nutstash.app/
