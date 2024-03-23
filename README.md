@@ -28,7 +28,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [11][11] | Pay-To-Pubkey (P2PK) | [Nutshell][py] | [Nutshell][py] |
 | [12][12] | DLEQ proofs | [Nutshell][py] | [Nutshell][py] |
 | [13][13] | Deterministic secrets | [Nutshell][py], [Moksha][cashume], [cashu-ts][ts] | - |
-
+| [15][15] |Authentication with Schnorr Signatures |
 #### Wallets:
 
  - [Nutshell][py]
@@ -74,3 +74,4 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [11]: 11.md
 [12]: 12.md
 [13]: 13.md
+[15]: 15.md
