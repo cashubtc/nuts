@@ -39,7 +39,7 @@ All responses / messages sent from mints to apps MUST look like this
 ["RES", "<REQ ID>", "<DATA>"]
 ```
 
-`PARAMS` and `DATA` for each NUT are defined below.
+`PARAMS` and `DATA` for each NUT are defined below. `REQ ID` SHOULD be a random string that is unique per subscription.
 
 ### Commands
 
@@ -52,7 +52,7 @@ PARAMS
 
 ```json
 {
-quote_id: <quote_id>,
+"ids": ["<quote_id>", ...],
 }
 ```
 
@@ -76,7 +76,7 @@ Client:
   "REQ",
   "673b02c512dda11b44fb3f23e7c58930",
   "check_quote",
-  { "quote_id": "d8195234c8ac8c129611d40f2144688d" }
+  { "ids": ["d8195234c8ac8c129611d40f2144688d"] }
 ]
 ```
 
@@ -91,6 +91,60 @@ Mint:
     "request": "lnbc1...",
     "paid": false,
     "expiry": 1711036570
+  }
+]
+```
+
+#### check_proof
+
+Can be used to check the current state of a proof.
+Mints SHOULD send an updated `DATA` object when the proof's status changes.
+
+PARAMS
+
+```json
+{
+"points": ["<hex_str>", ...],
+}
+```
+
+DATA
+
+```json
+{
+  "Y": "<hex_str>",
+  "state": "<str_enum[STATE]>",
+  "witness": "<str|null>"
+}
+```
+
+##### EXAMPLE
+
+Client:
+
+```json
+[
+  "REQ",
+  "e1699f8e006c264d",
+  "check_proof",
+  {
+    "points": [
+      "02599b9ea0a1ad4143706c2a5a4a568ce442dd4313e1cf1f7f0b58a317c1a355ee"
+    ]
+  }
+]
+```
+
+Mint:
+
+```json
+[
+  "RES",
+  "e1699f8e006c264d",
+  {
+    "Y": "02599b9ea0a1ad4143706c2a5a4a568ce442dd4313e1cf1f7f0b58a317c1a355ee",
+    "state": "SPENT",
+    "witness": "{\"signatures\": [\"b2cf120a49cb1ac3cb32e1bf5ccb6425e0a8372affdc1d41912ca35c13908062f269c0caa53607d4e1ac4c8563246c4c8a869e6ee124ea826fd4746f3515dc1e\"]}"
   }
 ]
 ```
