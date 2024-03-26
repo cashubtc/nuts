@@ -33,10 +33,24 @@ All requests sent from apps to mints over Websocket MUST look like this
 ["REQ", "<REQ ID>", "<COMMAND>", "<PARAMS>"]
 ```
 
-All responses / messages sent from mints to apps MUST look like this
+An app can close an active subscription by posting the following messages.
+Once a mint receives a `CLOSE` message it SHOULD assume the app is no longer listening on this `REQ ID`
+and should no longer send updates. **This does not mean it should close the socket**
+
+```json
+["CLOSE", "<REQ ID>"]
+```
+
+All responses sent from mints to apps MUST look like this
 
 ```json
 ["RES", "<REQ ID>", "<DATA>"]
+```
+
+A mint can send error messages or other data by sending a message that looks like this
+
+```json
+["NOTICE", "<MESSAGE>"]
 ```
 
 `PARAMS` and `DATA` for each NUT are defined below. `REQ ID` SHOULD be a random string that is unique per subscription.
