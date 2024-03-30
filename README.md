@@ -26,7 +26,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [09][09] | Signature restore | [Nutshell][py], [cashu-crab][cashu-crab], [cashu-ts][ts] | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint] |
 | [10][10] | Spending conditions | [Nutshell][py], [cashu-crab][cashu-crab] | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint] |
 | [11][11] | Pay-To-Pubkey (P2PK) | [Nutshell][py], [cashu-crab][cashu-crab] | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint] |
-| [12][12] | DLEQ proofs | [Nutshell][py] | [Nutshell][py] |
+| [12][12] | DLEQ proofs | [Nutshell][py], [cashu-crab][cashu-crab] | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint] |
 | [13][13] | Deterministic secrets | [Nutshell][py], [Moksha][cashume], [cashu-ts][ts], [cashu-crab][cashu-crab] | - |
 
 #### Wallets:
