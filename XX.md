@@ -83,6 +83,58 @@ Again `payload` will be specific to the kind of subscription
 
 ### Commands
 
+#### bolt11_melt_quote
+
+Can be used to check the current state of a mint quote.
+Mints SHOULD send a `Notification` when the quote status changes.
+
+REQUEST PARAMS
+
+```json
+{
+  "kind": "bolt11_melt_quote",
+  "filters": ["<quoteId>", ...],
+  "subId": "<subId>"
+}
+```
+
+NOTIFICATION PARAMS
+
+```json
+{
+  "subId": "<subId>",
+  "payload": {}
+}
+```
+
+##### EXAMPLE
+
+Client requests subscription
+
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "sub",
+  "params": {
+    "subId": "hljskm...",
+    "kind": "bolt11_melt_quote",
+    "filters": ["aedrsvea...", "lunkslccM..."]
+  },
+  "id": 1
+}
+```
+
+Mint responds with OK as defined in specification.
+When there is an update for the requested filter mint sends notification:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "sub",
+  "params": { "subId": "hljskm...", "payload": {} }
+}
+```
+
 #### bolt11_mint_quote
 
 Can be used to check the current state of a mint quote.
@@ -109,30 +161,30 @@ NOTIFICATION PARAMS
 
 ##### EXAMPLE
 
-Client:
+Client requests subscription
 
 ```json
-[
-  "REQ",
-  "673b02c512dda11b44fb3f23e7c58930",
-  "check_quote",
-  { "ids": ["d8195234c8ac8c129611d40f2144688d"] }
-]
+{
+  "jsonrpc": "2.0",
+  "method": "sub",
+  "params": {
+    "subId": "hljskm...",
+    "kind": "bolt11_mint_quote",
+    "filters": ["aedrsvea...", "lunkslccM..."]
+  },
+  "id": 1
+}
 ```
 
-Mint:
+Mint responds with OK as defined in specification.
+When there is an update for the requested filter mint sends notification:
 
 ```json
-[
-  "RES",
-  "673b02c512dda11b44fb3f23e7c58930",
-  {
-    "quote_id": "d8195234c8ac8c129611d40f2144688d",
-    "request": "lnbc1...",
-    "paid": false,
-    "expiry": 1711036570
-  }
-]
+{
+  "jsonrpc": "2.0",
+  "method": "sub",
+  "params": { "subId": "<subId>", "payload": {} }
+}
 ```
 
 ## Errors
