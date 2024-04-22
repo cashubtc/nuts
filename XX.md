@@ -27,57 +27,102 @@ This example shows a Mint signaling support of WebSocket only for `check_quote`
 
 ## Specifications
 
-All requests sent from apps to mints over Websocket MUST look like this
+`NUT-XX` uses the JSON-RPC format for all messages. There are three types
+of messages defined in this NUT.
+
+### Requests
+
+Requests are sent from apps to mints. Mints SHOULD not send requests.
+A request is sent for requesting a certain subscription. The format is as follows:
 
 ```json
-["REQ", "<REQ ID>", "<COMMAND>", "<PARAMS>"]
+{ "jsonrpc": "2.0", "method": "sub | unsub", "params": "...", "id": 1 }
 ```
 
-An app can close an active subscription by posting the following messages.
-Once a mint receives a `CLOSE` message it SHOULD assume the app is no longer listening on this `REQ ID`
-and should no longer send updates. **This does not mean it should close the socket**
+Where `params` are specific to what kind of subscription is requested, but
+always includes a `subId` to identify this subscription.
+This identifier is unrelated to `id`.
+
+As per JSON-RPC spec `id` is defined as:
+
+> An identifier established by the Client that MUST contain a String, Number,
+> or NULL value if included. If it is not included it is assumed to be a notification.
+> The value SHOULD normally not be Null and Numbers SHOULD NOT contain
+> fractional parts.
+
+### Responses
+
+Responses are sent by Mints in response (and SHOULD only be send in response) to
+a request. Responses do not contain any data that has been subscribed to,
+but information about the subscription.
+
+A result can have two different formats:
+
+Success:
 
 ```json
-["CLOSE", "<REQ ID>"]
+{ "jsonrpc": "2.0", "result": { "status": "OK", "subId": "..." }, "id": 1 }
 ```
 
-All responses sent from mints to apps MUST look like this
-
-```json
-["RES", "<REQ ID>", "<DATA>"]
-```
-
-A mint can send error messages or other data by sending a message that looks like this
-
-```json
-["NOTICE", "<MESSAGE>"]
-```
-
-`PARAMS` and `DATA` for each NUT are defined below. `REQ ID` SHOULD be a random string that is unique per subscription.
-
-### Commands
-
-#### check_quote
-
-Can be used to check the current state of a mint quote.
-Mints SHOULD send an updated `DATA` object when the payment status changes.
-
-PARAMS
+Error:
 
 ```json
 {
-"ids": ["<quote_id>", ...],
+  "jsonrpc": "2.0",
+  "error": { "code": -32601, "message": "Human readable error message" },
+  "id": "1"
 }
 ```
 
-DATA
+Example: If a mint accepts a subscription requests it send back a result
+`{"status":"OK", "subId": "..."}` to signal that the subscription has been
+accepted.
+
+### Notifications
+
+Notifcations are sent by the mint and contain subscription data. They
+have the following format:
+
+```json
+{"jsonrpc": "2.0", "method": "sub", "params": ...}
+```
+
+Again `params` will be specific to the kind of subscription but always contain
+`subId`.
+
+## Flow
+
+1. Clients sends a `Request` specifying the subscription parameters as well as it's
+   `subId`. The request has a `method` of `sub`.
+2. Mint checks the requests and sends a `Response` containing an ok or error.
+3. If the `Request` was accepted the mint sends updates via `Notifications` whenever
+   an update is available. The mint does reference the `subId` in these messages.
+4. Once the client has all the information they require from this subscription they
+   send a second `Request`. This request has a method of `unsub`
+
+### Commands
+
+#### bolt11_mint_quote
+
+Can be used to check the current state of a mint quote.
+Mints SHOULD send a `Notification` when the quote status changes.
+
+REQUEST PARAMS
 
 ```json
 {
-  "quote": "<quote id>",
-  "request": "<payment request>",
-  "paid": "<bool>",
-  "expiry": "<unix timestamp>"
+  "kind": "bolt11_mint_quote",
+  "filters": ["<quoteId>", ...],
+  "subId": "<subId>"
+}
+```
+
+NOTIFICATION PARAMS
+
+```json
+{
+  "subId": "<subId>",
+  "payload": {}
 }
 ```
 
@@ -105,60 +150,6 @@ Mint:
     "request": "lnbc1...",
     "paid": false,
     "expiry": 1711036570
-  }
-]
-```
-
-#### check_proof
-
-Can be used to check the current state of a proof.
-Mints SHOULD send an updated `DATA` object when the proof's status changes.
-
-PARAMS
-
-```json
-{
-"points": ["<hex_str>", ...],
-}
-```
-
-DATA
-
-```json
-{
-  "Y": "<hex_str>",
-  "state": "<str_enum[STATE]>",
-  "witness": "<str|null>"
-}
-```
-
-##### EXAMPLE
-
-Client:
-
-```json
-[
-  "REQ",
-  "e1699f8e006c264d",
-  "check_proof",
-  {
-    "points": [
-      "02599b9ea0a1ad4143706c2a5a4a568ce442dd4313e1cf1f7f0b58a317c1a355ee"
-    ]
-  }
-]
-```
-
-Mint:
-
-```json
-[
-  "RES",
-  "e1699f8e006c264d",
-  {
-    "Y": "02599b9ea0a1ad4143706c2a5a4a568ce442dd4313e1cf1f7f0b58a317c1a355ee",
-    "state": "SPENT",
-    "witness": "{\"signatures\": [\"b2cf120a49cb1ac3cb32e1bf5ccb6425e0a8372affdc1d41912ca35c13908062f269c0caa53607d4e1ac4c8563246c4c8a869e6ee124ea826fd4746f3515dc1e\"]}"
   }
 ]
 ```
