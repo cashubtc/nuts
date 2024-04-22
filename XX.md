@@ -17,7 +17,7 @@ The `nuts` key of `GetInfoResponse` for NUT-XX looks as follows:
 "nuts": {
     "xx": {
       "supported": [
-        ["check_quote"]
+        ["bolt11_mint_quote", "bolt11_melt_quote"]
       ],
     }
 }
