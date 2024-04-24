@@ -30,7 +30,6 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [13][13] | Deterministic secrets | [Nutshell][py], [Moksha][cashume], [cashu-ts][ts] | - |
 | [14][14] | Hashed Timelock Contracts (HTLCs) | [Nutshell][py] | [Nutshell][py] |
 
-
 #### Wallets:
 
  - [Nutshell][py]
