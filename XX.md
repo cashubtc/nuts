@@ -65,7 +65,7 @@ enum SubscriptionKind {
 }
 ```
 
-The `filters` are an array of mint quote IDs, or melt quote IDs, or `Y`'s of the corresponding object to receive updates from. As an example, `filters` would be of the following form to subscribe for updates of three different mint quote IDs:
+The `filters` are an array of mint quote IDs ([NUT-04][04]), or melt quote IDs ([NUT-05][05]), or `Y`'s ([NUT-07][07]) of the corresponding object to receive updates from. As an example, `filters` would be of the following form to subscribe for updates of three different mint quote IDs:
 ```json
 [
   "20385fc7245...", "d06667cda9b...", "e14d8ca96f..."
