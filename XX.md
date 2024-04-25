@@ -125,7 +125,7 @@ Notifications are sent by the mint to the wallet and contain subscription data w
 
 ## Signaling Support via NUT-06
 
-Mints signal websocket support via [NUT-06][06] the following setting:
+Mints signal websocket support via [NUT-06][06] using the following setting:
 
 ```json
 "nuts": {
