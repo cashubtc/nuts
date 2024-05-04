@@ -24,11 +24,11 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [07][07] | Token state check | [Nutshell][py], [Moksha][moksha], [Nutstash][ns], [cashu-ts][ts], [cdk] | [Nutshell][py], [LNbits], [Moksha][moksha], [cashu-rs-mint][cashu-rs-mint] |
 | [08][08] | Overpaid Lightning fees | [Nutshell][py], [Moksha][moksha], [Nutstash][ns], [cashu-ts][ts], [cdk] | [Nutshell][py], [LNbits], [Moksha][moksha], [cashu-rs-mint][cashu-rs-mint] |
 | [09][09] | Signature restore | [Nutshell][py], [cdk], [cashu-ts][ts] | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint]
-| [10][10] | Spending conditions | [Nutshell][py] | [Nutshell][py], [cdk] |
-| [11][11] | Pay-To-Pubkey (P2PK) | [Nutshell][py] | [Nutshell][py], [cdk] |
-| [12][12] | DLEQ proofs | [Nutshell][py] | [Nutshell][py], [cdk] |
+| [10][10] | Spending conditions | [Nutshell][py], [cdk] | [Nutshell][py], [cashu-rs-mint] |
+| [11][11] | Pay-To-Pubkey (P2PK) | [Nutshell][py], [cdk] | [Nutshell][py], [cashu-rs-mint] |
+| [12][12] | DLEQ proofs | [Nutshell][py], [cdk] | [Nutshell][py], [cashu-rs-mint] |
 | [13][13] | Deterministic secrets | [Nutshell][py], [Moksha][moksha], [cashu-ts][ts], [cdk] | - |
-| [14][14] | Hashed Timelock Contracts (HTLCs) | [Nutshell][py] | [Nutshell][py] |
+| [14][14] | Hashed Timelock Contracts (HTLCs) | [Nutshell][py], [cdk] | [Nutshell][py], [cashu-rs-mint] |
 
 #### Wallets:
 
