@@ -57,6 +57,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [ts]: https://github.com/cashubtc/cashu-ts
 [enuts]: https://github.com/cashubtc/eNuts
 [moksha]: https://github.com/ngutech21/moksha
+[minibits]: https://github.com/minibits-cash/minibits_wallet
 [cdk]: https://github.com/cashubtc/cdk
 [cashu-rs-mint]: https://github.com/thesimplekid/cashu-rs-mint
 [gonuts]: https://github.com/elnosh/gonuts
