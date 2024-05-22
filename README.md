@@ -21,18 +21,19 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 
 | # | Description | Wallets | Mints |
 | --- | --- | --- | --- |
-| [07][07] | Token state check | [Nutshell][py], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [LNbits], [Moksha][moksha], [cashu-rs-mint][cashu-rs-mint] |
-| [08][08] | Overpaid Lightning fees | [Nutshell][py], [Moksha][cashume], [Nutstash][ns], [cashu-ts][ts], [cashu-crab][cashu-crab] | [Nutshell][py], [LNbits], [Moksha][moksha], [cashu-rs-mint][cashu-rs-mint] |
-| [09][09] | Signature restore | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint], [cashu-ts][ts] | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint]
-| [10][10] | Spending conditions | [Nutshell][py] | [Nutshell][py] |
-| [11][11] | Pay-To-Pubkey (P2PK) | [Nutshell][py] | [Nutshell][py] |
-| [12][12] | DLEQ proofs | [Nutshell][py] | [Nutshell][py] |
-| [13][13] | Deterministic secrets | [Nutshell][py], [Moksha][cashume], [cashu-ts][ts] | - |
+| [07][07] | Token state check | [Nutshell][py], [Moksha][moksha], [Nutstash][ns], [cashu-ts][ts], [cdk] | [Nutshell][py], [LNbits], [Moksha][moksha], [cashu-rs-mint][cashu-rs-mint] |
+| [08][08] | Overpaid Lightning fees | [Nutshell][py], [Moksha][moksha], [Nutstash][ns], [cashu-ts][ts], [cdk] | [Nutshell][py], [LNbits], [Moksha][moksha], [cashu-rs-mint][cashu-rs-mint] |
+| [09][09] | Signature restore | [Nutshell][py], [cdk], [cashu-ts][ts] | [Nutshell][py], [cashu-rs-mint][cashu-rs-mint]
+| [10][10] | Spending conditions | [Nutshell][py] | [Nutshell][py], [cdk] |
+| [11][11] | Pay-To-Pubkey (P2PK) | [Nutshell][py] | [Nutshell][py], [cdk] |
+| [12][12] | DLEQ proofs | [Nutshell][py] | [Nutshell][py], [cdk] |
+| [13][13] | Deterministic secrets | [Nutshell][py], [Moksha][moksha], [cashu-ts][ts], [cdk] | - |
+| [14][14] | Hashed Timelock Contracts (HTLCs) | [Nutshell][py] | [Nutshell][py] |
 
 #### Wallets:
 
  - [Nutshell][py]
- - [cashu-crab][cashu-crab]
+ - [cdk][cdk]
  - [cashu-ts][ts]
  - [eNuts][enuts]
  - [Moksha][moksha]
@@ -56,7 +57,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [ts]: https://github.com/cashubtc/cashu-ts
 [enuts]: https://github.com/cashubtc/eNuts
 [moksha]: https://github.com/ngutech21/moksha
-[cashu-crab]: https://github.com/thesimplekid/cashu-crab
+[cdk]: https://github.com/cashubtc/cdk
 [cashu-rs-mint]: https://github.com/thesimplekid/cashu-rs-mint
 [gonuts]: https://github.com/elnosh/gonuts
 
@@ -74,3 +75,4 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [11]: 11.md
 [12]: 12.md
 [13]: 13.md
+[14]: 14.md
