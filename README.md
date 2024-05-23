@@ -30,7 +30,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [13][13] | Deterministic secrets | [Nutshell][py], [Moksha][moksha], [cashu-ts][ts], [cdk] | - |
 | [14][14] | Hashed Timelock Contracts (HTLCs) | [Nutshell][py], [cdk] | [Nutshell][py], [cashu-rs-mint] |
 | [15][15] | Partial multi-path payments (MPP) | [Nutshell][py] | [Nutshell][py] |
-| [15][15] | Animated QR codes | [Cashu.me][cashume] | - |
+| [16][16] | Animated QR codes | [Cashu.me][cashume] | - |
 
 #### Wallets:
 
@@ -79,3 +79,4 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [13]: 13.md
 [14]: 14.md
 [15]: 15.md
+[16]: 16.md
