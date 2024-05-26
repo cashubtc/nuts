@@ -17,14 +17,14 @@ This NUT introduces a standardised format for payment requests, that supply a se
 
 A Payment Request is defined as follows
 
-```go
-type PaymentRequest struct {
-  A int         `amount (optional)`
-  U string      `unit`
-  R string      `mint url (optional)`
-  D string      `description (optional)`
-  M string      `memo (optional)`
-  T []Transport `transport`
+```json
+{
+  "a": int <optional>,
+  "u": str,
+  "r": str <optional>,
+  "d": str <optional>,
+  "m": str <optional>,
+  "t": Transport
 }
 ```
 
@@ -37,11 +37,11 @@ type Transport struct {
 }
 ```
 
-- amount: The amount of the requested token (payment amount)
-- unit: The unit of the requested token (e.g. sats)
-- mint: The mint to use to mint the token
-- description: A human readable discription that the sending wallet will display after scanning the request
-- transport: The method of transport chosen to transmit the created token to the sender (can be multiple, sorted by preference)
+- a: The amount of the requested token (payment amount)
+- u: The unit of the requested token (e.g. sats)
+- r: The mint to use to mint the token
+- d: A human readable description that the sending wallet will display after scanning the request
+- t: The method of transport chosen to transmit the created token to the sender (can be multiple, sorted by preference)
 
 ## Encoded Request
 
@@ -62,6 +62,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/fxamacker/cbor/v2"
 )
@@ -94,10 +95,28 @@ func encodeRequest(pr PaymentRequest) string {
 	return res
 }
 
+func decodeRequest(prString string) PaymentRequest {
+	s := strings.TrimPrefix(prString, pre)
+	decoded, err := base64.RawURLEncoding.DecodeString(s)
+	data := decoded[1:]
+	if err != nil {
+		log.Fatal("String decoding failed")
+	}
+	var v PaymentRequest
+	err = cbor.Unmarshal(data, &v)
+	if err != nil {
+		fmt.Println(err)
+		log.Fatal("CBOR decoding failed")
+	}
+	return v
+}
+
 func main() {
 	t := Transport{T: "nostr", Ta: "nprofile1qqsdmup6e2z6mcpeue6z6kl08he49hcen5xnrc3tnpvw0mdgtjemh0suxa0kj"}
 	pr := PaymentRequest{A: 21, U: "sat", M: "https://mint.minibits.cash/Bitcoin", D: "Plesase pay the very first cashu pr", T: []Transport{t}}
 	res := encodeRequest(pr)
-	fmt.Printf("%s", res)
+	fmt.Println(res)
+	d := decodeRequest(res)
+	fmt.Printf("%+v\n", d)
 }
 ```
