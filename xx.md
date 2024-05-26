@@ -66,31 +66,38 @@ import (
 	"github.com/fxamacker/cbor/v2"
 )
 
-func main() {
-	type Transport struct {
-		T  string
-		Ta string
-	}
-	type PaymentRequest struct {
-		A int
-		U string
-		M string
-		D string
-		T []Transport
-	}
+const (
+	pre     = "cashrq"
+	version = byte(0x01)
+)
 
-	t := Transport{T: "nostr", Ta: "nprofile1qqsdmup6e2z6mcpeue6z6kl08he49hcen5xnrc3tnpvw0mdgtjemh0suxa0kj"}
-	pr := PaymentRequest{A: 21, U: "sat", M: "https://mint.minibits.cash/Bitcoin", D: "Plesase pay the very first cashu pr", T: []Transport{t}}
+type Transport struct {
+	T  string
+	Ta string
+}
+type PaymentRequest struct {
+	A int
+	U string
+	M string
+	D string
+	T []Transport
+}
+
+func encodeRequest(pr PaymentRequest) string {
 	b, err := cbor.Marshal(pr)
 	if err != nil {
 		log.Fatal("CBOR encoding failed...")
 	}
-	pre := "cashrq"
-	version := byte(0x01)
 	b = append([]byte{version}, b...)
 	encodedString := base64.RawURLEncoding.EncodeToString(b)
 	res := pre + encodedString
-	fmt.Printf("%s", res)
+	return res
 }
 
+func main() {
+	t := Transport{T: "nostr", Ta: "nprofile1qqsdmup6e2z6mcpeue6z6kl08he49hcen5xnrc3tnpvw0mdgtjemh0suxa0kj"}
+	pr := PaymentRequest{A: 21, U: "sat", M: "https://mint.minibits.cash/Bitcoin", D: "Plesase pay the very first cashu pr", T: []Transport{t}}
+	res := encodeRequest(pr)
+	fmt.Printf("%s", res)
+}
 ```
