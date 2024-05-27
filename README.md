@@ -11,7 +11,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 |----------|-----------------------------------|
 | [00][00] | Cryptography and Models           |
 | [01][01] | Mint public keys                  |
-| [02][02] | Keysets and keyset IDs            |
+| [02][02] | Keysets and fees                  |
 | [03][03] | Swapping tokens                   |
 | [04][04] | Minting tokens                    |
 | [05][05] | Melting tokens                    |
