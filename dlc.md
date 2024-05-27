@@ -507,6 +507,7 @@ Once all payouts have been issued, the mint may purge the DLC from its storage, 
 
 - prevent a mint from being DOS'd by using payout structure size limits, DLC lifetime limits
 - allow mint to charge fees for DLC processing
+- give the funder a non-interactive proof of DLC registration so that participants don't have to poll
 
 ## Previous Work
 
