@@ -24,7 +24,7 @@ A Payment Request is defined as follows
   "r": str <optional>,
   "d": str <optional>,
   "m": str <optional>,
-  l: str <optional>,
+  "l": str <optional>,
   "t": Transport
 }
 ```
@@ -53,7 +53,7 @@ Transport is an important part of Cashu Payment Requests. Receivers can choose w
 ```
 
 - t: type of Transport
-- ta: target of Transport
+  - ta: target of Transport
 
 There can be many transport layers, but here are some recommendations:
 
@@ -78,72 +78,4 @@ _Example_
 
 ```sh
 cashrqAaVhQRVhVWNzYXRhTXgiaHR0cHM6Ly9taW50Lm1pbmliaXRzLmNhc2gvQml0Y29pbmFEeCNQbGVzYXNlIHBheSB0aGUgdmVyeSBmaXJzdCBjYXNodSBwcmFUgaJhVGVub3N0cmJUYXhGbnByb2ZpbGUxcXFzZG11cDZlMno2bWNwZXVlNno2a2wwOGhlNDloY2VuNXhucmMzdG5wdncwbWRndGplbWgwc3V4YTBrag
-```
-
-## Reference Implementation
-
-```go
-package main
-
-import (
-	"encoding/base64"
-	"fmt"
-	"log"
-	"strings"
-
-	"github.com/fxamacker/cbor/v2"
-)
-
-const (
-	pre     = "cashrq"
-	version = byte(0x01)
-)
-
-type Transport struct {
-	T  string
-	Ta string
-}
-type PaymentRequest struct {
-	A int
-	U string
-	M string
-	D string
-	T []Transport
-}
-
-func encodeRequest(pr PaymentRequest) string {
-	b, err := cbor.Marshal(pr)
-	if err != nil {
-		log.Fatal("CBOR encoding failed...")
-	}
-	b = append([]byte{version}, b...)
-	encodedString := base64.RawURLEncoding.EncodeToString(b)
-	res := pre + encodedString
-	return res
-}
-
-func decodeRequest(prString string) PaymentRequest {
-	s := strings.TrimPrefix(prString, pre)
-	decoded, err := base64.RawURLEncoding.DecodeString(s)
-	data := decoded[1:]
-	if err != nil {
-		log.Fatal("String decoding failed")
-	}
-	var v PaymentRequest
-	err = cbor.Unmarshal(data, &v)
-	if err != nil {
-		fmt.Println(err)
-		log.Fatal("CBOR decoding failed")
-	}
-	return v
-}
-
-func main() {
-	t := Transport{T: "nostr", Ta: "nprofile1qqsdmup6e2z6mcpeue6z6kl08he49hcen5xnrc3tnpvw0mdgtjemh0suxa0kj"}
-	pr := PaymentRequest{A: 21, U: "sat", M: "https://mint.minibits.cash/Bitcoin", D: "Plesase pay the very first cashu pr", T: []Transport{t}}
-	res := encodeRequest(pr)
-	fmt.Println(res)
-	d := decodeRequest(res)
-	fmt.Printf("%+v\n", d)
-}
 ```
