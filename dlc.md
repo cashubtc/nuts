@@ -52,7 +52,7 @@ This mapping defines how the money used to fund a DLC should be distributed if a
 
 ```json
 {
-  "03a40f20667ed53513075dc51e715ff2046cad64eb68960632269ba7f0210e38": 3,
+  "0276cedb9a3b160db6a158ad4e468d2437f021293204b3cd4bf6247970d8aff54b": 3,
   "028a36f0e6638ea7466665fe174d958212723019ec08f9ce6898d897f88e68aa5d": 2,
   "02b4ebb0dda3b9ad83b39e2e31024b777cc0ac205a96b9a6cfab3edea2912ed1b3": 1
 }
