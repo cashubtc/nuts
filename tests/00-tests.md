@@ -24,12 +24,12 @@ These are test vectors for the the blinded secret (public key) `B_` Alice sends 
 # Test 1
 x:  d341ee4871f1f889041e63cf0d3823c713eea6aff01e80f1719f08f9e5be98f6   # hex encoded byte array
 r:  99fce58439fc37412ab3468b73db0569322588f62fb3a49182d67e23d877824a   # hex encoded private key
-B_: 026a0019ed7dd2fc84aec809a7d937da0dd6cca6693bfea9a887be33119c153ee9 # hex encoded public key
+B_: 033b1a9737a40cc3fd9b6af4b723632b76a67a36782596304612a6c2bfb5197e6d # hex encoded public key
 
 # Test 2
 x:  f1aaf16c2239746f369572c0784d9dd3d032d952c2d992175873fb58fae31a60   # hex encoded byte array
 r:  f78476ea7cc9ade20f9e05e58a804cf19533f03ea805ece5fee88c8e2874ba50   # hex encoded private key
-B_: 02be78ed8172c85cec8e7aacb6d38fbde518d726daa27d3d1144193e0ce474b681 # hex encoded public key
+B_: 029bdf2d716ee366eddf599ba252786c1033f47e230248a4612a5670ab931f1763 # hex encoded public key
 ```
 
 ### Blinded signatures
