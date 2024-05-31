@@ -48,34 +48,42 @@ Transport is an important part of Cashu Payment Requests. Receivers can choose w
 ```json
 {
   "t": str,
-  "ta": Target
+  "a": Target
 }
 ```
 
 - t: type of Transport
-  - ta: target of Transport
+- a: target of Transport
 
 There can be many transport layers, but here are some recommendations:
 
 - nostr
   - type: "nostr"
-  - target: `{nprofile: "nprofile..."}`
+  - target: "<nprofile...>"
 - post
   - type: "post"
-  - target: `{url: "<endpoint url>"}`
+  - target: "<endpoint url>"
 - email
   - type: "email"
-  - target: `{email: "<email adddress>"}`
+  - target: "<email address>"
 - sms
   - type: "sms"
-  - target: `{num: "phone number"}`
+  - target: "<phone number>"
+
+Regardless of the transport layer the payload should always (unless specified differently) be a JSON serialised object as follows:
+
+```json
+{ "token": "cashuAy..." }
+```
 
 ## Encoded Request
 
 Cashu Payment Requests can be encoded and displayed/sent as string or qr code. They underlying object is serialised using CBOR and finally base64 encoded and prefixed with a version byte and standard prefix.
 
+`"creq" + base64(versionByte + cbor(PaymentRequest))`
+
 _Example_
 
 ```sh
-cashrqAaVhQRVhVWNzYXRhTXgiaHR0cHM6Ly9taW50Lm1pbmliaXRzLmNhc2gvQml0Y29pbmFEeCNQbGVzYXNlIHBheSB0aGUgdmVyeSBmaXJzdCBjYXNodSBwcmFUgaJhVGVub3N0cmJUYXhGbnByb2ZpbGUxcXFzZG11cDZlMno2bWNwZXVlNno2a2wwOGhlNDloY2VuNXhucmMzdG5wdncwbWRndGplbWgwc3V4YTBrag
+creqAaVhQRVhVWNzYXRhTXgiaHR0cHM6Ly9taW50Lm1pbmliaXRzLmNhc2gvQml0Y29pbmFEeCNQbGVzYXNlIHBheSB0aGUgdmVyeSBmaXJzdCBjYXNodSBwcmFUgaJhVGVub3N0cmJUYXhGbnByb2ZpbGUxcXFzZG11cDZlMno2bWNwZXVlNno2a2wwOGhlNDloY2VuNXhucmMzdG5wdncwbWRndGplbWgwc3V4YTBrag
 ```
