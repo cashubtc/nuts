@@ -491,8 +491,11 @@ To claim a DLC payout, a participant issues a `POST /v1/dlc/payout` request to t
     {
       "dlc_root": "2db63c93043ab646836b38292ed4fcf209ba68307427a4b2a8621e8b1daeb8ed",
       "pubkey": "03361cd8bd1329fea797a6add1cf1990ffcf2270ceb9fc81eeee0e8e9c1bd0cdf5",
-      "signature": "60f3c9b766770b46caac1d27e1ae6b77c8866ebaeba0b9489fe6a15a837eaa6fcd6eaa825499c72ac342983983fd3ba3a8a41f56677cc99ffd73da68b59e1383",
       "outputs": <Array[BlindedMessage]>,
+      "witness": {
+        "secret": <privkey|null>,
+        "signature": <signature|null>
+      }
     },
     ...
   ]
@@ -500,12 +503,15 @@ To claim a DLC payout, a participant issues a `POST /v1/dlc/payout` request to t
 ```
 
 - `Payout.dlc_root` is a DLC merkle root hash.
-- `Payout.signature` is a [BIP-340] signature made on the `dlc_root` hash, which should verify against `Payout.pubkey`.
+- `Payout.witness` provides at least one method of authentication against `Payout.pubkey`.
 - `Payout.outputs` is a set of blinded messages for the mint to sign.
 
 For each `Payout` object, the mint performs the following checks:
 
-1. Validate that `Payout.signature` is a valid [BIP-340] signature made by `Payout.pubkey` on `payout.dlc_root`
+1. Authenticate `Payout.witness`:
+  - If present, validate `Payout.witness.secret` is the discrete log (private key) of `Payout.pubkey`.
+  - If present, validate `Payout.witness.signature` as a [BIP-340] signature made by `Payout.pubkey` on `payout.dlc_root`
+  - If any of the above fields are invalid, or if none are present, return an error.
 1. If `Payout.dlc_root` does not correspond to any known funded DLC, return an error.
 1. If `Payout.dlc_root` corresponds to a known DLC, but that DLC has not been settled, return an error.
 1. If `Payout.pubkey` is not a key in the `debts` map, return an error.
