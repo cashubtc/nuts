@@ -96,7 +96,7 @@ The `Secret.data` field is the root hash of a merkle tree which uniquely identif
 
 Anyone can spend a `Proof` locked with the `DLC` secret kind, but can _only_ spend it in the process of _funding a DLC identified by the same root hash._ **A mint which supports this spec MUST NOT allow a `DLC` secret to be spent unless it is used for funding the indicated DLC.**
 
-The `threshold` tag is a required parameter which stipulates a minimum funding value which must be used to fund the DLC. [^3]
+The `threshold` tag is a required parameter which stipulates a minimum funding value which must be used to fund the DLC. [^3] This threshold _does not include [fees charged by the mint](#fees)._
 
 [^3]: The `threshold` tag commits a `DLC` secret to funding only a DLC of at least a specific amount. This is a way of enforcing buy-in from all participants.
 
@@ -131,6 +131,39 @@ dlc_root = merkle_root([T1, T2, ... Tn, Tt])
 `dlc_root` may then be used as the `Secret.data` field for secrets of kind `DLC`.
 
 A wallet can prove `Ti` is a leaf of `dlc_root` by providing a list of merkle branch hashes. See [the appendix of NUT-SCT](sct.md#Appendix) for an example of how to build such a proof.
+
+## Mint Settings
+
+A mint which supports this NUT must expose some global parameters to wallets, via the [NUT-06] `GET /v1/info` response.
+
+```json
+{
+  ...
+  "nuts": {
+    "NUT-DLC": {
+      "supported": true,
+      "funding_proof_pubkey": <pubkey>,
+      "max_payouts": <int>,
+      "ttl": <int>
+      "fees": {
+        "sat": {
+          "base": <int>,
+          "ppk": <int>
+        }
+      }
+    }
+  }
+}
+```
+
+- `funding_proof_pubkey` is a compressed public key with which participants may verify offline that the mint has indeed registered a DLC.
+- `max_payouts` is the maximum size of payout structure this mint will accept.
+- `ttl` is a duration in seconds, indicating how long the mint promises to store DLCs after registration. The mint may consider a DLC abandoned if the DLC lives longer than the `ttl` declared _at the time of registration._ If `ttl <= 0`, the mint claims it will remember registered DLCs forever.
+- `fees` is a map describing fee structures for the mint to process DLCs on a per-currency basis. `fees` may be set to the empty object (`{}`) to explicitly disable fees for all currency units.
+  - `base` is an absolute fee amount applied to every DLC funded on the mint.
+  - `ppk` or "parts-per-kilo" (thousand units) describes a percentage relative to the DLC funding value, which will be charged by the mint as a fee.
+
+Mints should avoid changing these settings frequently. Wallets may cache them but should occasionally re-fetch a mint's DLC parameters, especially when actively participating in DLC creation.
 
 ## DLC Funding
 
@@ -179,8 +212,7 @@ Example:
 }
 ```
 
-The funder cannot use this ecash proof for anything _except_ for funding a DLC with root hash `2db63c...`, and doing so requires a minimum funding amount of 10,000 satoshis. The funder would need to find another 5,904 available satoshis in proofs to fund the DLC with this proof as an input.
-
+The funder cannot use this ecash proof for anything _except_ for funding a DLC with root hash `2db63c...`, and doing so requires a minimum funding amount of 10,000 satoshis ([after subtracting fees](#fees)). The funder would need to find at least another 5,904 available satoshis in proofs to fund the DLC with this proof as an input.
 
 ### Mint Registration
 
@@ -192,6 +224,7 @@ To register and fund a DLC on the mint, the funder issues a `POST /v1/dlc/fund` 
   "registrations": [
     {
       "dlc_root": "2db63c93043ab646836b38292ed4fcf209ba68307427a4b2a8621e8b1daeb8ed",
+      "funding_amount": <int>,
       "inputs": [
         {
           "amount": 4096,
@@ -215,13 +248,30 @@ To register and fund a DLC on the mint, the funder issues a `POST /v1/dlc/fund` 
 
 For each new DLC submitted in `registrations`, the mint MUST process and then consume all of the `inputs` in the same way it would for a swap/melt operation, with one additional rule: **Proofs referencing a secret of kind `DLC` are now spendable, but only if `Proof.secret.data == dlc_root`.**
 
+The `inputs` array must provide valid proofs whose value sums to `input_amount`, which is computed as:
+
+```python
+input_amount = funding_amount + fees.base + (input_amount * fees.ppk // 1000)
+assert sum(inputs) == input_amount
+```
+
+See [the fees section](#fees) for more details.
+
+Assuming the input proofs are all valid and sum to the correct amount, the mint stores the `(dlc_root, funding_amount)`, and marks the `inputs` proofs' secrets as spent. The DLC is then deemed to be funded.
+
 If the optional `atomic` field in the request body is set to `true`, the mint must process _all_ DLCs in the `registrations` array, or else process none of them.
 
-If one or more inputs does NOT pass validation, the mint must return a response with a `400` status code, and a body of the following format:
+If one or more inputs does not pass validation, the mint must return a response with a `400` status code, and a body of the following format:
 
 ```json
 {
-  "processed": [<hash>, ...],
+  "funded": [
+    {
+      "dlc_root": <hash>,
+      "signature": <signature>
+    },
+    ...
+  ],
   "errors": [
     {
       "dlc_root": <hash>,
@@ -238,28 +288,63 @@ If one or more inputs does NOT pass validation, the mint must return a response 
 }
 ```
 
-The `processed` array tells the funder which DLCs have been successfully registered, while the `errors` field tells the funder which DLCs failed to register, and which specific input proofs for that DLC were faulty. This allows participants to resolve funding disputes. [^5]
+The `funded` array tells the funder which DLCs have been successfully registered, while the `errors` field tells the funder which DLCs failed to register, and which specific input proofs for that DLC were faulty. This allows participants to resolve funding disputes. [^5]
 
 [^5]: To resolve a funding dispute where some _accused_ participants supply faulty DLC funding proofs, but refuse to acknowledge their mistake, the funder may broadcast the full set of (locked) DLC funding proofs to all _bystander_ participants. The accused participants also broadcast the proofs they supplied to the funder. The bystanders retry the `POST /v1/dlc/fund` request with both possible sets of input proofs to confirm the mint indeed reports the same failure on both. If the mint accepts any of the funding requests, then the dispute is resolved and the DLC has been funded. If the mint reports errors for both sets of input proofs, the bystanders can use the `bad_inputs` field determine who was behaving dishonestly and evict them from the group.
-
-If all the input proofs of a DLC registration object pass validation, the mint stores the `dlc_root` and the total `funding_amount` (i.e. the sum value of all `inputs`). **It is vital for the mint to remember this state,** as the `(dlc_root, funding_amount)` tuple is now the only valid record that exists anywhere of the participants' joint deposit.
 
 If every DLC in the `registrations` array is processed successfully, the mint must return a `200 OK` response with the following response body format:
 
 ```json
 {
-  "processed": [
+  "funded": [
     {
       "dlc_root": <hash>
+      "signature": <signature>
     },
     ...
   ]
 }
 ```
 
-Each object in the `processed` array lists the root hash of a successfully registered DLC.
+Each object in the `funded` array represents a successfully registered DLC. The `signature` field in each object is a [BIP-340] signature on `dlc_root` (hex-decoded), issued by the mint's `funding_proof_pubkey` (specified in [the NUT-06 settings](#mint-settings). This signature is a non-interactive proof that the mint has registered the DLC. The funder may publish this signature to the other DLC participants as evidence that they accomplished their duty as the funder.
 
-### Settling the DLC
+## Fees
+
+Mints may charge fees to register DLCs. This section describes how wallets and mints must calculate fees.
+
+Implementations must look up the appropriate `fees` object [specified in the mint's NUT-DLC settings object](#mint-settings) based on the relevant `unit` in question.
+
+Let `funding_amount` represent the amount of money the funder specifies in a DLC funding request. The `total_fee` for the DLC is computed by the following formula.
+
+```python
+total_fee = fees.base + (funding_amount * fees.ppk // 1000)
+```
+... where the `//` operator represents remainder-discarding integer division.
+
+An example with a base fee of `50` and a parts-per-thousand fee rate of `35` (i.e. 3.5%):
+
+```python
+funding_amount = 53122
+
+total_fee = 50 + (53122 * 35 // 1000)
+          = 50 + (1859270 // 1000)
+          = 50 + 1859
+          = 1909
+```
+
+The `input_amount` which the mint requires to fund a DLC with this `funding_amount` is:
+
+```python
+input_amount = funding_amount + total_fee
+             = 53122 + 1909
+             = 55031
+```
+
+> [!IMPORTANT]
+>
+> At funding time, the mint validates the `threshold` tag of the `DLC` well-known secret kind against the `funding_amount`, not including fees.
+
+## Settling the DLC
 
 When the DLC Oracle publishes her attestation, this reveals to the participants a scalar `ki`, the discrete log of `Ki` such that `ki * G = Ki`.
 
@@ -304,7 +389,7 @@ To mark the DLC as settled on the mint, the wallet issues a `POST /v1/dlc/settle
 
 The mint verifies each settlement object as follows:
 
-1. If `Settlement.outcome.P` fails to parse as a JSON dictionary mapping pubkeys to positive integers, return an error.
+1. If `Settlement.outcome.P` fails to parse as a JSON dictionary mapping pubkeys to positive integers, or if the number of entries in that dictionary exceeds [the `max_payouts` setting](#mint-settings), return an error.
 1. If `Settlement.dlc_root` does not correspond to any known funded DLC, return an error.
 1. If `Settlement.dlc_root` corresponds to a DLC, but that DLC has already been settled, return an error.
 1. Verify `Settlement.merkle_proof`:
@@ -424,7 +509,7 @@ For each `Payout` object, the mint performs the following checks:
 1. If `Payout.dlc_root` does not correspond to any known funded DLC, return an error.
 1. If `Payout.dlc_root` corresponds to a known DLC, but that DLC has not been settled, return an error.
 1. If `Payout.pubkey` is not a key in the `debts` map, return an error.
-1. If `sum([out.amount for out in Payout.outputs]) != debts[Payout.pubkey]`, the mint must return an error to the client.
+1. If `sum([out.amount for out in Payout.outputs]) != debts[Payout.pubkey]`, return an error.
 
 If all `Payout` objects are validated successfully, the mint returns a `200` response with the blinded signatures on `Payout.outputs`:
 
@@ -465,21 +550,19 @@ If some `Payout` objects fail the validation checks, the mint returns a `400` re
 }
 ```
 
-Wallets MUST collect and save the blinded signatures from each entry in the `paid` array, even though the mint responded with a `400` error.
-
-If a wallet needs payout processing to be atomic, they
+Wallets MUST collect and save the blinded signatures from each entry in the `paid` array, even if the mint responds with a `400` error.
 
 If the wallet passes the `atomic` parameter as `true` in their request body, then the mint must ensure that either _all_ payouts are processed, or else _none_ are.
 
 ### Checking the DLC Status
 
-The participants need a way to verify:
+The participants need a way to independently verify:
 
 - if and when the funder has successfully funded the DLC
 - if the DLC has been settled
 - if the DLC has been paid out, and if so to whom
 
-To this end, a wallet issues a `GET /v1/dlc/status/{dlc_root}` request to the mint.
+To this end, a wallet may issue a `GET /v1/dlc/status/{dlc_root}` request to the mint.
 
 If the DLC is not found, the mint responds with a `400` error.
 
@@ -509,17 +592,14 @@ To prevent needless polling when waiting for a DLC to be funded, wallets MAY iss
 
 Once all payouts have been issued, the mint may purge the DLC from its storage, or it may retain the DLC and return `"debts": {}` in the `/v1/dlc/status/{dlc_root}` response body to indicate the DLC has been fully settled and paid.
 
-## TODO
-
-- prevent a mint from being DOS'd by using payout structure size limits, DLC lifetime limits
-- allow mint to charge fees for DLC processing
-- give the funder a non-interactive proof of DLC registration so that participants don't have to poll
+The mint may also purge the DLC from its storage if the DLC hasn't been settled and fully paid out by the `ttl` specified in the [NUT-06](#mint-settings) settings.
 
 ## Previous Work
 
 This NUT is inspired by [this original proposal](https://conduition.io/cryptography/ecash-dlc/) for DLC settlement with generic Chaumian Ecash.
 
 [NUT-00]: 00.md
+[NUT-06]: 06.md
 [NUT-10]: 10.md
 [NUT-12]: 12.md
 [NUT-SCT]: sct.md
