@@ -14,12 +14,12 @@ A Discreet Log Contract (DLC) is a conditional payment which a set of _participa
 These parameters are:
 
 - The number of possible DLC outcomes `n`
-- A vector of `n` _outcome blinding secrets_ (scalars) `[b1, b2, ... bn]` [^1]
+- An _outcome blinding secret_ scalar `b` [^1]
 - A vector of `n` _outcome locking points_ `[K1, K2, ... Kn]` [^2]
 - A vector of `n` _payout structures_ `[P1, P2, ... Pn]`
 - An optional timeout timestamp `t` and accompanying timeout payout structure `Pt`
 
-[^1]: Wallet clients may opt out of outcome-blinding by setting all of the blinding secrets to zero.
+[^1]: Wallet clients may opt out of outcome-blinding by setting the blinding secret to zero.
 
 [^2]: The outcome locking point vector abstraction covers both [enum events](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Oracle.md#simple-enumeration) and [digit-decomposition events](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Oracle.md#digit-decomposition). For an enum event, participants simply compute each of locking points from the announced outcome messages and nonce, in a 1:1 mapping. For a digit-decomposition event, participants compute locking points for each relevant outcome _range_ on a per-digit basis, aggregating (summing) the locking points where necessary to produce `[K1, K2, ... Kn]`.
 
@@ -30,10 +30,10 @@ The locking points `[K1, K2, ... Kn]` are elliptic curve points, encoded in SEC1
 The locking points are blinded by the participants, to obscure the nature of the DLC from the mint at settlement time. Blinded locking points are computed as:
 
 ```python
-Ki_ = Ki + bi * G
+Ki_ = Ki + b * G
 ```
 
-...for some blinding secret `bi` known to all DLC participants. Each locking point SHOULD be allocated a _unique_ blinding secret.
+...for some blinding secret `b` known to all DLC participants. The blinding secret should be randomly selected by any participant. It should NOT be derived deterministically from the oracle announcement.
 
 ## Payout Structures
 
@@ -348,15 +348,15 @@ input_amount = funding_amount + total_fee
 
 When the DLC Oracle publishes her attestation, this reveals to the participants a scalar `ki`, the discrete log of `Ki` such that `ki * G = Ki`.
 
-Any DLC participant who knows the matching blinding secret `bi` can compute `ki_` - the discrete log of the blinded locking point `Ki_`.
+Any DLC participant who knows the DLC's blinding secret `b` can compute `ki_` - the discrete log of the blinded locking point `Ki_`.
 
 ```
-ki_ = ki + bi
+ki_ = ki + b
 ```
 ```
-ki_ * G = (ki + bi) * G
-        = ki * G + bi * G
-        = Ki + bi * G
+ki_ * G = (ki + b) * G
+        = ki * G + b * G
+        = Ki + b * G
         = Ki_
 ```
 
