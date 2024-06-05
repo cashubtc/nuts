@@ -37,11 +37,11 @@ Ki_ = Ki + b * G
 
 ## Payout Structures
 
-Payout structures are serialized dictionaries which map `pubkey -> weight`.
+Payout structures are serialized dictionaries which map `xonly_pubkey -> weight`.
 
 ```json
 {
-  <public_key_str>: <weight_int>,
+  <xonly_pubkey_hex>: <weight_int>,
   ...
 }
 ```
@@ -52,13 +52,13 @@ This mapping defines how the money used to fund a DLC should be distributed if a
 
 ```json
 {
-  "0276cedb9a3b160db6a158ad4e468d2437f021293204b3cd4bf6247970d8aff54b": 3,
-  "028a36f0e6638ea7466665fe174d958212723019ec08f9ce6898d897f88e68aa5d": 2,
-  "02b4ebb0dda3b9ad83b39e2e31024b777cc0ac205a96b9a6cfab3edea2912ed1b3": 1
+  "76cedb9a3b160db6a158ad4e468d2437f021293204b3cd4bf6247970d8aff54b": 3,
+  "8a36f0e6638ea7466665fe174d958212723019ec08f9ce6898d897f88e68aa5d": 2,
+  "b4ebb0dda3b9ad83b39e2e31024b777cc0ac205a96b9a6cfab3edea2912ed1b3": 1
 }
 ```
 
-With this payout structure, the `03a40f...` pubkey is allocated 3 of the 6 available weight units (3+2+1), and so its owner should receive half of the DLC funding amount. Similarly, `028a36...` receives a third of the funding amount, and `02b4eb...` receives the remaining sixth.
+With this payout structure, the `76cedb...` pubkey is allocated 3 of the 6 available weight units (3+2+1), and so its owner should receive half of the DLC funding amount. Similarly, `8a36f0...` receives a third of the funding amount, and `b4ebb0...` receives the remaining sixth.
 
 Weights must be positive integers. Negative weights or weights equal to zero are invalid, and render the whole payout structure invalid.
 
@@ -116,7 +116,7 @@ Tt = SHA256(hash_to_curve(t.to_bytes(4, 'big')) || Pt)
 
 The `hash_to_curve` function is defined in [NUT-00]. [^4] `t` is encoded as a 32-bit big-endian integer before hashing.
 
-[^4]: When constructing `Tt`, we hash `t` to a curve point as a convenience, so that all leaf nodes can be represented as `(Point, Map)` data structures.
+[^4]: When constructing `Tt`, we hash `t` to a curve point as a convenience, so that all leaf nodes can be represented as `(Point, str)` data structures.
 
 Note that curve points are encoded in SEC1 compressed binary format, while each payout condition `Pi` is encoded as UTF8 JSON before being hashed. Because JSON maps are not ordered, all participants must agree ahead of time on a specific set of serialized payout structures.
 
@@ -142,7 +142,7 @@ A mint which supports this NUT must expose some global parameters to wallets, vi
   "nuts": {
     "NUT-DLC": {
       "supported": true,
-      "funding_proof_pubkey": <pubkey>,
+      "funding_proof_pubkey": <xonly_pubkey>,
       "max_payouts": <int>,
       "ttl": <int>
       "fees": {
@@ -156,7 +156,7 @@ A mint which supports this NUT must expose some global parameters to wallets, vi
 }
 ```
 
-- `funding_proof_pubkey` is a compressed public key with which participants may verify offline that the mint has indeed registered a DLC.
+- `funding_proof_pubkey` is a [BIP-340] X-Only public key with which participants may verify offline that the mint has indeed registered a DLC.
 - `max_payouts` is the maximum size of payout structure this mint will accept.
 - `ttl` is a duration in seconds, indicating how long the mint promises to store DLCs after registration. The mint may consider a DLC abandoned if the DLC lives longer than the `ttl` declared _at the time of registration._ If `ttl <= 0`, the mint claims it will remember registered DLCs forever.
 - `fees` is a map describing fee structures for the mint to process DLCs on a per-currency basis. `fees` may be set to the empty object (`{}`) to explicitly disable fees for all currency units.
@@ -268,7 +268,7 @@ If one or more inputs does not pass validation, the mint must return a response 
   "funded": [
     {
       "dlc_root": <hash>,
-      "signature": <signature>
+      "funding_proof": <signature>
     },
     ...
   ],
@@ -299,14 +299,14 @@ If every DLC in the `registrations` array is processed successfully, the mint mu
   "funded": [
     {
       "dlc_root": <hash>
-      "signature": <signature>
+      "funding_proof": <signature>
     },
     ...
   ]
 }
 ```
 
-Each object in the `funded` array represents a successfully registered DLC. The `signature` field in each object is a [BIP-340] signature on `dlc_root` (hex-decoded), issued by the mint's `funding_proof_pubkey` (specified in [the NUT-06 settings](#mint-settings). This signature is a non-interactive proof that the mint has registered the DLC. The funder may publish this signature to the other DLC participants as evidence that they accomplished their duty as the funder.
+Each object in the `funded` array represents a successfully registered DLC. The `funding_proof` field in each object is a [BIP-340] signature on `dlc_root` (hex-decoded), issued by the mint's `funding_proof_pubkey` (specified in [the NUT-06 settings](#mint-settings). This signature is a non-interactive proof that the mint has registered the DLC. The funder may publish this signature to the other DLC participants as evidence that they accomplished their duty as the funder.
 
 ## Fees
 
@@ -369,7 +369,7 @@ To mark the DLC as settled on the mint, the wallet issues a `POST /v1/dlc/settle
       "dlc_root": "2db63c93043ab646836b38292ed4fcf209ba68307427a4b2a8621e8b1daeb8ed",
       "outcome": {
         "k": "8e935aec5668312be8f960a5ecc3c5dd290e39985970bfd093047df7f05cc9ec",
-        "P": "{\"03361cd8bd1329fea797a6add1cf1990ffcf2270ceb9fc81eeee0e8e9c1bd0cdf5\":\"10000\"}"
+        "P": "{\"361cd8bd1329fea797a6add1cf1990ffcf2270ceb9fc81eeee0e8e9c1bd0cdf5\":\"10000\"}"
       },
       "merkle_proof": [
         "5467757c899a46b847825e632cafc5e960a948045d12fc1143d17966c87ae351",
@@ -413,7 +413,7 @@ If the mint's clock reaches the DLC timeout time `t`, any participant can settle
       "dlc_root": "2db63c93043ab646836b38292ed4fcf209ba68307427a4b2a8621e8b1daeb8ed",
       "outcome": {
         "timeout": 1716777419,
-        "P": "{\"03361cd8bd1329fea797a6add1cf1990ffcf2270ceb9fc81eeee0e8e9c1bd0cdf5\":\"10000\"}"
+        "P": "{\"361cd8bd1329fea797a6add1cf1990ffcf2270ceb9fc81eeee0e8e9c1bd0cdf5\":\"10000\"}"
       },
       "merkle_proof": [
         "5467757c899a46b847825e632cafc5e960a948045d12fc1143d17966c87ae351",
@@ -490,7 +490,7 @@ To claim a DLC payout, a participant issues a `POST /v1/dlc/payout` request to t
   "payouts": [
     {
       "dlc_root": "2db63c93043ab646836b38292ed4fcf209ba68307427a4b2a8621e8b1daeb8ed",
-      "pubkey": "03361cd8bd1329fea797a6add1cf1990ffcf2270ceb9fc81eeee0e8e9c1bd0cdf5",
+      "pubkey": "361cd8bd1329fea797a6add1cf1990ffcf2270ceb9fc81eeee0e8e9c1bd0cdf5",
       "outputs": <Array[BlindedMessage]>,
       "witness": {
         "secret": <privkey|null>,
@@ -509,9 +509,9 @@ To claim a DLC payout, a participant issues a `POST /v1/dlc/payout` request to t
 For each `Payout` object, the mint performs the following checks:
 
 1. Authenticate `Payout.witness`:
-  - If present, validate `Payout.witness.secret` is the discrete log (private key) of `Payout.pubkey`.
+  - If present, validate `Payout.witness.secret` is the discrete log (private key) of `Payout.pubkey` (either parity).
   - If present, validate `Payout.witness.signature` as a [BIP-340] signature made by `Payout.pubkey` on `payout.dlc_root`
-  - If any of the above fields are invalid, or if none are present, return an error.
+  - If either of the above fields are invalid, or if neither are present, return an error.
 1. If `Payout.dlc_root` does not correspond to any known funded DLC, return an error.
 1. If `Payout.dlc_root` corresponds to a known DLC, but that DLC has not been settled, return an error.
 1. If `Payout.pubkey` is not a key in the `debts` map, return an error.
@@ -587,7 +587,7 @@ If the DLC is found and is settled, the mint responds with:
 {
   "settled": true,
   "debts": {
-    "03361cd8bd1329fea797a6add1cf1990ffcf2270ceb9fc81eeee0e8e9c1bd0cdf5": <int>
+    "361cd8bd1329fea797a6add1cf1990ffcf2270ceb9fc81eeee0e8e9c1bd0cdf5": <int>
   }
 }
 ```
