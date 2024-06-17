@@ -136,12 +136,38 @@ Mints signal websocket support via [NUT-06][06] using the following setting:
 ```json
 "nuts": {
     "17": {
-      "supported": <str[]>,
+      "supported": [
+        {
+          "method": <str>,
+          "unit": <str>,
+          "commands": <str[]>
+        },
+        ...
+      ]
     }
 }
 ```
 
-Here, `supported` is an array of the commands that the mint supports. A mint that supports all commands would return `["bolt11_mint_quote", "bolt11_melt_quote", "proof_state"]`
+Here, `commands` is an array of the commands that the mint supports. A mint that supports all commands would return `["bolt11_mint_quote", "bolt11_melt_quote", "proof_state"]`. Supported commands are given for each method-unit pair.
+
+Example:
+```json
+"nuts": {
+    "17": {
+      "supported": [
+        {
+          "method": "bolt11",
+          "unit": "sat",
+          "commands": [
+            "bolt11_mint_quote", 
+            "bolt11_melt_quote", 
+            "proof_state"
+            ]
+        },
+      ]
+    }
+}
+```
 
 
 [00]: 00.md
