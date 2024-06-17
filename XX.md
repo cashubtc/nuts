@@ -19,7 +19,13 @@ A summary of the subscription flow is the following:
 
 ## Specifications
 
-`NUT-XX` uses the JSON-RPC format for all messages. There are three types of messages defined in this NUT.
+The websocket is reachable via the mint's URL path `/v1/ws`:
+
+```
+https://mint.com/v1/ws
+```
+
+`NUT-17` uses the JSON-RPC format for all messages. There are three types of messages defined in this NUT.
 
 ### Requests
 
