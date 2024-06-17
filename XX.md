@@ -1,4 +1,4 @@
-# NUT-XX: WebSockets
+# NUT-17: WebSockets
 
 `optional`, `depends on: NUT-07`
 
@@ -129,7 +129,7 @@ Mints signal websocket support via [NUT-06][06] using the following setting:
 
 ```json
 "nuts": {
-    "xx": {
+    "17": {
       "supported": <str[]>,
     }
 }
