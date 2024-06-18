@@ -39,7 +39,7 @@ https://mint.com/v1/ws
   "id": <int>
 }
 ```
-`WsRequestMethod` is an enum of the supported commands which are
+`WsRequestMethod` is an enum of the supported commands `"subscribe"` and `"unsubscribe"`:
 
 ```ts
 enum WsRequestMethod {
@@ -47,9 +47,12 @@ enum WsRequestMethod {
   unsub = "unsubscribe",
 }
 ```
+
 `WsRequestParams` is a serialized JSON with the parameters for the corresponding method.
 
-The parameters for the `subscribe` command are
+#### Subscribe
+
+The parameters for the `"subscribe"` command are
 
 ```json
 {
@@ -80,9 +83,19 @@ The `filters` are an array of mint quote IDs ([NUT-04][04]), or melt quote IDs (
 
 Please note that `id` and `subId` are unrelated. The `subId` is the ID for each subscription, whereas `id` is part of the JSON-RPC spec and is an integer counter that must be incremented for every request sent over the websocket.
 
+#### Unsubscribe
+
+The wallet should always unsubscribe any subscriptions that is isn't interested in anymore. The parameters for the `"unsubscribe"` command is only the subscription ID:
+
+```json
+{
+  "subId": <string>;
+}
+```
+
 ### Responses
 
-A `WsResponse` is returned by the mint to indicates that a subscription request was ok:
+A `WsResponse` is returned by the mint to both the `"subscribe"` and `"unsubscribe"` commands and indicates whether the request was successful:
 
 ```json
 {
