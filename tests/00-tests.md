@@ -50,8 +50,7 @@ C_: 0398bc70ce8184d27ba89834d19f5199c84443c31131e48d3c1214db24247d005d
 
 ## Serialization of TokenV3
 The following are JSON-formatted v3 tokens and their serialized counterparts.
-```shell
-# "Pretty print" JSON format
+```json
 {
   "token": [
     {
@@ -75,8 +74,10 @@ The following are JSON-formatted v3 tokens and their serialized counterparts.
   "unit": "sat",
   "memo": "Thank you."
 }
+```
 
-# Serialized token
+Serialized: 
+```
 cashuAeyJ0b2tlbiI6W3sibWludCI6Imh0dHBzOi8vODMzMy5zcGFjZTozMzM4IiwicHJvb2ZzIjpbeyJhbW91bnQiOjIsImlkIjoiMDA5YTFmMjkzMjUzZTQxZSIsInNlY3JldCI6IjQwNzkxNWJjMjEyYmU2MWE3N2UzZTZkMmFlYjRjNzI3OTgwYmRhNTFjZDA2YTZhZmMyOWUyODYxNzY4YTc4MzciLCJDIjoiMDJiYzkwOTc5OTdkODFhZmIyY2M3MzQ2YjVlNDM0NWE5MzQ2YmQyYTUwNmViNzk1ODU5OGE3MmYwY2Y4NTE2M2VhIn0seyJhbW91bnQiOjgsImlkIjoiMDA5YTFmMjkzMjUzZTQxZSIsInNlY3JldCI6ImZlMTUxMDkzMTRlNjFkNzc1NmIwZjhlZTBmMjNhNjI0YWNhYTNmNGUwNDJmNjE0MzNjNzI4YzcwNTdiOTMxYmUiLCJDIjoiMDI5ZThlNTA1MGI4OTBhN2Q2YzA5NjhkYjE2YmMxZDVkNWZhMDQwZWExZGUyODRmNmVjNjlkNjEyOTlmNjcxMDU5In1dfV0sInVuaXQiOiJzYXQiLCJtZW1vIjoiVGhhbmsgeW91LiJ9
 ```
 
@@ -98,10 +99,39 @@ cashuAeyJ0b2tlbiI6W3sibWludCI6Imh0dHBzOi8vODMzMy5zcGFjZTozMzM4IiwicHJvb2ZzIjpbey
 
 
 ## Serialization of TokenV4
-The following are JSON-formatted v4 tokens and their serialized counterparts. The token includes proofs from two different keysets. The `h''` values are `bytes` but displayed as hex strings here.
+The following are JSON-formatted v4 tokens and their serialized counterparts. The `h''` values are `bytes` but displayed as hex strings here.
 
-```shell
-# "Pretty print" JSON format
+### Single keyset
+Token from a single keyset and including a memo.
+```json
+{
+    "t": [
+        {
+            "i": h'00ad268c4d1f5826',
+            "p": [
+                {
+                    "a": 1,
+                    "s": "9a6dbb847bd232ba76db0df197216b29d3b8cc14553cd27827fc1cc942fedb4e",
+                    "c": h'038618543ffb6b8695df4ad4babcde92a34a96bdcd97dcee0d7ccf98d472126792',
+                },
+            ],
+        },
+    ],
+    "d": "Thank you",
+    "m": "http://localhost:3338",
+    "u": "sat",
+}
+```
+
+Encoded:
+
+```
+cashuBpGF0gaJhaUgArSaMTR9YJmFwgaNhYQFhc3hAOWE2ZGJiODQ3YmQyMzJiYTc2ZGIwZGYxOTcyMTZiMjlkM2I4Y2MxNDU1M2NkMjc4MjdmYzFjYzk0MmZlZGI0ZWFjWCEDhhhUP_trhpXfStS6vN6So0qWvc2X3O4NfM-Y1HISZ5JhZGlUaGFuayB5b3VhbXVodHRwOi8vbG9jYWxob3N0OjMzMzhhdWNzYXQ=
+```
+
+### Multiple keysets
+The token below includes proofs from two different keysets.
+```json
 {
     "t": [
         {
