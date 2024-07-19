@@ -225,6 +225,7 @@ To register and fund a DLC on the mint, the funder issues a `POST /v1/dlc/fund` 
     {
       "dlc_root": "2db63c93043ab646836b38292ed4fcf209ba68307427a4b2a8621e8b1daeb8ed",
       "funding_amount": <int>,
+      "unit": "sat",
       "inputs": [
         {
           "amount": 4096,
@@ -257,7 +258,9 @@ assert sum(inputs) == input_amount
 
 See [the fees section](#fees) for more details.
 
-Assuming the input proofs are all valid and sum to the correct amount, the mint stores the `(dlc_root, funding_amount)`, and marks the `inputs` proofs' secrets as spent. The DLC is then deemed to be funded.
+Proofs must be issued by a valid keyset denominated in the same `unit` specified in the request.
+
+Assuming the input proofs are all valid and sum to the correct amount, the mint stores the `(dlc_root, funding_amount, unit)`, and marks the `inputs` proofs' secrets as spent. The DLC is then deemed to be funded.
 
 If the optional `atomic` field in the request body is set to `true`, the mint must process _all_ DLCs in the `registrations` array, or else process none of them.
 
