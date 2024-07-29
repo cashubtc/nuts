@@ -131,13 +131,7 @@ To spend this ecash, the wallet must know a `leaf_secret` and a `merkle_proof` o
   "secret": "[\"SCT\",{\"nonce\":\"d426a2750847d5775f06560d973b484a5b6315e17efffecb1d8d518876c01615\",\"data\":\"18065b939dbbb648749bd5532c740078bb757c3b9f81e0309350a1277fa9a39c\"}]",
   "C": "02698c4e2b5f9534cd0687d87513c759790cf829aa5739184a3e3735471fbda904",
   "id": "009a1f293253e41e",
-  "witness": {
-    "leaf_secret": "9becd3a8ce24b53beaf8ffb20a497b683b55f87ef87e3814be43a5768bcfe69f",
-    "merkle_proof": [
-      "8da10ed117cad5e89c6131198ffe271166d68dff9ce961ff117bd84297133b77",
-      "2397636f1aff968e9f8177b8deaaf9514415126e45aa7755841f966f4eb2279f"
-    ]
-  }
+  "witness": "{\"leaf_secret\":\"9becd3a8ce24b53beaf8ffb20a497b683b55f87ef87e3814be43a5768bcfe69f\",\"merkle_proof\":[\"8da10ed117cad5e89c6131198ffe271166d68dff9ce961ff117bd84297133b77\",\"2397636f1aff968e9f8177b8deaaf9514415126e45aa7755841f966f4eb2279f\"]}"
 }
 ```
 
@@ -149,14 +143,7 @@ Here is a different input, which references the same SCT root hash but uses a di
   "secret": "[\"SCT\",{\"nonce\":\"d426a2750847d5775f06560d973b484a5b6315e17efffecb1d8d518876c01615\",\"data\":\"18065b939dbbb648749bd5532c740078bb757c3b9f81e0309350a1277fa9a39c\"}]",
   "C": "02698c4e2b5f9534cd0687d87513c759790cf829aa5739184a3e3735471fbda904",
   "id": "009a1f293253e41e",
-  "witness": {
-    "leaf_secret": "[\"P2PK\",{\"tags\":[[\"sigflag\",\"SIG_INPUTS\"]],\"nonce\":\"859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f\",\"data\":\"0249098aa8b9d2fbec49ff8598feb17b592b986e62319a4fa488a3dc36387157a7\"}]",
-    "merkle_proof": [
-      "6bad0d7d596cb9048754ee75daf13ee7e204c6e408b83ee67514369e3f8f3f96",
-      "4ac38d0dffb307a4d704c5c7cc28324fd3c151cfaaeddeaa695b890f1a24050b"
-    ],
-    "witness": "{\"signatures\":[\"9ef66b39609fe4b5653ee8cc1d4f7133ca16c6cf1862eca7df626c63d90f19f257241ebae3939baa837e1be25e2996b7062e16ba58877aa8318db20729184ff4\"]}"
-  }
+  "witness": "{\"leaf_secret\":\"[\\\"P2PK\\\",{\\\"tags\\\":[[\\\"sigflag\\\",\\\"SIG_INPUTS\\\"]],\\\"nonce\\\":\\\"859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f\\\",\\\"data\\\":\\\"0249098aa8b9d2fbec49ff8598feb17b592b986e62319a4fa488a3dc36387157a7\\\"}]\",\"merkle_proof\":[\"6bad0d7d596cb9048754ee75daf13ee7e204c6e408b83ee67514369e3f8f3f96\",\"4ac38d0dffb307a4d704c5c7cc28324fd3c151cfaaeddeaa695b890f1a24050b\"],\"witness\":\"{\\\"signatures\\\":[\\\"9ef66b39609fe4b5653ee8cc1d4f7133ca16c6cf1862eca7df626c63d90f19f257241ebae3939baa837e1be25e2996b7062e16ba58877aa8318db20729184ff4\\\"]}\"}"
 }
 ```
 
