@@ -197,10 +197,7 @@ Example:
           "id": "009a1f293253e41e",
           "secret": "[\"SCT\",{\"nonce\":\"d426a2750847d5775f06560d973b484a5b6315e17efffecb1d8d518876c01615\",\"data\":\"d7578cbc3d5d61a61cb46552f66d7d5fe92ea4606c778e14d662bbe3d887c0d1\"}]",
           "C": "02bc9097997d81afb2cc7346b5e4345a9346bd2a506eb7958598a72f0cf85163ea",
-          "witness": {
-            "leaf_secret": "[\"DLC\",{\"nonce\":\"da62796403af76c80cd6ce9153ed3746\",\"data\":\"2db63c93043ab646836b38292ed4fcf209ba68307427a4b2a8621e8b1daeb8ed\",\"tags\":[[\"threshold\",\"10000\"]]}]",
-            "merkle_proof": ["009ea9fae527f7914096da1f1ce2480d2e4cfea62480afb88da9219f1c09767f"]
-          }
+          "witness": "{\"leaf_secret\":\"[\\\"DLC\\\",{\\\"nonce\\\":\\\"da62796403af76c80cd6ce9153ed3746\\\",\\\"data\\\":\\\"2db63c93043ab646836b38292ed4fcf209ba68307427a4b2a8621e8b1daeb8ed\\\",\\\"tags\\\":[[\\\"threshold\\\",\\\"10000\\\"]]}]\",\"merkle_proof\":[\"009ea9fae527f7914096da1f1ce2480d2e4cfea62480afb88da9219f1c09767f\"]}"
         },
         ...
       ]
@@ -232,12 +229,7 @@ To register and fund a DLC on the mint, the funder issues a `POST /v1/dlc/fund` 
           "id": "009a1f293253e41e",
           "secret": "[\"SCT\",{\"nonce\":\"d426a2750847d5775f06560d973b484a5b6315e17efffecb1d8d518876c01615\",\"data\":\"d7578cbc3d5d61a61cb46552f66d7d5fe92ea4606c778e14d662bbe3d887c0d1\"}]",
           "C": "02bc9097997d81afb2cc7346b5e4345a9346bd2a506eb7958598a72f0cf85163ea",
-          "witness": {
-            "leaf_secret": "[\"DLC\",{\"nonce\":\"da62796403af76c80cd6ce9153ed3746\",\"data\":\"2db63c93043ab646836b38292ed4fcf209ba68307427a4b2a8621e8b1daeb8ed\",\"tags\":[[\"threshold\",\"10000\"]]}]",
-            "merkle_proof": [
-              "009ea9fae527f7914096da1f1ce2480d2e4cfea62480afb88da9219f1c09767f"
-            ]
-          }
+          "witness": "{\"leaf_secret\":\"[\\\"DLC\\\",{\\\"nonce\\\":\\\"da62796403af76c80cd6ce9153ed3746\\\",\\\"data\\\":\\\"2db63c93043ab646836b38292ed4fcf209ba68307427a4b2a8621e8b1daeb8ed\\\",\\\"tags\\\":[[\\\"threshold\\\",\\\"10000\\\"]]}]\",\"merkle_proof\":[\"009ea9fae527f7914096da1f1ce2480d2e4cfea62480afb88da9219f1c09767f\"]}"
         },
         ...
       ]
