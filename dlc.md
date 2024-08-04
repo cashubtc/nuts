@@ -108,6 +108,8 @@ The particulars of a DLC are represented by a Merkle tree. The leaf hashes of th
 Ti = SHA256(Ki_ || Pi)
 ```
 
+(where `||` denotes bytewise concatenation of the binary serialized points).
+
 The timeout condition (if applicable) is also added as a leaf.
 
 ```python
