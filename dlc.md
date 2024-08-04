@@ -217,7 +217,6 @@ To register and fund a DLC on the mint, the funder issues a `POST /v1/dlc/fund` 
 
 ```json
 {
-  "atomic": <bool|null>,
   "registrations": [
     {
       "dlc_root": "2db63c93043ab646836b38292ed4fcf209ba68307427a4b2a8621e8b1daeb8ed",
@@ -253,8 +252,6 @@ See [the fees section](#fees) for more details.
 Proofs must be issued by a valid keyset denominated in the same `unit` specified in the request.
 
 Assuming the input proofs are all valid and sum to the correct amount, the mint stores the `(dlc_root, funding_amount, unit)`, and marks the `inputs` proofs' secrets as spent. The DLC is then deemed to be funded.
-
-If the optional `atomic` field in the request body is set to `true`, the mint must process _all_ DLCs in the `registrations` array, or else process none of them.
 
 If one or more inputs does not pass validation, the mint must return a response with a `400` status code, and a body of the following format:
 
@@ -402,7 +399,6 @@ If the mint's clock reaches the DLC timeout time `t`, any participant can settle
 
 ```json
 {
-  "atomic": <bool|null>,
   "settlements": [
     {
       "dlc_root": "2db63c93043ab646836b38292ed4fcf209ba68307427a4b2a8621e8b1daeb8ed",
@@ -473,15 +469,12 @@ If some `settlements` failed, the mint must return a `400` response with the fol
 }
 ```
 
-If the wallet passes the optional `atomic` request parameter as `true`, then the mint must process ALL the requested `settlements` successfully, or else process none of them.
-
 ### Claiming Payouts
 
 To claim a DLC payout, a participant issues a `POST /v1/dlc/payout` request to the mint with the following body format.
 
 ```json
 {
-  "atomic": <bool|null>,
   "payouts": [
     {
       "dlc_root": "2db63c93043ab646836b38292ed4fcf209ba68307427a4b2a8621e8b1daeb8ed",
@@ -552,8 +545,6 @@ If some `Payout` objects fail the validation checks, the mint returns a `400` re
 ```
 
 Wallets MUST collect and save the blinded signatures from each entry in the `paid` array, even if the mint responds with a `400` error.
-
-If the wallet passes the `atomic` parameter as `true` in their request body, then the mint must ensure that either _all_ payouts are processed, or else _none_ are.
 
 ### Checking the DLC Status
 
