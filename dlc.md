@@ -592,6 +592,50 @@ The mint may also purge the DLC from its storage if the DLC hasn't been settled 
 
 This NUT is inspired by [this original proposal](https://conduition.io/cryptography/ecash-dlc/) for DLC settlement with generic Chaumian Ecash.
 
+## Appendix A - DLC Replay Attacks
+
+Bugs and vulnerabilities will arise if the same `dlc_root` hash can be reused. This section will discuss how client implementations should prevent this.
+
+### How It Would Happen
+
+Recall that the `dlc_root` is computed by a deterministic function of:
+
+- the blinded locking points `[K1_, K2_, ... Kn_]`
+- the payout structures `[P1, P2, ... Pn]`
+- the timeout timestamp `t`
+- the timeout payout structure `Pt`
+
+```py
+dlc_root = compute_dlc_root_hash(
+   [K1_, K2_, ... Kn_],
+   [P1, P2, ... Pn],
+   timeout=(t, Pt),
+)
+```
+
+If these parameters are reused across multiple DLC setup procedures, they will result in the same `dlc_root`. This has bad consequences for naive client implementations.
+
+<details>
+  <summary><h3>An Example</h3></summary>
+
+For instance, consider a pair of clients who have created DLC `A`. The pair want to double-down on DLC `A`, adding more money to the "pot", as it were. Since DLCs registered on Cashu are immutable until settlement, the clients must instead create and fund a _new_ DLC `B`. When computing the new `dlc_root` to register, the clients might naively reuse the parameters of DLC `A`, computing the same `dlc_root` for DLCs `A` and `B`. At this point, whichever client is designated as the Funder can abuse the other for a free option.
+
+Name the naive peer Alice and the malicious peer Eve. Eve is designated as the Funder. Once Alice sends Eve a DLC Funding Token, Eve can _reuse_ the `funding_proof` from DLC `A` to falsely convince Alice that DLC `B` was funded, as long as the `funding_amount` for DLCs `A` and `B` are the same (indeed this means `A = B` exactly). Alice now believes the DLC is funded and that her token proofs were spent, but in actuality Eve has retained Alice's `kind: DLC` proofs intended to fund DLC `B`.
+
+Eve must then wait until the Oracle releases their attestation (or times out), at which point DLC `A` will be settled. After DLC `A` is fully settled and paid out, the mint purges `A` from its memory and the `dlc_root` becomes 'available' in the mint's registry again. Now Eve has a free option: If DLC `A` resolved in Alice's favor, Eve will do nothing, in which case she loses no money. But if DLC `A` resolved in Eve's favor, Eve can re-register the `dlc_root` by spending Alice's proofs for `B`, and then immediately settle it (in Eve's favor) using the already-published attestation.
+
+If Alice realizes she has been defrauded before settlement time, she can reclaim her proofs through the backup Spending Condition Tree branch. But this assumes Alice is not a naive implementation, in which case this situation shouldn't have occurred in the first place.
+
+</details>
+
+
+### Recommendations for Clients
+
+The easiest way for clients to prevent replay attacks is to generate or derive at least one unique public key to use for the payout structures of every new DLC they participate in. This ensures every DLC with at least one honest and non-naive participant will derive a unique `dlc_root`.
+
+Alternatively clients can reject DLCs which reuse parameters from a previous DLC, but this necessitates the client maintains a perfect memory of every DLC it has ever been involved in.
+
+
 [NUT-00]: 00.md
 [NUT-06]: 06.md
 [NUT-10]: 10.md
