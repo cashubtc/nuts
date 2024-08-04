@@ -310,7 +310,9 @@ Each object in the `funded` array represents a successfully registered DLC.
 
 The `funding_proof` field in each `Funded` object provides a [BIP-340] signature issued by the mint. This signature is a non-interactive proof that the mint has registered the DLC with a specific funding amount. The funder may publish this proof object to the other DLC participants as evidence that they accomplished their duty as the funder.
 
-The key used to create the signature is the _lowest denomination_ key from the keyset indicated by `funding_proof.keyset`. This keyset MUST be active.
+The key used to create the signature is the _lowest denomination_ key from the keyset indicated by `funding_proof.keyset`.[^6] This keyset MUST be active.
+
+[^6]: It is safe to reuse a keyset key for [BIP-340] signing, as a Schnorr signature reveals only `seckey * G * int(bip340_hash(...))` to the verifier. Contrastingly, an ecash proof is computed as `seckey * hash_to_curve(x)`. Abusing a BIP-340 signature to forge a valid proof would thus require finding `(x, y)` such that `bip340_hash(x) * G == hash_to_curve(y)`, which is even less feasible than finding `(d, y)` such that `d * G == hash_to_curve(y)`.
 
 The message to be [BIP-340]-signed by the mint is the following byte-string:
 
@@ -550,9 +552,9 @@ If all `Payout` objects are validated successfully, the mint returns a `200` res
 }
 ```
 
-For each `Payout` object whose outputs the mint signs, the mint must simultaneously delete `Payout.pubkey` from the `debts` map to prevent the wallet from claiming twice. [^6]
+For each `Payout` object whose outputs the mint signs, the mint must simultaneously delete `Payout.pubkey` from the `debts` map to prevent the wallet from claiming twice. [^7]
 
-[^6]: Network errors may cause the wallet not to safely receive the blinded signatures sent by the mint. To counteract this occurrence, mints are encouraged to set up idempotent request handlers which cache responses, so the wallet can replay its `POST /v1/dlc/payout` request if needed.
+[^7]: Network errors may cause the wallet not to safely receive the blinded signatures sent by the mint. To counteract this occurrence, mints are encouraged to set up idempotent request handlers which cache responses, so the wallet can replay its `POST /v1/dlc/payout` request if needed.
 
 If some `Payout` objects fail the validation checks, the mint returns a `400` response with the following format:
 
