@@ -144,7 +144,6 @@ A mint which supports this NUT must expose some global parameters to wallets, vi
   "nuts": {
     "NUT-DLC": {
       "supported": true,
-      "funding_proof_pubkey": <xonly_pubkey>,
       "max_payouts": <int>,
       "ttl": <int>
       "fees": {
@@ -158,7 +157,6 @@ A mint which supports this NUT must expose some global parameters to wallets, vi
 }
 ```
 
-- `funding_proof_pubkey` is a [BIP-340] X-Only public key with which participants may verify offline that the mint has indeed registered a DLC.
 - `max_payouts` is the maximum size of payout structure this mint will accept.
 - `ttl` is a duration in seconds, indicating how long the mint promises to store DLCs after registration. The mint may consider a DLC abandoned if the DLC lives longer than the `ttl` declared _at the time of registration._ If `ttl <= 0`, the mint claims it will remember registered DLCs forever.
 - `fees` is a map describing fee structures for the mint to process DLCs on a per-currency basis. `fees` may be set to the empty object (`{}`) to explicitly disable fees for all currency units.
@@ -262,7 +260,10 @@ If one or more inputs does not pass validation, the mint must return a response 
   "funded": [
     {
       "dlc_root": <hash>,
-      "funding_proof": <signature>
+      "funding_proof": {
+        "keyset": <keyset_id_str>,
+        "signature": <bip340_sig_hex>
+      }
     },
     ...
   ],
@@ -293,14 +294,42 @@ If every DLC in the `registrations` array is processed successfully, the mint mu
   "funded": [
     {
       "dlc_root": <hash>
-      "funding_proof": <signature>
+      "funding_proof": {
+        "keyset": <keyset_id_str>,
+        "signature": <bip340_sig_hex>
+      }
     },
     ...
   ]
 }
 ```
 
-Each object in the `funded` array represents a successfully registered DLC. The `funding_proof` field in each object is a [BIP-340] signature on `dlc_root` (hex-decoded), issued by the mint's `funding_proof_pubkey` (specified in [the NUT-06 settings](#mint-settings). This signature is a non-interactive proof that the mint has registered the DLC. The funder may publish this signature to the other DLC participants as evidence that they accomplished their duty as the funder.
+Each object in the `funded` array represents a successfully registered DLC.
+
+### Funding Proofs
+
+The `funding_proof` field in each `Funded` object provides a [BIP-340] signature issued by the mint. This signature is a non-interactive proof that the mint has registered the DLC with a specific funding amount. The funder may publish this proof object to the other DLC participants as evidence that they accomplished their duty as the funder.
+
+The key used to create the signature is the _lowest denomination_ key from the keyset indicated by `funding_proof.keyset`. This keyset MUST be active.
+
+The message to be [BIP-340]-signed by the mint is the following byte-string:
+
+```py
+dlc_root || funding_amount.to_bytes(8, 'big')
+```
+
+### Verifying `funding_proof`
+
+Clients MUST verify all of the following assertions:
+
+- The keyset is active (`mint.keysets[funding_proof.keyset].active` is true).
+- The keyset's unit matches the `unit` the client expects (`mint.keysets[funding_proof.keyset].unit == unit`).
+- The [BIP-340] signature on the `dlc_root` and `funding_amount` is valid.
+- The `funding_amount` matches the client's expectations (use-case dependent).
+
+If all the above checks pass, then the client can be confident that the given `dlc_root` was funded on the mint.
+
+Note however that the `funding_proof.signature` doesn't commit to any specific timestamp, and so can be reused ad-nauseum. For this reason, it is important that client implementations [ensure their `dlc_root` must be fresh and random](#appendix-a---dlc-replay-attacks).
 
 ## Fees
 
