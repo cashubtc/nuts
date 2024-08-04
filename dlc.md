@@ -111,10 +111,10 @@ Ti = SHA256(Ki_ || Pi)
 The timeout condition (if applicable) is also added as a leaf.
 
 ```python
-Tt = SHA256(hash_to_curve(t.to_bytes(4, 'big')) || Pt)
+Tt = SHA256(hash_to_curve(t.to_bytes(8, 'big')) || Pt)
 ```
 
-The `hash_to_curve` function is defined in [NUT-00]. [^4] `t` is encoded as a 32-bit big-endian integer before hashing.
+The `hash_to_curve` function is defined in [NUT-00]. [^4] `t` is encoded as a 64-bit big-endian integer before hashing.
 
 [^4]: When constructing `Tt`, we hash `t` to a curve point as a convenience, so that all leaf nodes can be represented as `(Point, str)` data structures.
 
@@ -419,7 +419,7 @@ If the mint's clock reaches the DLC timeout time `t`, any participant can settle
 `Settlement.outcome.timeout` is the timeout timestamp `t`. The steps for the mint to verify the settlement is the same as an outcome settlement (above), with one modification: `Settlement.merkle_proof` is verified differently.
 
 ```python
-T = hash_to_curve(Settlement.outcome.timeout.to_bytes(4, 'big'))
+T = hash_to_curve(Settlement.outcome.timeout.to_bytes(8, 'big'))
 leaf_hash = SHA256(T || Settlement.outcome.P)
 assert merkle_verify(dlc_root, Settlement.merkle_proof, leaf_hash)
 ```
