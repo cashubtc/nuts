@@ -39,6 +39,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
  - [cdk][cdk]
  - [cashu-ts][ts]
  - [eNuts][enuts]
+ - [Minibits][minibits]
  - [Moksha][moksha]
  - [Nutstash][ns]
  - [Cashu.me][cashume]
@@ -54,12 +55,13 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
  - [Nutmix][nutmix]
  
 
-[py]: https://github.com/cashubtc/cashu
+[py]: https://github.com/cashubtc/nutshell
 [lnbits]: https://github.com/lnbits/cashu
 [cashume]: https://cashu.me
 [ns]: https://nutstash.app/
 [ts]: https://github.com/cashubtc/cashu-ts
 [enuts]: https://github.com/cashubtc/eNuts
+[minibits]: https://github.com/minibits-cash/minibits_wallet
 [moksha]: https://github.com/ngutech21/moksha
 [cdk]: https://github.com/cashubtc/cdk
 [cashu-rs-mint]: https://github.com/thesimplekid/cashu-rs-mint
