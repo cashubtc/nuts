@@ -8,7 +8,7 @@ This document outlines a protocol for publishing Nostr notes that include blind 
 
 ### Rationale
 
-When a sender transfers e-cash to a recipient, there is no direct way to confirm whether the recipient has claimed the payment without creating a link between their identity and receiving wallet's.
+When a sender transfers e-cash to a recipient, there is no direct way to confirm whether the recipient has claimed the payment without revealing a link between their identity and receiving wallet's.
 More specifically, the sending wallet can use the `v1/checkstate` API call (see [NUT-07](07)) to query the Mint about the status of sent e-cash with message `Y = hash_to_curve(x)`.
 However, this approach has a significant privacy drawback: when the recipient attempts to claim the e-cash, they will reveal the same `Y` to the Mint, allowing it to potentially associate that token with both the sender's and recipient's identity (i.e. IP addresses). This compromises the protocol's inteded privacy guarantees.
 Conversely, when the Mint publishes notes about freshly spent e-cash, the notes are simply broadcast to anyone who is listening, without creating a direct connection between the mint and any specific wallet.
