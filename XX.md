@@ -20,7 +20,9 @@ As a result, the mint never learns which wallet is querying the information.
 The proposed protocol also streamlines the creation of a *Proof of Liabilities Report* (see [PoL scheme](PoL)), as each note represents a signed contribution to the "Mint Proof" or "Burn Proof" attestations of the mint for a particular epoch.
 
 ## Mint Nostr Identity
-The Mint's Nostr public-private key pair is derived directly from the Mint's seed. Example (from Nushell):
+The public key for the Mint's nostr identity is the same as advertised in the `pubkey` field of the `GetInfoResponse` object returned by the Mint upon receiving a `v1/info` request, as specified in [NUT-06](06).
+
+The generation of the public-private key pair is outside the scope of the spec, but here is an example (from Nushell):
 
 ```python
 def derive_pubkey(seed: str):
@@ -29,7 +31,6 @@ def derive_pubkey(seed: str):
         raw=True,
     ).pubkey
 ```
-The public key is advertised in the `pubkey` field of the `GetInfoResponse` object returned by the Mint upon receiving a `v1/info` request, as specified in [NUT-06](06).
 
 Upon startup, the Mint must broadcast a `kind: 0` event, reserved for setting *"Metadata"*. The event must have its `content` field set to the JSON-serialization of the following object:
 ```json
@@ -54,7 +55,7 @@ The Mint regularly (about every 5 seconds) broadcasts events of `kind: 30078`, w
     {
         "epoch": int,
         "event": "MINT"|"BURN",
-        "contents": Array<str>
+        "contents": [(int, str), ...]
     },
     ...
 ]
@@ -63,8 +64,9 @@ Where:
 * `epoch`: is the current number of key rotations
 * `event`: specifies whether this entry is a mint or burn
 * `contents`: depends on `event`:
-  + if `event` is `BURN`: array of hex-encoded spent    secrets.
-  + if `event` is `MINT`: array of serialized, compressed and hex-encoded blind signature points
+  + if `event` is `BURN`: array of tuples, each mapping integer amounts to hex-encoded spent secrets.
+  + if `event` is `MINT`: array of tuples, each mapping
+  integer amounts to compressed, serialized and hex-encoded blind signature points.
 
 
 `content` is then finalized by taking its cbor-serialization and encoding the result to a Base64 string. Example:
@@ -82,4 +84,11 @@ final_content = base64.b64encode(binary_content).decode('utf-8')
 [PoL]: https://gist.github.com/callebtc/ed5228d1d8cbaade0104db5d1cf63939
 
 ## Use Cases
-TODO
+
+### Ecash Transactions
+When `Alice` prepares a token to be sent to `Carol`, she can mark these tokens in her database as *pending*. She can then, periodically or upon user input, query its connected relays for notes referencing the Mint's pubkey as the author and a timestamp for filtering out older notes. `Alice` can then scan the notes' content and look for the inclusion of the spent secrets (sent to `Carol`). If it finds any, the token has been redeemed by `Carol` already, i.e., is `SPENT`. If the proof is not spendable anymore (and, thus, has been redeemed by `Carol`), she can safely delete the proof from her database.
+
+### Facilitating Proof of Liabilities Reports
+![](https://user-images.githubusercontent.com/93376500/249383182-ed572841-cd78-40ea-b171-c1f768cd13dc.png)
+
+Each note represents signed contributions to "Mint proofs" (issued ecash) and "Burn proofs" (redeemed ecash) for the epoch specified in `epoch` field. The notes can then be compiled into a succint Proof of Liabilities report for each epoch by anyone requesting the publicly available information about the mint through nostr relays.
