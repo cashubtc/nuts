@@ -8,11 +8,14 @@ This document outlines a protocol for publishing Nostr notes that include blind 
 
 ### Rationale
 
-When a sender transfers e-cash to a recipient, there is no direct way to confirm whether the recipient has claimed the payment without revealing a link between their identity and receiving wallet's.
-More specifically, the sending wallet can use the `v1/checkstate` API call (see [NUT-07](07)) to query the Mint about the status of sent e-cash with message `Y = hash_to_curve(x)`.
+When a sender transfers e-cash to a recipient, they need to confirm that the recipient has claimed the payment in order to safely mark the proof in their wallet as `SPENT`.
+More specifically, the sending wallet can use the `v1/checkstate` API call (see [NUT-07](07)) to query the Mint about the status of sent e-cash.
+It does so by querying the status of `Y = hash_to_curve(x)`.
+
 However, this approach has a significant privacy drawback: when the recipient attempts to claim the e-cash, they will reveal the same `Y` to the Mint, allowing it to potentially associate that token with both the sender's and recipient's identity (i.e. IP addresses). This compromises the protocol's inteded privacy guarantees.
-Conversely, when the Mint publishes notes about freshly spent e-cash, the notes are simply broadcast to anyone who is listening, without creating a direct connection between the mint and any specific wallet.
-Then, when a wallet wants to check if a particular e-cash was claimed, it can query the Nostr notes published by the mint, searching for the inclusion of specific e-cash it sent. This query is also anonymous, as the wallet is simply retrieving publicly available information.
+
+Conversely, when the Mint publishes notes about freshly spent e-cash, the notes are simply broadcast to anyone who is listening.
+Then, when a wallet wants to check if its e-cash was claimed, it can query the Nostr notes published by the mint and look for the inclusion of specific secrets (`x`) it sent.
 As a result, the mint never learns which wallet is querying the information.
 
 ### PoL Scheme
@@ -20,7 +23,11 @@ As a result, the mint never learns which wallet is querying the information.
 The proposed protocol also streamlines the creation of a *Proof of Liabilities Report* (see [PoL scheme](PoL)), as each note represents a signed contribution to the "Mint Proof" or "Burn Proof" attestations of the mint for a particular epoch.
 
 ## Mint Nostr Identity
-The public key for the Mint's nostr identity is the same as advertised in the `pubkey` field of the `GetInfoResponse` object returned by the Mint upon receiving a `v1/info` request, as specified in [NUT-06](06).
+
+The public key associated with the Mint's nostr identity is identical to the one provided in the `pubkey` field of the `GetInfoResponse` object, which is returned by the Mint when it receives a `v1/info` request, as outlined in the [NUT-06](06) specification.
+
+>[!NOTE]
+> It's essential to be aware that nostr public keys are x-only, whereas the "pubkey" field in the `GetInfoResponse` object contains a compressed public key. As a result, clients should ensure to strip the initial byte before using the public key for nostr queries.
 
 The generation of the public-private key pair is outside the scope of the spec, but here is an example (from Nushell):
 
