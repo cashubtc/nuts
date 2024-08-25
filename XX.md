@@ -55,7 +55,7 @@ Where:
 
 ## Posting Notes
 
-The Mint regularly (about every 5 seconds) broadcasts events of `kind: 30078`, which is reserved for *"Application Specific Data"*. The Mint must also specificy a `created_at` unix timestamp in seconds along with the `content` of the note, which is initially set as follows:
+The Mint regularly (about every 5 seconds) broadcasts events of `kind: 1`. The Mint specificies a `created_at` unix timestamp in seconds along with the `content` of the note, which is initially set as follows:
 
 ```json
 [
