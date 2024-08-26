@@ -26,7 +26,7 @@ The proposed protocol also streamlines the creation of a *Proof of Liabilities R
 
 The public key associated with the Mint's nostr identity is identical to the one provided in the `pubkey` field of the `GetInfoResponse` object, which is returned by the Mint when it receives a `v1/info` request, as outlined in the [NUT-06](06) specification.
 
->[!NOTE]
+> [!NOTE]
 > It's essential to be aware that nostr public keys are x-only, whereas the "pubkey" field in the `GetInfoResponse` object contains a compressed public key. As a result, clients should ensure to strip the initial byte before using the public key for nostr queries.
 
 The generation of the public-private key pair is outside the scope of the spec, but here is an example (from Nushell):
@@ -39,13 +39,14 @@ def derive_pubkey(seed: str):
     ).pubkey
 ```
 
-Upon startup, the Mint must broadcast a `kind: xxxx` repleceable event. The event must have its `content` field set to the JSON-serialization of the Mint's info provided by [NUT-06](06)'s `GetInfoResponse`.
+Upon startup, the Mint must broadcast a `kind: xxxx` repleceable event. This event must have its `content` field set to the JSON-serialized `GetInfoResponse` object described in [NUT-06](06).
 
 ## Posting Notes
 
 The Mint regularly (about every 5 seconds) broadcasts events of `kind: xxxx`. Each event must specify:
 * a `created_at` unix timestamp in seconds
 * `tags`, containing an `e` tag that references the event ID of the previous publication.
+  
 The `content` field is initially set as follows:
 
 ```json
