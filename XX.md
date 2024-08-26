@@ -96,6 +96,7 @@ final_content = base64.b64encode(binary_content).decode('utf-8')
 When `Alice` prepares a token to be sent to `Carol`, she can mark these tokens in her database as *pending*. She can then, periodically or upon user input, query its connected relays for notes referencing the Mint's pubkey as the author and a timestamp for filtering out older notes. `Alice` can then scan the notes' content and look for the inclusion of the spent secrets (sent to `Carol`). If it finds any, the token has been redeemed by `Carol` already, i.e., is `SPENT`. If the proof is not spendable anymore (and, thus, has been redeemed by `Carol`), she can safely delete the proof from her database.
 
 ### Facilitating Proof of Liabilities Reports
-![](https://user-images.githubusercontent.com/93376500/249383182-ed572841-cd78-40ea-b171-c1f768cd13dc.png)
+<img src="https://user-images.githubusercontent.com/93376500/249383182-ed572841-cd78-40ea-b171-c1f768cd13dc.png" alt="PoL" width="50%"/>
+<!-- ![](https://user-images.githubusercontent.com/93376500/249383182-ed572841-cd78-40ea-b171-c1f768cd13dc.png) -->
 
 Each note represents signed contributions to "Mint proofs" (issued ecash) and "Burn proofs" (redeemed ecash) for the epoch specified in `epoch` field. The notes can then be compiled into a succint Proof of Liabilities report for each epoch by anyone requesting the publicly available information about the mint through nostr relays.
