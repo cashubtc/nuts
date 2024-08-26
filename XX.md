@@ -39,23 +39,14 @@ def derive_pubkey(seed: str):
     ).pubkey
 ```
 
-Upon startup, the Mint must broadcast a `kind: 0` event, reserved for setting *"Metadata"*. The event must have its `content` field set to the JSON-serialization of the following object:
-```json
-{
-    "name": str,
-    "about": str,
-    "picture": str
-}
-``` 
-
-Where:
-* `name` can be the Mint's name, reachable URL or empty
-* `about` is the Mint's short description or empty
-* `picture` is the URL to an image for the Mint or empty.
+Upon startup, the Mint must broadcast a `kind: xxxx` repleceable event. The event must have its `content` field set to the JSON-serialization of the Mint's info provided by [NUT-06](06)'s `GetInfoResponse`.
 
 ## Posting Notes
 
-The Mint regularly (about every 5 seconds) broadcasts events of `kind: 1`. The Mint specificies a `created_at` unix timestamp in seconds along with the `content` of the note, which is initially set as follows:
+The Mint regularly (about every 5 seconds) broadcasts events of `kind: xxxx`. Each event must specify:
+* a `created_at` unix timestamp in seconds
+* `tags`, containing an `e` tag that references the event ID of the previous publication.
+The `content` field is initially set as follows:
 
 ```json
 [
