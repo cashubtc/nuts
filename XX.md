@@ -39,11 +39,11 @@ def derive_pubkey(seed: str):
     ).pubkey
 ```
 
-Upon startup, the Mint must broadcast a `kind: xxxx` repleceable event. This event must have its `content` field set to the JSON-serialized `GetInfoResponse` object described in [NUT-06](06).
+Upon startup, the Mint must broadcast a `kind: 13111` repleceable event. This event must have its `content` field set to the JSON-serialized `GetInfoResponse` object described in [NUT-06](06).
 
 ## Publishing `MINT` and `MELT` events.
 
-The Mint regularly (about every 5 seconds) broadcasts events of `kind: xxxx`. Each event must specify:
+The Mint regularly (about every 5 seconds) broadcasts events of `kind: 4919`. Each event must specify:
 * a `created_at` unix timestamp in seconds
 * `tags`, containing an `e` tag that references the event ID of the previous publication.
   
@@ -84,7 +84,7 @@ final_content = base64.b64encode(binary_content).decode('utf-8')
 
 ## Publishing the Outstanding Balance
 
-Upon performing a key rotation the Mint must publish a `kind: xxxx` event, signalling the
+Upon performing a key rotation the Mint must publish a `kind: 5943` event, signalling the
 end of the current epoch.
 The event must have a `tags` that includes a `e` tag referencing the event ID of the publication of the Outstanding Balance for the previous epoch.
 The event's `content` must include the outstanding balance, formatted as follows:
