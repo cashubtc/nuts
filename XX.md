@@ -41,9 +41,14 @@ def derive_pubkey(seed: str):
 
 Upon startup, the Mint must broadcast a `kind: 13111` repleceable event. This event must have its `content` field set to the JSON-serialized `GetInfoResponse` object described in [NUT-06](06).
 
-## Publishing `MINT` and `MELT` events.
+## Publishing `MINT` and `BURN` events.
 
-The Mint regularly (about every 5 seconds) broadcasts events of `kind: 4919`. Each event must specify:
+The Mint regularly (about every 5 seconds) broadcasts events of `kind: 4919`.
+
+> [!NOTE]
+> These events are **BATCHES** of `MINT` and `BURN` events that have happened on the mint.
+
+Each event must specify:
 * a `created_at` unix timestamp in seconds
 * `tags`, containing an `e` tag that references the event ID of the previous publication.
   
