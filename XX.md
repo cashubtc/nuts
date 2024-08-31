@@ -39,11 +39,11 @@ def derive_pubkey(seed: str):
     ).pubkey
 ```
 
-Upon startup, the Mint must broadcast a `kind: 13111` repleceable event. This event must have its `content` field set to the JSON-serialized `GetInfoResponse` object described in [NUT-06](06).
+Upon startup, the Mint must broadcast a `kind: 11467` repleceable event. This event must have its `content` field set to the JSON-serialized `GetInfoResponse` object described in [NUT-06](06).
 
 ## Publishing `MINT` and `BURN` events.
 
-The Mint regularly (about every 5 seconds) broadcasts events of `kind: 4919`.
+The Mint regularly (about every 5 seconds) broadcasts events of `kind: 4919`, if any `MINT` or `BURN` as occurred.
 
 > [!NOTE]
 > These events are **BATCHES** of `MINT` and `BURN` events that have happened on the mint.
@@ -59,6 +59,7 @@ The `content` field is initially set as follows:
     {
         "epoch": int,
         "event": "MINT"|"BURN",
+        "unit": "str",
         "contents": [(int, str), ...]
     },
     ...
@@ -82,20 +83,17 @@ binary_content = cbor2.dumps(self.pending_events)
 final_content = base64.b64encode(binary_content).decode('utf-8')
 ```
 
-[00]: 00.md
-[06]: 06.md
-[07]: 07.md
-[PoL]: https://gist.github.com/callebtc/ed5228d1d8cbaade0104db5d1cf63939
+## Fin-Epoch: Publishing the Outstanding Balance.
 
-## Publishing the Outstanding Balance
-
-Upon performing a key rotation the Mint must publish a `kind: 5943` event, signalling the
+Upon performing a key rotation the Mint must publish a `kind: 1337` event, signalling the
 end of the current epoch.
 The event must have a `tags` that includes a `e` tag referencing the event ID of the publication of the Outstanding Balance for the previous epoch.
-The event's `content` must include the outstanding balance, formatted as follows:
+The event's `content` field is made from the following payload:
+
 ```json
 {
-    "outstanding_balance": int
+    "outstanding_balance": int,
+    "unit": str
 }
 ```
 
@@ -109,3 +107,10 @@ When `Alice` prepares a token to be sent to `Carol`, she can mark these tokens i
 <!-- ![](https://user-images.githubusercontent.com/93376500/249383182-ed572841-cd78-40ea-b171-c1f768cd13dc.png) -->
 
 Each note represents signed contributions to "Mint proofs" (issued ecash) and "Burn proofs" (redeemed ecash) for the epoch specified in `epoch` field. The notes can then be compiled into a succint Proof of Liabilities report for each epoch by anyone requesting the publicly available information about the mint through nostr relays.
+
+
+
+[00]: 00.md
+[06]: 06.md
+[07]: 07.md
+[PoL]: https://gist.github.com/callebtc/ed5228d1d8cbaade0104db5d1cf63939
