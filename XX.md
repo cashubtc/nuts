@@ -4,7 +4,7 @@
 
 ---
 
-This document outlines a protocol for publishing Nostr notes that include blind signatures `B'` and spent secrets `x` (defined in [NUT-00](00)), which are associated with e-cash minting and burning events on the Mint.
+This document outlines a protocol for publishing Nostr notes that include blind signatures `B'` and spent point-projections of the secrets `Y` (defined in [NUT-00](00)), which are associated with minting and burning events on the Mint.
 
 ### Rationale
 
@@ -15,14 +15,14 @@ It does so by querying the status of `Y = hash_to_curve(x)`.
 However, this approach has a significant privacy drawback: when the recipient attempts to claim the e-cash, they will reveal the same `Y` to the Mint, allowing it to potentially associate that token with both the sender's and recipient's identity (i.e. IP addresses). This compromises the protocol's inteded privacy guarantees.
 
 Conversely, when the Mint publishes notes about freshly spent e-cash, the notes are simply broadcast to anyone who is listening.
-Then, when a wallet wants to check if its e-cash was claimed, it can query the Nostr notes published by the mint and look for the inclusion of specific secrets (`x`) it sent.
+Then, when a wallet wants to check if its e-cash was claimed, it can query the Nostr notes published by the mint and look for the inclusion of specific secrets' `Y` it sent. 
 As a result, the mint never learns which wallet is querying the information.
 
 ### PoL Scheme
 
 The proposed protocol also streamlines the creation of a *Proof of Liabilities Report* (see [PoL scheme](PoL)), as each note represents a signed contribution to the "Mint Proof" or "Burn Proof" attestations of the mint for a particular epoch.
 
-## Mint Nostr Identity
+## `CASHU_MINT_IDENTITY`: Mint Nostr Identity
 
 The public key associated with the Mint's nostr identity is identical to the one provided in the `pubkey` field of the `GetInfoResponse` object, which is returned by the Mint when it receives a `v1/info` request, as outlined in the [NUT-06](06) specification.
 
@@ -41,7 +41,7 @@ def derive_pubkey(seed: str):
 
 Upon startup, the Mint must broadcast a `kind: 11467` repleceable event. This event must have its `content` field set to the cbor-serialized, base64 encoded `GetInfoResponse` object described in [NUT-06](06).
 
-## Publishing `MINT` and `BURN` events.
+## `CASHU_DATA`: Publishing MINT and BURN events.
 
 The Mint regularly (about every 5 seconds) broadcasts events of `kind: 4919`, if any `MINT` or `BURN` as occurred.
 
@@ -50,7 +50,10 @@ The Mint regularly (about every 5 seconds) broadcasts events of `kind: 4919`, if
 
 Each event must specify:
 * a `created_at` unix timestamp in seconds
-* `tags`, containing an `e` tag that references the event ID of the previous publication.
+
+Each event can optionally specify:
+* `tags`, containing an `e` tag that 
+references the event ID of the previous publication.
   
 The `content` field is initially set as follows:
 
@@ -98,15 +101,19 @@ binary_content = cbor2.dumps(self.pending_events)
 final_content = base64.b64encode(binary_content).decode('utf-8')
 ```
 
-## Fin-Epoch: Publishing the Outstanding Balance.
+## `CASHU_FIN_EPOCH`: Publishing the outstanding balance
 
-Upon performing a key rotation the Mint must publish a `kind: 1337` event, signalling the
+Upon performing a key rotation the Mint can optionally publish a `kind: 1337` event (`CASHU_FIN_EPOCH`), signalling the
 end of the current epoch.
-The event must have a `tags` that includes a `e` tag referencing the event ID of the publication of the Outstanding Balance for the previous epoch.
+
+If the Mint chooses not to publish this information, the end of an epoch is determined by `CASHU_DATA` events which reference an epoch bigger than the current one, and the outstanding balance for that epoch and unit currency is presumed to be 0.
+
+The event can optionally contain `e` tags referencing the event ID of the publication of the Outstanding Balance for the previous epoch and unit.
 The event's `content` field is made from the following payload:
 
 ```json
 {
+    "epoch": <int>,
     "outstanding_balance": <int>,
     "unit": <str>
 }
