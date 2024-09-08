@@ -4,7 +4,7 @@
 
 ---
 
-This document outlines a protocol for publishing Nostr notes that include blind signatures `B'` and spent point-projections of the secrets `Y` (defined in [NUT-00](00)), which are associated with minting and burning events on the Mint.
+This document outlines a protocol for publishing Nostr notes that include blind messages `B'`, blind signatures `C'` and spent point-projections of the secrets `Y` (defined in [NUT-00](00)), which are associated with minting and burning events on the Mint.
 
 ### Rationale
 
