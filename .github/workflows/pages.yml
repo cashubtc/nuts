@@ -9,7 +9,10 @@ jobs:
   build-deploy:
     runs-on: ubuntu-latest
     steps:
-
+      - uses: actions/checkout@v3
+        with:
+          ref: gh-pages-builder
+          
       - name: Copy contents to docs/
         run: |
           mkdir docs/
