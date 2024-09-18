@@ -1,0 +1,41 @@
+site_name: Cashu NUTs Specifications
+site_url: https://cashubtc.github.io/nuts/
+theme:
+  name: material
+  features:
+    - navigation.expand
+    - navigation.sections
+    - navigation.top
+    - search.highlight
+    - search.share
+    - toc.integrate
+    - content.code.copy
+    - content.tabs.link
+    - announce.dismiss
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+  icon:
+    logo: material/hand-coin
+nav:
+  - Home: README.md
+  - NUTs:
+      - Mandatory:
+          - NUT-00: 00.md
+          - NUT-01: 01.md
+          # Add more mandatory NUTs here
+      - Optional:
+          - NUT-03: 03.md
+          # Add more optional NUTs here
+plugins:
+  - search
+  - macros
+  - section-index
+markdown_extensions:
+  - admonition
+  - codehilite
+  - toc:
+      permalink: true
+extra_javascript:
+  - javascripts/filter.js
