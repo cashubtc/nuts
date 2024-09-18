@@ -18,7 +18,7 @@ theme:
     # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
       toggle:
-        icon: material/toggle-switch-auto
+        icon: material/link
         name: Switch to light mode
 
     # Palette toggle for light mode
@@ -34,6 +34,9 @@ theme:
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to system preference
+  font:
+    text: Roboto
+    code: Roboto Mono
   icon:
     logo: material/hand-coin
     repo: fontawesome/brands/git-alt
