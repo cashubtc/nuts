@@ -34,9 +34,6 @@ theme:
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to system preference
-  font:
-    text: Roboto
-    code: Roboto Mono
   icon:
     logo: material/hand-coin
     repo: fontawesome/brands/git-alt
