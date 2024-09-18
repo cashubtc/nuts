@@ -866,7 +866,8 @@
 
 
 <h1 id="nut-08-lightning-fee-return">NUT-08: Lightning fee return<a class="headerlink" href="#nut-08-lightning-fee-return" title="Permanent link">&para;</a></h1>
-<p><code>optional</code>, <code>depends on: NUT-05</code></p>
+<p><code>optional</code></p>
+<p><code>depends on: NUT-05</code></p>
 <hr />
 <p>This document describes how the overpaid Lightning fees are handled and extends <a href="../05/">NUT-05</a> which describes melting tokens (i.e. paying a Lightning invoice). In short, a wallet includes <em>blank outputs</em> when paying a Lightning invoice which can be assigned a value by the mint if the user has overpaid Lightning fees. This can be the case due to the unpredictability of Lightning network fees. To solve this issue, we introduce so-called <em>blank outputs</em> which are blinded messages with an undetermined value.</p>
 <p>The problem is also described in <a href="https://gist.github.com/callebtc/a6cc0bd2b6f70e081e478147c40fc578">this gist</a>.</p>

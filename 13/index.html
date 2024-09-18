@@ -896,7 +896,8 @@
 
 
 <h1 id="nut-13-deterministic-secrets">NUT-13: Deterministic Secrets<a class="headerlink" href="#nut-13-deterministic-secrets" title="Permanent link">&para;</a></h1>
-<p><code>optional</code> <code>depends on: NUT-09</code></p>
+<p><code>optional</code></p>
+<p><code>depends on: NUT-09</code></p>
 <hr />
 <p>In this document, we describe the process that allows wallets to recover their ecash balance with the help of the mint using a familiar 12 word seed phrase (mnemonic). This allows us to restore the wallet's previous state in case of a device loss or other loss of access to the wallet. The basic idea is that wallets that generate the ecash deterministically can regenerate the same tokens during a recovery process. For this, they ask the mint to reissue previously generated signatures using <a href="../09/">NUT-09</a>.</p>
 <h2 id="deterministic-secret-derivation">Deterministic secret derivation<a class="headerlink" href="#deterministic-secret-derivation" title="Permanent link">&para;</a></h2>

@@ -783,6 +783,7 @@
 
 <h1 id="nut-05-melting-tokens">NUT-05: Melting tokens<a class="headerlink" href="#nut-05-melting-tokens" title="Permanent link">&para;</a></h1>
 <p><code>mandatory</code></p>
+<p><code>used in: NUT-08, NUT-15</code></p>
 <hr />
 <p>Melting tokens is the opposite of minting tokens (see <a href="../04/">NUT-04</a>). Like minting tokens, melting is a two-step process: requesting a melt quote and melting tokens. Here, we describe both steps.</p>
 <p>In the first request the wallet asks the mint for a quote for a <code>request</code> it wants paid by the mint and the <code>unit</code> the wallet would like to spend as inputs. The mint responds with a quote that includes a <code>quote</code> id and an <code>amount</code> the mint demands in the requested unit. For the method <code>bolt11</code>, the mint includes a <code>fee_reserve</code> field indicating the reserve fee for a Lightning payment.</p>

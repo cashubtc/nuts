@@ -782,7 +782,8 @@
 
 
 <h1 id="nut-09-restore-signatures">NUT-09: Restore signatures<a class="headerlink" href="#nut-09-restore-signatures" title="Permanent link">&para;</a></h1>
-<p><code>optional</code> <code>used in: NUT-13</code></p>
+<p><code>optional</code></p>
+<p><code>used in: NUT-13</code></p>
 <hr />
 <p>In this document, we describe how wallets can recover blind signatures, and with that their corresponding <code>Proofs</code>, by requesting from the mint to reissue the blind signatures. This can be used for a backup recovery of a lost wallet (see <a href="./">NUT-09</a>) or for recovering the response of an interrupted swap request (see <a href="../03/">NUT-03</a>).</p>
 <p>Mints must store the <code>BlindedMessage</code> and the corresponding <code>BlindSignature</code> in their database every time they issue a <code>BlindSignature</code>. Wallets provide the <code>BlindedMessage</code> for which they request the <code>BlindSignature</code>. Mints only respond with a <code>BlindSignature</code>, if they have previously signed the <code>BlindedMessage</code>. Each returned <code>BlindSignature</code> also contains the <code>amount</code> and the keyset <code>id</code> (see <a href="../00/">NUT-00</a>) which is all the necessary information for a wallet to recover a <code>Proof</code>.</p>

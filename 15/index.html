@@ -839,7 +839,8 @@
 
 
 <h1 id="nut-15-partial-multi-path-payments">NUT-15: Partial multi-path payments<a class="headerlink" href="#nut-15-partial-multi-path-payments" title="Permanent link">&para;</a></h1>
-<p><code>optional</code> <code>depends on: NUT-05</code></p>
+<p><code>optional</code></p>
+<p><code>depends on: NUT-05</code></p>
 <hr />
 <p>In this document, we describe how wallets can instruct multiple mints to each pay a partial amount of a bolt11 Lightning invoice. The full payment is composed of partial payments (MPP) from multiple multi-path payments from different Lightning nodes. This way, wallets can pay a larger Lightning invoice combined from multiple smaller balances on different mints. Due to the atomic nature of MPP, either all payments will be successful or all of them will fail.</p>
 <p>The Lightning backend of the mint must support paying a partial amount of an Invoice and multi-path payments (MPP, see <a href="https://github.com/lightning/bolts/blob/master/04-onion-routing.md">BOLT 4</a>). For example, the mint's Lightning node must be able to pay 50 sats of a 100 sat bolt11 invoice. The receiving Lightning node must support receiving multi-path payments as well.</p>
