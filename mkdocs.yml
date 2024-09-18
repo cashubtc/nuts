@@ -24,9 +24,24 @@ nav:
       - Mandatory:
           - NUT-00: 00.md
           - NUT-01: 01.md
+          - NUT-02: 02.md
+          - NUT-03: 03.md
+          - NUT-04: 04.md
+          - NUT-05: 05.md
+          - NUT-06: 06.md
           # Add more mandatory NUTs here
       - Optional:
-          - NUT-03: 03.md
+          - NUT-07: 07.md
+          - NUT-08: 08.md
+          - NUT-09: 09.md
+          - NUT-10: 10.md
+          - NUT-11: 11.md
+          - NUT-12: 12.md
+          - NUT-13: 13.md
+          - NUT-14: 14.md
+          - NUT-15: 15.md
+          - NUT-16: 16.md
+          - NUT-17: 17.md
           # Add more optional NUTs here
 plugins:
   - search
@@ -37,5 +52,3 @@ markdown_extensions:
   - codehilite
   - toc:
       permalink: true
-extra_javascript:
-  - javascripts/filter.js
