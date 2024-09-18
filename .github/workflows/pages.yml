@@ -1,9 +1,7 @@
 name: Deploy MkDocs Site to GitHub Pages
 
-on:
-  push:
-    branches:
-      - main
+on: [push, pull_request]
+
 
 permissions: write-all
 
@@ -11,7 +9,7 @@ jobs:
   build-deploy:
     runs-on: ubuntu-latest
     steps:
-      
+
       - name: Copy contents to docs/
         run: |
           mkdir docs/
