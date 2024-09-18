@@ -1,5 +1,6 @@
 site_name: Cashu NUTs Specifications
 site_url: https://cashubtc.github.io/nuts/
+repo_url: https://github.com/cashubtc/nuts/
 theme:
   name: material
   features:
@@ -13,11 +14,29 @@ theme:
     - content.tabs.link
     - announce.dismiss
   palette:
-    - scheme: default
-      primary: indigo
-      accent: indigo
+    primary: deep-purple
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default 
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
   icon:
     logo: material/hand-coin
+    repo: fontawesome/brands/git-alt
 nav:
   - Home: README.md
   - NUTs:
@@ -47,6 +66,10 @@ plugins:
   - search
   - macros
   - section-index
+extra:
+  social:
+    - icon: fontawesome/brands/x-twitter 
+      link: https://x.com/cashubtc
 markdown_extensions:
   - admonition
   - codehilite
