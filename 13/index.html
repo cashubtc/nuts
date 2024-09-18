@@ -1,0 +1,1031 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://cashubtc.github.io/nuts/13/">
+      
+      
+        <link rel="prev" href="../12/">
+      
+      
+        <link rel="next" href="../14/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.35">
+    
+    
+      
+        <title>NUT-13 - Cashu NUTs Specifications</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.35f28582.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#nut-13-deterministic-secrets" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Cashu NUTs Specifications" class="md-header__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Cashu NUTs Specifications
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              NUT-13
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Cashu NUTs Specifications" class="md-nav__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
+
+    </a>
+    Cashu NUTs Specifications
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    NUTs
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            NUTs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Mandatory
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Mandatory
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-00
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-01
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-02
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-03
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-04
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-05
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-06
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Optional
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Optional
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-07
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-08
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-09
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-10
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-11
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-12
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    NUT-13
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    NUT-13
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#deterministic-secret-derivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deterministic secret derivation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deterministic secret derivation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#counter" class="md-nav__link">
+    <span class="md-ellipsis">
+      Counter
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keyset-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      Keyset ID
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#restore-from-seed-phrase" class="md-nav__link">
+    <span class="md-ellipsis">
+      Restore from seed phrase
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Restore from seed phrase">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generate-blindedmessages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generate BlindedMessages
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-proofs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generate Proofs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-proofs-states" class="md-nav__link">
+    <span class="md-ellipsis">
+      Check Proofs states
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#restoring-batches" class="md-nav__link">
+    <span class="md-ellipsis">
+      Restoring batches
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-14
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-15
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-16
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-17
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="nut-13-deterministic-secrets">NUT-13: Deterministic Secrets<a class="headerlink" href="#nut-13-deterministic-secrets" title="Permanent link">&para;</a></h1>
+<p><code>optional</code> <code>depends on: NUT-09</code></p>
+<hr />
+<p>In this document, we describe the process that allows wallets to recover their ecash balance with the help of the mint using a familiar 12 word seed phrase (mnemonic). This allows us to restore the wallet's previous state in case of a device loss or other loss of access to the wallet. The basic idea is that wallets that generate the ecash deterministically can regenerate the same tokens during a recovery process. For this, they ask the mint to reissue previously generated signatures using <a href="../09/">NUT-09</a>.</p>
+<h2 id="deterministic-secret-derivation">Deterministic secret derivation<a class="headerlink" href="#deterministic-secret-derivation" title="Permanent link">&para;</a></h2>
+<p>An ecash token, or a <code>Proof</code>, consists of a <code>secret</code> generated by the wallet, and a signature <code>C</code> generated by the wallet and the mint in collaboration. Here, we describe how wallets can deterministically generate the <code>secrets</code> and blinding factors <code>r</code> necessary to generate the signatures <code>C</code>.</p>
+<p>The wallet generates a <code>private_key</code> derived from a 12-word <a href="https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki">BIP39</a> <code>mnemonic</code> seed phrase that the user stores in a secure place. The wallet uses the <code>private_key</code>, to derive deterministic values for the <code>secret</code> and the blinding factors <code>r</code> for every new ecash token that it generates.</p>
+<p>In order to do this, the wallet keeps track of a <code>counter_k</code> for each <code>keyset_k</code> it uses. The index <code>k</code> indicates that the wallet needs to keep track of a separate counter for each keyset <code>k</code> it uses. Typically, the wallet will need to keep track of multiple keysets for every mint it interacts with. <code>counter_k</code> is used to generate a <a href="https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki">BIP32</a> derivation path which can then be used to derive <code>secret</code> and <code>r</code>.</p>
+<p>The following BIP32 derivation path is used. The derivation path depends on the <a href="../02/">keyset ID</a> of <code>keyset_k</code>, and the <code>counter_k</code> of that keyset.</p>
+<ul>
+<li>Purpose' = <code>129372'</code> (UTF-8 for 🥜)</li>
+<li>Coin type' = Always <code>0'</code></li>
+<li>Keyset id' = Keyset ID represented as an integer (<code>keyset_k_int</code>)</li>
+<li>Coin counter' = <code>counter'</code> (this value is incremented)</li>
+<li><code>secret</code> or <code>r</code> = <code>0</code> or <code>1</code></li>
+</ul>
+<p><code>m / 129372' / 0' / keyset_k_int' / counter' / secret||r</code></p>
+<p>This results in the following derivation paths:</p>
+<div class="codehilite"><pre><span></span><code>secret_derivation_path = <span class="sb">`m/129372&#39;/0&#39;/{keyset_k_int}&#39;/{counter_k}&#39;/0`</span>
+r_derivation_path = <span class="sb">`m/129372&#39;/0&#39;/{keyset_id_k_int}&#39;/{counter_k}&#39;/1`</span>
+</code></pre></div>
+
+<p>Here, <code>{keyset_k_int}</code> and <code>{counter_k}</code> are the only variables that can change. <code>keyset_id_k_int</code> is an integer representation (see below) of the keyset ID the token is generated with. This means that the derivation path is unique for each keyset. Note that the coin type is always <code>0'</code>, independent of the unit of the ecash.</p>
+<p><strong>Note:</strong> For examples, see the <a href="../tests/13-tests/">test vectors</a>.</p>
+<h4 id="counter">Counter<a class="headerlink" href="#counter" title="Permanent link">&para;</a></h4>
+<p>The wallet starts with <code>counter_k := 0</code> upon encountering a new keyset and increments it by <code>1</code> every time it has successfully minted new ecash with this keyset. The wallet stores the latest <code>counter_k</code> in its database for all keysets it uses. Note that we have a <code>counter</code> (and therefore a derivation path) for each keyset <code>k</code>. We omit the keyset index <code>k</code> in the following of this document.</p>
+<h4 id="keyset-id">Keyset ID<a class="headerlink" href="#keyset-id" title="Permanent link">&para;</a></h4>
+<p>The integer representation <code>keyset_id_int</code> of a keyset is calculated from its <a href="../02/">hexadecimal ID</a> which has a length of 8 bytes or 16 hex characters. First, we convert the hex string to a big-endian sequence of bytes. This value is then modulo reduced by <code>2^31 - 1</code> to arrive at an integer that is a unique identifier <code>keyset_id_int</code>.</p>
+<p>Example in Python:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">keyset_id_int</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">keyset_id_hex</span><span class="p">),</span> <span class="s2">&quot;big&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Example in JavaScript:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">keysetIdInt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">BigInt</span><span class="p">(</span><span class="sb">`0x</span><span class="si">${</span><span class="nx">keysetIdHex</span><span class="si">}</span><span class="sb">`</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="nb">BigInt</span><span class="p">(</span><span class="mf">2</span><span class="w"> </span><span class="o">**</span><span class="w"> </span><span class="mf">31</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="restore-from-seed-phrase">Restore from seed phrase<a class="headerlink" href="#restore-from-seed-phrase" title="Permanent link">&para;</a></h2>
+<p>Using deterministic secret derivation, a user's wallet can regenerate the same <code>BlindedMessages</code> in case of loss of a previous wallet state. To also restore the corresponding <code>BlindSignatures</code> to fully recover the ecash, the wallet can either requests the mint to re-issue past <code>BlindSignatures</code> on the regenerated <code>BlindedMessages</code> (see <a href="../09/">NUT-09</a>) or by downloading the entire database of the mint (TBD).</p>
+<p>The wallet takes the following steps during recovery:</p>
+<ol>
+<li>Generate <code>secret</code> and <code>r</code> from <code>counter</code> and <code>keyset</code></li>
+<li>Generate <code>BlindedMessage</code> from <code>secret</code></li>
+<li>Obtain <code>BlindSignature</code> for <code>secret</code> from the mint</li>
+<li>Unblind <code>BlindSignature</code> to <code>C</code> using <code>r</code></li>
+<li>Restore <code>Proof = (secret, C)</code></li>
+<li>Check if <code>Proof</code> is already spent</li>
+</ol>
+<h4 id="generate-blindedmessages">Generate <code>BlindedMessages</code><a class="headerlink" href="#generate-blindedmessages" title="Permanent link">&para;</a></h4>
+<p>To generate the <code>BlindedMessages</code>, the wallet starts with a <code>counter := 0</code> and , for each increment of the <code>counter</code>, generates a <code>secret</code> using the BIP32 private key derived from <code>secret_derivation_path</code> and converts it to a hex string.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">secret</span> <span class="o">=</span> <span class="n">bip32</span><span class="o">.</span><span class="n">get_privkey_from_path</span><span class="p">(</span><span class="n">secret_derivation_path</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span>
+</code></pre></div>
+
+<p>The wallet similarly generates a blinding factor <code>r</code> from the <code>r_derivation_path</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bip32</span><span class="o">.</span><span class="n">get_privkey_from_path</span><span class="p">(</span><span class="n">r_derivation_path</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Note:</strong> For examples, see the <a href="../tests/13-tests/">test vectors</a>.</p>
+<p>Using the <code>secret</code> string and the private key <code>r</code>, the wallet generates a <code>BlindedMessage</code>. The wallet then increases the <code>counter</code> by <code>1</code> and repeats the same process for a given batch size. It is recommended to use a batch size of 100.</p>
+<p>The user's wallet can now request the corresponding <code>BlindSignatures</code> for theses <code>BlindedMessages</code> from the mint using the <a href="../09/">NUT-09</a> restore endpoint or by downloading the entire mint's database.</p>
+<h4 id="generate-proofs">Generate <code>Proofs</code><a class="headerlink" href="#generate-proofs" title="Permanent link">&para;</a></h4>
+<p>Using the restored <code>BlindSignatures</code> and the <code>r</code> generated in the previous step, the wallet can <a href="../00/">unblind</a> the signature to <code>C</code>. The triple <code>(secret, C, amount)</code> is a restored <code>Proof</code>.</p>
+<h4 id="check-proofs-states">Check <code>Proofs</code> states<a class="headerlink" href="#check-proofs-states" title="Permanent link">&para;</a></h4>
+<p>If the wallet used the restore endpoint <a href="../09/">NUT-09</a> for regenerating the <code>Proofs</code>, it additionally needs to check for the <code>Proofs</code> spent state using <a href="../07/">NUT-07</a>. The wallet deletes all <code>Proofs</code> which are already spent and keeps the unspent ones in its database.</p>
+<h3 id="restoring-batches">Restoring batches<a class="headerlink" href="#restoring-batches" title="Permanent link">&para;</a></h3>
+<p>Generally, the user won't remember the last state of <code>counter</code> when starting the recovery process. Therefore, wallets need to know how far they need to increment the <code>counter</code> during the restore process to be confident to have reached the most recent state.</p>
+<p>In short, following approach is recommended:</p>
+<ul>
+<li>Restore <code>Proofs</code> in batches of 100 and increment <code>counter</code></li>
+<li>Repeat until three consecutive batches are returned empty</li>
+<li>Reset <code>counter</code> to the value at the last successful restore + 1</li>
+</ul>
+<p>Wallets restore <code>Proofs</code> in batches of 100. The wallet starts with a <code>counter=0</code> and increments it for every <code>Proof</code> it generated during one batch. When the wallet begins restoring the first <code>Proofs</code>, it is likely that the first few batches will only contain spent <code>Proofs</code>. Eventually, the wallet will reach a <code>counter</code> that will result in unspent <code>Proofs</code> which it stores in its database. The wallet then continues to restore until <em>three successive batches are returned empty by the mint</em>. This is to be confident that the restore process did not miss any <code>Proofs</code> that might have been generated with larger gaps in the <code>counter</code> by the previous wallet that we are restoring.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.highlight", "search.share", "toc.integrate", "content.code.copy", "content.tabs.link", "announce.dismiss"], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.56dfad97.min.js"></script>
+      
+    
+  </body>
+</html>

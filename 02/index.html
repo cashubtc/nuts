@@ -1,0 +1,1151 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://cashubtc.github.io/nuts/02/">
+      
+      
+        <link rel="prev" href="../01/">
+      
+      
+        <link rel="next" href="../03/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.35">
+    
+    
+      
+        <title>NUT-02 - Cashu NUTs Specifications</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.35f28582.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#nut-02-keysets-and-fees" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Cashu NUTs Specifications" class="md-header__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Cashu NUTs Specifications
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              NUT-02
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Cashu NUTs Specifications" class="md-nav__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
+
+    </a>
+    Cashu NUTs Specifications
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    NUTs
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            NUTs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Mandatory
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Mandatory
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-00
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-01
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    NUT-02
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    NUT-02
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#keyset-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      Keyset properties
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Keyset properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#keyset-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      Keyset ID
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#active-keysets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Active keysets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fees" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fees
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fees">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wallet-transaction-construction" class="md-nav__link">
+    <span class="md-ellipsis">
+      Wallet transaction construction
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deriving-the-keyset-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deriving the keyset ID
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deriving the keyset ID">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#keyset-id-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      Keyset ID version
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-get-mint-keysets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Get mint keysets
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Example: Get mint keysets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example response
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requesting-public-keys-for-a-specific-keyset" class="md-nav__link">
+    <span class="md-ellipsis">
+      Requesting public keys for a specific keyset
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Requesting public keys for a specific keyset">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wallet-implementation-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Wallet implementation notes
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-03
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-04
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-05
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-06
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Optional
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Optional
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-07
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-08
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-09
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-10
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-11
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-12
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-13
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-14
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-15
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-16
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-17
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="nut-02-keysets-and-fees">NUT-02: Keysets and fees<a class="headerlink" href="#nut-02-keysets-and-fees" title="Permanent link">&para;</a></h1>
+<p><code>mandatory</code></p>
+<hr />
+<p>A keyset is a set of public keys that the mint <code>Bob</code> generates and shares with its users. It refers to the set of public keys that each correspond to the amount values that the mint supports (e.g. <code>1, 2, 4, 8, ...</code>) respectively.</p>
+<p>Each keyset indicates its keyset <code>id</code>, the currency <code>unit</code>, whether the keyset is <code>active</code>, and an <code>input_fee_ppk</code> that determines the fees for spending ecash from this keyset.</p>
+<p>A mint can have multiple keysets at the same time. For example, it could have one keyset for each currency <code>unit</code> that it supports. Wallets should support multiple keysets. They must respect the <code>active</code> and the <code>input_fee_ppk</code> properties of the keysets they use.</p>
+<h2 id="keyset-properties">Keyset properties<a class="headerlink" href="#keyset-properties" title="Permanent link">&para;</a></h2>
+<h3 id="keyset-id">Keyset ID<a class="headerlink" href="#keyset-id" title="Permanent link">&para;</a></h3>
+<p>A keyset <code>id</code> is an identifier for a specific keyset. It can be derived by anyone who knows the set of public keys of a mint. Wallets <strong>CAN</strong> compute the keyset <code>id</code> for a given keyset by themselves to confirm that the mint is supplying the correct keyset ID (see below).</p>
+<p>The keyset <code>id</code> is in each <code>Proof</code> so it can be used by wallets to identify which mint and keyset it was generated from. The keyset field <code>id</code> is also present in the <code>BlindedMessages</code> sent to the mint and <code>BlindSignatures</code> returned from the mint (see <a href="../00/">NUT-00</a>).</p>
+<h3 id="active-keysets">Active keysets<a class="headerlink" href="#active-keysets" title="Permanent link">&para;</a></h3>
+<p>Mints can have multiple keysets at the same time but <strong>MUST</strong> have at least one <code>active</code> keyset (see <a href="../01/">NUT-01</a>). The <code>active</code> property determines whether the mint allows generating new ecash from this keyset. <code>Proofs</code> from inactive keysets with <code>active=false</code> are still accepted as inputs but new outputs (<code>BlindedMessages</code> and <code>BlindSignatures</code>) <strong>MUST</strong> be from <code>active</code> keysets only.</p>
+<p>To rotate keysets, a mint can generate a new active keyset and inactive an old one. If the <code>active</code> flag of an old keyset is set to <code>false</code>, no new ecash from this keyset can be generated and the outstanding ecash supply of that keyset can be taken out of circulation as wallets rotate their ecash to active keysets.</p>
+<p>Wallets <strong>SHOULD</strong> prioritize swaps with <code>Proofs</code> from inactive keysets (see <a href="../03/">NUT-03</a>) so they can quickly get rid of them. Wallets <strong>CAN</strong> swap their entire balance from an inactive keyset to an active one as soon as they detect that the keyset was inactivated. When constructing outputs for a transaction, wallets <strong>MUST</strong> choose only <code>active</code> keysets (see <a href="../00/">NUT-00</a>).</p>
+<h3 id="fees">Fees<a class="headerlink" href="#fees" title="Permanent link">&para;</a></h3>
+<p>Keysets indicate the fee <code>input_fee_ppk</code> that is charged when a <code>Proof</code> of that keyset is spent as an input to a transaction. The fee is given in parts per thousand (ppk) per input measured in the <code>unit</code> of the keyset. The total fee for a transaction is the sum of all fees per input rounded up to the next larger integer (that that can be represented with the keyest).</p>
+<p>As an example, we construct a transaction spending 3 inputs (<code>Proofs</code>) from a keyset with unit <code>sat</code> and <code>input_fee_ppk</code> of <code>100</code>. A fee of <code>100 ppk</code> means <code>0.1 sat</code> per input. The sum of the individual fees are 300 ppk for this transaction. Rounded up to the next smallest denomination, the mint charges <code>1 sat</code> in total fees, i.e. <code>fees = ceil(0.3) == 1</code>. In this case, the fees for spending 1-10 inputs is 1 sat, 11-20 inputs is 2 sat and so on.</p>
+<h4 id="wallet-transaction-construction">Wallet transaction construction<a class="headerlink" href="#wallet-transaction-construction" title="Permanent link">&para;</a></h4>
+<p>When constructing a transaction with ecash <code>inputs</code> (example: <code>/v1/swap</code> or <code>/v1/melt</code>), wallets <strong>MUST</strong> add fees to the inputs or, vice versa, subtract from the outputs. The mint checks the following equation:</p>
+<div class="codehilite"><pre><span></span><code><span class="nb">sum</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span> <span class="o">-</span> <span class="n">fees</span> <span class="o">==</span> <span class="nb">sum</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Here, <code>sum(inputs)</code> and <code>sum(outputs)</code> mean the sum of the amounts of the inputs and outputs respectively. <code>fees</code> is calculated from the sum of each input's fee and rounded up to the next larger integer:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">fees</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Proof</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+  <span class="n">sum_fees</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">for</span> <span class="n">proof</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">:</span>
+    <span class="n">sum_fees</span> <span class="o">+=</span> <span class="n">keysets</span><span class="p">[</span><span class="n">proof</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">input_fee_ppk</span>
+  <span class="k">return</span> <span class="p">(</span><span class="n">sum_fees</span> <span class="o">+</span> <span class="mi">999</span><span class="p">)</span> <span class="o">//</span> <span class="mi">1000</span>
+</code></pre></div>
+
+<p>Here, the <code>//</code> operator in <code>(sum_fees + 999) // 1000</code> denotes an integer division operator (aka floor division operator) that rounds down <code>sum_fees + 999</code> to the next lower integer. Alternatively, we could round up the sum using a floating point division with <code>ceil(sum_fees / 1000)</code> although it is not recommended to do so due to the non-deterministic behavior of floating point division.</p>
+<p>Notice that since transactions can spend inputs from different keysets, the sum considers the fee for each <code>Proof</code> indexed by the keyset ID individually.</p>
+<h3 id="deriving-the-keyset-id">Deriving the keyset ID<a class="headerlink" href="#deriving-the-keyset-id" title="Permanent link">&para;</a></h3>
+<h4 id="keyset-id-version">Keyset ID version<a class="headerlink" href="#keyset-id-version" title="Permanent link">&para;</a></h4>
+<p>Keyset IDs have a version byte (two hexadecimal characters). The currently used version byte is <code>00</code>.</p>
+<p>The mint and the wallets of its users can derive a keyset ID from the keyset of the mint. The keyset ID is a lower-case hex string. To derive the keyset ID of a keyset, execute the following steps:</p>
+<div class="codehilite"><pre><span></span><code><span class="mf">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">sort</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="n">keys</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">their</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="nb">asc</span><span class="kr">end</span><span class="n">ing</span><span class="w"> </span><span class="ow">or</span><span class="n">der</span>
+<span class="mf">2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">concatenate</span><span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="n">keys</span><span class="w"> </span><span class="kr">to</span><span class="w"> </span><span class="kr">on</span><span class="n">e</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">array</span>
+<span class="mf">3</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">HASH_SHA256</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">concatenated</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="n">keys</span>
+<span class="mf">4</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">take</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="mf">14</span><span class="w"> </span><span class="n">characters</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">hex</span><span class="o">-</span><span class="n">encoded</span><span class="w"> </span><span class="n">hash</span>
+<span class="mf">5</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">prefix</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">keyset</span><span class="w"> </span><span class="n">ID</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="n">byte</span>
+</code></pre></div>
+
+<p>An example implementation in Python:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">derive_keyset_id</span><span class="p">(</span><span class="n">keys</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">PublicKey</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">sorted_keys</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">keys</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+    <span class="n">pubkeys_concat</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">sorted_keys</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
+    <span class="k">return</span> <span class="s2">&quot;00&quot;</span> <span class="o">+</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">pubkeys_concat</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()[:</span><span class="mi">14</span><span class="p">]</span>
+</code></pre></div>
+
+<h2 id="example-get-mint-keysets">Example: Get mint keysets<a class="headerlink" href="#example-get-mint-keysets" title="Permanent link">&para;</a></h2>
+<p>A wallet can ask the mint for a list of all keysets via the <code>GET /v1/keysets</code> endpoint.</p>
+<p>Request of <code>Alice</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="err">GET https://mint.host:3338/v1/keysets</span>
+</code></pre></div>
+
+<p>With curl:</p>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>https://mint.host:3338/v1/keysets
+</code></pre></div>
+
+<p>Response <code>GetKeysetsResponse</code> of <code>Bob</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;keysets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;hex_s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;bool&gt;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;input_fee_ppk&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="err">...</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Here, <code>id</code> is the keyset ID, <code>unit</code> is the unit string (e.g. "sat") of the keyset, <code>active</code> indicates whether new ecash can be minted with this keyset, and <code>input_fee_ppk</code> is the fee (per thousand units) to spend one input spent from this keyset. If <code>input_fee_ppk</code> is not given, we assume it to be <code>0</code>.</p>
+<h3 id="example-response">Example response<a class="headerlink" href="#example-response" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;keysets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">True</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;input_fee_ppk&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0042ade98b2a370a&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">False</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;input_fee_ppk&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;00c074b96c7e2b0e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;usd&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">True</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;input_fee_ppk&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="requesting-public-keys-for-a-specific-keyset">Requesting public keys for a specific keyset<a class="headerlink" href="#requesting-public-keys-for-a-specific-keyset" title="Permanent link">&para;</a></h2>
+<p>To receive the public keys of a specific keyset, a wallet can call the <code>GET /v1/keys/{keyset_id}</code> endpoint where <code>keyset_id</code> is the keyset ID.</p>
+<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
+<p>Request of <code>Alice</code>:</p>
+<p>We request the keys for the keyset <code>009a1f293253e41e</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="err">GET https://mint.host:3338/v1/keys/009a1f293253e41e</span>
+</code></pre></div>
+
+<p>With curl:</p>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>https://mint.host:3338/v1/keys/009a1f293253e41e
+</code></pre></div>
+
+<p>Response of <code>Bob</code> (same as <a href="../01/">NUT-01</a>):</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;keysets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;keys&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02194603ffa36356f4a56b7df9371fc3192472351453ec7398b8da8117e7c3e104&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03b0f36d6d47ce14df8a7be9137712c42bcdd960b19dd02f1d4a9703b1f31d7513&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0366be6e026e42852498efb82014ca91e89da2e7a5bd3761bdad699fa2aec9fe09&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;8&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0253de5237f189606f29d8a690ea719f74d65f617bb1cb6fbea34f2bc4f930016d&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="err">...</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="err">...</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="wallet-implementation-notes">Wallet implementation notes<a class="headerlink" href="#wallet-implementation-notes" title="Permanent link">&para;</a></h2>
+<p>Wallets can request the list of keyset IDs from the mint upon startup and load only tokens from its database that have a keyset ID supported by the mint it interacts with. This also helps wallets to determine whether the mint has added a new current keyset or whether it has changed the <code>active</code> flag of an existing one.</p>
+<p>A useful flow is:</p>
+<ul>
+<li>If we don't have any keys from this mint yet, get all keys: <code>GET /v1/keys</code> and store them</li>
+<li>Get all keysets with <code>GET /v1/keysets</code></li>
+<li>For all new keyset returned here which we don't have yet, get it using <code>GET /v1/keys/{keyset_id}</code> and store it</li>
+<li>If any of the keysets has changed its <code>active</code> flag, update it in the db and use the keyset accordingly</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.highlight", "search.share", "toc.integrate", "content.code.copy", "content.tabs.link", "announce.dismiss"], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.56dfad97.min.js"></script>
+      
+    
+  </body>
+</html>

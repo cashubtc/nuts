@@ -1,0 +1,1085 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://cashubtc.github.io/nuts/00/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../01/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.35">
+    
+    
+      
+        <title>NUT-00 - Cashu NUTs Specifications</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.35f28582.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#nut-00-notation-utilization-and-terminology" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Cashu NUTs Specifications" class="md-header__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Cashu NUTs Specifications
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              NUT-00
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Cashu NUTs Specifications" class="md-nav__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
+
+    </a>
+    Cashu NUTs Specifications
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    NUTs
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            NUTs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Mandatory
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Mandatory
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    NUT-00
+  </span>
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-01
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-02
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-03
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-04
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-05
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-06
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Optional
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Optional
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-07
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-08
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-09
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-10
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-11
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-12
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-13
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-14
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-15
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-16
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-17
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="nut-00-notation-utilization-and-terminology">NUT-00: Notation, Utilization, and Terminology<a class="headerlink" href="#nut-00-notation-utilization-and-terminology" title="Permanent link">&para;</a></h1>
+<p><code>mandatory</code></p>
+<hr />
+<p>This document details the notation and models used throughout the specification and lays the groundwork for understanding the basic cryptography used in the Cashu protocol.</p>
+<ul>
+<li>Sending user: <code>Alice</code></li>
+<li>Receiving user: <code>Carol</code></li>
+<li>Mint: <code>Bob</code></li>
+</ul>
+<h1 id="blind-diffie-hellmann-key-exchange-bdhke">Blind Diffie-Hellmann key exchange (BDHKE)<a class="headerlink" href="#blind-diffie-hellmann-key-exchange-bdhke" title="Permanent link">&para;</a></h1>
+<h2 id="variables">Variables<a class="headerlink" href="#variables" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>G</code> elliptic curve generator point</li>
+</ul>
+<h3 id="bob-mint">Bob (mint)<a class="headerlink" href="#bob-mint" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>k</code> private key of mint (one for each amount)</li>
+<li><code>K</code> public key of mint</li>
+<li><code>Q</code> promise (blinded signature)</li>
+</ul>
+<h3 id="alice-user">Alice (user)<a class="headerlink" href="#alice-user" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>x</code> random string (secret message), corresponds to point <code>Y</code> on curve</li>
+<li><code>r</code> private key (blinding factor)</li>
+<li><code>T</code> blinded message</li>
+<li><code>Z</code> proof (unblinded signature)</li>
+</ul>
+<h3 id="hash_to_curvex-bytes-curve-point-y"><code>hash_to_curve(x: bytes) -&gt; curve point Y</code><a class="headerlink" href="#hash_to_curvex-bytes-curve-point-y" title="Permanent link">&para;</a></h3>
+<p>Deterministically maps a message to a public key point on the secp256k1 curve, utilizing a domain separator to ensure uniqueness.</p>
+<p><code>Y = PublicKey('02' || SHA256(msg_hash || counter))</code> where <code>msg_hash</code> is <code>SHA256(DOMAIN_SEPARATOR || x)</code></p>
+<ul>
+<li><code>Y</code> derived public key</li>
+<li><code>DOMAIN_SEPARATOR</code> constant byte string <code>b"Secp256k1_HashToCurve_Cashu_"</code></li>
+<li><code>x</code> message to hash</li>
+<li><code>counter</code> uint32 counter(byte order little endian) incremented from 0 until a point is found that lies on the curve</li>
+</ul>
+<h2 id="protocol">Protocol<a class="headerlink" href="#protocol" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Mint <code>Bob</code> publishes public key <code>K = kG</code></li>
+<li><code>Alice</code> picks secret <code>x</code> and computes <code>Y = hash_to_curve(x)</code></li>
+<li><code>Alice</code> sends to <code>Bob</code>: <code>B_ = Y + rG</code> with <code>r</code> being a random blinding factor (<strong>blinding</strong>)</li>
+<li><code>Bob</code> sends back to <code>Alice</code> blinded key: <code>C_ = kB_</code> (these two steps are the DH key exchange) (<strong>signing</strong>)</li>
+<li><code>Alice</code> can calculate the unblinded key as <code>C_ - rK = kY + krG - krG = kY = C</code> (<strong>unblinding</strong>)</li>
+<li>Alice can take the pair <code>(x, C)</code> as a token and can send it to <code>Carol</code>.</li>
+<li><code>Carol</code> can send <code>(x, C)</code> to <code>Bob</code> who then checks that <code>k*hash_to_curve(x) == C</code> (<strong>verification</strong>), and if so treats it as a valid spend of a token, adding <code>x</code> to the list of spent secrets.</li>
+</ul>
+<h2 id="01-models">0.1 - Models<a class="headerlink" href="#01-models" title="Permanent link">&para;</a></h2>
+<h3 id="blindedmessage"><code>BlindedMessage</code><a class="headerlink" href="#blindedmessage" title="Permanent link">&para;</a></h3>
+<p>An encrypted ("blinded") secret and an amount is sent from <code>Alice</code> to <code>Bob</code> for <a href="../04/">minting tokens</a> or for <a href="../03/">swapping tokens</a>. A <code>BlindedMessage</code> is also called an <code>output</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">i</span><span class="kc">nt</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">hex_s</span><span class="kc">tr</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">hex_s</span><span class="kc">tr</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>amount</code> is the value for the requested <code>BlindSignature</code>, <code>id</code> is the requested keyset ID from which we expect a signature, and <code>B_</code> is the blinded secret message generated by <code>Alice</code>. An array <code>[BlindedMessage]</code> is also referred to as <code>BlindedMessages</code>.</p>
+<h3 id="blindsignature"><code>BlindSignature</code><a class="headerlink" href="#blindsignature" title="Permanent link">&para;</a></h3>
+<p>A <code>BlindSignature</code> is sent from <code>Bob</code> to <code>Alice</code> after <a href="../04/">minting tokens</a> or after <a href="../03/">swapping tokens</a>. A <code>BlindSignature</code> is also called a <code>promise</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">i</span><span class="kc">nt</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">hex_s</span><span class="kc">tr</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;C_&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">hex_s</span><span class="kc">tr</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>amount</code> is the value of the blinded token, <code>id</code> is the <a href="../02/">keyset id</a> of the mint keys that signed the token, and <code>C_</code> is the blinded signature on the secret message <code>B_</code> sent in the previous step.</p>
+<h3 id="proof"><code>Proof</code><a class="headerlink" href="#proof" title="Permanent link">&para;</a></h3>
+<p>A <code>Proof</code> is also called an input and is generated by <code>Alice</code> from a <code>BlindSignature</code> it received. An array <code>[Proof]</code> is called <code>Proofs</code>. <code>Alice</code> sends <code>Proofs</code> to <code>Bob</code> for <a href="../05/">melting tokens</a>. <a href="#serialization-of-tokens">Serialized</a> <code>Proofs</code> can also be sent from <code>Alice</code> to <code>Carol</code>. Upon receiving the token, <code>Carol</code> deserializes it and requests a <a href="../03/">swap</a> from <code>Bob</code> to receive new <code>Proofs</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">i</span><span class="kc">nt</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">hex_s</span><span class="kc">tr</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;C&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">hex_s</span><span class="kc">tr</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>amount</code> is the amount of the <code>Proof</code>, <code>secret</code> is the secret message and is a utf-8 encoded string (the use of a 64 character hex string generated from 32 random bytes is recommended to prevent fingerprinting), <code>C</code> is the unblinded signature on <code>secret</code> (hex string), <code>id</code> is the <a href="../02/">keyset id</a> of the mint public keys that signed the token (hex string).</p>
+<h2 id="02-protocol">0.2 - Protocol<a class="headerlink" href="#02-protocol" title="Permanent link">&para;</a></h2>
+<h3 id="errors">Errors<a class="headerlink" href="#errors" title="Permanent link">&para;</a></h3>
+<p>In case of an error, mints respond with the HTTP status code <code>400</code> and include the following data in their response:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;oops&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;code&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1337</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Here, <code>detail</code> is the error message, and <code>code</code> is the error code. Error codes are to be defined in the documents concerning the use of a certain API endpoint.</p>
+<h2 id="03-methods">0.3 - Methods<a class="headerlink" href="#03-methods" title="Permanent link">&para;</a></h2>
+<h3 id="serialization-of-tokens">Serialization of tokens<a class="headerlink" href="#serialization-of-tokens" title="Permanent link">&para;</a></h3>
+<p>Tokens can be serialized to send them between users <code>Alice</code> and <code>Carol</code>. Serialized tokens have a Cashu token prefix, a versioning flag, and the token. Optionally, a URI prefix for making tokens clickable on the web.</p>
+<p>We use the following format for token serialization:</p>
+<div class="codehilite"><pre><span></span><code>cashu<span class="o">[</span>version<span class="o">][</span>token<span class="o">]</span>
+</code></pre></div>
+
+<p><code>cashu</code> is the Cashu token prefix. <code>[version]</code> is a single <code>base64_urlsafe</code> character to denote the token format version.</p>
+<h5 id="uri-tags">URI tags<a class="headerlink" href="#uri-tags" title="Permanent link">&para;</a></h5>
+<p>To make Cashu tokens clickable on the web, we use the URI scheme <code>cashu:</code>. An example of a serialized token with URI tag is</p>
+<div class="codehilite"><pre><span></span><code>cashu:cashuAeyJwcm9vZn...
+</code></pre></div>
+
+<h3 id="v3-tokens">V3 tokens<a class="headerlink" href="#v3-tokens" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p><em>V3 tokens are deprecated and the use of the more space-efficient V4 tokens is encouraged.</em></p>
+</blockquote>
+<h5 id="version">Version<a class="headerlink" href="#version" title="Permanent link">&para;</a></h5>
+<p>This token format has the <code>[version]</code> value <code>A</code>.</p>
+<h5 id="format">Format<a class="headerlink" href="#format" title="Permanent link">&para;</a></h5>
+<p>V3 tokens are base64-encoded JSON objects. The token format supports tokens from multiple mints. The JSON is serialized with a <code>base64_urlsafe</code> (base64 encoding with <code>/</code> replaced by <code>_</code> and <code>+</code> by <code>-</code>). <code>base64_urlsafe</code> strings may have padding characters (usually <code>=</code>) at the end which can be omitted. Clients need to be able to decode both cases.</p>
+<div class="codehilite"><pre><span></span><code>cashuA<span class="o">[</span>base64_token_json<span class="o">]</span>
+</code></pre></div>
+
+<p><code>[base64_token_json]</code> is the token JSON serialized in <code>base64_urlsafe</code>. <code>[base64_token_json]</code> should be cleared of any whitespace before serializing.</p>
+<h5 id="token-format">Token format<a class="headerlink" href="#token-format" title="Permanent link">&para;</a></h5>
+<p>The deserialized <code>base64_token_json</code> is</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;token&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;mint&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;proofs&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">Proo</span><span class="kc">fs</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="err">...</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;memo&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>mint</code> is the mint URL. The mint URL must be stripped of any trailing slashes (<code>/</code>). <code>Proofs</code> is an array of <code>Proof</code> objects. The next two elements are only for displaying the receiving user appropriate information: <code>unit</code> is the currency unit of the token keysets (see <a href="../01/">Keysets</a> for supported units), and <code>memo</code> is an optional text memo from the sender.</p>
+<h5 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h5>
+<p>Below is a TokenV3 JSON before <code>base64_urlsafe</code> serialization.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;token&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;mint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://8333.space:3338&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;proofs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;407915bc212be61a77e3e6d2aeb4c727980bda51cd06a6afc29e2861768a7837&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;C&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02bc9097997d81afb2cc7346b5e4345a9346bd2a506eb7958598a72f0cf85163ea&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fe15109314e61d7756b0f8ee0f23a624acaa3f4e042f61433c728c7057b931be&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;C&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;029e8e5050b890a7d6c0968db16bc1d5d5fa040ea1de284f6ec69d61299f671059&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;memo&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Thank you.&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>When serialized, this becomes:</p>
+<div class="codehilite"><pre><span></span><code>cashuAeyJ0b2tlbiI6W3sibWludCI6Imh0dHBzOi8vODMzMy5zcGFjZTozMzM4IiwicHJvb2ZzIjpbeyJhbW91bnQiOjIsImlkIjoiMDA5YTFmMjkzMjUzZTQxZSIsInNlY3JldCI6IjQwNzkxNWJjMjEyYmU2MWE3N2UzZTZkMmFlYjRjNzI3OTgwYmRhNTFjZDA2YTZhZmMyOWUyODYxNzY4YTc4MzciLCJDIjoiMDJiYzkwOTc5OTdkODFhZmIyY2M3MzQ2YjVlNDM0NWE5MzQ2YmQyYTUwNmViNzk1ODU5OGE3MmYwY2Y4NTE2M2VhIn0seyJhbW91bnQiOjgsImlkIjoiMDA5YTFmMjkzMjUzZTQxZSIsInNlY3JldCI6ImZlMTUxMDkzMTRlNjFkNzc1NmIwZjhlZTBmMjNhNjI0YWNhYTNmNGUwNDJmNjE0MzNjNzI4YzcwNTdiOTMxYmUiLCJDIjoiMDI5ZThlNTA1MGI4OTBhN2Q2YzA5NjhkYjE2YmMxZDVkNWZhMDQwZWExZGUyODRmNmVjNjlkNjEyOTlmNjcxMDU5In1dfV0sInVuaXQiOiJzYXQiLCJtZW1vIjoiVGhhbmsgeW91LiJ9
+</code></pre></div>
+
+<h3 id="v4-tokens">V4 tokens<a class="headerlink" href="#v4-tokens" title="Permanent link">&para;</a></h3>
+<p>V4 tokens are a space-efficient way of serializing tokens using the CBOR binary format. All field are single characters and hex strings are encoded in binary. V4 tokens can only hold proofs from a single mint.</p>
+<h5 id="version_1">Version<a class="headerlink" href="#version_1" title="Permanent link">&para;</a></h5>
+<p>This token format has the <code>[version]</code> value <code>B</code>.</p>
+<h5 id="format_1">Format<a class="headerlink" href="#format_1" title="Permanent link">&para;</a></h5>
+<p>Wallets serialize tokens in a <code>base64_urlsafe</code> format (base64 encoding with <code>/</code> replaced by <code>_</code> and <code>+</code> by <code>-</code>). <code>base64_urlsafe</code> strings may have padding characters (usually <code>=</code>) at the end which can be omitted. Clients need to be able to decode both cases.</p>
+<div class="codehilite"><pre><span></span><code>cashuB<span class="o">[</span>base64_token_cbor<span class="o">]</span>
+</code></pre></div>
+
+<h5 id="token-format_1">Token format<a class="headerlink" href="#token-format_1" title="Permanent link">&para;</a></h5>
+<p>The deserialized <code>base64_token_cbor</code> is a JSON of the same form as a TokenV4 but with shorter keys and data represented as binary data (<code>bytes</code>) instead of hex strings (<code>hex_str</code>). Note that we have expanded what is called <code>Proofs</code> in TokenV3 (called <code>p</code> here with TokenV4) showing that its values are also different from the TokenV3 serialization.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="p">,</span><span class="w"> </span><span class="c1">// mint URL</span>
+<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="p">,</span><span class="w"> </span><span class="c1">// unit</span>
+<span class="w">  </span><span class="nt">&quot;d&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// memo</span>
+<span class="w">  </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">by</span><span class="kc">tes</span><span class="p">,</span><span class="w"> </span><span class="c1">// keyset ID</span>
+<span class="w">      </span><span class="nt">&quot;p&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="c1">// proofs with this keyset ID</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">i</span><span class="kc">nt</span><span class="p">,</span><span class="w"> </span><span class="c1">// amount</span>
+<span class="w">          </span><span class="nt">&quot;s&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="p">,</span><span class="w"> </span><span class="c1">// secret</span>
+<span class="w">          </span><span class="nt">&quot;c&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">by</span><span class="kc">tes</span><span class="p">,</span><span class="w"> </span><span class="c1">// signature</span>
+<span class="w">          </span><span class="nt">&quot;d&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// DLEQ proof</span>
+<span class="w">            </span><span class="nt">&quot;e&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">by</span><span class="kc">tes</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;s&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">by</span><span class="kc">tes</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;r&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">by</span><span class="kc">tes</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">          </span><span class="nt">&quot;w&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// witness</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="err">...</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="err">...</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>m</code> is the mint URL. The mint URL must be stripped of any trailing slashes (<code>/</code>). <code>u</code> is the currency unit of the token keysets (see <a href="../01/">Keysets</a> for supported units), and <code>d</code> is an optional text memo from the sender.</p>
+<p><code>i</code> is the keyset ID of the profs in <code>p</code>, which is an array of <code>Proof</code> objects without the <code>id</code> field. We extracted the keyset ID <code>id</code> from each proof and grouped all proofs by their keyset ID <code>i</code> one level above (in <code>p</code>).</p>
+<p>Note that all fields of the <code>bytes</code> type encode hex strings in the original representation of <code>Proof</code>'s.</p>
+<h5 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h5>
+<p>Below is a TokenV4 JSON before CBOR and <code>base64_urlsafe</code> serialization.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">h&#39;</span><span class="mi">00</span><span class="kc">ff</span><span class="err">d</span><span class="mi">48</span><span class="err">b</span><span class="mi">8</span><span class="kc">f</span><span class="mf">5e</span><span class="err">c</span><span class="kc">f</span><span class="mi">80</span><span class="err">&#39;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;p&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;s&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;acc12435e7b8484c3cf1850149218af90f716a52bf4a5ed347e48ecc13f77388&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;c&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">h&#39;</span><span class="mi">0244538319</span><span class="err">de</span><span class="mi">485</span><span class="err">d</span><span class="mi">55</span><span class="err">bed</span><span class="mi">3</span><span class="err">b</span><span class="mi">29</span><span class="err">a</span><span class="mi">642</span><span class="err">bee</span><span class="mi">5879375</span><span class="err">ab</span><span class="mf">9e7</span><span class="err">a</span><span class="mf">620e11e48</span><span class="err">ba</span><span class="mi">482421</span><span class="kc">f</span><span class="mi">3</span><span class="err">c</span><span class="kc">f</span><span class="err">&#39;</span><span class="p">,</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">            </span><span class="p">],</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">h&#39;</span><span class="mi">00</span><span class="err">ad</span><span class="mi">268</span><span class="err">c</span><span class="mi">4</span><span class="err">d</span><span class="mi">1</span><span class="kc">f</span><span class="mi">5826</span><span class="err">&#39;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;p&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;s&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1323d3d4707a58ad2e23ada4e9f1f49f5a5b4ac7b708eb0d61f738f48307e8ee&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;c&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">h&#39;</span><span class="mi">023456</span><span class="err">aa</span><span class="mi">110</span><span class="err">d</span><span class="mi">84</span><span class="err">b</span><span class="mi">4</span><span class="err">ac</span><span class="mi">747</span><span class="err">aebd</span><span class="mi">82</span><span class="err">c</span><span class="mi">3</span><span class="err">b</span><span class="mi">005</span><span class="err">aca</span><span class="mi">50</span><span class="err">b</span><span class="kc">f</span><span class="mf">457e</span><span class="err">bd</span><span class="mi">5737</span><span class="err">a</span><span class="mi">4414</span><span class="kc">fa</span><span class="err">c</span><span class="mi">3</span><span class="err">ae</span><span class="mi">7</span><span class="err">d</span><span class="mi">94</span><span class="err">d&#39;</span><span class="p">,</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;s&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;56bcbcbb7cc6406b3fa5d57d2174f4eff8b4402b176926d3a57d3c3dcbb59d57&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;c&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">h&#39;</span><span class="mi">0273129</span><span class="err">c</span><span class="mf">5719e599379</span><span class="err">a</span><span class="mi">974</span><span class="err">a</span><span class="mi">626363</span><span class="err">c</span><span class="mi">333</span><span class="err">c</span><span class="mi">56</span><span class="err">ca</span><span class="kc">f</span><span class="err">c</span><span class="mf">0e6</span><span class="err">d</span><span class="mi">01</span><span class="err">abe</span><span class="mi">46</span><span class="err">d</span><span class="mi">5808280789</span><span class="err">c</span><span class="mi">63</span><span class="err">&#39;</span><span class="p">,</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">            </span><span class="p">],</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:3338&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The <code>h''</code> values are <code>bytes</code> but displayed as hex strings here.</p>
+<p>We serialize this JSON using CBOR which can be seen <a href="https://cbor.nemo157.com/#type=hex&amp;value=a3617482a261694800ffd48b8f5ecf80617081a36161016173784061636331323433356537623834383463336366313835303134393231386166393066373136613532626634613565643334376534386563633133663737333838616358210244538319de485d55bed3b29a642bee5879375ab9e7a620e11e48ba482421f3cfa261694800ad268c4d1f5826617082a3616102617378403133323364336434373037613538616432653233616461346539663166343966356135623461633762373038656230643631663733386634383330376538656561635821023456aa110d84b4ac747aebd82c3b005aca50bf457ebd5737a4414fac3ae7d94da36161016173784035366263626362623763633634303662336661356435376432313734663465666638623434303262313736393236643361353764336333646362623539643537616358210273129c5719e599379a974a626363c333c56cafc0e6d01abe46d5808280789c63616d75687474703a2f2f6c6f63616c686f73743a33333338617563736174">here</a>. The resulting bytes are then serialized to a string using <code>base64_urlsafe</code> and the prefix <code>cashuB</code> is added. This leaves us with the following serialized TokenV4:</p>
+<div class="codehilite"><pre><span></span><code>cashuBo2F0gqJhaUgA_9SLj17PgGFwgaNhYQFhc3hAYWNjMTI0MzVlN2I4NDg0YzNjZjE4NTAxNDkyMThhZjkwZjcxNmE1MmJmNGE1ZWQzNDdlNDhlY2MxM2Y3NzM4OGFjWCECRFODGd5IXVW-07KaZCvuWHk3WrnnpiDhHki6SCQh88-iYWlIAK0mjE0fWCZhcIKjYWECYXN4QDEzMjNkM2Q0NzA3YTU4YWQyZTIzYWRhNGU5ZjFmNDlmNWE1YjRhYzdiNzA4ZWIwZDYxZjczOGY0ODMwN2U4ZWVhY1ghAjRWqhENhLSsdHrr2Cw7AFrKUL9Ffr1XN6RBT6w659lNo2FhAWFzeEA1NmJjYmNiYjdjYzY0MDZiM2ZhNWQ1N2QyMTc0ZjRlZmY4YjQ0MDJiMTc2OTI2ZDNhNTdkM2MzZGNiYjU5ZDU3YWNYIQJzEpxXGeWZN5qXSmJjY8MzxWyvwObQGr5G1YCCgHicY2FtdWh0dHA6Ly9sb2NhbGhvc3Q6MzMzOGF1Y3NhdA
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.highlight", "search.share", "toc.integrate", "content.code.copy", "content.tabs.link", "announce.dismiss"], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.56dfad97.min.js"></script>
+      
+    
+  </body>
+</html>

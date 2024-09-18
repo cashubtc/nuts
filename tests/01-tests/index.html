@@ -1,0 +1,927 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://cashubtc.github.io/nuts/tests/01-tests/">
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.35">
+    
+    
+      
+        <title>NUT-01 Test Vectors - Cashu NUTs Specifications</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.35f28582.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#nut-01-test-vectors" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Cashu NUTs Specifications" class="md-header__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Cashu NUTs Specifications
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              NUT-01 Test Vectors
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Cashu NUTs Specifications" class="md-nav__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
+
+    </a>
+    Cashu NUTs Specifications
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    NUTs
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            NUTs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Mandatory
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Mandatory
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-00
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-01
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-02
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-03
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-04
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../05/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-05
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../06/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-06
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Optional
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Optional
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../07/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-07
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../08/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-08
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../09/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-09
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../10/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-10
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../11/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-11
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../12/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-12
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../13/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-13
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../14/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-14
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../15/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-15
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../16/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-16
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../17/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-17
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="nut-01-test-vectors">NUT-01 Test Vectors<a class="headerlink" href="#nut-01-test-vectors" title="Permanent link">&para;</a></h1>
+<p>The following are incorrect keysets that should be rejected by wallets implementing the NUT-01 specification.</p>
+<p>Key 1 is missing a byte</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03a40f20667ed53513075dc51e715ff2046cad64eb68960632269ba7f0210e38&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03fd4ce5a16b65576145949e6f99f445f8249fee17c606b688b504a849cdc452de&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02648eccfa4c026960966276fa5a4cae46ce0fd432211a4f449bf84f13aa5f8303&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;8&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02fdfd6796bfeac490cbee12f778f867f0a2c68f6508d17c649759ea0dc3547528&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Key 2 is a valid key but is not in the compressed format.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03a40f20667ed53513075dc51e715ff2046cad64eb68960632269ba7f0210e38bc&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;04fd4ce5a16b65576145949e6f99f445f8249fee17c606b688b504a849cdc452de3625246cb2c27dac965cb7200a5986467eee92eb7d496bbf1453b074e223e481&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02648eccfa4c026960966276fa5a4cae46ce0fd432211a4f449bf84f13aa5f8303&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;8&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02fdfd6796bfeac490cbee12f778f867f0a2c68f6508d17c649759ea0dc3547528&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The following are correct keysets that should be accepted by wallets implementing the NUT-01 specification. Note that the second (bigger) keyset's biggest amount is <code>9223372036854775808</code>, one unit over what can fit into a 64-bit signed integer (often known as a <code>Long</code>). To handle this you'll need to use either an unsigned 64-bit integer or a 128-bit signed integer (sometimes known as a <code>BigInteger</code>).</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03a40f20667ed53513075dc51e715ff2046cad64eb68960632269ba7f0210e38bc&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03fd4ce5a16b65576145949e6f99f445f8249fee17c606b688b504a849cdc452de&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02648eccfa4c026960966276fa5a4cae46ce0fd432211a4f449bf84f13aa5f8303&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;8&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02fdfd6796bfeac490cbee12f778f867f0a2c68f6508d17c649759ea0dc3547528&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03ba786a2c0745f8c30e490288acd7a72dd53d65afd292ddefa326a4a3fa14c566&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03361cd8bd1329fea797a6add1cf1990ffcf2270ceb9fc81eeee0e8e9c1bd0cdf5&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;036e378bcf78738ddf68859293c69778035740e41138ab183c94f8fee7572214c7&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;8&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03909d73beaf28edfb283dbeb8da321afd40651e8902fcf5454ecc7d69788626c0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;16&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;028a36f0e6638ea7466665fe174d958212723019ec08f9ce6898d897f88e68aa5d&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;32&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03a97a40e146adee2687ac60c2ba2586a90f970de92a9d0e6cae5a4b9965f54612&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;64&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03ce86f0c197aab181ddba0cfc5c5576e11dfd5164d9f3d4a3fc3ffbbf2e069664&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;128&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0284f2c06d938a6f78794814c687560a0aabab19fe5e6f30ede38e113b132a3cb9&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;256&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03b99f475b68e5b4c0ba809cdecaae64eade2d9787aa123206f91cd61f76c01459&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;512&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03d4db82ea19a44d35274de51f78af0a710925fe7d9e03620b84e3e9976e3ac2eb&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;1024&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;031fbd4ba801870871d46cf62228a1b748905ebc07d3b210daf48de229e683f2dc&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;2048&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0276cedb9a3b160db6a158ad4e468d2437f021293204b3cd4bf6247970d8aff54b&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;4096&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02fc6b89b403ee9eb8a7ed457cd3973638080d6e04ca8af7307c965c166b555ea2&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;8192&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0320265583e916d3a305f0d2687fcf2cd4e3cd03a16ea8261fda309c3ec5721e21&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;16384&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;036e41de58fdff3cb1d8d713f48c63bc61fa3b3e1631495a444d178363c0d2ed50&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;32768&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0365438f613f19696264300b069d1dad93f0c60a37536b72a8ab7c7366a5ee6c04&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;65536&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02408426cfb6fc86341bac79624ba8708a4376b2d92debdf4134813f866eb57a8d&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;131072&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;031063e9f11c94dc778c473e968966eac0e70b7145213fbaff5f7a007e71c65f41&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;262144&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02f2a3e808f9cd168ec71b7f328258d0c1dda250659c1aced14c7f5cf05aab4328&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;524288&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;038ac10de9f1ff9395903bb73077e94dbf91e9ef98fd77d9a2debc5f74c575bc86&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;1048576&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0203eaee4db749b0fc7c49870d082024b2c31d889f9bc3b32473d4f1dfa3625788&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;2097152&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;033cdb9d36e1e82ae652b7b6a08e0204569ec7ff9ebf85d80a02786dc7fe00b04c&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;4194304&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02c8b73f4e3a470ae05e5f2fe39984d41e9f6ae7be9f3b09c9ac31292e403ac512&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;8388608&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;025bbe0cfce8a1f4fbd7f3a0d4a09cb6badd73ef61829dc827aa8a98c270bc25b0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;16777216&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;037eec3d1651a30a90182d9287a5c51386fe35d4a96839cf7969c6e2a03db1fc21&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;33554432&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03280576b81a04e6abd7197f305506476f5751356b7643988495ca5c3e14e5c262&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;67108864&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03268bfb05be1dbb33ab6e7e00e438373ca2c9b9abc018fdb452d0e1a0935e10d3&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;134217728&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02573b68784ceba9617bbcc7c9487836d296aa7c628c3199173a841e7a19798020&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;268435456&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0234076b6e70f7fbf755d2227ecc8d8169d662518ee3a1401f729e2a12ccb2b276&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;536870912&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03015bd88961e2a466a2163bd4248d1d2b42c7c58a157e594785e7eb34d880efc9&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;1073741824&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02c9b076d08f9020ebee49ac8ba2610b404d4e553a4f800150ceb539e9421aaeee&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;2147483648&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;034d592f4c366afddc919a509600af81b489a03caf4f7517c2b3f4f2b558f9a41a&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;4294967296&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;037c09ecb66da082981e4cbdb1ac65c0eb631fc75d85bed13efb2c6364148879b5&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;8589934592&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02b4ebb0dda3b9ad83b39e2e31024b777cc0ac205a96b9a6cfab3edea2912ed1b3&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;17179869184&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;026cc4dacdced45e63f6e4f62edbc5779ccd802e7fabb82d5123db879b636176e9&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;34359738368&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02b2cee01b7d8e90180254459b8f09bbea9aad34c3a2fd98c85517ecfc9805af75&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;68719476736&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;037a0c0d564540fc574b8bfa0253cca987b75466e44b295ed59f6f8bd41aace754&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;137438953472&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;021df6585cae9b9ca431318a713fd73dbb76b3ef5667957e8633bca8aaa7214fb6&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;274877906944&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02b8f53dde126f8c85fa5bb6061c0be5aca90984ce9b902966941caf963648d53a&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;549755813888&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;029cc8af2840d59f1d8761779b2496623c82c64be8e15f9ab577c657c6dd453785&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;1099511627776&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03e446fdb84fad492ff3a25fc1046fb9a93a5b262ebcd0151caa442ea28959a38a&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;2199023255552&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02d6b25bd4ab599dd0818c55f75702fde603c93f259222001246569018842d3258&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;4398046511104&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03397b522bb4e156ec3952d3f048e5a986c20a00718e5e52cd5718466bf494156a&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;8796093022208&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02d1fb9e78262b5d7d74028073075b80bb5ab281edcfc3191061962c1346340f1e&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;17592186044416&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;030d3f2ad7a4ca115712ff7f140434f802b19a4c9b2dd1c76f3e8e80c05c6a9310&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;35184372088832&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03e325b691f292e1dfb151c3fb7cad440b225795583c32e24e10635a80e4221c06&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;70368744177664&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03bee8f64d88de3dee21d61f89efa32933da51152ddbd67466bef815e9f93f8fd1&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;140737488355328&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0327244c9019a4892e1f04ba3bf95fe43b327479e2d57c25979446cc508cd379ed&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;281474976710656&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02fb58522cd662f2f8b042f8161caae6e45de98283f74d4e99f19b0ea85e08a56d&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;562949953421312&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02adde4b466a9d7e59386b6a701a39717c53f30c4810613c1b55e6b6da43b7bc9a&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;1125899906842624&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;038eeda11f78ce05c774f30e393cda075192b890d68590813ff46362548528dca9&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;2251799813685248&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02ec13e0058b196db80f7079d329333b330dc30c000dbdd7397cbbc5a37a664c4f&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;4503599627370496&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02d2d162db63675bd04f7d56df04508840f41e2ad87312a3c93041b494efe80a73&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;9007199254740992&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0356969d6aef2bb40121dbd07c68b6102339f4ea8e674a9008bb69506795998f49&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;18014398509481984&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02f4e667567ebb9f4e6e180a4113bb071c48855f657766bb5e9c776a880335d1d6&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;36028797018963968&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0385b4fe35e41703d7a657d957c67bb536629de57b7e6ee6fe2130728ef0fc90b0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;72057594037927936&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02b2bc1968a6fddbcc78fb9903940524824b5f5bed329c6ad48a19b56068c144fd&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;144115188075855872&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02e0dbb24f1d288a693e8a49bc14264d1276be16972131520cf9e055ae92fba19a&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;288230376151711744&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03efe75c106f931a525dc2d653ebedddc413a2c7d8cb9da410893ae7d2fa7d19cc&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;576460752303423488&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02c7ec2bd9508a7fc03f73c7565dc600b30fd86f3d305f8f139c45c404a52d958a&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;1152921504606846976&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;035a6679c6b25e68ff4e29d1c7ef87f21e0a8fc574f6a08c1aa45ff352c1d59f06&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;2305843009213693952&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;033cdc225962c052d485f7cfbf55a5b2367d200fe1fe4373a347deb4cc99e9a099&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;4611686018427387904&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;024a4b806cf413d14b294719090a9da36ba75209c7657135ad09bc65328fba9e6f&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;9223372036854775808&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0377a6fe114e291a8d8e991627c38001c8305b23b9e98b1c7b1893f5cd0dda6cad&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.highlight", "search.share", "toc.integrate", "content.code.copy", "content.tabs.link", "announce.dismiss"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.56dfad97.min.js"></script>
+      
+    
+  </body>
+</html>

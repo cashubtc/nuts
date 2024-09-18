@@ -1,0 +1,1026 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://cashubtc.github.io/nuts/08/">
+      
+      
+        <link rel="prev" href="../07/">
+      
+      
+        <link rel="next" href="../09/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.35">
+    
+    
+      
+        <title>NUT-08 - Cashu NUTs Specifications</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.35f28582.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#nut-08-lightning-fee-return" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Cashu NUTs Specifications" class="md-header__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Cashu NUTs Specifications
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              NUT-08
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Cashu NUTs Specifications" class="md-nav__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
+
+    </a>
+    Cashu NUTs Specifications
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    NUTs
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            NUTs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Mandatory
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Mandatory
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-00
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-01
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-02
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-03
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-04
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-05
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-06
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Optional
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Optional
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-07
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    NUT-08
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    NUT-08
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#description" class="md-nav__link">
+    <span class="md-ellipsis">
+      Description
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wallet-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Wallet flow
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mint-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mint flow
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-09
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-10
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-11
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-12
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-13
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-14
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-15
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-16
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NUT-17
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="nut-08-lightning-fee-return">NUT-08: Lightning fee return<a class="headerlink" href="#nut-08-lightning-fee-return" title="Permanent link">&para;</a></h1>
+<p><code>optional</code>, <code>depends on: NUT-05</code></p>
+<hr />
+<p>This document describes how the overpaid Lightning fees are handled and extends <a href="../05/">NUT-05</a> which describes melting tokens (i.e. paying a Lightning invoice). In short, a wallet includes <em>blank outputs</em> when paying a Lightning invoice which can be assigned a value by the mint if the user has overpaid Lightning fees. This can be the case due to the unpredictability of Lightning network fees. To solve this issue, we introduce so-called <em>blank outputs</em> which are blinded messages with an undetermined value.</p>
+<p>The problem is also described in <a href="https://gist.github.com/callebtc/a6cc0bd2b6f70e081e478147c40fc578">this gist</a>.</p>
+<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
+<p>Before requesting a Lightning payment as described in <a href="../05/">NUT-05</a>, <code>Alice</code> produces a number of <code>BlindedMessage</code> which are similar to ordinary blinded messages but their value is yet to be determined by the mint <code>Bob</code> and are thus called <em>blank outputs</em>. The number of necessary blank outputs is <code>max(ceil(log2(fee_reserve)), 1)</code> which ensures that there is at least one output if there is any fee. If the <code>fee_reserve</code> is <code>0</code>, then the number of blank outputs is <code>0</code> as well. The blank outputs will contain the overpaid fees that will be returned by the mint to the wallet.</p>
+<p>This code calculates the number of necessary blank outputs in Python:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">calculate_number_of_blank_outputs</span><span class="p">(</span><span class="n">fee_reserve_sat</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">assert</span> <span class="n">fee_reserve_sat</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Fee reserve can&#39;t be negative.&quot;</span>
+    <span class="k">if</span> <span class="n">fee_reserve_sat</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">fee_reserve_sat</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+
+<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
+<p>The wallet wants to pay an invoice with <code>amount := 100 000 sat</code> and determines by asking the mint that <code>fee_reserve</code> is <code>1000 sats</code>. The wallet then provides <code>101 000 sat</code> worth of proofs and 10 blank <code>outputs</code> to make the payment (since <code>ceil(log2(1000))=ceil(9.96..)=10</code>). The mint pays the invoice and determines that the actual fee was <code>100 sat</code>, i.e, the overpaid fee to return is <code>fee_return = 900 sat</code>. The mint splits the amount <code>900</code> into summands of <code>2^n</code> which is <code>4, 128, 256, 512</code>. The mint inserts these amounts into the blank <code>outputs</code> it received form the wallet and generates 4 new promises. The mint then returns these <code>BlindSignature</code>s to the wallet together with the successful payment status.</p>
+<h2 id="wallet-flow">Wallet flow<a class="headerlink" href="#wallet-flow" title="Permanent link">&para;</a></h2>
+<p>The wallet asks the mint for the <code>fee_reserve</code> for paying a specific bolt11 invoice of value <code>amount</code> by calling <code>POST /v1/melt/quote</code> as described in <a href="../05/">NUT-05</a>. The wallet then provides a <code>PostMeltBolt11Request</code> to <code>POST /v1/melt/bolt11</code> that has (1) proofs of the value <code>amount+fee_reserve</code>, (2) the bolt11 invoice to be paid, and finally, as a new entry, (3) a field <code>outputs</code> that has <code>n_blank_outputs</code> blinded messages that are generated before the payment attempt to receive potential overpaid fees back to her.</p>
+<h2 id="mint-flow">Mint flow<a class="headerlink" href="#mint-flow" title="Permanent link">&para;</a></h2>
+<p>Here we describe how the mint generates <code>BlindSignature</code>s for the overpaid fees. The mint <code>Bob</code> returns in <code>PostMeltQuoteBolt11Response</code> the field <code>change</code> <strong>ONLY IF</strong> <code>Alice</code> has previously provided <code>outputs</code> for the change <strong>AND</strong> if the Lightning <code>actual_fees</code> were smaller than the <code>fee_reserve</code>.</p>
+<p>If the <code>overpaid_fees = fee_reserve - actual_fees</code> is positive, <code>Bob</code> decomposes it to values of <code>2^n</code> (as in <a href="../00/">NUT-00</a>) and then imprints them into the <code>blank_outputs</code> provided by <code>Alice</code>.</p>
+<p><code>Bob</code> then signs these blank outputs (now with the imprinted amounts) and thus generates <code>BlindSignature</code>s. <code>Bob</code> then returns a payment status to the wallet, and, in addition, all blind signatures it generated for the overpaid fees.</p>
+<p>Importantly, while <code>Bob</code> does not necessarily return the same number of blind signatures as it received blank outputs from <code>Alice</code> (since some of them may be of value 0), <code>Bob</code> <strong>MUST</strong> return the all blank signatures with a value greater than 0 in the same order as the blank outputs were received and should omit all blind signatures with value 0. For example, if <code>Bob</code> receives 10 blank outputs but the overpaid fees only occupy 4 blind signatures, <code>Bob</code> will only return these 4 blind signatures with the appropriate imprinted amounts and omit the remaining 6 blind signatures with value 0. Due to the well-defined order of the returned blind signatures, <code>Alice</code> can map the blind signatures returned from <code>Bob</code> to the blank outputs it provided so that she can further apply the correct unblinding operations on them.</p>
+<h2 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h2>
+<p><strong>Request</strong> of <code>Alice</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="err">POST https://mint.host:3338/v1/melt/bolt11</span>
+</code></pre></div>
+
+<p>With the data being of the form <code>PostMeltBolt11Request</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;inputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Proo</span><span class="kc">f</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dedMessage</span><span class="p">]</span><span class="err">&gt;</span><span class="w"> </span><span class="err">&lt;</span><span class="mi">--</span><span class="w"> </span><span class="err">New</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>where the new <code>output</code> field carries the <code>BlindMessages</code>.</p>
+<p>The mint <code>Bob</code> then responds with a <code>PostMeltQuoteBolt11Response</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;fee_reserve&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">STATE</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;payment_preimage&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;change&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dSig</span><span class="kc">nature</span><span class="p">]</span><span class="err">&gt;</span><span class="w"> </span><span class="err">&lt;</span><span class="mi">--</span><span class="w"> </span><span class="err">New</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>where the new <code>change</code> field carries the returned <code>BlindSignature</code>s due to overpaid fees.</p>
+<h2 id="example_2">Example<a class="headerlink" href="#example_2" title="Permanent link">&para;</a></h2>
+<p>Request of <code>Alice</code> with curl:</p>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://mint.host:3338/v1/melt/bolt11<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="s1">&#39;{</span>
+<span class="s1">  &quot;quote&quot;: &quot;od4CN5smMMS3K3QVHkbGGNCTxfcAIyIXeq8IrfhP&quot;,</span>
+<span class="s1">  &quot;inputs&quot;: [</span>
+<span class="s1">    {</span>
+<span class="s1">      &quot;amount&quot;: 4,</span>
+<span class="s1">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
+<span class="s1">      &quot;secret&quot;: &quot;429700b812a58436be2629af8731a31a37fce54dbf8cbbe90b3f8553179d23f5&quot;,</span>
+<span class="s1">      &quot;C&quot;: &quot;03b01869f528337e161a6768b480fcf9f75fd248b649c382f5e352489fd84fd011&quot;,</span>
+<span class="s1">    },</span>
+<span class="s1">    {</span>
+<span class="s1">      &quot;amount&quot;: 8,</span>
+<span class="s1">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
+<span class="s1">      &quot;secret&quot;: &quot;4f3155acef6481108fcf354f6d06e504ce8b441e617d30c88924991298cdbcad&quot;,</span>
+<span class="s1">      &quot;C&quot;: &quot;0278ab1c1af35487a5ea903b693e96447b2034d0fd6bac529e753097743bf73ca9&quot;,</span>
+<span class="s1">    }</span>
+<span class="s1">  ],</span>
+<span class="s1">  &quot;outputs&quot;: [</span>
+<span class="s1">    {</span>
+<span class="s1">      &quot;amount&quot;: 1,</span>
+<span class="s1">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
+<span class="s1">      &quot;B_&quot;: &quot;03327fc4fa333909b70f08759e217ce5c94e6bf1fc2382562f3c560c5580fa69f4&quot;</span>
+<span class="s1">    }</span>
+<span class="s1">  ]</span>
+<span class="s1">}&#39;</span>
+</code></pre></div>
+
+<p>Everything here is the same as in <a href="../05/">NUT-05</a> except for <code>outputs</code>. The <code>amount</code> field in the <code>BlindedMessage</code>s here are ignored by <code>Bob</code> so they can be set to any arbitrary value by <code>Alice</code> (they should be set to a value, like <code>1</code> so potential JSON validations do not error).</p>
+<p>If the mint has made a successful payment, it will respond the following.</p>
+<p><strong>Response</strong> <code>PostMeltQuoteBolt11Response</code> from <code>Bob</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PAID&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;payment_preimage&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;c5a1ae1f639e1f4a3872e81500fd028bece7bedc1152f740cba5c3417b748c1b&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;change&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;C_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03c668f551855ddc792e22ea61d32ddfa6a45b1eb659ce66e915bf5127a8657be0&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The field <code>change</code> is an array of <code>BlindSignatures</code> that account for the overpaid fees. Notice that the amount has been changed by the mint. <code>Alice</code> must take these and generate <code>Proofs</code> by unblinding them as described in <a href="../00/">NUT-00</a> and as she does in <a href="../04/">NUT-04</a> when minting new tokens. After generating the <code>Proofs</code>, <code>Alice</code> stores them in her database.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.highlight", "search.share", "toc.integrate", "content.code.copy", "content.tabs.link", "announce.dismiss"], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.56dfad97.min.js"></script>
+      
+    
+  </body>
+</html>
