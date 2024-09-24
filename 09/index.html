@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.35">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.36">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.35f28582.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.06209087.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -836,7 +836,7 @@
 <p><code>optional</code></p>
 <p><code>used in: NUT-13</code></p>
 <hr />
-<p>In this document, we describe how wallets can recover blind signatures, and with that their corresponding <code>Proofs</code>, by requesting from the mint to reissue the blind signatures. This can be used for a backup recovery of a lost wallet (see <a href="./">NUT-09</a>) or for recovering the response of an interrupted swap request (see <a href="../03/">NUT-03</a>).</p>
+<p>In this document, we describe how wallets can recover blind signatures, and with that their corresponding <code>Proofs</code>, by requesting from the mint to reissue the blind signatures. This can be used for a backup recovery of a lost wallet (see <a href="../13/">NUT-13</a>) or for recovering the response of an interrupted swap request (see <a href="../03/">NUT-03</a>).</p>
 <p>Mints must store the <code>BlindedMessage</code> and the corresponding <code>BlindSignature</code> in their database every time they issue a <code>BlindSignature</code>. Wallets provide the <code>BlindedMessage</code> for which they request the <code>BlindSignature</code>. Mints only respond with a <code>BlindSignature</code>, if they have previously signed the <code>BlindedMessage</code>. Each returned <code>BlindSignature</code> also contains the <code>amount</code> and the keyset <code>id</code> (see <a href="../00/">NUT-00</a>) which is all the necessary information for a wallet to recover a <code>Proof</code>.</p>
 <p><strong>Request</strong> of <code>Alice</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="err">POST https://mint.host:3338/v1/restore</span>
