@@ -33,6 +33,8 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [15][15] | Partial multi-path payments (MPP) | [Nutshell][py]                                                              | [Nutshell][py]                                |
 | [16][16] | Animated QR codes                 | [Cashu.me][cashume]                                                         | -                                             |
 | [17][17] | WebSocket subscriptions           | [Nutshell][py]                                                              | [Nutshell][py]                                |
+| [18][18] | Mint Bolt12                       | [cdk-cli]                                                                   | [cdk-mintd]                                   |
+| [19][19] | Melt Bolt12                       | [cdk-cli]                                                                   | [cdk-mintd]                                   |
 
 #### Wallets:
 
@@ -87,3 +89,5 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [15]: 15.md
 [16]: 16.md
 [17]: 17.md
+[18]: 18.md
+[19]: 19.md
