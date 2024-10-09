@@ -12,6 +12,8 @@
 | 11008 | Duplicate outputs provided                      | [NUT-03][03], [NUT-04][04], [NUT-05][05] |
 | 11009 | Inputs/Outputs of multiple units                | [NUT-03][03], [NUT-04][04], [NUT-05][05] |
 | 11010 | Inputs and outputs not of same unit             | [NUT-03][03], [NUT-04][04], [NUT-05][05] |
+| 11011 | Amountless invoice is not supported             | [NUT-05][05]                             |
+| 11012 | Amount in request does not equal invoice        | [NUT-05][05]                             |
 | 12001 | Keyset is not known                             | [NUT-02][02], [NUT-04][04]               |
 | 12002 | Keyset is inactive, cannot sign messages        | [NUT-02][02], [NUT-03][03], [NUT-04][04] |
 | 20001 | Quote request is not paid                       | [NUT-04][04]                             |
