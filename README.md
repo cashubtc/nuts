@@ -27,7 +27,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [09][09] | Signature restore                 | [Nutshell][py], [cdk-cli], [cashu-ts][ts], [gonuts]                         | [Nutshell][py], [cdk-mintd], [nutmix]                   |
 | [10][10] | Spending conditions               | [Nutshell][py], [cdk-cli], [cashu-ts][ts]                                   | [Nutshell][py], [cdk-mintd], [nutmix]                   |
 | [11][11] | Pay-To-Pubkey (P2PK)              | [Nutshell][py], [cdk-cli], [cashu-ts][ts]                                   | [Nutshell][py], [cdk-mintd], [nutmix]                   |
-| [12][12] | DLEQ proofs                       | [Nutshell][py], [cdk-cli]                                                   | [Nutshell][py], [cdk-mintd]                             |
+| [12][12] | DLEQ proofs                       | [Nutshell][py], [cdk-cli]                                                   | [Nutshell][py], [cdk-mintd], [nutmix]                            |
 | [13][13] | Deterministic secrets             | [Nutshell][py], [Moksha][moksha], [cashu-ts][ts], [cdk-cli], [gonuts]       | -                                                       |
 | [14][14] | Hashed Timelock Contracts (HTLCs) | [Nutshell][py], [cdk-cli]                                                   | [Nutshell][py], [cdk-mintd], [nutmix]                   |
 | [15][15] | Partial multi-path payments (MPP) | [Nutshell][py]                                                              | [Nutshell][py], [nutmix]                                |
