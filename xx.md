@@ -24,7 +24,6 @@ A Payment Request is defined as follows
   "u": str <optional>,
   "r": Array[str] <optional>,
   "d": str <optional>,
-  "l": str <optional>,
   "t": Transport
 }
 ```
