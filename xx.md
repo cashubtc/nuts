@@ -6,13 +6,28 @@
 
 This NUT specifies that the communication with the mint should use HTTP compression.
 
-Mints that implement this NUT support HTTP compression for all exposed REST endpoints. Ideally, the mint endpoint supports as many compression algorithms as possible. This gives clients the flexibility to choose which one suits them best.
+For compression to be used between a wallet and a mint, both the wallet (HTTP client) and the mint (HTTP server) have to support it.
 
-Wallets that want to make use of this should explicitly enable the compression headers when making requests to a mint. This is because HTTP libraries typically don't enable compression by default and, unless the request signals support for it, the mint's response will not use compression, even if the mint may support it.
+## Mints
 
-If the wallet supports more algorithms, they should be listed in the order of preference in the request header[^5].
+Mints that implement this NUT support HTTP compression for all exposed REST endpoints. This can be done natively by the mint, or externally, for example through a reverse proxy.
 
-Note that the newer algorithms offer better and faster compression but are less wide-spread.
+If the mint software package supports compression natively, it must offer a configuration option by which the mint operator can enable or disable compression support. This option should be enabled by default.
+
+If the mint doesn't support it natively, the mint documentation must include instructions on the deployment options available to mint operators that support HTTP compression, for example using an nginx reverse proxy.
+
+Using one of the two options above, the mint should support as many compression algorithms as possible. At a minimum, gzip and deflate must be supported.
+
+## Wallets
+
+Wallets that implement this NUT must ensure the compression header is set in their HTTP requests to the mint. This must be done regardless if the mint signals support for this NUT, as a mint can inadvertently support it through a reverse proxy.
+
+The wallet should support as many compression algorithms as possible. At a minimum, it should support gzip or deflate.
+
+The compression header must contain all compression algorithms supported by the wallet, listed in the order of preference, for example:
+```
+Accept-Encoding: br, gzip, deflate
+```
 
 
 ## Comparison
@@ -30,7 +45,7 @@ Below is a comparison of popular HTTP compression algorithms. It looks at a typi
 
 The 4G and LTE values are a good reference point for mobile wallets.
 
-The 2G and 3G[^6] values are more relevant for IoT devices[^4], mobile devices with degraded coverage (for example merchants in remote areas) or mobile wallet usage in developing countries[^3].
+The 2G and 3G[^5] values are more relevant for IoT devices[^4], mobile devices with degraded coverage (for example merchants in remote areas) or mobile wallet usage in developing countries[^3].
 
 
 
@@ -42,7 +57,5 @@ The 2G and 3G[^6] values are more relevant for IoT devices[^4], mobile devices w
 
 [^4]: 2G and 3G modules are commonly used IoT devices because they are cheaper.
 
-[^5]: For example: `Accept-Encoding: br, gzip, deflate`
-
-[^6]: 2G and 3G networks are being slowly phased out. In Europe, this is expected to last until at least 2030. See last page of the [Report on practices and challenges of the
+[^5]: 2G and 3G networks are being slowly phased out. In Europe, this is expected to last until at least 2030. See last page of the [Report on practices and challenges of the
 phasing out of 2G and 3G](https://www.berec.europa.eu/system/files/2023-12/BoR%20%2823%29%20204%20BEREC%20Report%20on%20practices%20and%20challenges%20of%20the%20phasing%20out%20of%202G%20and%203G_0.pdf)
