@@ -22,7 +22,8 @@ A Payment Request is defined as follows
   "i": str <optional>,
   "a": int <optional>,
   "u": str <optional>,
-  "r": Array[str] <optional>,
+  "r": bool <optional>,
+  "m": Array[str] <optional>,
   "d": str <optional>,
   "t": Transport
 }
@@ -30,12 +31,13 @@ A Payment Request is defined as follows
 
 while Transport is defined as
 
-- i: Payment id to be included in the payment payload
-- a: The amount of the requested payment
-- u: The unit of the requested payment (MUST be set if `a` is set)
-- r: A set of mints from which the payment is requested
-- d: A human readable description that the sending wallet will display after scanning the request
-- t: The method of transport chosen to transmit the payment (can be multiple, sorted by preference)
+- `i`: Payment id to be included in the payment payload
+- `a`: The amount of the requested payment
+- `u`: The unit of the requested payment (MUST be set if `a` is set)
+- `s`: Whether the payment request is for single use
+- `m`: A set of mints from which the payment is requested
+- `d`: A human readable description that the sending wallet will display after scanning the request
+- `t`: The method of transport chosen to transmit the payment (can be multiple, sorted by preference)
 
 ## Transport
 
@@ -63,17 +65,21 @@ There are different transport layers:
   - type: `post`
   - target: `<endpoint url>`
 
+## Payment payload
+
 Regardless of the transport layer, the payload sent to the receiver is a JSON serialized object as follows:
 
 ```json
 {
   "id": str <optional>,
   "memo": str <optional>,
-  "token": TokenV4_JSON
+  "mint": str,
+  "unit": <str_enum>,
+  "proofs": Array<Proof>
 }
 ```
 
-Here, `id` is the payment id (corresponding to `i` in request), `memo` is an optional memo to be sent to the receiver with the payment, and `token` is a TokenV4 JSON object as specified in [NUT-00][00].
+Here, `id` is the payment id (corresponding to `i` in request), `memo` is an optional memo to be sent to the receiver with the payment, `mint` is the mint URL from which the ecash is from, `unit` is the unit of the payment, and `proofs` is an array of proofs (see [NUT-00][00], can also include DLEQ proofs).
 
 ## Encoded Request
 
