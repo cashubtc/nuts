@@ -22,7 +22,7 @@ Using one of the two options above, the mint should support as many compression 
 
 Wallets that implement this NUT must ensure the compression header is set in their HTTP requests to the mint. This must be done regardless if the mint signals support for this NUT, as a mint can inadvertently support it through a reverse proxy.
 
-The wallet should support as many compression algorithms as possible. At a minimum, it should support gzip or deflate.
+The wallet should support as many compression algorithms as possible. At a minimum, it must support gzip or deflate.
 
 The compression header must contain all compression algorithms supported by the wallet, listed in the order of preference, for example:
 ```
