@@ -16,6 +16,7 @@ hash(R1, R2, K, C_): "a4dc034b74338c28c6bc3ea49731f2a24440fc7c4affc08b31a93fc9fb
 ## DLEQ verification on `BlindSignature`
 
 The following is a `BlindSignature` with a **valid** DLEQ proof.
+
 ```shell
 A: "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
 B_: "02a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba2"
@@ -35,7 +36,7 @@ B_: "02a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba2"
 
 ## DLEQ verification on `Proof`
 
-The following is a `Prood` with a **valid** DLEQ proof.
+The following is a `Proof` with a **valid** DLEQ proof.
 
 ```shell
 A: "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
