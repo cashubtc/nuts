@@ -19,11 +19,11 @@ A Payment Request is defined as follows
 
 ```json
 {
+  "i": str <optional>,
   "a": int <optional>,
-  "u": str,
-  "r": str <optional>,
+  "u": str <optional>,
+  "r": Array[str] <optional>,
   "d": str <optional>,
-  "m": str <optional>,
   "l": str <optional>,
   "t": Transport
 }
@@ -31,59 +31,61 @@ A Payment Request is defined as follows
 
 while Transport is defined as
 
-- a: The amount of the requested token (payment amount)
-- u: The unit of the requested token (e.g. sats)
-- r: The mint to use to mint the token
+- i: Payment id to be included in the payment payload
+- a: The amount of the requested payment
+- u: The unit of the requested payment (MUST be set if `a` is set)
+- r: A set of mints from which the payment is requested
 - d: A human readable description that the sending wallet will display after scanning the request
-- m: The memo of the requested token (can be used for accounting purposes)
-- l: The lock script of the requested token
-- t: The method of transport chosen to transmit the created token to the sender (can be multiple, sorted by preference)
-
-The sending wallet MUST honor all parts of a payment request that are specified
+- t: The method of transport chosen to transmit the payment (can be multiple, sorted by preference)
 
 ## Transport
 
-Transport is an important part of Cashu Payment Requests. Receivers can choose what kind of transport they want to support and where they want to receive the token. By making this clear in the payment requests, wallets can handle payment requests accordingly (or decline them if they do not support the transport layer). A transport consists of a type and a target.
+Transport specifies methods for sending the ecash to the receiver. A transport consists of a type and a target.
 
 ```json
 {
   "t": str,
-  "a": Target
+  "a": str,
+  "g": Array[Array[str, str]] <optional>
 }
 ```
 
 - t: type of Transport
 - a: target of Transport
+- g: optional tags for the Transport 
 
-There can be many transport layers, but here are some recommendations:
+There are different transport layers:
 
 - nostr
-  - type: "nostr"
-  - target: "<nprofile...>"
+  - type: `nostr`
+  - target: `<nprofile>`
+  - tags: `[["1", "NIP-04"], ["2", "NIP-17"], ["3", "NIP-61"]]`
 - post
-  - type: "post"
-  - target: "<endpoint url>"
-- email
-  - type: "email"
-  - target: "<email address>"
-- sms
-  - type: "sms"
-  - target: "<phone number>"
+  - type: `post`
+  - target: `<endpoint url>`
 
-Regardless of the transport layer the payload should always (unless specified differently) be a JSON serialised object as follows:
+Regardless of the transport layer, the payload sent to the receiver is a JSON serialized object as follows:
 
 ```json
-{ "token": "cashuAy..." }
+{
+  "id": str <optional>,
+  "memo": str <optional>,
+  "token": TokenV4_JSON
+}
 ```
+
+Here, `id` is the payment id (corresponding to `i` in request), `memo` is an optional memo to be sent to the receiver with the payment, and `token` is a TokenV4 JSON object as specified in [NUT-00][00].
 
 ## Encoded Request
 
-Cashu Payment Requests can be encoded and displayed/sent as string or qr code. They underlying object is serialised using CBOR and finally base64 encoded and prefixed with a version byte and standard prefix.
+The payment request is serialized using CBOR, encoded in `base64_urlsafe`, together with a prefix `creq` and a version `A`:
 
-`"creq" + base64(versionByte + cbor(PaymentRequest))`
+`"creq" + "A" + base64(CBOR(PaymentRequest))`
 
 _Example_
 
 ```sh
 creqAaVhQRVhVWNzYXRhTXgiaHR0cHM6Ly9taW50Lm1pbmliaXRzLmNhc2gvQml0Y29pbmFEeCNQbGVzYXNlIHBheSB0aGUgdmVyeSBmaXJzdCBjYXNodSBwcmFUgaJhVGVub3N0cmJUYXhGbnByb2ZpbGUxcXFzZG11cDZlMno2bWNwZXVlNno2a2wwOGhlNDloY2VuNXhucmMzdG5wdncwbWRndGplbWgwc3V4YTBrag
 ```
+
+[00]: 00.md
