@@ -48,6 +48,14 @@ The 4G and LTE values are a good reference point for mobile wallets.
 The 2G and 3G[^5] values are more relevant for IoT devices[^4], mobile devices with degraded coverage (for example merchants in remote areas) or mobile wallet usage in developing countries[^3].
 
 
+## Appendix
+
+To check if a mint supports a specific HTTP compression algorithm, use
+```shell
+curl -s -H 'Accept-Encoding: gzip' -i 'https://mint.com/v1/info' | head -n 13
+```
+The mint supports it if the response headers contain `content-encoding` with the chosen algorithm, in this case `content-encoding: gzip`.
+
 
 [^1]: Response body size for `/v1/keys/{keyset_id}` using a standard setup of 64 pubkeys for amounts that are powers of two
 
