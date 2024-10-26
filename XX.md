@@ -5,7 +5,7 @@ NUT-XX: Cached Responses
 
 ---
 
-To mitigate the risk of potential ecash loss due to network errors during critical operations such as minting, swapping, and melting, we introduce a caching mechanism for successful responses. This mechanism uses the `POST` request path and the serialized body contents to derive a key and then cache the responses using that key. If an identical request is received, the system will provide the cached response, minimizing the risk of data loss in the event of network disruptions.
+To mitigate the risk of potential ecash loss due to network errors during critical operations such as minting, swapping, and melting, we introduce a caching mechanism for successful responses. This mechanism uses the `POST` request path and the serialized body contents to derive a key and then cache the responses using that key. If an identical request is received, the system will provide the cached response, minimizing the risk of ecash loss in the event of network disruptions.
  
 
 ## Requests & Responses
