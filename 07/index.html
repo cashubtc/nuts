@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.41">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.42">
     
     
       
@@ -915,7 +915,7 @@
 
 <h1 id="nut-07-token-state-check">NUT-07: Token state check<a class="headerlink" href="#nut-07-token-state-check" title="Permanent link">&para;</a></h1>
 <p><code>optional</code></p>
-<p><code>used in: NUT-17</code></p>
+<p><code>used in: NUT-17, NUT-11, NUT-14</code></p>
 <hr />
 <p>With the token state check, wallets can ask the mint whether a specific proof is already spent and whether it is in-flight in a transaction. Wallets can also request the witness data that was used to spend a proof.</p>
 <h3 id="token-states">Token states<a class="headerlink" href="#token-states" title="Permanent link">&para;</a></h3>
@@ -945,7 +945,7 @@
 
 <p>Where the elements of the array in <code>Ys</code> are the hexadecimal representation of the compressed point <code>Y = hash_to_curve(secret)</code> of the <code>Proof</code> to check (see <a href="../00/">NUT-00</a>).</p>
 <p><strong>Response</strong> of <code>Bob</code>:</p>
-<p><code>Bob</code> will respond with a <code>PostCheckStateResponse</code></p>
+<p><code>Bob</code> responds with a <code>PostCheckStateResponse</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;states&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
@@ -958,10 +958,11 @@
 <span class="p">}</span>
 </code></pre></div>
 
+<p>The elements of the <code>states</code> array MUST be returned in the same order as the corresponding <code>Ys</code> checked in the request.</p>
 <ul>
 <li><code>Y</code> corresponds to the <code>Proof</code> checked in the request.</li>
 <li><code>state</code> is an enum string field with possible values <code>"UNSPENT"</code>, <code>"PENDING"</code>, <code>"SPENT"</code></li>
-<li><code>witness</code> is the serialized witness data that was used to spend the <code>Proof</code> if the token required it such as in the case of P2PK (see <a href="../11/">NUT-11</a>).</li>
+<li><code>witness</code> is the serialized witness data that was used to spend the <code>Proof</code> if the token has a <a href="../10/">NUT-10</a> spending condition that requires a witness such as in the case of P2PK (<a href="../11/">NUT-11</a>) or HTLCs (<a href="../14/">NUT-14</a>).</li>
 </ul>
 <p>With curl:</p>
 <p><strong>Request</strong> of <code>Alice</code>:</p>

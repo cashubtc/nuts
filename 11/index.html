@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.41">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.42">
     
     
       
@@ -1087,7 +1087,7 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p>The <code>signatures</code> are an array of signatures in hex.</p>
+<p>The <code>signatures</code> are an array of signatures in hex. The witness for a spent proof can be obtained with a <code>Proof</code> state check (see <a href="../07/">NUT-07</a>).</p>
 <h3 id="multisig">Multisig<a class="headerlink" href="#multisig" title="Permanent link">&para;</a></h3>
 <p>If the tag <code>n_sigs</code> is a positive integer, the mint will also consider signatures from public keys specified in the <code>pubkeys</code> tag additional to the public key in <code>Secret.data</code>. If the number of valid signatures is greater or equal to the number specified in <code>n_sigs</code>, the transaction is valid.</p>
 <p>Expressed as an "n-of-m" scheme, <code>n = n_sigs</code> is the number of required signatures and <code>m = 1 ("data" field) + len(pubkeys tag)</code> is the number of public keys that could sign.</p>
