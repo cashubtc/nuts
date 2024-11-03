@@ -28,47 +28,13 @@ In other words, any amount can be built from at most 3 proofs, but sometimes fro
 To allow wallets to use this scheme, a keyset has to include signatures for `1` and primes up to `P`.
 
 
-### Client algorithm
+### Client Considerations
 
 There are multiple possible decompositions[^2] for each token amount. When building a token, the wallet only has to find one.
 
 For very low-powered devices, the app can include a table with precomputed decompositions for `1..M`.
 
-Otherwise, the wallet could decompose an amount as follows:
-
-```
-// Inputs:
-// - keyset_amounts[]: 1 and the first primes until P
-// - token_amount: amount for which to construct a token, token_amount <= mint maximum M
-function find_proof_amounts(keyset_amounts[], token_amount):
-    // Special cases: if token_amount is 1 or a prime
-    if keyset_amounts[] contains token_amount
-        return [token_amount]
-    
-    proof_amounts = []
-    
-    target =
-        if token_amount % 2 == 0
-            token_amount
-        else
-            append 1 to proof_amounts[]
-            token_amount - 1
-        
-    for p1 in keyset_amounts
-        if p1 > target / 2
-            break
-            
-        p2 = target - p1
-        
-        if keyset_amounts[] not contains p2
-            continue
-        
-        append p1 to proof_amounts[]
-        append p2 to proof_amounts[]
-        return proof_amounts[]
-        
-    return Error("No matching primes found")
-```
+Otherwise, the wallet could decompose the amount using the algorithm in the Appendix below.
 
 
 ### Mint Considerations
@@ -118,6 +84,45 @@ In contrast, keysets that use amounts that are powers of two often result in lar
 |          255 | 1, 2, 4, 8, 16, 32, 64, 128   | 1, 3, 251                |
 |          700 | 4, 8, 16, 32, 128, 512        | 17, 683                  |
 |         1000 | 8, 32, 64, 128, 256, 512      | 3, 997                   |
+
+
+### Appendix
+
+#### Client Algorithm
+
+```
+// Inputs:
+// - keyset_amounts[]: 1 and the first primes until P
+// - token_amount: amount for which to construct a token, token_amount <= mint maximum M
+function find_proof_amounts(keyset_amounts[], token_amount):
+    // Special cases: if token_amount is 1 or a prime
+    if keyset_amounts[] contains token_amount
+        return [token_amount]
+    
+    proof_amounts = []
+    
+    target =
+        if token_amount % 2 == 0
+            token_amount
+        else
+            append 1 to proof_amounts[]
+            token_amount - 1
+        
+    for p1 in keyset_amounts
+        if p1 > target / 2
+            break
+            
+        p2 = target - p1
+        
+        if keyset_amounts[] not contains p2
+            continue
+        
+        append p1 to proof_amounts[]
+        append p2 to proof_amounts[]
+        return proof_amounts[]
+        
+    return Error("No matching primes found")
+```
 
 
 [^1]: This is 1 order of magnitude away from what a 64 bit unsigned integer can hold (`~1.8 * 10^20`).
