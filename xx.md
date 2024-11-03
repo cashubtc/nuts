@@ -31,9 +31,9 @@ To allow wallets to use this scheme, a keyset has to include signatures for `1` 
 
 There are multiple possible decompositions[^2] for each token amount. When building a token, the wallet only has to find one.
 
-For very low-powered devices, the app can include a table with precomputed decompositions for `1..M`.
+For very low-powered devices, the app can include a table with precomputed decompositions(s) for `1..M`.
 
-Otherwise, the wallet could decompose the amount using the algorithm in the Appendix below.
+Otherwise, the wallet could decompose the amount using an algorithm from the Appendix below.
 
 ### Mint Considerations
 
@@ -82,9 +82,13 @@ In contrast, keysets that use amounts that are powers of two often result in lar
 
 ### Appendix
 
-#### Client Algorithm
+#### Client Algorithms
+
+`ALG1` is a generic way to decompose an amount.
 
 ```
+// ALG1: Decompose a token amount into at most 2 (for even amounts) or 3 (for odd ones) keyset amounts
+//
 // Inputs:
 // - keyset_amounts[]: 1 and the first primes until P
 // - token_amount: amount for which to construct a token, token_amount <= mint maximum M
@@ -116,9 +120,65 @@ function find_proof_amounts(keyset_amounts[], token_amount):
     return Error("No matching primes found")
 ```
 
-[^1]: This is 1 order of magnitude away from what a 64 bit unsigned integer can hold (`~1.8 * 10^20`).
+`ALG2` is a variation that lets the wallet specify a list of preferred amounts. This is useful for wallets that wish to re-use their existing proofs in the decomposition.
 
-[^2]: https://en.wikipedia.org/wiki/Goldbach%27s_comet
+Uses cases may include:
+
+- fee savings: if Alice can re-use existing proof amounts, she could avoid a swap and thereby save fees. This is different from simply swapping the difference, because the difference may result in 2 or 3 proofs, whereby using `ALG2` could result in fewer.
+- privacy: if Alice wishes to send `X = px1 + px2` and she already has `1, p1`, then using `ALG2` with `preferred_proof_amounts[] = [1, p1]` she may find a more favorable decomposition `X = 1 + p1 + p2`. She may then mint the missing `p2` and send Carol `X = 1 + px1 + px2`, who then swaps them. The mint sees "someone minted `px1`" and "someone swapped `1, px1, px2`". This is a weaker correlation than if the same 2 primes are minted by Alice and swapped by Carol.
+
+```
+// ALG2: Decompose a token amount into keyset amounts. Uses, if possible, amounts from preferred_proof_amounts.
+//
+// Inputs:
+// - keyset_amounts[]: 1 and the first primes until P
+// - token_amount: amount for which to construct a token, token_amount <= mint maximum M
+// - preferred_proof_amounts[]: keyset amounts which should be included in the result, if possible
+function find_proof_amounts(keyset_amounts[], token_amount, preferred_proof_amounts[]):
+    // Special cases: if token_amount is 1 or a prime
+    if keyset_amounts[] contains token_amount
+        return [token_amount]
+
+    proof_amounts = []
+    target = token_amount
+
+    if token_amount % 2 == 1
+        append 1 to proof_amounts[]
+        target = target - 1
+
+    for preferred in preferred_proof_amounts
+        if keyset_amounts[] not contains preferred
+            continue
+
+        p1 = preferred
+        p2 = target - p1
+
+        if keyset_amounts[] not contains p2
+            continue
+
+        append p1 to proof_amounts[]
+        append p2 to proof_amounts[]
+        return proof_amounts[]
+
+    for p1 in keyset_amounts
+        if p1 > target / 2
+            break
+
+        p2 = target - p1
+
+        if keyset_amounts[] not contains p2
+            continue
+
+        append p1 to proof_amounts[]
+        append p2 to proof_amounts[]
+        return proof_amounts[]
+
+    return Error("No matching primes found")
+```
+
+[^1]: This is 1 order of magnitude away from what a 64-bit unsigned integer can hold (`~1.8 * 10^20`).
+
+[^2]: For the number of ways to decompose `2n` in a sum of 2 primes, see Goldbach's Comet: https://en.wikipedia.org/wiki/Goldbach%27s_comet
 
 [^3]: https://github.com/cashubtc/nuts/pull/176
 
