@@ -100,13 +100,11 @@ function find_proof_amounts(keyset_amounts[], token_amount):
         return [token_amount]
     
     proof_amounts = []
+    target = token_amount
     
-    target =
-        if token_amount % 2 == 0
-            token_amount
-        else
-            append 1 to proof_amounts[]
-            token_amount - 1
+    if token_amount % 2 == 1
+        append 1 to proof_amounts[]
+        target = target - 1
         
     for p1 in keyset_amounts
         if p1 > target / 2
