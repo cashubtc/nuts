@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.43">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.44">
     
     
       
@@ -903,6 +903,10 @@
 <span class="w">  </span><span class="p">],</span>
 <span class="w">  </span><span class="nt">&quot;motd&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Message to display to users.&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;icon_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://mint.host/icon.jpg&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;urls&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;https://mint.host&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;http://mint8gv0sq5ul602uxt2fe0t80e3c2bi9fy0cxedp69v1vat6ruj81wv.onion&quot;</span>
+<span class="w">  </span><span class="p">],</span>
 <span class="w">  </span><span class="nt">&quot;time&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1725304480</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;nuts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;4&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -955,6 +959,7 @@
 <li>(optional) <code>contact</code> is an array of contact objects to reach the mint operator. A contact object consists of two fields. The <code>method</code> field denotes the contact method (like "email"), the <code>info</code> field denotes the identifier (like "contact@me.com").</li>
 <li>(optional) <code>motd</code> is the message of the day that the wallet must display to the user. It should only be used to display important announcements to users, such as scheduled maintenances.</li>
 <li>(optional) <code>icon_url</code> is the URL pointing to an image to be used as an icon for the mint. Recommended to be squared in shape.</li>
+<li>(optional) <code>urls</code> is the list of endpoint URLs where the mint is reachable from.</li>
 <li>(optional) <code>time</code> is the current time set on the server. The value is passed as a Unix timestamp integer.</li>
 <li>(optional) <code>nuts</code> indicates each NUT specification that the mint supports and its settings. The settings are defined in each NUT separately.</li>
 </ul>
