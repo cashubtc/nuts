@@ -20,16 +20,12 @@ Second, tokens using NAF are on aggregate `1/6 = ~16%` more compact than those u
 
 Third, it requires only 2x more signatures in a keyset than the binary scheme.
 
-
 ### Mint Considerations
 
 To support this, the mint's keyset has to include signatures for all powers of 2 between `-2^n` to `2^n`.
 
-
 ### Wallet Considerations
 
 To construct tokens using this scheme, wallets will need outputs for negative amounts. They can get negative outputs when swapping or minting. For example, when minting a token of amount `5`, the output amounts could be `[1, 4, -1, 1, -2, 2, -4, 4]` instead of `[1, 4]`.
-
-
 
 [^1]: For theoretical background and algorithms on how to efficiently calculate the NAF, see https://phlay.de/post/non-adjacent-form/
