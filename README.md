@@ -35,6 +35,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [17][17] | WebSocket subscriptions           | [Nutshell][py]                                                              | [Nutshell][py]                                          |
 | [18][18] | Payment requests                  | [Cashu.me][cashume], [Boardwalk][bwc], [cdk-cli]                            | -                                                       |
 | [19][19] | Cached Responses                  | -                                                                           | [Nutshell][py], [cdk-mintd]                             |
+| [20][20] | Signature on Mint Quote           | [cdk-cli]                                                                   | [cdk-mintd]                                             |
 
 #### Wallets:
 
