@@ -38,6 +38,8 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [20][20] | Signature on Mint Quote           | [cdk-cli], [Nutshell][py], [gonuts]                                          | [cdk-mintd], [Nutshell][py], [gonuts]                        |
 | [21][21] | Clear authentication              | [Nutshell][py], [cdk-cli]                                                    | [Nutshell][py], [cdk-mintd], [nutmix]                        |
 | [22][22] | Blind authentication              | [Nutshell][py], [cdk-cli]                                                    | [Nutshell][py], [cdk-mintd], [nutmix]                        |
+| [23][23] | Mint Bolt12                       | [cdk-cli]                                                                    | [cdk-mintd]                                                  |
+| [24][24] | Melt Bolt12                       | [cdk-cli]                                                                    | [cdk-mintd]                                                  |
 
 #### Wallets:
 
@@ -95,4 +97,5 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [19]: 19.md
 [20]: 20.md
 [21]: 21.md
-[22]: 22.md
+[23]: 23.md
+[24]: 24.md
