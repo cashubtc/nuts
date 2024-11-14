@@ -16,7 +16,8 @@
 | 20005 | Quote is pending                                | [NUT-04][04], [NUT-05][05]               |
 | 20006 | Invoice already paid                            | [NUT-05][05]                             |
 | 20007 | Quote is expired                                | [NUT-04][04], [NUT-05][05]               |
-| 20008 | Witness not provided for mint quote             | [NUT-19][19]                             |
+| 20008 | Invalid witness                                 | [NUT-19][19]                             |
+| 20009 | Witness not provided for mint quote             | [NUT-19][19]                             |
 
 [00]: 00.md
 [01]: 01.md
