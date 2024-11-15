@@ -797,9 +797,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#settings" class="md-nav__link">
+  <a href="#mint-info-setting" class="md-nav__link">
     <span class="md-ellipsis">
-      Settings
+      Mint info setting
     </span>
   </a>
   
@@ -915,7 +915,7 @@
 </code></pre></div>
 
 <p>Here, <code>request</code> is the bolt11 Lightning invoice to be paid, <code>unit</code> is the unit the wallet would like to pay with, and <code>amount</code> is the amount for the requested payment. The wallet then pays the returned melt quote the same way as in <a href="../05/">NUT-05</a>.</p>
-<h2 id="settings">Settings<a class="headerlink" href="#settings" title="Permanent link">&para;</a></h2>
+<h2 id="mint-info-setting">Mint info setting<a class="headerlink" href="#mint-info-setting" title="Permanent link">&para;</a></h2>
 <p>The settings returned in the info endpoint (<a href="../06/">NUT-06</a>) indicate that a mint supports this NUT. The mint MUST indicate each <code>method</code> and <code>unit</code> that supports <code>mpp</code>. It can indicate this in an array of objects for multiple <code>method</code> and <code>unit</code> pairs and the boolean flag <code>mpp</code> set to <code>true</code>.</p>
 <p><code>MultipathPaymentSetting</code> is of the form:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
