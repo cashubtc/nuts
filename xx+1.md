@@ -55,18 +55,60 @@ The diagram below illustrates the protocol flow.
 ```
 
 ## Obtaining clear authentication token
-[NUT-XX][XX] specifies how the users's wallet obtains a clear authentication token (CAT) that identifies the user. The `MintClearAuthSetting` of NUT-XX MUST list the endpoint that is used to obtain blind authentication tokens in its `protected_endpoints`:****
+[NUT-XX][XX] specifies how the users's wallet obtains a clear authentication token (CAT) that identifies the user. The `MintClearAuthSetting` of NUT-XX MUST list the endpoint that is used to obtain blind authentication tokens in its `protected_endpoints`:
 
 ```json
 "protected_endpoints": [
   {
       "method": "POST",
       "path": "/v1/auth/blind/mint"
-  }
+  },
+  {
+      "method": "GET",
+      "path": "^/v1/mint/quote/bolt11/.*"
+  },
 ]
 ```
-## Obtaining blind authentication tokens
+`method` denotes the HTTP method of the endpoint, and `path` is a regex pattern that must match the path of the URL.
 
+In this example, the filters above will match for `POST /v1/auth/blind/mint` requests, and for `GET /v1/mint/quote/bolt11/<quote_id>`.
+
+## Obtaining blind authentication tokens
+```json
+"XX+1" : {
+  "max_mint": 50,
+  "protected_endpoints": [
+    {
+      "method": "POST",
+      "path": "/v1/swap"
+    },
+    {
+      "method": "GET",
+      "path": "^/v1/mint/quote/bolt11/.*"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/mint/quote/bolt11"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/mint/bolt11"
+    },
+    {
+      "method": "GET",
+      "path": "^/v1/melt/quote/bolt11/.*"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/melt/quote/bolt11"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/melt/bolt11"
+    }
+  ]
+}
+```
 
 ## Notes
 - Blind auth tokens are invalidated by the mint before the request is processed (also for failed or errored request)
