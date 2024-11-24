@@ -1031,7 +1031,7 @@
 </code></pre></div>
 
 <p><code>m</code> is the mint URL. The mint URL must be stripped of any trailing slashes (<code>/</code>). <code>u</code> is the currency unit of the token keysets (see <a href="../01/">Keysets</a> for supported units), and <code>d</code> is an optional text memo from the sender.</p>
-<p><code>i</code> is the keyset ID of the profs in <code>p</code>, which is an array of <code>Proof</code> objects without the <code>id</code> field. We extracted the keyset ID <code>id</code> from each proof and grouped all proofs by their keyset ID <code>i</code> one level above (in <code>p</code>).</p>
+<p><code>i</code> is the keyset ID of the proofs in <code>p</code>, which is an array of <code>Proof</code> objects without the <code>id</code> field. We extracted the keyset ID <code>id</code> from each proof and grouped all proofs by their keyset ID <code>i</code> one level above (in <code>p</code>).</p>
 <p>Note that all fields of the <code>bytes</code> type encode hex strings in the original representation of <code>Proof</code>'s.</p>
 <h5 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h5>
 <p>Below is a TokenV4 JSON before CBOR and <code>base64_urlsafe</code> serialization.</p>
