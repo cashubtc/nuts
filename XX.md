@@ -53,8 +53,8 @@ The entry must be structured as follows:
 }
 ```
 
-Where `"supported"` indicates whether the functionality is supported and `"enabled_routes"` is a dictionary of which keys are the routes for which caching is enabled.
-`ttl` is the amount of seconds the responses are cached for before being evicted.
+Where `ttl` is the amount of seconds the responses are cached for and `"cached_endpoints"` is a list of the routes for which caching is enabled.
+`"path"` and `"method"` describe respectively the cached route and its method.
 
 ## Example
 
