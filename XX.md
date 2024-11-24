@@ -17,8 +17,8 @@ Any Mint implementation should elect a data structure `D` that maps request obje
 Upon the reception of a mint (`POST /v1/mint/{method}`), swap (`POST v1/swap`) or melt (`POST /v1/melt/{method}`) `request` Bob should immediately derive a key `k` for it. `k` should depend on the path of `request` as well as the contents of `request`'s payload.
 
 Bob should perform a `k` based look-up `response = D[k]` and discriminate execution based  on the following check:
-* If `response == null`: `request` has no matching `response`. The Mint should process `request` as per usual.
-* If `response != null`: `request` has a matching `response`. The Mint should return the cached `response` (REPEAT).
+* If `response == null`: `request` has no matching `response`. Bob should process `request` as per usual.
+* If `response != null`: `request` has a matching `response`. Bob should return the cached `response` (REPEAT).
 
 ### Store
 
@@ -27,6 +27,34 @@ After any mint, melt and swap request is processed and the response has been dee
 ### Expiry
 
 Bob autonomously decides the TTL (Time To Live) for each successful response, after which time has passed it can evict the entry from `D`.
+
+## Settings
+
+Support for NUT-XX **MUST** be announced as an extension to the `nuts` field of the `GetInfoResponse` object described in [NUT-6](06) and returned upon a `GET v1/info` request.
+
+The entry must be structured as follows:
+```json
+"nuts": {
+    ...,
+    "xx": {
+        "ttl": <int>,
+        "cached_endpoints": [
+            {
+                "path": "v1/{mint|melt}/{method}",
+                "method": "{POST|GET|...}",
+            },
+            {
+                "path": "v1/swap",
+                "method": "{POST|GET|...}",
+            },
+            ...
+        ]
+    }
+}
+```
+
+Where `"supported"` indicates whether the functionality is supported and `"enabled_routes"` is a dictionary of which keys are the routes for which caching is enabled.
+`ttl` is the amount of seconds the responses are cached for before being evicted.
 
 ## Example
 
@@ -85,3 +113,5 @@ If the first request is successful, `Bob` will respond with 5 identical `PostSwa
   "signatures": <Array[BlindSignature]>
 }
 ```
+
+[06]: 06.md
