@@ -53,8 +53,10 @@ The entry must be structured as follows:
 }
 ```
 
-Where `ttl` is the amount of seconds the responses are cached for and `"cached_endpoints"` is a list of the routes for which caching is enabled.
-`"path"` and `"method"` describe respectively the cached route and its method.
+Where `ttl` is the amount of seconds the responses are cached for and `cached_endpoints` is a list of the routes for which caching is enabled.
+`path` and `method` describe respectively the cached route and its method.
+
+if `ttl` is set to 0, then the responses are to be considered cached *indefinetely*
 
 ## Example
 
