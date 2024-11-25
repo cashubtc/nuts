@@ -14,11 +14,11 @@ Any Mint implementation should elect a data structure `D` that maps request obje
 
 ### Derive & Repeat
 
-Upon the reception of a mint (`POST /v1/mint/{method}`), swap (`POST v1/swap`) or melt (`POST /v1/melt/{method}`) `request` Bob should immediately derive a key `k` for it. `k` should depend on the path of `request` as well as the contents of `request`'s payload.
+Upon the reception of a mint (`POST /v1/mint/{method}`), swap (`POST v1/swap`) or melt (`POST /v1/melt/{method}`) `request`, the mint derives a key `k` for it. `k` should depend on the path of `request` as well as the contents of `request`'s payload.
 
-Bob should perform a `k` based look-up `response = D[k]` and discriminate execution based  on the following check:
-* If `response == null`: `request` has no matching `response`. Bob should process `request` as per usual.
-* If `response != null`: `request` has a matching `response`. Bob should return the cached `response` (REPEAT).
+The mint uses `k` to look up a `response = D[k]` and discriminates execution based on the following checks:
+* If no cached `response` is found: `request` has no matching `response`. The mint processes `request` as per usual.
+* If a cached `response` is found: `request` has a matching `response`. The mint returns the cached `response`.
 
 ### Store
 
@@ -30,9 +30,9 @@ Bob autonomously decides the TTL (Time To Live) for each successful response, af
 
 ## Settings
 
-Support for NUT-XX **MUST** be announced as an extension to the `nuts` field of the `GetInfoResponse` object described in [NUT-6](06) and returned upon a `GET v1/info` request.
+Support for NUT-XX is announced as an extension to the `nuts` field of the `GetInfoResponse` described in [NUT-6](06).
 
-The entry must be structured as follows:
+The entry is structured as follows:
 ```json
 "nuts": {
     ...,
@@ -53,10 +53,10 @@ The entry must be structured as follows:
 }
 ```
 
-Where `ttl` is the amount of seconds the responses are cached for and `cached_endpoints` is a list of the routes for which caching is enabled.
+Where `ttl` is the number of seconds the responses are cached for and `cached_endpoints` is a list of the methods and paths for which caching is enabled.
 `path` and `method` describe respectively the cached route and its method.
 
-if `ttl` is null, the responses are to be considered cached *indefinetely*.
+If `ttl` is `null`, the responses are expected to be cached *indefinitely*.
 
 ## Example
 
