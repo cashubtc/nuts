@@ -22,7 +22,7 @@ The mint uses `k` to look up a `response = D[k]` and discriminates execution bas
 
 ### Store
 
-After any mint, melt and swap request is processed and the response has been deemed to be successful (`status_code == 200`), Bob should store the response in `D`.
+After any mint, melt and swap request is processed and the response has been deemed to be successful (`status_code == 200`), Bob should store the response in `D` under key `k` (`D[k] = response`).
 
 ### Expiry
 
