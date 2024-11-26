@@ -6,20 +6,25 @@
 
 ---
 
-This NUT defines a clear authentication scheme that allows mints operators to limit the use of their mint to certain users. The mint operator can protect endpoints from access by requiring the user to authenticate. Only users with a clear authentication token (CAT) from the specified OpenID Connect (OIDC) service can use the protected endpoints. The CAT is a JWT that contains user information, a signature from the OIDC service, and an expiry. To access protected endpoints, the wallet includes the CAT in the HTTP request header.
+This NUT defines a clear authentication scheme that allows mints operators to limit the use of their mint to registered users using the OAuth 2.0 and OpenID Connect protocols. The mint operator can protect chosen endpoints from access by requiring user authentication. Only users that provide a clear authentication token (CAT) from the specified OpenID Connect (OIDC) service can use the protected endpoints. The CAT is a JWT, known as the `access_token`, that contains user information, a signature from the OIDC service, and an expiry time. To access protected endpoints, the wallet includes the CAT in the HTTP request header.
 
-**Warning:** This authentication scheme breaks the user's privacy as the CAT contains user information. Mint operators should require clear authentication only on selected endpoints, such as those for obtaining blind authentication tokens (BATs, see [NUT-XX+1][XX+1]).
+**Note:** The primary purpose of this NUT is to restrict access to a mint by allowing registered users to obtain Blind Authentication Tokens as specified in [NUT-XX+1][XX+1].
+
+**Warning:** This authentication scheme breaks the user's privacy as the CAT contains user information. Mint operators SHOULD require clear authentication **only on selected endpoints**, such as those for obtaining blind authentication tokens (BATs, see [NUT-XX+1][XX+1]).
 
 ## OpenID Connect service configuration
 The OpenID Connect (OIDC) service is typically run by the mint operator (but it does not have to). The OIDC service must be configured to meet the following criteria:  
-- **Client ID:** The OIDC service MUST enable the client ID `cashu-client` which is used by all authenticating wallets. 
-- **Signature algorithm:** The OIDC server MUST use `ES256` as the Access token signature algorithm and the ID token signature algorithm. **(#TODO: should we drop this?)**
-- **Wallet redirect URLs:** To support the standard OpenID Connect redirect based authentication with authorization code, the OIDC service MUST allow redirect URLs that correspond to the wallets it wants to support. You can find a list of common redirect URLs for well-known Cashu wallets **here TODO: Link**. 
-- **Localhost redirect URL:** The OICD service MUST also allow redirects to any port on localhost via the URL `http://localhost:*`. If a wildcard for the port is not possible, the URL `http://localhost:33388` should be used.
+- **Client ID:** The OIDC service MUST enable the client ID `cashu-client` which is shared by all authenticating wallets. 
+- **Signature algorithm:** The OIDC service MUST support at least one of the two asymmetric JWS signature algorithms for access token and ID token signatures: `ES256` and `RS256`.
+- **Wallet redirect URLs:** To support the OpenID Connect Authorization Code flow, the OIDC service MUST allow redirect URLs that correspond to the wallets it wants to support. You can find a list of common redirect URLs for well-known Cashu wallets [here][XX-SUPPL].
+- **Localhost redirect URL:** The OICD service MUST also allow redirects to the URL `http://localhost:33388/callback`.
+- **Authentication flows:** Although, strictly speaking, this NUT does not restrict the OpenID Connect grant types that can be used to obtain a CAT, it is recommended to enable at least the `authorization_code` (Authorization Code) flow and the `urn:ietf:params:oauth:grant-type:device_code` (Device Code) flow in the `grant_types_supported` field of the `openid_discovery` configuration. The `password` (Resource Owner Password Credentials, ROPC) flow SHOULD NOT be used as it requires handling the user's credentials in the wallet application.
 
 ## Mint
 
-A mint that requires clear authentication for access to some endpoints announces the following `MintClearAuthSetting` in its [NUT-06][06] info response:
+### Signalling protected endpoints
+
+The mint lists each protected endpoint that requires a clear authentication token (CAT) in the `MintClearAuthSetting` in its [NUT-06][06] info response:
 
 ```json
 "XX" : {
@@ -32,24 +37,47 @@ A mint that requires clear authentication for access to some endpoints announces
   ]
 }
 ```
-`openid_discovery` is the OpenID Connect Discovery endpoint which has all the information necessary for a client to authenticate with the service. `protected_endpoints` is an array of objects that specify each endpoint that requires a CAT in the request headers. `method` is the HTTP method and `path` the path for the endpoint that is protected.
+`openid_discovery` is the OpenID Connect Discovery endpoint which has all the information necessary for a client to authenticate with the service. `protected_endpoints` is an array of objects that specify each endpoint that requires a CAT in the request headers. `method` is the HTTP method and `path` the path for the endpoint that is protected. 
+
+The `path` can either be a string (exact match), such as `"/v1/auth/blind/mint"` or a regex pattern such as `"^/v1/mint/quote/bolt11/.*"`. 
 
 In this example, the entry in `protected_endpoints` is the [NUT-XX+1][xx+1] endpoint for obtaining blind authentication tokens (BATs).
 
-When receiving a request to a protected endpoint, the mint checks the included CAT (which is a JWT) in the HTTP request header (see below) and verifies the JWT. To verify the JWT, the mint checks the signature of the OIDC and the expiry of the JWT. The JWT includes a `sub` field which identifies a specific user. The `sub` identification can, for example, be used to rate limit the user. The mint does not verify the *audience*. More on OpenID Connect ID token validation [here](https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation).
+### Clear authentication token verification
+
+When receiving a request to a protected endpoint, the mint checks the included CAT (which is a JWT) in the HTTP request header (see below in section [Wallet](#cat-in-request-header)) and verifies the JWT. To verify the JWT, the mint checks the signature of the OIDC and the expiry of the JWT. 
+
+The JWT includes a `sub` field which identifies a specific user. The `sub` identification can, for example, be used to rate limit the user. Note: The mint does not verify the *audience* field. More on OpenID Connect ID token validation [here](https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation).
 
 ## Wallet
-To make a request to the mint to an endpoint that is protected via clear authentication, the wallet includes the clear auth token (CAT) in the HTTP request header:
+
+To make a request to one of the `protected_endpoints` of the mint, the wallet needs to obtain a valid clear auth token (CAT) from the OIDC service. The wallet uses the `openid_discovery` URL in the `MintClearAuthSetting` obtained from the info endpoint of the mint to authenticate with the OIDC service and obtains a CAT. 
+
+### Obtaining a CAT
+
+Depending on the wallet implementation and use case, an appropriate authorization flow should be used. For mobile wallets, the Authorization Code is recommended. For command-line wallets, the Device Code flow is recommended. For headless wallets, the ROPC flow may be used.
+
+It is recommended to use language-specific libraries that can handle OpenID Connect authentication on behalf of the user. The wallet should be able to handle and store access tokens and refresh tokens for each mint that it authenticates with. If the wallet connects to a mint for the first time, or if the refresh token is about to expire, the wallet should allow the user to log in again to obtain a new access token (`access_token`) and a new refresh token (`refresh_token`).
+
+The `access_token` is what is referred to as a clear authentication token (CAT) throughout this document.
+
+### CAT in request header
+When making a request to the mint's endpoint, the wallet matches the requested URL with the `protected_endpoints` from the `MintClearAuthSetting` (either exact match or regex pattern match). If the match is positive, the mint requires the wallet to provide a CAT with the request.
+
+After obtaining a CAT from the OIDC service, the wallet includes a valid CAT in the HTTP request header when it makes requests to one of the mint's `protected_endpoints`:
 
 ```
-Authorization: Bearer <clear_auth_token>
+Clear-auth: <CAT>
 ```
 
-The `clear_auth_token` is a JWT that is signed by the OIDC authority. The mint verifies the JWT as described above.
+(**TODO:** Keep this or use `Authorization: Bearer <CAT>?`)
 
-### Getting a clear authentication token
+The `CAT` is a JWT (or `access_token`) encoded with base64 that is signed by and obtained from the OIDC authority. The mint verifies the JWT as described [above](#clear-authentication-token-verification).
 
-To get a CAT, the wallet needs to enable the user to either create a new account with the OpenID Connect (OIDC) service if the user has never used this mint before, or to log in to the OIDC service using a login page or using username and password 
+## Errors (WIP)
+
+Error codes...
 
 [06]: 06.md
+[XX-SUPPL]: suppl/xx.md
 [XX+1]: xx+1.md
