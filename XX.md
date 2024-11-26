@@ -14,7 +14,7 @@ Any Mint implementation should elect a data structure `D` that maps request obje
 
 ### Derive & Repeat
 
-Upon the reception of a mint (`POST /v1/mint/{method}`), swap (`POST v1/swap`) or melt (`POST /v1/melt/{method}`) `request`, the mint derives a key `k` for it. `k` should depend on the path of `request` as well as the contents of `request`'s payload.
+Upon the reception of a mint ([NUT-4](04)), swap ([NUT-3](03)) or melt ([NUT-5](05)) `request`, the mint derives a key `k` for it. `k` should depend on the path of `request` as well as the contents of `request`'s payload.
 
 The mint uses `k` to look up a `response = D[k]` and discriminates execution based on the following checks:
 * If no cached `response` is found: `request` has no matching `response`. The mint processes `request` as per usual.
@@ -53,8 +53,10 @@ The entry is structured as follows:
 }
 ```
 
-Where `ttl` is the number of seconds the responses are cached for and `cached_endpoints` is a list of the methods and paths for which caching is enabled.
-`path` and `method` describe respectively the cached route and its method.
+Where:
+ * `ttl` is the number of seconds the responses are cached for
+ * `cached_endpoints` is a list of the methods and paths for which caching is enabled.
+ * `path` and `method` describe the cached route and its method respectively.
 
 If `ttl` is `null`, the responses are expected to be cached *indefinitely*.
 
@@ -116,4 +118,7 @@ If the first request is successful, `Bob` will respond with 5 identical `PostSwa
 }
 ```
 
+[03]: 03.md
+[04]: 04.md
+[05]: 05.md
 [06]: 06.md
