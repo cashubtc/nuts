@@ -6,9 +6,9 @@
 
 ---
 
-This NUT defines a blind authentication scheme that allows mint operators to limit the use of their mint to a set of authorized users while still providing privacy within that anonymity set. 
+This NUT defines a blind authentication scheme that allows mint operators to limit the use of their mint to a set of authorized users while still providing privacy within that anonymity set.
 
-We use two authentication schemes in conjunction: *clear authentication* using an external OpenID Connect / OAuth 2.0 service (described in [NUT-XX][XX]), and *blind authentication* with the mint to access its resources. A user's wallet first needs to obtain a clear authentication token (CAT) from an OpenID Connect authority that the mint selected, which is not subject of this specification. Once the user has obtained the CAT from the OpenID Connect service, they can use it to obtain multiple blind authentication tokens (BAT) from the mint. We describe this process in this document.
+We use two authentication schemes in conjunction: _clear authentication_ using an external OpenID Connect / OAuth 2.0 service (described in [NUT-XX][XX]), and _blind authentication_ with the mint to access its resources. A user's wallet first needs to obtain a clear authentication token (CAT) from an OpenID Connect authority that the mint selected, which is not subject of this specification. Once the user has obtained the CAT from the OpenID Connect service, they can use it to obtain multiple blind authentication tokens (BAT) from the mint. We describe this process in this document.
 
 Blind authentication tokens (BATs) are used to access the protected endpoints of the mint and make sure that only users that previously presented a valid CAT can access the mint's features such as minting, melting, or swapping ecash. Wallets provide a BAT in the request header when making a request to one of the mint's protected endpoints. The mint parses the header for a BAT, verifies the signature (like with normal ecash as described in [NUT-00][00]), checks if the token has previously been spent, and if not, adds it to its spent BAT token database.
 
@@ -19,6 +19,7 @@ Blind authentication tokens (BATs) are essentially the same as normal ecash toke
 BATs can only be used a single time for each request that the wallet makes to the mint's protected endpoints. After each request, the BAT is added to the mint's spent token list after which they are regarded as spent. This is also the case if the wallet's request results in an error.
 
 To summarize:
+
 - Wallet connects to mint and user is prompted to register or log in with an OAuth 2.0 service
 - Upon login, wallet receives a clear authentication (CAT) token that identifies the user
 - CAT is used to obtain blind authentication tokens (BAT) from the mint
@@ -78,7 +79,7 @@ Like in [NUT-01][01] and [NUT-02][02], the mint responds with its BAT keyset for
 GET /v1/auth/blind/keys
 ```
 
-or 
+or
 
 ```
 GET /v1/auth/blind/keys/{keyset_id}
@@ -102,8 +103,6 @@ where the mint returns a `GetKeysResponse`:
 
 Notice that the unit is `auth` and only a single amount of `1` is supported.
 
-
-
 ### Keysets
 
 Like in [NUT-02][02] the mint also offers the endpoints returning the keysets:
@@ -113,8 +112,6 @@ GET v1/auth/blind/keysets
 ```
 
 The mint returns the same `GetKeysetsResponse` response types as described in [NUT-02][02].
-
-
 
 ## Minting blind authentication tokens
 
@@ -165,6 +162,7 @@ The wallet un-blinds the response to obtain the signatures `C` as described in [
 The wallet checks the `MintBlindAuthSetting` of the mint to determine which endpoints require blind authentication. Similar to `NUT-XX`, the wallet performs a match on the `protected_endpoints` in the `MintBlindAuthSetting` before attempting a request to one of the mint's endpoints. If the match is positive, the wallet needs to add a blind authentication token (BAT) to the request header.
 
 ### Serialization
+
 To add a blind authentication token (BAT) to the request header, we need to serialize a single `AuthProof` JSON in base64 with the prefix `authA`:
 
 ```sh
@@ -181,7 +179,7 @@ We add this serialized BAT to the request header:
 Blind-auth: <BAT>
 ```
 
-and make the request as we usually would. 
+and make the request as we usually would.
 
 `AuthProofs` are single-use. The wallet MUST delete the `AuthProof` as soon as it has made a request, even if the request errors. If the wallet runs out of `AuthProofs`, it can [mint new ones](#minting-blind-authentication-tokens) using its clear authentication token (CAT).
 
@@ -206,6 +204,7 @@ The mint lists each protected endpoint that requires a blind authentication toke
   ]
 }
 ```
+
 `max_mint` is the number of blind authentication tokens (BATs) that can be minted in a single request using the `POST /v1/auth/blind/mint` endpoint.
 
 `protected_endpoints` contains the endpoints that are protected by blind authentication. `method` denotes the HTTP method of the endpoint, and `path` is a regex pattern that must match the path of the URL. In this example, all `/v1/mint/*` endpoints are protected and require blind authentication.

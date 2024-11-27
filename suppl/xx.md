@@ -6,6 +6,6 @@
 
 Well-known Cashu wallet redirect URLs for the OpenID Connect Authorization Code flow:
 
-| Wallet    | Redirect URL             |
-| -------- | ----------------------- |
+| Wallet   | Redirect URL                       |
+| -------- | ---------------------------------- |
 | Cashu.me | `https://wallet.cashu.me/callback` |
