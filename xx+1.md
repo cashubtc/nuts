@@ -16,7 +16,7 @@ Blind authentication tokens (BATs) are used to access the protected endpoints of
 
 Blind authentication tokens (BATs) are essentially the same as normal ecash tokens and are minted in the same way. They are signed with a special keyset of the mint that has the unit `auth` and a single amount `1`.
 
-BATs can only be used a single time for each request that the wallet makes to the mint's protected endpoints. After each request, the BAT is added to the mint's spent token list after which they are regarded as spent. This is also the case if the wallet's request results in an error.
+BATs can only be used a single time for each request that the wallet makes to the mint's protected endpoints. After each for each successful request, the BAT is added to the mint's spent token list after which they are regarded as spent. The BAT is not marked as spent if the request results in an error.
 
 To summarize:
 
@@ -181,7 +181,7 @@ Blind-auth: <BAT>
 
 and make the request as we usually would.
 
-`AuthProofs` are single-use. The wallet MUST delete the `AuthProof` as soon as it has made a request, even if the request errors. If the wallet runs out of `AuthProofs`, it can [mint new ones](#minting-blind-authentication-tokens) using its clear authentication token (CAT).
+`AuthProofs` are single-use. The wallet MUST delete the `AuthProof` after a successful request, and SHOULD delete it even if request results in an error. If the wallet runs out of `AuthProofs`, it can [mint new ones](#minting-blind-authentication-tokens) using its clear authentication token (CAT).
 
 ## Mint
 
@@ -191,7 +191,7 @@ The mint lists each protected endpoint that requires a blind authentication toke
 
 ```json
 "XX+1" : {
-  "max_mint": 50,
+  "bat_max_mint": 50,
   "protected_endpoints": [
     {
       "method": "GET",
@@ -205,7 +205,7 @@ The mint lists each protected endpoint that requires a blind authentication toke
 }
 ```
 
-`max_mint` is the number of blind authentication tokens (BATs) that can be minted in a single request using the `POST /v1/auth/blind/mint` endpoint.
+`bat_max_mint` is the number of blind authentication tokens (BATs) that can be minted in a single request using the `POST /v1/auth/blind/mint` endpoint.
 
 `protected_endpoints` contains the endpoints that are protected by blind authentication. `method` denotes the HTTP method of the endpoint, and `path` is a regex pattern that must match the path of the URL. In this example, all `/v1/mint/*` endpoints are protected and require blind authentication.
 
