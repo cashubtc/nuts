@@ -135,7 +135,7 @@ Like in [NUT-04][04], the wallet includes a `PostAuthBlindMintRequest` in the re
 }
 ```
 
-where `outputs` are `BlindedMessages` (see [NUT-00][00]) from the blind auth keyset of the mint with a unit `amount`. The sum of all amounts of the outputs cannot exceed the maximum allowed amount of BATs as specified in `max_mint` in the mint's `MintBlindAuthSetting` (see **TODO: Add ref**)
+where `outputs` are `BlindedMessages` (see [NUT-00][00]) from the blind auth keyset of the mint with a unit `amount`. The sum of all amounts of the outputs cannot exceed the maximum allowed amount of BATs as specified in `bat_max_mint` in the mint's `MintBlindAuthSetting` (see **TODO: Add ref**)
 
 Notice that in contrast to [NUT-04][04], we did not create a quote and did not include it in this request. Instead, we directly minted the maximum allowed amount of BATs.
 

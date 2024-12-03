@@ -16,7 +16,7 @@ This NUT defines a clear authentication scheme that allows mint operators to lim
 
 The OpenID Connect (OIDC) service is typically run by the mint operator (but it does not have to be). The OIDC service must be configured to meet the following criteria:
 
-- **Client ID:** The OIDC service MUST enable the client ID `cashu-client`, which is shared by all authenticating wallets.
+- **Client ID:** The OIDC service announces the client ID that wallets should use to authenticate. The OIDC service SHOULD add a client with ID `cashu-client`.
 - **Signature algorithm:** The OIDC service MUST support at least one of the two asymmetric JWS signature algorithms for access token and ID token signatures: `ES256` and `RS256`.
 - **Wallet redirect URLs:** To support the OpenID Connect Authorization Code flow, the OIDC service MUST allow redirect URLs that correspond to the wallets it wants to support. You can find a list of common redirect URLs for well-known Cashu wallets [here][XX-SUPPL].
 - **Localhost redirect URL:** The OIDC service MUST also allow redirects to the URL `http://localhost:33388/callback`.
@@ -31,6 +31,7 @@ The mint lists each protected endpoint that requires a clear authentication toke
 ```json
 "XX" : {
   "openid_discovery": "https://mint.com:8080/realms/nutshell/.well-known/openid-configuration",
+  "client_id": "cashu-client",
   "protected_endpoints": [
     {
         "method": "POST",
@@ -40,7 +41,9 @@ The mint lists each protected endpoint that requires a clear authentication toke
 }
 ```
 
-`openid_discovery` is the OpenID Connect Discovery endpoint which has all the information necessary for a client to authenticate with the service. `protected_endpoints` is an array of objects that specify each endpoint that requires a CAT in the request headers. `method` is the HTTP method and `path` the path for the endpoint that is protected.
+`openid_discovery` is the OpenID Connect Discovery endpoint which has all the information necessary for a client to authenticate with the service. `client_id` is the OpenID Connect Client ID that the wallet needs to use to authenticate.
+
+`protected_endpoints` is an array of objects that specify each endpoint that requires a CAT in the request headers. `method` is the HTTP method and `path` the path for the endpoint that is protected.
 
 The `path` can either be a string (exact match), such as `"/v1/auth/blind/mint"` or a regex pattern such as `"^/v1/mint/quote/bolt11/.*"`.
 
