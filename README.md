@@ -34,6 +34,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [16][16] | Animated QR codes                 | [Cashu.me][cashume]                                                         | -                                                       |
 | [17][17] | WebSocket subscriptions           | [Nutshell][py]                                                              | [Nutshell][py]                                          |
 | [18][18] | Payment requests                  | [Cashu.me][cashume], [Boardwalk][bwc], [cdk-cli]                            | -                                                       |
+| [19][19] | Cached Responses                  | -                                                                           | [Nutshell][py], [cdk-mintd]                             |
 
 #### Wallets:
 
@@ -89,3 +90,4 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [16]: 16.md
 [17]: 17.md
 [18]: 18.md
+[19]: 19.md
