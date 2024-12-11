@@ -16,7 +16,8 @@ This NUT defines a clear authentication scheme that allows mint operators to lim
 
 The OpenID Connect (OIDC) service is typically run by the mint operator (but it does not have to be). The OIDC service must be configured to meet the following criteria:
 
-- **Client ID:** The OIDC service announces the client ID that wallets should use to authenticate. The OIDC service SHOULD add a client with ID `cashu-client`.
+- **No client secret:** The OIDC service MUST NOT use a client secret.
+- **Authorization code flow:** The OIDC service MUST enable the *authorization code flow* with PKCE for public clients, so that an authorization code can be exchanged for an access token and a refresh token.
 - **Signature algorithm:** The OIDC service MUST support at least one of the two asymmetric JWS signature algorithms for access token and ID token signatures: `ES256` and `RS256`.
 - **Wallet redirect URLs:** To support the OpenID Connect Authorization Code flow, the OIDC service MUST allow redirect URLs that correspond to the wallets it wants to support. You can find a list of common redirect URLs for well-known Cashu wallets [here][XX-SUPPL].
 - **Localhost redirect URL:** The OIDC service MUST also allow redirects to the URL `http://localhost:33388/callback`.
