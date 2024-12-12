@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.47">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.48">
     
     
       
@@ -1072,6 +1072,17 @@
 <p>We serialize this JSON using CBOR which can be seen <a href="https://cbor.nemo157.com/#type=hex&amp;value=a3617482a261694800ffd48b8f5ecf80617081a36161016173784061636331323433356537623834383463336366313835303134393231386166393066373136613532626634613565643334376534386563633133663737333838616358210244538319de485d55bed3b29a642bee5879375ab9e7a620e11e48ba482421f3cfa261694800ad268c4d1f5826617082a3616102617378403133323364336434373037613538616432653233616461346539663166343966356135623461633762373038656230643631663733386634383330376538656561635821023456aa110d84b4ac747aebd82c3b005aca50bf457ebd5737a4414fac3ae7d94da36161016173784035366263626362623763633634303662336661356435376432313734663465666638623434303262313736393236643361353764336333646362623539643537616358210273129c5719e599379a974a626363c333c56cafc0e6d01abe46d5808280789c63616d75687474703a2f2f6c6f63616c686f73743a33333338617563736174">here</a>. The resulting bytes are then serialized to a string using <code>base64_urlsafe</code> and the prefix <code>cashuB</code> is added. This leaves us with the following serialized TokenV4:</p>
 <div class="codehilite"><pre><span></span><code>cashuBo2F0gqJhaUgA_9SLj17PgGFwgaNhYQFhc3hAYWNjMTI0MzVlN2I4NDg0YzNjZjE4NTAxNDkyMThhZjkwZjcxNmE1MmJmNGE1ZWQzNDdlNDhlY2MxM2Y3NzM4OGFjWCECRFODGd5IXVW-07KaZCvuWHk3WrnnpiDhHki6SCQh88-iYWlIAK0mjE0fWCZhcIKjYWECYXN4QDEzMjNkM2Q0NzA3YTU4YWQyZTIzYWRhNGU5ZjFmNDlmNWE1YjRhYzdiNzA4ZWIwZDYxZjczOGY0ODMwN2U4ZWVhY1ghAjRWqhENhLSsdHrr2Cw7AFrKUL9Ffr1XN6RBT6w659lNo2FhAWFzeEA1NmJjYmNiYjdjYzY0MDZiM2ZhNWQ1N2QyMTc0ZjRlZmY4YjQ0MDJiMTc2OTI2ZDNhNTdkM2MzZGNiYjU5ZDU3YWNYIQJzEpxXGeWZN5qXSmJjY8MzxWyvwObQGr5G1YCCgHicY2FtdWh0dHA6Ly9sb2NhbGhvc3Q6MzMzOGF1Y3NhdA
 </code></pre></div>
+
+<h4 id="binary-token">Binary Token<a class="headerlink" href="#binary-token" title="Permanent link">&para;</a></h4>
+<p>V3 and V4 Token can be transmitted in a binary format when applicable (for example when transmitting via NFC).
+For this the serialised token is prepended with a prefix and a version byte.</p>
+<div class="codehilite"><pre><span></span><code>utf8(&quot;craw&quot;) || utf8(&lt;token_version&gt;) || &lt;serialised_token&gt;
+</code></pre></div>
+
+<ul>
+<li>Token V3 Version: <code>utf8("craw") || utf8("A") || cbor(token_object)</code></li>
+<li>Token V4 Version: <code>utf8("craw") || utf8("B") || cbor(token_object)</code></li>
+</ul>
 
 
 
