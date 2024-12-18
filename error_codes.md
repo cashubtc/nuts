@@ -16,6 +16,7 @@
 | 20005 | Quote is pending                                | [NUT-04][04], [NUT-05][05]               |
 | 20006 | Invoice already paid                            | [NUT-05][05]                             |
 | 20007 | Quote is expired                                | [NUT-04][04], [NUT-05][05]               |
+| 20008 | Lightning payment failed                        | [NUT-05][05]                             |
 
 [00]: 00.md
 [01]: 01.md
