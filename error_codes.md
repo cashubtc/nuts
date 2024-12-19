@@ -16,6 +16,8 @@
 | 20005 | Quote is pending                                | [NUT-04][04], [NUT-05][05]               |
 | 20006 | Invoice already paid                            | [NUT-05][05]                             |
 | 20007 | Quote is expired                                | [NUT-04][04], [NUT-05][05]               |
+| 20008 | Signature for mint request invalid              | [NUT-20][20]                             |
+| 20009 | Pubkey required for mint quote                  | [NUT-20][20]                             |
 
 [00]: 00.md
 [01]: 01.md
@@ -30,3 +32,4 @@
 [10]: 10.md
 [11]: 11.md
 [12]: 12.md
+[20]: 20.md
