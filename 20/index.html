@@ -1016,7 +1016,8 @@
 <hr />
 <p>This NUT defines signature-based authentication for mint quote redemption. When requesting a mint quote, clients provide a public key. The mint will then require a valid signature from the corresponding secret key to process the mint operation.</p>
 <blockquote>
-<p>[!CAUTION] &gt; <a href="../04/">NUT-04</a> mint quotes without a public key can be minted by anyone who knows the mint quote id without providing a signature.</p>
+<p>[!CAUTION]</p>
+<p><a href="../04/">NUT-04</a> mint quotes without a public key can be minted by anyone who knows the mint quote id without providing a signature.</p>
 </blockquote>
 <h2 id="mint-quote">Mint quote<a class="headerlink" href="#mint-quote" title="Permanent link">&para;</a></h2>
 <p>To request a mint quote, the wallet of <code>Alice</code> makes a <code>POST /v1/mint/quote/{method}</code> request where <code>method</code> is the payment method requested. We present an example with the <code>method</code> being <code>bolt11</code> here.</p>
@@ -1035,7 +1036,8 @@
 <p>with the requested <code>amount</code>,<code>unit</code>, and <code>description</code> according to <a href="../04/">NUT-04</a>.</p>
 <p><code>pubkey</code> is the public key that will be required for signature verification during the minting operation. The mint will only mint ecash after receiving a valid signature from the corresponding private key in the subsequent <code>PostMintRequest</code>.</p>
 <blockquote>
-<p>[!IMPORTANT] &gt; <strong>Privacy:</strong> To prevent the mint from being able to link multiple mint quotes, wallets <strong>SHOULD</strong> generate a unique public key for each mint quote request.</p>
+<p>[!IMPORTANT]</p>
+<p><strong>Privacy:</strong> To prevent the mint from being able to link multiple mint quotes, wallets <strong>SHOULD</strong> generate a unique public key for each mint quote request.</p>
 </blockquote>
 <p>The mint <code>Bob</code> then responds with a <code>PostMintQuoteBolt11Response</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
@@ -1067,8 +1069,8 @@
 <h3 id="message-aggregation">Message aggregation<a class="headerlink" href="#message-aggregation" title="Permanent link">&para;</a></h3>
 <p>To provide a signature for a mint request, the owner of the signing public keys must concatenate the quote ID <code>quote</code> in <code>PostMintQuoteBolt11Response</code> and the <code>B_</code> fields of all <code>BlindedMessages</code> in the <code>PostMintBolt11Request</code> (i.e., the outputs, see <a href="../00/">NUT-00</a>) to a single message string in the order they appear in the <code>PostMintRequest</code>. This concatenated string is then hashed and signed (see <a href="#signature-scheme">Signature scheme</a>).</p>
 <blockquote>
-<p>[!NOTE]
-Concatenating the quote ID and the outputs into a single message prevents maliciously replacing the outputs.</p>
+<p>[!NOTE]</p>
+<p>Concatenating the quote ID and the outputs into a single message prevents maliciously replacing the outputs.</p>
 </blockquote>
 <p>If a request has <code>n</code> outputs, the message to sign becomes:</p>
 <div class="codehilite"><pre><span></span><code>msg_to_sign =  quote || B_0 || ... || B_(n-1)
