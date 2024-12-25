@@ -191,4 +191,36 @@ Serialized:
 cashuBo2F0gqJhaUgA_9SLj17PgGFwgaNhYQFhc3hAYWNjMTI0MzVlN2I4NDg0YzNjZjE4NTAxNDkyMThhZjkwZjcxNmE1MmJmNGE1ZWQzNDdlNDhlY2MxM2Y3NzM4OGFjWCECRFODGd5IXVW-07KaZCvuWHk3WrnnpiDhHki6SCQh88-iYWlIAK0mjE0fWCZhcIKjYWECYXN4QDEzMjNkM2Q0NzA3YTU4YWQyZTIzYWRhNGU5ZjFmNDlmNWE1YjRhYzdiNzA4ZWIwZDYxZjczOGY0ODMwN2U4ZWVhY1ghAjRWqhENhLSsdHrr2Cw7AFrKUL9Ffr1XN6RBT6w659lNo2FhAWFzeEA1NmJjYmNiYjdjYzY0MDZiM2ZhNWQ1N2QyMTc0ZjRlZmY4YjQ0MDJiMTc2OTI2ZDNhNTdkM2MzZGNiYjU5ZDU3YWNYIQJzEpxXGeWZN5qXSmJjY8MzxWyvwObQGr5G1YCCgHicY2FtdWh0dHA6Ly9sb2NhbGhvc3Q6MzMzOGF1Y3NhdA
 ```
 
+## Raw Token Serialization
+
+### TokenV4
+
+What follows is a TokenV4 Token serialized in its raw binary form. `h''` values are bytes in hex notation.
+
+Token:
+
+```json
+{
+    "t": [
+        {
+            "i": h'00ad268c4d1f5826',
+            "p": [
+                {
+                    "a": 1,
+                    "s": "9a6dbb847bd232ba76db0df197216b29d3b8cc14553cd27827fc1cc942fedb4e",
+                    "c": h'038618543ffb6b8695df4ad4babcde92a34a96bdcd97dcee0d7ccf98d472126792',
+                },
+            ],
+        },
+    ],
+    "d": "Thank you",
+    "m": "http://localhost:3338",
+    "u": "sat",
+}
+```
+
+Serialized to raw binary:
+
+`h'6372617742a4617481a261694800ad268c4d1f5826617081a3616101617378403961366462623834376264323332626137366462306466313937323136623239643362386363313435353363643237383237666331636339343266656462346561635821038618543ffb6b8695df4ad4babcde92a34a96bdcd97dcee0d7ccf98d4721267926164695468616e6b20796f75616d75687474703a2f2f6c6f63616c686f73743a33333338617563736174'`
+
 [NUT-10]: ../10.md
