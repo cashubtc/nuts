@@ -8,26 +8,24 @@
       
       
       
-        <link rel="canonical" href="https://cashubtc.github.io/nuts/">
+        <link rel="canonical" href="https://cashubtc.github.io/nuts/20/">
       
       
       
-        <link rel="next" href="00/">
       
-      
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
     
     
       
-        <title>Cashu NUTs Specifications</title>
+        <title>NUT-20: Signature on Mint Quote - Cashu NUTs Specifications</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.6f8fc17f.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.6f8fc17f.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -46,7 +44,7 @@
       
     
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -72,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cashu-nuts-notation-usage-and-terminology" class="md-skip">
+        <a href="#nut-20-signature-on-mint-quote" class="md-skip">
           Skip to content
         </a>
       
@@ -88,7 +86,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Cashu NUTs Specifications" class="md-header__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+    <a href=".." title="Cashu NUTs Specifications" class="md-header__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
@@ -108,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              NUT-20: Signature on Mint Quote
             
           </span>
         </div>
@@ -238,7 +236,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Cashu NUTs Specifications" class="md-nav__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+    <a href=".." title="Cashu NUTs Specifications" class="md-nav__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
@@ -265,30 +263,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Home
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -297,83 +275,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#specifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      Specifications
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Specifications">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#mandatory" class="md-nav__link">
-    <span class="md-ellipsis">
-      Mandatory
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#optional" class="md-nav__link">
-    <span class="md-ellipsis">
-      Optional
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Optional">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#wallets" class="md-nav__link">
-    <span class="md-ellipsis">
-      Wallets:
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mints" class="md-nav__link">
-    <span class="md-ellipsis">
-      Mints:
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -466,7 +367,7 @@
   
   
     <li class="md-nav__item">
-      <a href="00/" class="md-nav__link">
+      <a href="../00/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -487,7 +388,7 @@
   
   
     <li class="md-nav__item">
-      <a href="01/" class="md-nav__link">
+      <a href="../01/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -508,7 +409,7 @@
   
   
     <li class="md-nav__item">
-      <a href="02/" class="md-nav__link">
+      <a href="../02/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -529,7 +430,7 @@
   
   
     <li class="md-nav__item">
-      <a href="03/" class="md-nav__link">
+      <a href="../03/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -550,7 +451,7 @@
   
   
     <li class="md-nav__item">
-      <a href="04/" class="md-nav__link">
+      <a href="../04/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -571,7 +472,7 @@
   
   
     <li class="md-nav__item">
-      <a href="05/" class="md-nav__link">
+      <a href="../05/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -592,7 +493,7 @@
   
   
     <li class="md-nav__item">
-      <a href="06/" class="md-nav__link">
+      <a href="../06/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -660,7 +561,7 @@
   
   
     <li class="md-nav__item">
-      <a href="07/" class="md-nav__link">
+      <a href="../07/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -681,7 +582,7 @@
   
   
     <li class="md-nav__item">
-      <a href="08/" class="md-nav__link">
+      <a href="../08/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -702,7 +603,7 @@
   
   
     <li class="md-nav__item">
-      <a href="09/" class="md-nav__link">
+      <a href="../09/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -723,7 +624,7 @@
   
   
     <li class="md-nav__item">
-      <a href="10/" class="md-nav__link">
+      <a href="../10/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -744,7 +645,7 @@
   
   
     <li class="md-nav__item">
-      <a href="11/" class="md-nav__link">
+      <a href="../11/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -765,7 +666,7 @@
   
   
     <li class="md-nav__item">
-      <a href="12/" class="md-nav__link">
+      <a href="../12/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -786,7 +687,7 @@
   
   
     <li class="md-nav__item">
-      <a href="13/" class="md-nav__link">
+      <a href="../13/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -807,7 +708,7 @@
   
   
     <li class="md-nav__item">
-      <a href="14/" class="md-nav__link">
+      <a href="../14/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -828,7 +729,7 @@
   
   
     <li class="md-nav__item">
-      <a href="15/" class="md-nav__link">
+      <a href="../15/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -849,7 +750,7 @@
   
   
     <li class="md-nav__item">
-      <a href="16/" class="md-nav__link">
+      <a href="../16/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -870,7 +771,7 @@
   
   
     <li class="md-nav__item">
-      <a href="17/" class="md-nav__link">
+      <a href="../17/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -917,167 +818,143 @@
   
 
 
-<h1 id="cashu-nuts-notation-usage-and-terminology">Cashu NUTs (Notation, Usage, and Terminology)<a class="headerlink" href="#cashu-nuts-notation-usage-and-terminology" title="Permanent link">&para;</a></h1>
-<p>These documents each specify parts of the Cashu protocol. Read the specifications for the legacy API <a href="https://github.com/cashubtc/nuts/tree/74f26b81b6617db710fa1081eebc0c7203711213">here</a>.</p>
-<h2 id="specifications">Specifications<a class="headerlink" href="#specifications" title="Permanent link">&para;</a></h2>
-<p>Wallets and mints <code>MUST</code> implement all mandatory specs and <code>CAN</code> implement optional specs.</p>
-<h3 id="mandatory">Mandatory<a class="headerlink" href="#mandatory" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>NUT #</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="00/">00</a></td>
-<td>Cryptography and Models</td>
-</tr>
-<tr>
-<td><a href="01/">01</a></td>
-<td>Mint public keys</td>
-</tr>
-<tr>
-<td><a href="02/">02</a></td>
-<td>Keysets and fees</td>
-</tr>
-<tr>
-<td><a href="03/">03</a></td>
-<td>Swapping tokens</td>
-</tr>
-<tr>
-<td><a href="04/">04</a></td>
-<td>Minting tokens</td>
-</tr>
-<tr>
-<td><a href="05/">05</a></td>
-<td>Melting tokens</td>
-</tr>
-<tr>
-<td><a href="06/">06</a></td>
-<td>Mint info</td>
-</tr>
-</tbody>
-</table>
-<h3 id="optional">Optional<a class="headerlink" href="#optional" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>#</th>
-<th>Description</th>
-<th>Wallets</th>
-<th>Mints</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="07/">07</a></td>
-<td>Token state check</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/ngutech21/moksha">Moksha</a>, <a href="https://nutstash.app/">Nutstash</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/ngutech21/moksha">Moksha</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="08/">08</a></td>
-<td>Overpaid Lightning fees</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/ngutech21/moksha">Moksha</a>, <a href="https://nutstash.app/">Nutstash</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/ngutech21/moksha">Moksha</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="09/">09</a></td>
-<td>Signature restore</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/elnosh/gonuts">gonuts</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="10/">10</a></td>
-<td>Spending conditions</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="11/">11</a></td>
-<td>Pay-To-Pubkey (P2PK)</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="12/">12</a></td>
-<td>DLEQ proofs</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="13/">13</a></td>
-<td>Deterministic secrets</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/ngutech21/moksha">Moksha</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/elnosh/gonuts">gonuts</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="14/">14</a></td>
-<td>Hashed Timelock Contracts (HTLCs)</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="15/">15</a></td>
-<td>Partial multi-path payments (MPP)</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a></td>
-</tr>
-<tr>
-<td><a href="16/">16</a></td>
-<td>Animated QR codes</td>
-<td><a href="https://cashu.me">Cashu.me</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="17/">17</a></td>
-<td>WebSocket subscriptions</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a></td>
-</tr>
-<tr>
-<td><a href="18/">18</a></td>
-<td>Payment requests</td>
-<td><a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/MakePrisms/boardwalkcash">Boardwalk</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="19/">19</a></td>
-<td>Cached Responses</td>
-<td>-</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a></td>
-</tr>
-<tr>
-<td>[20][20]</td>
-<td>Signature on Mint Quote</td>
-<td><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a></td>
-</tr>
-</tbody>
-</table>
-<h4 id="wallets">Wallets:<a class="headerlink" href="#wallets" title="Permanent link">&para;</a></h4>
+<h1 id="nut-20-signature-on-mint-quote">NUT-20: Signature on Mint Quote<a class="headerlink" href="#nut-20-signature-on-mint-quote" title="Permanent link">&para;</a></h1>
+<p><code>optional</code></p>
+<p><code>depends on: NUT-04</code></p>
+<hr />
+<p>This NUT defines signature-based authentication for mint quote redemption. When requesting a mint quote, clients provide a public key. The mint will then require a valid signature from the corresponding secret key to process the mint operation.</p>
+<blockquote>
+<p>[!CAUTION] &gt; <a href="../04/">NUT-04</a> mint quotes without a public key can be minted by anyone who knows the mint quote id without providing a signature.</p>
+</blockquote>
+<h2 id="mint-quote">Mint quote<a class="headerlink" href="#mint-quote" title="Permanent link">&para;</a></h2>
+<p>To request a mint quote, the wallet of <code>Alice</code> makes a <code>POST /v1/mint/quote/{method}</code> request where <code>method</code> is the payment method requested. We present an example with the <code>method</code> being <code>bolt11</code> here.</p>
+<div class="codehilite"><pre><span></span><code><span class="err">POST https://mint.host:3338/v1/mint/quote/bolt11</span>
+</code></pre></div>
+
+<p>The wallet of <code>Alice</code> includes the following <code>PostMintQuoteBolt11Request</code> data in its request:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="s2">&quot;sat&quot;</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Optional</span>
+<span class="w">  </span><span class="nt">&quot;pubkey&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// Optional &lt;-- New</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>with the requested <code>amount</code>,<code>unit</code>, and <code>description</code> according to <a href="../04/">NUT-04</a>.</p>
+<p><code>pubkey</code> is the public key that will be required for signature verification during the minting operation. The mint will only mint ecash after receiving a valid signature from the corresponding private key in the subsequent <code>PostMintRequest</code>.</p>
+<blockquote>
+<p>[!IMPORTANT] &gt; <strong>Privacy:</strong> To prevent the mint from being able to link multiple mint quotes, wallets <strong>SHOULD</strong> generate a unique public key for each mint quote request.</p>
+</blockquote>
+<p>The mint <code>Bob</code> then responds with a <code>PostMintQuoteBolt11Response</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">STATE</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pubkey&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// Optional &lt;-- New</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The response is the same as in <a href="../04/">NUT-04</a> except for <code>pubkey</code> which has been provided by the wallet in the previous request.</p>
+<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
+<p>Request of <code>Alice</code> with curl:</p>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:3338/v1/mint/quote/bolt11<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;amount&quot;: 10, &quot;unit&quot;: &quot;sat&quot;, &quot;pubkey&quot;: &quot;03d56ce4e446a85bbdaa547b4ec2b073d40ff802831352b8272b7dd7a4de5a7cac&quot;}&#39;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
+</code></pre></div>
+
+<p>Response of <code>Bob</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;9d745270-1405-46de-b5c5-e2762b4f5e00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lnbc100n1pj4apw9...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UNPAID&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704757</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pubkey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03d56ce4e446a85bbdaa547b4ec2b073d40ff802831352b8272b7dd7a4de5a7cac&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="signing-the-mint-request">Signing the mint request<a class="headerlink" href="#signing-the-mint-request" title="Permanent link">&para;</a></h2>
+<h3 id="message-aggregation">Message aggregation<a class="headerlink" href="#message-aggregation" title="Permanent link">&para;</a></h3>
+<p>To provide a signature for a mint request, the owner of the signing public keys must concatenate the quote ID <code>quote</code> in <code>PostMintQuoteBolt11Response</code> and the <code>B_</code> fields of all <code>BlindedMessages</code> in the <code>PostMintBolt11Request</code> (i.e., the outputs, see <a href="../00/">NUT-00</a>) to a single message string in the order they appear in the <code>PostMintRequest</code>. This concatenated string is then hashed and signed (see <a href="#signature-scheme">Signature scheme</a>).</p>
+<blockquote>
+<p>[!NOTE]
+Concatenating the quote ID and the outputs into a single message prevents maliciously replacing the outputs.</p>
+</blockquote>
+<p>If a request has <code>n</code> outputs, the message to sign becomes:</p>
+<div class="codehilite"><pre><span></span><code>msg_to_sign =  quote || B_0 || ... || B_(n-1)
+</code></pre></div>
+
+<p>Where <code>||</code> denotes concatenation, <code>quote</code> is the UTF-8 quote id in <code>PostMintQuoteBolt11Response</code>, and each <code>B_n</code> is a UTF-8 encoded hex string of the outputs in the <code>PostMintBolt11Request</code>.</p>
+<h3 id="signature-scheme">Signature scheme<a class="headerlink" href="#signature-scheme" title="Permanent link">&para;</a></h3>
+<p>To mint a quote where a public key was provided, the wallet includes a signature on <code>msg_to_sign</code> in the <code>PostMintBolt11Request</code>. We use a <a href="https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki">BIP340</a> Schnorr signature on the SHA-256 hash of the message to sign as defined above.</p>
+<h2 id="minting-tokens">Minting tokens<a class="headerlink" href="#minting-tokens" title="Permanent link">&para;</a></h2>
+<p>After requesting a mint quote and paying the request, the wallet proceeds with minting new tokens by calling the <code>POST /v1/mint/{method}</code> endpoint where <code>method</code> is the payment method requested (here <code>bolt11</code>).</p>
+<div class="codehilite"><pre><span></span><code><span class="err">POST https://mint.host:3338/v1/mint/bolt11</span>
+</code></pre></div>
+
+<p>The wallet <code>Alice</code> includes the following <code>PostMintBolt11Request</code> data in its request</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dedMessage</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;signature&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="w"> </span><span class="err">&lt;</span><span class="mi">--</span><span class="w"> </span><span class="err">New</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>with the <code>quote</code> being the quote ID from the previous step and <code>outputs</code> being <code>BlindedMessages</code> as in <a href="../04/">NUT-04</a>.</p>
+<p><code>signature</code> is the signature on the <code>msg_to_sign</code> which is the concatenated quote id and the outputs as defined above.</p>
+<p>The mint responds with a <code>PostMintBolt11Response</code> as in <a href="../04/">NUT-04</a> if all validations are successful.</p>
+<h2 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h2>
+<p>Request of <code>Alice</code> with curl:</p>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://mint.host:3338/v1/mint/bolt11<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="s1">&#39;{</span>
+<span class="s1">  &quot;quote&quot;: &quot;9d745270-1405-46de-b5c5-e2762b4f5e00&quot;,</span>
+<span class="s1">  &quot;outputs&quot;: [</span>
+<span class="s1">    {</span>
+<span class="s1">      &quot;amount&quot;: 8,</span>
+<span class="s1">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
+<span class="s1">      &quot;B_&quot;: &quot;035015e6d7ade60ba8426cefaf1832bbd27257636e44a76b922d78e79b47cb689d&quot;</span>
+<span class="s1">    },</span>
+<span class="s1">    {</span>
+<span class="s1">      &quot;amount&quot;: 2,</span>
+<span class="s1">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
+<span class="s1">      &quot;B_&quot;: &quot;0288d7649652d0a83fc9c966c969fb217f15904431e61a44b14999fabc1b5d9ac6&quot;</span>
+<span class="s1">    }</span>
+<span class="s1">  ],</span>
+<span class="s1">  &quot;signature&quot;: &quot;d9be080b33179387e504bb6991ea41ae0dd715e28b01ce9f63d57198a095bccc776874914288e6989e97ac9d255ac667c205fa8d90a211184b417b4ffdd24092&quot;</span>
+
+<span class="s1">}&#39;</span>
+</code></pre></div>
+
+<p>Response of <code>Bob</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;C_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0224f1c4c564230ad3d96c5033efdc425582397a5a7691d600202732edc6d4b1ec&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;C_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0277d1de806ed177007e5b94a8139343b6382e472c752a74e99949d511f7194f6c&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="errors">Errors<a class="headerlink" href="#errors" title="Permanent link">&para;</a></h2>
+<p>If the wallet user <code>Alice</code> does not include a signature on the <code>PostMintBolt11Request</code> but did include a <code>pubkey</code> in the <code>PostMintBolt11QuoteRequest</code> then <code>Bob</code> <strong>MUST</strong> respond with an error. <code>Alice</code> <strong>CAN</strong> repeat the request with a valid signature.</p>
+<p>See <a href="../error_codes/">Error Codes</a>:</p>
 <ul>
-<li><a href="https://github.com/cashubtc/nutshell">Nutshell</a></li>
-<li><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></li>
-<li><a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a></li>
-<li><a href="https://github.com/cashubtc/eNuts">eNuts</a></li>
-<li><a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></li>
-<li><a href="https://github.com/ngutech21/moksha">Moksha</a></li>
-<li><a href="https://nutstash.app/">Nutstash</a></li>
-<li><a href="https://cashu.me">Cashu.me</a></li>
-<li><a href="https://github.com/elnosh/gonuts">Gonuts</a></li>
-<li><a href="https://github.com/MakePrisms/boardwalkcash">Boardwalk</a></li>
+<li><code>20008</code>: Mint quote with <code>pubkey</code> but no valid <code>signature</code> provided for mint request.</li>
+<li><code>20009</code>: Mint quote requires <code>pubkey</code> but none given or invalid <code>pubkey</code>.</li>
 </ul>
-<h4 id="mints">Mints:<a class="headerlink" href="#mints" title="Permanent link">&para;</a></h4>
-<ul>
-<li><a href="https://github.com/cashubtc/nutshell">Nutshell</a></li>
-<li><a href="https://github.com/elnosh/gonuts">Gonuts</a></li>
-<li><a href="https://github.com/ngutech21/moksha">Moksha</a></li>
-<li><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a></li>
-<li><a href="https://github.com/lescuer97/nutmix">Nutmix</a></li>
-</ul>
+<h2 id="settings">Settings<a class="headerlink" href="#settings" title="Permanent link">&para;</a></h2>
+<p>The settings for this NUT indicate the support for requiring a signature before minting. They are part of the info response of the mint (<a href="../06/">NUT-06</a>) which in this case reads</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;20&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;bool&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
 
 
 
@@ -1147,10 +1024,10 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.highlight", "search.share", "toc.integrate", "content.code.copy", "content.tabs.link", "announce.dismiss"], "search": "assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.highlight", "search.share", "toc.integrate", "content.code.copy", "content.tabs.link", "announce.dismiss"], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      <script src="../assets/javascripts/bundle.88dd0f4e.min.js"></script>
       
     
   </body>
