@@ -64,6 +64,9 @@ nav:
           - NUT-15: 15.md
           - NUT-16: 16.md
           - NUT-17: 17.md
+          - NUT-18: 18.md
+          - NUT-19: 19.md
+          - NUT-20: 20.md          
           # Add more optional NUTs here
 plugins:
   - search
