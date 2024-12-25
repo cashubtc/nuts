@@ -1137,14 +1137,13 @@
 </code></pre></div>
 
 <h4 id="binary-token">Binary Token<a class="headerlink" href="#binary-token" title="Permanent link">&para;</a></h4>
-<p>V3 and V4 Token can be transmitted in a binary format when applicable (for example when transmitting via NFC).
+<p>Token can be transmitted in a binary format when applicable (for example when transmitting via NFC).
 For this the serialised token is prepended with a prefix and a version byte.</p>
 <div class="codehilite"><pre><span></span><code>utf8(&quot;craw&quot;) || utf8(&lt;token_version&gt;) || &lt;serialised_token&gt;
 </code></pre></div>
 
 <ul>
-<li>Token V3 Version: <code>utf8("craw") || utf8("A") || cbor(token_object)</code></li>
-<li>Token V4 Version: <code>utf8("craw") || utf8("B") || cbor(token_object)</code></li>
+<li>Binary Encoding V4: <code>utf8("craw") || utf8("B") || cbor(token_v4_object)</code></li>
 </ul>
 
 
