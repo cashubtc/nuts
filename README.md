@@ -32,7 +32,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [14][14] | Hashed Timelock Contracts (HTLCs) | [Nutshell][py], [cdk-cli]                                                   | [Nutshell][py], [cdk-mintd], [nutmix]                   |
 | [15][15] | Partial multi-path payments (MPP) | [Nutshell][py]                                                              | [Nutshell][py]                                          |
 | [16][16] | Animated QR codes                 | [Cashu.me][cashume]                                                         | -                                                       |
-| [17][17] | WebSocket subscriptions           | [Nutshell][py]                                                              | [Nutshell][py]                                          |
+| [17][17] | WebSocket subscriptions           | [Nutshell][py], [cdk-cli][cdk-cli]                                          | [Nutshell][py], [cdk-mintd][cdk-mintd]                  |
 | [18][18] | Payment requests                  | [Cashu.me][cashume], [Boardwalk][bwc], [cdk-cli]                            | -                                                       |
 | [19][19] | Cached Responses                  | -                                                                           | [Nutshell][py], [cdk-mintd]                             |
 | [20][20] | Signature on Mint Quote           | [cdk-cli], [Nutshell][py]                                                   | [cdk-mintd],[Nutshell][py]                              |
