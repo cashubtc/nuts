@@ -18,12 +18,12 @@
 | 20007 | Quote is expired                                | [NUT-04][04], [NUT-05][05]               |
 | 20008 | Signature for mint request invalid              | [NUT-20][20]                             |
 | 20009 | Pubkey required for mint quote                  | [NUT-20][20]                             |
-| 80001 | Endpoint requires clear auth                    | [NUT-21][21]                             |
-| 80002 | Clear authentication failed                     | [NUT-21][21]                             |
-| 81001 | Endpoint requires blind auth                    | [NUT-22][22]                             |
-| 81002 | Blind authentication failed                     | [NUT-22][22]                             |
-| 81003 | Maximum BAT mint amount exceeded                | [NUT-22][22]                             |
-| 81004 | BAT mint rate limit                             | [NUT-22][22]                             |
+| 30001 | Endpoint requires clear auth                    | [NUT-21][21]                             |
+| 30002 | Clear authentication failed                     | [NUT-21][21]                             |
+| 31001 | Endpoint requires blind auth                    | [NUT-22][22]                             |
+| 31002 | Blind authentication failed                     | [NUT-22][22]                             |
+| 31003 | Maximum BAT mint amount exceeded                | [NUT-22][22]                             |
+| 31004 | BAT mint rate limit                             | [NUT-22][22]                             |
 
 [00]: 00.md
 [01]: 01.md
