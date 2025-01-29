@@ -23,7 +23,7 @@
 | 31001 | Endpoint requires blind auth                    | [NUT-22][22]                             |
 | 31002 | Blind authentication failed                     | [NUT-22][22]                             |
 | 31003 | Maximum BAT mint amount exceeded                | [NUT-22][22]                             |
-| 31004 | BAT mint rate limit                             | [NUT-22][22]                             |
+| 31004 | BAT mint rate limit exceeded                    | [NUT-22][22]                             |
 
 [00]: 00.md
 [01]: 01.md
