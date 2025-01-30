@@ -8,13 +8,9 @@
       
       
       
-        <link rel="canonical" href="https://cashubtc.github.io/nuts/03/">
+        <link rel="canonical" href="https://cashubtc.github.io/nuts/22/">
       
       
-        <link rel="prev" href="../02/">
-      
-      
-        <link rel="next" href="../04/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -22,7 +18,7 @@
     
     
       
-        <title>NUT-03 - Cashu NUTs Specifications</title>
+        <title>NUT-22: Blind Authentication - Cashu NUTs Specifications</title>
       
     
     
@@ -74,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#nut-03-swap-tokens" class="md-skip">
+        <a href="#nut-22-blind-authentication" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              NUT-03
+              NUT-22: Blind Authentication
             
           </span>
         </div>
@@ -287,8 +283,6 @@
       
   
   
-    
-  
   
   
     
@@ -300,11 +294,13 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
@@ -318,7 +314,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             NUTs
@@ -329,8 +325,6 @@
                 
   
   
-    
-  
   
   
     
@@ -339,11 +333,13 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_1" >
         
           
           <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
@@ -357,7 +353,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_1">
             <span class="md-nav__icon md-icon"></span>
             Mandatory
@@ -431,30 +427,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    NUT-03
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../03/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -463,53 +439,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#swap-to-send" class="md-nav__link">
-    <span class="md-ellipsis">
-      Swap to send
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#swap-to-receive" class="md-nav__link">
-    <span class="md-ellipsis">
-      Swap to receive
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -952,63 +881,166 @@
   
 
 
-<h1 id="nut-03-swap-tokens">NUT-03: Swap tokens<a class="headerlink" href="#nut-03-swap-tokens" title="Permanent link">&para;</a></h1>
-<p><code>mandatory</code></p>
+<h1 id="nut-22-blind-authentication">NUT-22: Blind Authentication<a class="headerlink" href="#nut-22-blind-authentication" title="Permanent link">&para;</a></h1>
+<p><code>optional</code></p>
+<p><code>depends on: NUT-21</code></p>
 <hr />
-<p>The swap operation is the most important component of the Cashu system. A swap operation consists of multiple inputs (<code>Proofs</code>) and outputs (<code>BlindedMessages</code>). Mints verify and invalidate the inputs and issue new promises (<code>BlindSignatures</code>). These are then used by the wallet to generate new <code>Proofs</code> (see <a href="../00/">NUT-00</a>).</p>
-<p>The swap operation can serve multiple use cases. The first use case is that <code>Alice</code> can use it to split her tokens to a target amount she needs to send to <code>Carol</code>, if she does not have the necessary amounts to compose the target amount in her wallet already. The second one is that <code>Carols</code>'s wallet can use it to receive tokens from <code>Alice</code> by sending them as inputs to the mint and receive new outputs in return.</p>
-<h2 id="swap-to-send">Swap to send<a class="headerlink" href="#swap-to-send" title="Permanent link">&para;</a></h2>
-<p>To make this more clear, we present an example of a typical case of sending tokens from <code>Alice</code> to <code>Carol</code>.</p>
-<p><code>Alice</code> has 64 sat in her wallet, composed of three <code>Proofs</code>, one worth 32 sat and another two worth 16 sat. She wants to send <code>Carol</code> 40 sat but does not have the necessary <code>Proofs</code> to compose the target amount of 40 sat. For that, <code>Alice</code> requests a swap from the mint and uses <code>Proofs</code> worth <code>[16, 16, 32]</code> as inputs and asks for new outputs worth <code>[8, 32, 8, 16]</code> totalling 64 sat. Notice that the first two tokens can now be combined to 40 sat. The <code>Proofs</code> that <code>Alice</code> sent <code>Bob</code> as inputs of the swap operation are now invalidated.</p>
-<p>Note: In order to preserve privacy around the amount that a client might want to send to another user and keep the rest as change, the client <strong>SHOULD</strong> ensure that the list requested outputs is ordered by amount in ascending order. As an example of what to avoid, a request for outputs expressed like so: <code>[16, 8, 2, 64, 8]</code> might imply the client is preparing a payment for 26 sat; the client should instead order the list like so: <code>[2, 8, 8, 16, 64]</code> to mitigate this privacy leak to the mint.</p>
-<h2 id="swap-to-receive">Swap to receive<a class="headerlink" href="#swap-to-receive" title="Permanent link">&para;</a></h2>
-<p>Another useful case for the swap operation follows up the example above where <code>Alice</code> has swapped her <code>Proofs</code> ready to be sent to <code>Carol</code>. <code>Carol</code> can receive these <code>Proofs</code> using the same operation by using them as inputs to invalidate them and request new outputs from <code>Bob</code>. Only if <code>Carol</code> has redeemed new outputs, <code>Alice</code> can't double-spend the <code>Proofs</code> anymore and the transaction is settled. To continue our example, <code>Carol</code> requests a swap with input <code>Proofs</code> worth <code>[32, 8]</code> to receive new outputs (of an arbitrary distribution) with the same total amount.</p>
-<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
-<p><strong>Request</strong> of <code>Alice</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="err">POST https://mint.host:3338/v1/swap</span>
+<p>This NUT defines a blind authentication scheme that allows mint operators to limit the use of their mint to a set of authorized users while still providing privacy within that anonymity set.</p>
+<p>We use two authentication schemes in conjunction: <em>clear authentication</em> using an external OpenID Connect / OAuth 2.0 service (described in <a href="../21/">NUT-21</a>), and <em>blind authentication</em> with the mint to access its resources. A user's wallet first needs to obtain a clear authentication token (CAT) from an OpenID Connect authority that the mint selected, which is not subject of this specification. Once the user has obtained the CAT from the OpenID Connect service, they can use it to obtain multiple blind authentication tokens (BAT) from the mint. We describe this process in this document.</p>
+<p>Blind authentication tokens (BATs) are used to access the protected endpoints of the mint and make sure that only users that previously presented a valid CAT can access the mint's features such as minting, melting, or swapping ecash. Wallets provide a BAT in the request header when making a request to one of the mint's protected endpoints. The mint parses the header for a BAT, verifies the signature (like with normal ecash as described in <a href="../00/">NUT-00</a>), checks if the token has previously been spent, and if not, adds it to its spent BAT token database.</p>
+<h2 id="blind-authentication-tokens-are-ecash">Blind authentication tokens are ecash<a class="headerlink" href="#blind-authentication-tokens-are-ecash" title="Permanent link">&para;</a></h2>
+<p>Blind authentication tokens (BATs) are essentially the same as normal ecash tokens and are minted in the same way. They are signed with a special keyset of the mint that has the unit <code>auth</code> and a single amount <code>1</code>.</p>
+<p>BATs can only be used a single time for each request that the wallet makes to the mint's protected endpoints. After each for each successful request, the BAT is added to the mint's spent token list after which they are regarded as spent. The BAT is not marked as spent if the request results in an error.</p>
+<p>To summarize:</p>
+<ul>
+<li>Wallet connects to mint and user is prompted to register or log in with an OAuth 2.0 service</li>
+<li>Upon login, wallet receives a clear authentication (CAT) token that identifies the user</li>
+<li>CAT is used to obtain blind authentication tokens (BAT) from the mint</li>
+<li>BATs are used to access the mint</li>
+</ul>
+<p>The diagram below illustrates the protocol flow.</p>
+<div class="codehilite"><pre><span></span><code><span class="err">┌──────────────────────────────────────────────────────────────────────────┐</span>
+<span class="err">│</span><span class="w"> </span><span class="err">┌────────┐</span><span class="w">                     </span><span class="err">┌────────┐</span><span class="w">                  </span><span class="err">┌───────────┐</span><span class="w"> </span><span class="err">│</span>
+<span class="err">│</span><span class="w"> </span><span class="err">│</span><span class="w">  </span><span class="n">User</span><span class="w">  </span><span class="err">│</span><span class="w">                     </span><span class="err">│</span><span class="w">  </span><span class="n">Mint</span><span class="w">  </span><span class="err">│</span><span class="w">                  </span><span class="err">│</span><span class="w">   </span><span class="n">OpenID</span><span class="w">  </span><span class="err">│</span><span class="w"> </span><span class="err">│</span>
+<span class="err">├─┴────────┘─────────────────────└────────┴──────────────────└───────────┴─┤</span>
+<span class="err">│</span><span class="w">                                                                          </span><span class="err">│</span>
+<span class="err">│</span><span class="w">                           </span><span class="mf">1.</span><span class="w"> </span><span class="n">Clear</span><span class="w"> </span><span class="n">authentication</span><span class="w">                        </span><span class="err">│</span>
+<span class="err">│</span><span class="w">                           </span><span class="o">=======================</span><span class="w">                        </span><span class="err">│</span>
+<span class="err">│</span><span class="w">                                                                          </span><span class="err">│</span>
+<span class="err">│</span><span class="w">                                       </span><span class="n">Mint</span><span class="w"> </span><span class="n">registers</span><span class="w"> </span><span class="n">OpenID</span><span class="w"> </span><span class="n">service</span><span class="w">      </span><span class="err">│</span>
+<span class="err">│</span><span class="w">                                     </span><span class="err">◄───────────────────────────────</span><span class="w">     </span><span class="err">│</span>
+<span class="err">│</span><span class="w">                                                                          </span><span class="err">│</span>
+<span class="err">│</span><span class="w">           </span><span class="n">Wallet</span><span class="w"> </span><span class="n">GET</span><span class="w"> </span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">info</span><span class="w">                                            </span><span class="err">│</span>
+<span class="err">│</span><span class="w">    </span><span class="err">─────────────────────────────────►</span><span class="w">                                    </span><span class="err">│</span>
+<span class="err">│</span><span class="w">                                                                          </span><span class="err">│</span>
+<span class="err">│</span><span class="w">                                </span><span class="n">OpenID</span><span class="w"> </span><span class="n">login</span><span class="w">                              </span><span class="err">│</span>
+<span class="err">│</span><span class="w">    </span><span class="err">────────────────────────────────────────────────────────────────►</span><span class="w">     </span><span class="err">│</span>
+<span class="err">│</span><span class="w">                                                                          </span><span class="err">│</span>
+<span class="err">│</span><span class="w">                              </span><span class="n">Respond</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">CAT</span><span class="w">                            </span><span class="err">│</span>
+<span class="err">│</span><span class="w">    </span><span class="err">◄────────────────────────────────────────────────────────────────</span><span class="w">     </span><span class="err">│</span>
+<span class="err">│</span><span class="w">                                                                          </span><span class="err">│</span>
+<span class="err">│</span><span class="w">                           </span><span class="mf">2.</span><span class="w"> </span><span class="n">Blind</span><span class="w"> </span><span class="n">authentication</span><span class="w">                        </span><span class="err">│</span>
+<span class="err">│</span><span class="w">                           </span><span class="o">=======================</span><span class="w">                        </span><span class="err">│</span>
+<span class="err">│</span><span class="w">                                                                          </span><span class="err">│</span>
+<span class="err">│</span><span class="w">           </span><span class="n">Request</span><span class="w"> </span><span class="n">BAT</span><span class="w"> </span><span class="n">using</span><span class="w"> </span><span class="n">CAT</span><span class="w">                                          </span><span class="err">│</span>
+<span class="err">│</span><span class="w">    </span><span class="err">─────────────────────────────────►</span><span class="w">                                    </span><span class="err">│</span>
+<span class="err">│</span><span class="w">                                                                          </span><span class="err">│</span>
+<span class="err">│</span><span class="w">                </span><span class="n">Return</span><span class="w"> </span><span class="n">BAT</span><span class="w">                                                </span><span class="err">│</span>
+<span class="err">│</span><span class="w">    </span><span class="err">◄─────────────────────────────────</span><span class="w">                                    </span><span class="err">│</span>
+<span class="err">│</span><span class="w">                                                                          </span><span class="err">│</span>
+<span class="err">│</span><span class="w">           </span><span class="n">Use</span><span class="w"> </span><span class="n">BAT</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">access</span><span class="w"> </span><span class="n">mint</span><span class="w">                                         </span><span class="err">│</span>
+<span class="err">│</span><span class="w">    </span><span class="err">─────────────────────────────────►</span><span class="w">                                    </span><span class="err">│</span>
+<span class="err">│</span><span class="w">                                                                          </span><span class="err">│</span>
+<span class="err">└──────────────────────────────────────────────────────────────────────────┘</span>
 </code></pre></div>
 
-<p>With the data being of the form <code>PostSwapRequest</code>:</p>
+<p>The steps for <code>1. Clear authentication</code> are described in <a href="../21/">NUT-21</a>, whereas the steps in <code>2. Blind authentication</code> are subject of this document.</p>
+<h2 id="endpoints">Endpoints<a class="headerlink" href="#endpoints" title="Permanent link">&para;</a></h2>
+<p>The mint offers new endpoints that behave similarly to the endpoints for getting the keys, keysets, and minting tokens with normal ecash (<a href="../01/">NUT-01</a>, <a href="../02/">NUT-02</a>, <a href="../04/">NUT-04</a>). These endpoints start with a prefix <code>/v1/auth/</code> to differentiate them from the normal endpoints of the mint. Using these endpoints, wallets can mint blind authentication tokens (BATs) and use them later when accessing the protected endpoints of the mint. Note that BATs cannot be swapped against other BATs.</p>
+<h3 id="keys">Keys<a class="headerlink" href="#keys" title="Permanent link">&para;</a></h3>
+<p>Like in <a href="../01/">NUT-01</a> and <a href="../02/">NUT-02</a>, the mint responds with its BAT keyset for the following request:</p>
+<div class="codehilite"><pre><span></span><code>GET /v1/auth/blind/keys
+</code></pre></div>
+
+<p>or</p>
+<div class="codehilite"><pre><span></span><code>GET /v1/auth/blind/keys/{keyset_id}
+</code></pre></div>
+
+<p>where the mint returns a <code>GetKeysResponse</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;inputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Proo</span><span class="kc">f</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dedMessage</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;keysets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;000e479673849bf6&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;auth&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;keys&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;024ec000e31e230e4c59760def29601557c0b1650617dc8f38d3b2cfd21ad0351b&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
 
-<p>With curl:</p>
-<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://mint.host:3338/v1/swap<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
-<span class="o">{</span>
-<span class="w">  </span><span class="s2">&quot;inputs&quot;</span>:
-<span class="w">    </span><span class="o">[</span>
-<span class="w">      </span><span class="o">{</span>
-<span class="w">        </span><span class="s2">&quot;amount&quot;</span>:<span class="w"> </span><span class="m">2</span>,
-<span class="w">        </span><span class="s2">&quot;id&quot;</span>:<span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;secret&quot;</span>:<span class="w"> </span><span class="s2">&quot;407915bc212be61a77e3e6d2aeb4c727980bda51cd06a6afc29e2861768a7837&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;C&quot;</span>:<span class="w"> </span><span class="s2">&quot;02bc9097997d81afb2cc7346b5e4345a9346bd2a506eb7958598a72f0cf85163ea&quot;</span>
-<span class="w">      </span><span class="o">}</span>,
-<span class="w">      </span><span class="o">{</span>
-<span class="w">      </span>...
-<span class="w">      </span><span class="o">}</span>
-<span class="w">    </span><span class="o">]</span>,
-<span class="w">  </span><span class="s2">&quot;outputs&quot;</span>:
-<span class="w">    </span><span class="o">[</span>
-<span class="w">      </span><span class="o">{</span>
-<span class="w">        </span><span class="s2">&quot;amount&quot;</span>:<span class="w"> </span><span class="m">2</span>,
-<span class="w">        </span><span class="s2">&quot;id&quot;</span>:<span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;B_&quot;</span>:<span class="w"> </span><span class="s2">&quot;02634a2c2b34bec9e8a4aba4361f6bf202d7fa2365379b0840afe249a7a9d71239&quot;</span>
-<span class="w">      </span><span class="o">}</span>,
-<span class="w">      </span><span class="o">{</span>
-<span class="w">      </span>...
-<span class="w">      </span><span class="o">}</span>
-<span class="w">    </span><span class="o">]</span>,
-<span class="o">}</span>
+<p>Notice that the unit is <code>auth</code> and only a single amount of <code>1</code> is supported.</p>
+<h3 id="keysets">Keysets<a class="headerlink" href="#keysets" title="Permanent link">&para;</a></h3>
+<p>Like in <a href="../02/">NUT-02</a> the mint also offers the endpoints returning the keysets:</p>
+<div class="codehilite"><pre><span></span><code>GET v1/auth/blind/keysets
 </code></pre></div>
 
-<p>If successful, <code>Bob</code> will respond with a <code>PostSwapResponse</code></p>
+<p>The mint returns the same <code>GetKeysetsResponse</code> response types as described in <a href="../02/">NUT-02</a>.</p>
+<h2 id="minting-blind-authentication-tokens">Minting blind authentication tokens<a class="headerlink" href="#minting-blind-authentication-tokens" title="Permanent link">&para;</a></h2>
+<p>To mint blind authentication tokens (BATs), the wallet makes a request to the following endpoint:</p>
+<div class="codehilite"><pre><span></span><code><span class="err">POST /v1/auth/blind/mint</span>
+</code></pre></div>
+
+<p>To access this endpoint the wallet MUST provide a valid CAT (obtained via <a href="../21/">NUT-21</a>) in its request header, IF this endpoint is marked as protected in the info response of the mint as per <a href="../21/">NUT-21</a>.</p>
+<div class="codehilite"><pre><span></span><code>Clear-auth: &lt;CAT&gt;
+</code></pre></div>
+
+<p>Like in <a href="../04/">NUT-04</a>, the wallet includes a <code>PostAuthBlindMintRequest</code> in the request body:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dedMessage</span><span class="p">]</span><span class="err">&gt;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>where <code>outputs</code> are <code>BlindedMessages</code> (see <a href="../00/">NUT-00</a>) from the blind auth keyset of the mint with a unit <code>amount</code>. The sum of all amounts of the outputs cannot exceed the maximum allowed amount of BATs as specified in <code>bat_max_mint</code> in the mint's <code>MintBlindAuthSetting</code>.</p>
+<p>Notice that in contrast to <a href="../04/">NUT-04</a>, we did not create a quote and did not include it in this request. Instead, we directly minted the maximum allowed amount of BATs.</p>
+<p>The mint responds with a <code>PostAuthBlindMintResponse</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dSig</span><span class="kc">nature</span><span class="p">]</span><span class="err">&gt;</span>
 <span class="p">}</span>
 </code></pre></div>
+
+<p>The wallet un-blinds the response to obtain the signatures <code>C</code> as described in <a href="../00/">NUT-00</a>. It then stores the resulting <code>AuthProofs</code> in its database:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">hex_s</span><span class="kc">tr</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;C&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">hex_s</span><span class="kc">tr</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="using-blind-authentication-tokens">Using blind authentication tokens<a class="headerlink" href="#using-blind-authentication-tokens" title="Permanent link">&para;</a></h2>
+<p>The wallet checks the <code>MintBlindAuthSetting</code> of the mint to determine which endpoints require blind authentication. Similar to <code>NUT-21</code>, the wallet performs a match on the <code>protected_endpoints</code> in the <code>MintBlindAuthSetting</code> before attempting a request to one of the mint's endpoints. If the match is positive, the wallet needs to add a blind authentication token (BAT) to the request header.</p>
+<h3 id="serialization">Serialization<a class="headerlink" href="#serialization" title="Permanent link">&para;</a></h3>
+<p>To add a blind authentication token (BAT) to the request header, we need to serialize a single <code>AuthProof</code> JSON in base64 with the prefix <code>authA</code>:</p>
+<div class="codehilite"><pre><span></span><code>authA<span class="o">[</span>base64_authproof_json<span class="o">]</span>
+</code></pre></div>
+
+<p>This string is a BAT.</p>
+<h3 id="request-header">Request header<a class="headerlink" href="#request-header" title="Permanent link">&para;</a></h3>
+<p>We add this serialized BAT to the request header:</p>
+<div class="codehilite"><pre><span></span><code>Blind-auth: &lt;BAT&gt;
+</code></pre></div>
+
+<p>and make the request as we usually would.</p>
+<p><code>AuthProofs</code> are single-use. The wallet MUST delete the <code>AuthProof</code> after a successful request, and SHOULD delete it even if request results in an error. If the wallet runs out of <code>AuthProofs</code>, it can <a href="#minting-blind-authentication-tokens">mint new ones</a> using its clear authentication token (CAT).</p>
+<h2 id="mint">Mint<a class="headerlink" href="#mint" title="Permanent link">&para;</a></h2>
+<h3 id="signaling-protected-endpoints-and-settings">Signaling protected endpoints and settings<a class="headerlink" href="#signaling-protected-endpoints-and-settings" title="Permanent link">&para;</a></h3>
+<p>The mint lists each protected endpoint that requires a blind authentication token (BAT) in the <code>MintBlindAuthSetting</code> in its <a href="../06/">NUT-06</a> info response:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">&quot;22&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;bat_max_mint&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;protected_endpoints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^/v1/mint/.*&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^/v1/mint/.*&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>bat_max_mint</code> is the number of blind authentication tokens (BATs) that can be minted in a single request using the <code>POST /v1/auth/blind/mint</code> endpoint.</p>
+<p><code>protected_endpoints</code> contains the endpoints that are protected by blind authentication. <code>method</code> denotes the HTTP method of the endpoint, and <code>path</code> is a regex pattern that must match the path of the URL. In this example, all <code>/v1/mint/*</code> endpoints are protected and require blind authentication. <code>path</code> entries without regex pattern are required to match exactly.</p>
+<h2 id="error-codes">Error codes<a class="headerlink" href="#error-codes" title="Permanent link">&para;</a></h2>
+<p>See <a href="../error_codes/">Error Codes</a>:</p>
+<ul>
+<li><code>31001</code>: Endpoint requires blind auth</li>
+<li><code>31002</code>: Blind authentication failed</li>
+<li><code>31003</code>: Maximum BAT mint amount exceeded</li>
+<li><code>31004</code>: BAT mint rate limit exceeded</li>
+</ul>
 
 
 
