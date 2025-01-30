@@ -44,29 +44,31 @@ nav:
   - Home: README.md
   - NUTs:
       - Mandatory:
-          - NUT-00: 00.md
-          - NUT-01: 01.md
-          - NUT-02: 02.md
-          - NUT-03: 03.md
-          - NUT-04: 04.md
-          - NUT-05: 05.md
-          - NUT-06: 06.md
+          - NUT-00 - Cryptography and Models: 00.md
+          - NUT-01 - Mint public keys: 01.md
+          - NUT-02 - Keysets and fees: 02.md
+          - NUT-03 - Swapping tokens: 03.md
+          - NUT-04 - Minting tokens: 04.md
+          - NUT-05 - Melting tokens: 05.md
+          - NUT-06 - Mint info: 06.md
           # Add more mandatory NUTs here
       - Optional:
-          - NUT-07: 07.md
-          - NUT-08: 08.md
-          - NUT-09: 09.md
-          - NUT-10: 10.md
-          - NUT-11: 11.md
-          - NUT-12: 12.md
-          - NUT-13: 13.md
-          - NUT-14: 14.md
-          - NUT-15: 15.md
-          - NUT-16: 16.md
-          - NUT-17: 17.md
-          - NUT-18: 18.md
-          - NUT-19: 19.md
-          - NUT-20: 20.md          
+          - NUT-07 - Token state check: 07.md
+          - NUT-08 - Overpaid Lightning fees: 08.md
+          - NUT-09 - Signature restore: 09.md
+          - NUT-10 - Spending conditions: 10.md
+          - NUT-11 - Pay-To-Pubkey (P2PK): 11.md
+          - NUT-12 - DLEQ proofs: 12.md
+          - NUT-13 - Deterministic secrets: 13.md
+          - NUT-14 - Hashed Timelock Contracts (HTLCs): 14.md
+          - NUT-15 - Partial multi-path payments (MPP): 15.md
+          - NUT-16 - Animated QR codes: 16.md
+          - NUT-17 - WebSocket subscriptions: 17.md
+          - NUT-18 - Payment requests: 18.md
+          - NUT-19 - Cached Responses: 19.md
+          - NUT-20 - Signature on Mint Quote: 20.md
+          - NUT-21 - Clear authentication: 21.md
+          - NUT-22 - Blind authentication: 22.md          
           # Add more optional NUTs here
 plugins:
   - search
