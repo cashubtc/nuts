@@ -24,13 +24,13 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | -------- | --------------------------------- | ---------------------------------------------------------------------------- | -------------------------------------------------- |
 | [07][07] | Token state check                 | [Nutshell][py], [Nutstash][ns], [cashu-ts][ts], [cdk-cli]                    | [Nutshell][py], [cdk-mintd], [nutmix], [macadamia] |
 | [08][08] | Overpaid Lightning fees           | [Nutshell][py], [Nutstash][ns], [cashu-ts][ts], [cdk-cli]                    | [Nutshell][py], [cdk-mintd], [nutmix], [macadamia] |
-| [09][09] | Signature restore                 | [Nutshell][py], [cdk-cli], [Cashu.me][cashume], [gonuts], [minibits]         | [Nutshell][py], [cdk-mintd], [macadamia] |
+| [09][09] | Signature restore                 | [Nutshell][py], [cdk-cli], [Cashu.me][cashume], [gonuts], [minibits]         | [Nutshell][py], [cdk-mintd], [macadamia]           |
 | [10][10] | Spending conditions               | [Nutshell][py], [cdk-cli], [cashu-ts][ts]                                    | [Nutshell][py], [cdk-mintd], [nutmix]              |
 | [11][11] | Pay-To-Pubkey (P2PK)              | [Nutshell][py], [cdk-cli], [Cashu.me][cashume]                               | [Nutshell][py], [cdk-mintd], [nutmix]              |
 | [12][12] | DLEQ proofs                       | [Nutshell][py], [cdk-cli], [cashu-ts][ts]                                    | [Nutshell][py], [cdk-mintd], [nutmix]              |
 | [13][13] | Deterministic secrets             | [Nutshell][py], [cashu-ts][ts], [cdk-cli], [gonuts], [macadamia], [minibits] | -                                                  |
 | [14][14] | Hashed Timelock Contracts (HTLCs) | [Nutshell][py], [cdk-cli]                                                    | [Nutshell][py], [cdk-mintd], [nutmix]              |
-| [15][15] | Partial multi-path payments (MPP) | [Nutshell][py], [cdk-cli]                                                    | [Nutshell][py], [cdk-mintd], [nutmix]                        |
+| [15][15] | Partial multi-path payments (MPP) | [Nutshell][py], [cdk-cli]                                                    | [Nutshell][py], [cdk-mintd], [nutmix]              |
 | [16][16] | Animated QR codes                 | [Cashu.me][cashume], [macadamia], [minibits]                                 | -                                                  |
 | [17][17] | WebSocket subscriptions           | [Nutshell][py], [cdk-cli][cdk-cli], [Cashu.me][cashume]                      | [Nutshell][py], [cdk-mintd][cdk-mintd]             |
 | [18][18] | Payment requests                  | [Cashu.me][cashume], [Boardwalk][bwc], [cdk-cli]                             | -                                                  |
