@@ -13,11 +13,18 @@
 | 20001 | Quote request is not paid                       | [NUT-04][04]                             |
 | 20002 | Tokens have already been issued for quote       | [NUT-04][04]                             |
 | 20003 | Minting is disabled                             | [NUT-04][04]                             |
+| 20004 | Lightning payment failed                        | [NUT-05][05]                             |
 | 20005 | Quote is pending                                | [NUT-04][04], [NUT-05][05]               |
 | 20006 | Invoice already paid                            | [NUT-05][05]                             |
 | 20007 | Quote is expired                                | [NUT-04][04], [NUT-05][05]               |
 | 20008 | Signature for mint request invalid              | [NUT-20][20]                             |
 | 20009 | Pubkey required for mint quote                  | [NUT-20][20]                             |
+| 30001 | Endpoint requires clear auth                    | [NUT-21][21]                             |
+| 30002 | Clear authentication failed                     | [NUT-21][21]                             |
+| 31001 | Endpoint requires blind auth                    | [NUT-22][22]                             |
+| 31002 | Blind authentication failed                     | [NUT-22][22]                             |
+| 31003 | Maximum BAT mint amount exceeded                | [NUT-22][22]                             |
+| 31004 | BAT mint rate limit exceeded                    | [NUT-22][22]                             |
 
 [00]: 00.md
 [01]: 01.md
@@ -33,3 +40,5 @@
 [11]: 11.md
 [12]: 12.md
 [20]: 20.md
+[21]: 21.md
+[22]: 22.md
