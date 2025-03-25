@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.9">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.8608ea7d.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -1104,7 +1104,10 @@ r_derivation_path = <span class="sb">`m/129372&#39;/0&#39;/{keyset_id_k_int}&#39
 </code></pre></div>
 
 <p>Here, <code>{keyset_k_int}</code> and <code>{counter_k}</code> are the only variables that can change. <code>keyset_id_k_int</code> is an integer representation (see below) of the keyset ID the token is generated with. This means that the derivation path is unique for each keyset. Note that the coin type is always <code>0'</code>, independent of the unit of the ecash.</p>
-<p><strong>Note:</strong> For examples, see the <a href="../tests/13-tests/">test vectors</a>.</p>
+<blockquote>
+<p>[!NOTE]
+For examples, see the <a href="../tests/13-tests/">test vectors</a>.</p>
+</blockquote>
 <h4 id="counter">Counter<a class="headerlink" href="#counter" title="Permanent link">&para;</a></h4>
 <p>The wallet starts with <code>counter_k := 0</code> upon encountering a new keyset and increments it by <code>1</code> every time it has successfully minted new ecash with this keyset. The wallet stores the latest <code>counter_k</code> in its database for all keysets it uses. Note that we have a <code>counter</code> (and therefore a derivation path) for each keyset <code>k</code>. We omit the keyset index <code>k</code> in the following of this document.</p>
 <h4 id="keyset-id">Keyset ID<a class="headerlink" href="#keyset-id" title="Permanent link">&para;</a></h4>
@@ -1137,7 +1140,10 @@ r_derivation_path = <span class="sb">`m/129372&#39;/0&#39;/{keyset_id_k_int}&#39
 <div class="codehilite"><pre><span></span><code><span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bip32</span><span class="o">.</span><span class="n">get_privkey_from_path</span><span class="p">(</span><span class="n">r_derivation_path</span><span class="p">)</span>
 </code></pre></div>
 
-<p><strong>Note:</strong> For examples, see the <a href="../tests/13-tests/">test vectors</a>.</p>
+<blockquote>
+<p>[!NOTE]
+For examples, see the <a href="../tests/13-tests/">test vectors</a>.</p>
+</blockquote>
 <p>Using the <code>secret</code> string and the private key <code>r</code>, the wallet generates a <code>BlindedMessage</code>. The wallet then increases the <code>counter</code> by <code>1</code> and repeats the same process for a given batch size. It is recommended to use a batch size of 100.</p>
 <p>The user's wallet can now request the corresponding <code>BlindSignatures</code> for theses <code>BlindedMessages</code> from the mint using the <a href="../09/">NUT-09</a> restore endpoint or by downloading the entire mint's database.</p>
 <h4 id="generate-proofs">Generate <code>Proofs</code><a class="headerlink" href="#generate-proofs" title="Permanent link">&para;</a></h4>

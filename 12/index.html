@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.9">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.8608ea7d.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -992,8 +992,8 @@ e == hash(R1,R2,A,C&#39;)
 If true, a in A = a*G must be equal to a in C&#39; = a*B&#39;
 </code></pre></div>
 
-<h3 id="hashx-arraypublickey-bytes"><code>hash(x: &lt;Array&lt;[PublicKey]&gt;) -&gt; bytes</code><a class="headerlink" href="#hashx-arraypublickey-bytes" title="Permanent link">&para;</a></h3>
-<p>The hash(x) function generates a deterministic Sha256 hash for a given input list of <code>PublicKey</code>. The uncompressed hexadecimal representations of each <code>PublicKey</code> is concatenated before taking the Sha256 hash.</p>
+<h3 id="hash-function">Hash function<a class="headerlink" href="#hash-function" title="Permanent link">&para;</a></h3>
+<p>The hash function <code>hash(x: &lt;Array&lt;[PublicKey]&gt;) -&gt; bytes</code> generates a deterministic SHA256 hash for a given input list of <code>PublicKey</code>. The uncompressed (32+32+1)-byte hexadecimal representations (130 characters) of each <code>PublicKey</code> is concatenated before taking the SHA256 hash.</p>
 <div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">hash_e</span><span class="p">(</span><span class="o">*</span><span class="n">publickeys</span><span class="p">:</span> <span class="n">PublicKey</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
     <span class="n">e_</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">publickeys</span><span class="p">:</span>
@@ -1003,6 +1003,10 @@ If true, a in A = a*G must be equal to a in C&#39; = a*B&#39;
     <span class="k">return</span> <span class="n">e</span>
 </code></pre></div>
 
+<blockquote>
+<p>[!NOTE]
+For examples of valid DLEQ proofs, see the <a href="../tests/12-tests/">test vectors</a>.</p>
+</blockquote>
 <h3 id="mint-to-user-dleq-in-blindsignature">Mint to user: DLEQ in <code>BlindSignature</code><a class="headerlink" href="#mint-to-user-dleq-in-blindsignature" title="Permanent link">&para;</a></h3>
 <p>The mint produces these DLEQ proofs when returning <code>BlindSignature</code>'s in the responses for minting (<a href="../04/">NUT-04</a>) and swapping (<a href="../03/">NUT-03</a>) tokens. The <code>BlindSignature</code> object is extended in the following way to include the DLEQ proof:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
@@ -1033,6 +1037,10 @@ If true, a in A = a*G must be equal to a in C&#39; = a*B&#39;
 </code></pre></div>
 
 <p><code>e</code> and <code>s</code> are the challenge and response of the DLEQ proof returned by <code>Bob</code>, <code>r</code> is the blinding factor of <code>Alice</code> that was used to generate the <code>Proof</code>. <code>Alice</code> serializes these proofs like any other in a token (see <a href="../00/">NUT-00</a>) to send it to another user <code>Carol</code>.</p>
+<blockquote>
+<p>[!IMPORTANT]</p>
+<p><strong>Privacy:</strong> The blinding factor <code>r</code> should not be shared with the mint or otherwise, the mint will be able to associate the <code>BlindSignature</code> with the <code>Proof</code>.</p>
+</blockquote>
 <h2 id="alice-minting-user-verifies-dleq-proof">Alice (minting user) verifies DLEQ proof<a class="headerlink" href="#alice-minting-user-verifies-dleq-proof" title="Permanent link">&para;</a></h2>
 <p>When minting or swapping tokens, <code>Alice</code> receives DLEQ proofs in the <code>BlindSignature</code> response from the mint <code>Bob</code>. <code>Alice</code> checks the validity of the DLEQ proofs for each ecash token she receives via the equations:</p>
 <div class="codehilite"><pre><span></span><code>R1 = s*G - e*A
