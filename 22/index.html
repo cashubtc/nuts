@@ -1046,6 +1046,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#dleqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      DLEQs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#signaling-protected-endpoints-and-settings" class="md-nav__link">
     <span class="md-ellipsis">
       Signaling protected endpoints and settings
@@ -1113,7 +1122,7 @@
 
 <h1 id="nut-22-blind-authentication">NUT-22: Blind Authentication<a class="headerlink" href="#nut-22-blind-authentication" title="Permanent link">&para;</a></h1>
 <p><code>optional</code></p>
-<p><code>depends on: NUT-21</code></p>
+<p><code>depends on: NUT-21, NUT-12</code></p>
 <hr />
 <p>This NUT defines a blind authentication scheme that allows mint operators to limit the use of their mint to a set of authorized users while still providing privacy within that anonymity set.</p>
 <p>We use two authentication schemes in conjunction: <em>clear authentication</em> using an external OpenID Connect / OAuth 2.0 service (described in <a href="../21/">NUT-21</a>), and <em>blind authentication</em> with the mint to access its resources. A user's wallet first needs to obtain a clear authentication token (CAT) from an OpenID Connect authority that the mint selected, which is not the subject of this specification. Once the user has obtained the CAT from the OpenID Connect service, they can use it to obtain multiple blind authentication tokens (BAT) from the mint. We describe this process in this document.</p>
@@ -1222,12 +1231,18 @@
 
 <p>The wallet un-blinds the response to obtain the signatures <code>C</code> as described in <a href="../00/">NUT-00</a>. It then stores the resulting <code>AuthProofs</code> in its database:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">hex_s</span><span class="kc">tr</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;C&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">hex_s</span><span class="kc">tr</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;hex_s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;C&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;hex_s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;dleq&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;e&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;s&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;r&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span>
+<span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 
+<p>To prevent pinning, wallets MUST validate the DLEQ proofs <code>dleq</code> as defined in <a href="../12/">NUT-12</a>. Should <code>AuthProofs</code> be sent to another user of the mint, it MUST include the <code>dleq</code> proof so that the receiving user can validate it.</p>
 <h2 id="using-blind-authentication-tokens">Using blind authentication tokens<a class="headerlink" href="#using-blind-authentication-tokens" title="Permanent link">&para;</a></h2>
 <p>The wallet checks the <code>MintBlindAuthSetting</code> of the mint to determine which endpoints require blind authentication. Similar to <code>NUT-21</code>, the wallet performs a match on the <code>protected_endpoints</code> in the <code>MintBlindAuthSetting</code> before attempting a request to one of the mint's endpoints. If the match is positive, the wallet needs to add a blind authentication token (BAT) to the request header.</p>
 <h3 id="serialization">Serialization<a class="headerlink" href="#serialization" title="Permanent link">&para;</a></h3>
@@ -1236,6 +1251,10 @@
 </code></pre></div>
 
 <p>This string is a BAT.</p>
+<blockquote>
+<p>[!CAUTION]</p>
+<p>To protect the privacy of the wallet, the BAT MUST NOT contain the <code>dleq</code> proof when it is sent to the mint in the request header.</p>
+</blockquote>
 <h3 id="request-header">Request header<a class="headerlink" href="#request-header" title="Permanent link">&para;</a></h3>
 <p>We add this serialized BAT to the request header:</p>
 <div class="codehilite"><pre><span></span><code>Blind-auth: &lt;BAT&gt;
@@ -1244,6 +1263,8 @@
 <p>and make the request as we usually would.</p>
 <p><code>AuthProofs</code> are single-use. The wallet MUST delete the <code>AuthProof</code> after a successful request, and SHOULD delete it even if request results in an error. If the wallet runs out of <code>AuthProofs</code>, it can <a href="#minting-blind-authentication-tokens">mint new ones</a> using its clear authentication token (CAT).</p>
 <h2 id="mint">Mint<a class="headerlink" href="#mint" title="Permanent link">&para;</a></h2>
+<h3 id="dleqs">DLEQs<a class="headerlink" href="#dleqs" title="Permanent link">&para;</a></h3>
+<p>The mint MUST return DLEQ proofs for every blind signature in <code>PostAuthBlindMintResponse</code> as defined in <a href="../12/">NUT-12</a></p>
 <h3 id="signaling-protected-endpoints-and-settings">Signaling protected endpoints and settings<a class="headerlink" href="#signaling-protected-endpoints-and-settings" title="Permanent link">&para;</a></h3>
 <p>The mint lists each protected endpoint that requires a blind authentication token (BAT) in the <code>MintBlindAuthSetting</code> in its <a href="../06/">NUT-06</a> info response:</p>
 <div class="codehilite"><pre><span></span><code><span class="nt">&quot;22&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
