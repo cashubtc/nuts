@@ -24,12 +24,8 @@ For compatibility reasons all signers SHOULD implement the following BIP32 deriv
 
 - m = master key
 - 129372' (UTF-8 for 🥜)
-- unit_index = uint32 index of unit.
-  -  sat = 1
-  -  msat = 2
-  -  usd = 3
-  -  eur = 4
-  -  auth = 5
+- unit string integer hash = first 4 bytes sha256 hash of the unit string.
+    ex: sha256sum('sat')[:4] = 339efeab = 866057899
 - version: uint32
 - index_of_amount = index of and the amounts of the keyset as if the where laid in an array. ex: [1, 2, 4, 8, 16, ...]
 
