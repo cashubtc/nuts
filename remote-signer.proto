@@ -6,11 +6,10 @@ option go_package = "nutmix_remote_signer/proto_signer";
 service SignerService {
   rpc BlindSign (BlindedMessages) returns (BlindSignResponse);
   rpc VerifyProofs (Proofs) returns (BooleanResponse);
-  rpc ActiveKeys (EmptyRequest) returns (KeysResponse);
-  rpc KeysById (Id) returns (KeysResponse);
-  rpc Keysets (EmptyRequest) returns (VecMintKeySetInfoResponse);
+  // returns all the keysets for the mint
+  rpc Keysets (EmptyRequest) returns (KeysResponse);
+  // rotates the keysets 
   rpc RotateKeyset (RotationRequest) returns (KeyRotationResponse);
-  rpc Config (EmptyRequest) returns (ConfigResponse);
 }
 
 message BlindSignResponse {
@@ -47,16 +46,18 @@ message KeyRotationResponse {
 
 message KeysResponse {
     oneof result {
-     VecSignatoryKeySet keysets = 1;
-     Error error = 2;
+        SignatoryKeysets keysets = 1;
+        Error error = 2;
     }
 }
 
-message VecSignatoryKeySet {
-    repeated KeySet keysets = 1;
+message SignatoryKeysets {
+    bytes pubkey = 1;
+    repeated KeySet keysets = 2;
 }
+
 message KeySet {
-    Id id = 1;
+    string id = 1;
     CurrencyUnit unit = 2;
     bool active = 3;
     uint64 input_fee_ppk = 4;
@@ -67,27 +68,6 @@ message Keys {
     map<uint64, bytes> keys = 1;
 }
 
-message VecMintKeySetInfoResponse {
-    oneof result {
-        VecMintKeySetInfo keysets = 1;
-        Error error = 2;
-    }
-}
-
-message VecMintKeySetInfo {
-    repeated MintKeySetInfo keysets = 1;
-}
-
-message MintKeySetInfo {
-    Id id = 1;
-    CurrencyUnit unit = 2;
-    bool active = 3;
-    uint64 valid_from = 4;
-    optional uint64 valid_to = 5;
-    uint32 max_order = 6;
-    uint64 input_fee_ppk = 7;
-}
-
 message RotationRequest {
     CurrencyUnit unit  = 1;
     uint32 input_fee_ppk  = 2;
@@ -95,11 +75,11 @@ message RotationRequest {
 }
 
 enum CurrencyUnitType {
-  CURRENCY_UNIT_SAT = 0;
-  CURRENCY_UNIT_MSAT = 1;
-  CURRENCY_UNIT_USD = 2;
-  CURRENCY_UNIT_EUR = 3;
-  CURRENCY_UNIT_AUTH = 4;
+    SAT = 0;
+    MSAT = 1;
+    USD = 2;
+    EUR = 3;
+    AUTH = 4;
 }
 
 message CurrencyUnit {
@@ -107,15 +87,6 @@ message CurrencyUnit {
         CurrencyUnitType unit = 1;
         string custom_unit = 2;
     }
-}
-
-message ConfigResponse {
-    bytes pubkey  = 1;
-    uint64 signing_limits  = 2;
-}
-
-message Id {
-    string id  = 1;
 }
 
 message Proofs {
@@ -135,7 +106,6 @@ message ProofDLEQ {
     bytes s = 2;
     bytes r = 3;
 }
-
 
 message SigningResponse {
     oneof result {
@@ -159,7 +129,6 @@ message BlindSignatureDLEQ {
     bytes s = 2;
 }
 
-
 // Witness type
 message Witness {
     oneof witness_type {
@@ -178,7 +147,6 @@ message P2PKWitness {
 message HTLCWitness {
     // Preimage
     string preimage = 1;
-
     // List of signatures
     repeated string signatures = 2;
 }
@@ -203,7 +171,5 @@ message Error {
   ErrorCode code = 1;
   string detail = 2;
 }
-
-
 
 message EmptyRequest {}
