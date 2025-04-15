@@ -1004,7 +1004,7 @@
 <hr />
 <p>Melting tokens is the opposite of minting tokens (see <a href="../04/">NUT-04</a>). Like minting tokens, melting is a two-step process: requesting a melt quote and melting tokens. Here, we describe both steps.</p>
 <p>In the first request the wallet asks the mint for a quote for a <code>request</code> it wants paid by the mint and the <code>unit</code> the wallet would like to spend as inputs. The mint responds with a quote that includes a <code>quote</code> id and an <code>amount</code> the mint demands in the requested unit. For the method <code>bolt11</code>, the mint includes a <code>fee_reserve</code> field indicating the reserve fee for a Lightning payment.</p>
-<p>In the second request, the wallet includes the <code>quote</code> id and provides <code>inputs</code> that sum up to <code>amount+fee_reserve</code> in the first response. For the method <code>bolt11</code>, the wallet can also include <code>outputs</code> in order for the mint to return overpaid Lightning fees (see <a href="../08/">NUT-08</a>). The mint responds with a payment <code>state</code>. If the <code>state</code> is <code>"PAID"</code> the response includes a <code>payment_preimage</code> as a proof of payment. If the request included <code>outputs</code>, the mint may respond with <code>change</code> for the overpaid fees (see <a href="../08/">NUT-08</a>).</p>
+<p>In the second request, the wallet includes the <code>quote</code> id and provides <code>inputs</code> that sum up to <code>amount+fee+fee_reserve</code> in the first response where <code>fee</code> is calculated from the keyset's <code>input_fee_ppk</code> as described in <a href="../02/">NUT-02</a>. For the method <code>bolt11</code>, the wallet can also include <code>outputs</code> in order for the mint to return overpaid Lightning fees (see <a href="../08/">NUT-08</a>). The mint responds with a payment <code>state</code>. If the <code>state</code> is <code>"PAID"</code> the response includes a <code>payment_preimage</code> as a proof of payment. If the request included <code>outputs</code>, the mint may respond with <code>change</code> for the overpaid fees (see <a href="../08/">NUT-08</a>).</p>
 <p>We limit this document to mint quotes of <code>unit="sat"</code> and <code>method="bolt11"</code> which requests a bolt11 Lightning payment (typically paid by the mint from its Bitcoin reserves) using ecash denominated in Satoshis.</p>
 <h1 id="melt-quote">Melt quote<a class="headerlink" href="#melt-quote" title="Permanent link">&para;</a></h1>
 <p>To request a melt quote, the wallet of <code>Alice</code> makes a <code>POST /v1/melt/quote/{method}</code> request where <code>method</code> is the payment method requested (here <code>bolt11</code>).</p>
@@ -1076,7 +1076,7 @@
 </code></pre></div>
 
 <h1 id="melting-tokens">Melting tokens<a class="headerlink" href="#melting-tokens" title="Permanent link">&para;</a></h1>
-<p>Now that <code>Alice</code> knows what the total amount is (<code>amount + fee_reserve</code>) in her requested <code>unit</code>, she can proceed to melting tokens for which a payment will be executed by the mint. She calls the <code>POST /v1/melt/{method}</code> endpoint where <code>method</code> is the payment method requested (here <code>bolt11</code>).</p>
+<p>Now that <code>Alice</code> knows what the total amount is (<code>amount + fee + fee_reserve</code>) in her requested <code>unit</code>, she can proceed for melting tokens for which a payment will be executed by the mint. She calls the <code>POST /v1/melt/{method}</code> endpoint where <code>method</code> is the payment method requested (here <code>bolt11</code>).</p>
 <div class="codehilite"><pre><span></span><code><span class="err">POST https://mint.host:3338/v1/melt/bolt11</span>
 </code></pre></div>
 
@@ -1088,7 +1088,7 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p>Here, <code>quote</code> is the melt quote ID to be paid and <code>inputs</code> are the proofs with a total amount of at least <code>amount + fee_reserve</code> (see previous melt quote response).</p>
+<p>Here, <code>quote</code> is the melt quote ID to be paid and <code>inputs</code> are the proofs with a total amount of at least <code>amount + fee + fee_reserve</code> (see previous melt quote response).</p>
 <p>Like before, the mint <code>Bob</code> then responds with a <code>PostMeltQuoteBolt11Response</code>. If the payment was successful, the <code>state</code> field is set to <code>"PAID"</code> and the response includes the <code>payment_preimage</code> field containing the payment secret of the bolt11 payment.</p>
 <p>If <code>state=="PAID"</code>, <code>Alice</code>'s wallet can delete the <code>inputs</code> from her database (or move them to a history). If <code>state=="UNPAID"</code>, <code>Alice</code> can repeat the same request again until the payment is successful.</p>
 <h2 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h2>
