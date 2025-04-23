@@ -13,10 +13,16 @@ blinded messages it sees.
 
 ## Protocol
 
-The Mint and the Signer MUST authenticate with each other using mTLS. The services MUST NOT accept any request if they
-are not authenticated with each other.
-
 The signer MUST speak the same language using the GRPC protobuf defined in `remote-signer.proto` inside the repository.
+
+### Authetification
+
+The signer and the mint can communicate with each other over different transports.
+The signer MUST NOT accept any request if authentication has not occurred.
+
+#### Over the Network
+
+The Mint and the Signer MUST authenticate with each other using mTLS.
 
 ## Generating keys for the signer.
 
