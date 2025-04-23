@@ -1,6 +1,6 @@
 # NUT-XX: Remote signer communications
 
-`optinal`
+`optional`
 
 ---
 
