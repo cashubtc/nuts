@@ -4,7 +4,7 @@
 
 ---
 
-This NUT define a standard way for Mints to communicate with a remote signer service. The mint can protect its private key by isolating it to a service. Mints will connect to 
+This NUT define a standard way for Mints to communicate with a remote signer. The mint can protect its private key by isolating it to a service. Mints will connect to 
 the signer and ask for validation of proofs as well signing blinded messages. This NUT does not specify the transport
 method needed to communicate with the mint.
 
