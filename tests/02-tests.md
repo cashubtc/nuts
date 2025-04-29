@@ -87,12 +87,15 @@ Keyset id: `000f01df73ea149a`
 
 ## Version 2
 
-The following keysets and corresponding keyset IDs are correct:
+The following keysets and corresponding keyset IDs are correct.
 
-Keyset id: `01adc013fa9d85171586660abab27579888611659d357bc86bc09cb26eee8bc035`
-Unit: `sat`
-Final expiry: `2059210353`
+### Vector 1
 
+* Keyset id: `01adc013fa9d85171586660abab27579888611659d357bc86bc09cb26eee8bc035`
+* Unit: `sat`
+* Final expiry: `2059210353`
+
+Keys:
 ```json
 {
   "1": "03a40f20667ed53513075dc51e715ff2046cad64eb68960632269ba7f0210e38bc",
@@ -102,9 +105,13 @@ Final expiry: `2059210353`
 }
 ```
 
-Keyset id: `0125bc634e270ad7e937af5b957f8396bb627d73f6e1fd2ffe4294c26b57daf9e0`
-Unit: `sat`
-Final expiry: `2059210353`
+### Vector 2
+
+* Keyset id: `0125bc634e270ad7e937af5b957f8396bb627d73f6e1fd2ffe4294c26b57daf9e0`
+* Unit: `sat`
+* Final expiry: `2059210353`
+
+Keys:
 
 ```json
 {
@@ -175,8 +182,12 @@ Final expiry: `2059210353`
 }
 ```
 
-Keyset id: `016d72f27c8d22808ad66d1959b3dab83af17e2510db7ffd57d2365d9eec3ced75`
-Unit: `sat`
+### Vector 3
+
+* Keyset id: `016d72f27c8d22808ad66d1959b3dab83af17e2510db7ffd57d2365d9eec3ced75`
+* Unit: `sat`
+
+Keys:
 
 ```json
 {
