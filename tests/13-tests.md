@@ -2,7 +2,9 @@
 
 ## Keyset ID integer representation
 
-The integer representation of a keyset with an ID `009a1f293253e41e` and its corresponding derivation path for a counter of value `{counter}` are
+### Version 1
+
+The integer representation of a keyset with an ID `009a1f293253e41e` and its corresponding derivation path for a counter of value `{counter}` are:
 
 ```json
 {
@@ -12,9 +14,22 @@ The integer representation of a keyset with an ID `009a1f293253e41e` and its cor
 }
 ```
 
-## Secret derivatoin
+### Version 2
 
-We derive values starting from the following BIP39 mnemonic.
+The integer representation of a keyset with an ID `01adc013fa9d85171586660abab27579888611659d357bc86bc09cb26eee8bc035` and its corresponding derivation path for a counter of value `{counter}` are:
+
+```json
+{
+  "keyset_id": "01adc013fa9d85171586660abab27579888611659d357bc86bc09cb26eee8bc035",
+  "keyest_id_int": 2113471806,
+  "derivation_path": "m/129372'/0'/2113471806'/{counter}'"
+}
+```
+
+
+## Secret derivation
+
+Using derivation `m/129372'/0'/864559728'/{counter}'`, we derive values starting from the following BIP39 mnemonic.
 
 ```json
 {
