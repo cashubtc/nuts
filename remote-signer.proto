@@ -1,7 +1,6 @@
 syntax = "proto3";
 
-package proto_signer;
-option go_package = "nutmix_remote_signer/proto_signer";
+package remote_signer;
 
 service SignerService {
   rpc BlindSign (BlindedMessages) returns (BlindSignResponse);
