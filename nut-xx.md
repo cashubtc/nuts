@@ -31,7 +31,7 @@ For compatibility reasons all signers SHOULD implement the following BIP32 deriv
 - m = master key
 - 129372' (UTF-8 for 🥜)
 - unit_reference = Big endian encoded integer of the first 4 bytes of the sha256 hash of the unit string.
-  ex: sha256sum('sat')[:4] = 339efeab = 866057899. 
+  ex: sha256sum('sat')[:4] = 339efeab = 866057899.
 - version: uint32
 - index_of_amount = index of and the amounts of the keyset as if the where laid in an array. ex: [1, 2, 4, 8, 16, ...]
 
