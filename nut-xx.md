@@ -1,6 +1,6 @@
 # NUT-XX: Remote signer communications
 
-`optinal`
+`optional`
 
 ---
 
@@ -15,7 +15,7 @@ blinded messages it sees.
 
 The signer MUST speak the same language using the GRPC protobuf defined in `remote-signer.proto` inside the repository.
 
-### Authetification
+### Authentication
 
 The signer and the mint can communicate with each other over different transports.
 The signer MUST NOT accept any request if authentication has not occurred.
