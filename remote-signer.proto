@@ -70,7 +70,7 @@ message Keys {
 message RotationRequest {
     CurrencyUnit unit  = 1;
     uint64 input_fee_ppk  = 2;
-    uint64 max_order = 3;
+    uint32 max_order = 3;
 }
 
 enum CurrencyUnitType {
