@@ -3,167 +3,155 @@ syntax = "proto3";
 package remote_signer;
 
 service SignerService {
-  rpc BlindSign (BlindedMessages) returns (BlindSignResponse);
-  rpc VerifyProofs (Proofs) returns (BooleanResponse);
+  rpc BlindSign(BlindedMessages) returns (BlindSignResponse);
+  rpc VerifyProofs(Proofs) returns (BooleanResponse);
   // returns all the keysets for the mint
-  rpc Keysets (EmptyRequest) returns (KeysResponse);
-  // rotates the keysets 
-  rpc RotateKeyset (RotationRequest) returns (KeyRotationResponse);
+  rpc Keysets(EmptyRequest) returns (KeysResponse);
+  // rotates the keysets
+  rpc RotateKeyset(RotationRequest) returns (KeyRotationResponse);
 }
 
 message BlindSignResponse {
-    oneof result {
-        BlindSignatures sigs  = 1;
-        Error error = 2;
-    }
+  Error error = 1;
+  BlindSignatures sigs = 2;
 }
 
 message BlindedMessages {
-    repeated BlindedMessage blinded_messages = 1;
+  repeated BlindedMessage blinded_messages = 1;
 }
 
 // Represents a blinded message
 message BlindedMessage {
-    uint64 amount = 1;
-    string keyset_id = 2;
-    bytes blinded_secret = 3;
+  uint64 amount = 1;
+  string keyset_id = 2;
+  bytes blinded_secret = 3;
 }
 
 message BooleanResponse {
-    oneof result {
-        bool success  = 1;
-        Error error = 2;
-    }
+  Error error = 1;
+  bool success = 2;
 }
 
 message KeyRotationResponse {
-    oneof result {
-        KeySet keyset  = 1;
-        Error error = 2;
-    }
+  Error error = 1;
+  KeySet keyset = 2;
 }
 
 message KeysResponse {
-    oneof result {
-        SignatoryKeysets keysets = 1;
-        Error error = 2;
-    }
+  Error error = 1;
+  SignatoryKeysets keysets = 2;
 }
 
 message SignatoryKeysets {
-    bytes pubkey = 1;
-    repeated KeySet keysets = 2;
+  bytes pubkey = 1;
+  repeated KeySet keysets = 2;
 }
 
 message KeySet {
-    string id = 1;
-    CurrencyUnit unit = 2;
-    bool active = 3;
-    uint64 input_fee_ppk = 4;
-    Keys keys = 5;
+  string id = 1;
+  CurrencyUnit unit = 2;
+  bool active = 3;
+  uint64 input_fee_ppk = 4;
+  Keys keys = 5;
 }
 
 message Keys {
-    map<uint64, bytes> keys = 1;
+  map<uint64, bytes> keys = 1;
 }
 
 message RotationRequest {
-    CurrencyUnit unit  = 1;
-    uint64 input_fee_ppk  = 2;
-    uint32 max_order = 3;
+  CurrencyUnit unit = 1;
+  uint64 input_fee_ppk = 2;
+  uint32 max_order = 3;
 }
 
 enum CurrencyUnitType {
-    SAT = 0;
-    MSAT = 1;
-    USD = 2;
-    EUR = 3;
-    AUTH = 4;
+  SAT = 0;
+  MSAT = 1;
+  USD = 2;
+  EUR = 3;
+  AUTH = 4;
 }
 
 message CurrencyUnit {
-    oneof currency_unit {
-        CurrencyUnitType unit = 1;
-        string custom_unit = 2;
-    }
+  oneof currency_unit {
+    CurrencyUnitType unit = 1;
+    string custom_unit = 2;
+  }
 }
 
 message Proofs {
-    repeated Proof proof = 1;
+  repeated Proof proof = 1;
 }
 
 message Proof {
-    uint64 amount = 1;
-    string keyset_id = 2;
-    bytes secret = 3;
-    bytes C = 4;
-    optional Witness witness = 5;
+  uint64 amount = 1;
+  string keyset_id = 2;
+  bytes secret = 3;
+  bytes C = 4;
+  optional Witness witness = 5;
 }
 
 message ProofDLEQ {
-    bytes e = 1;
-    bytes s = 2;
-    bytes r = 3;
+  bytes e = 1;
+  bytes s = 2;
+  bytes r = 3;
 }
 
 message SigningResponse {
-    oneof result {
-        BlindSignatures blind_signatures = 1;
-        Error error = 2;
-    }
+  Error error = 1;
+  BlindSignatures blind_signatures = 2;
 }
 message BlindSignatures {
-    repeated BlindSignature blind_signatures = 1;
+  repeated BlindSignature blind_signatures = 1;
 }
 
 message BlindSignature {
-    uint64 amount = 1;
-    string keyset_id = 2;
-    bytes blinded_secret = 3;
-    optional BlindSignatureDLEQ dleq = 4;
+  uint64 amount = 1;
+  string keyset_id = 2;
+  bytes blinded_secret = 3;
+  optional BlindSignatureDLEQ dleq = 4;
 }
 
 message BlindSignatureDLEQ {
-    bytes e = 1;
-    bytes s = 2;
+  bytes e = 1;
+  bytes s = 2;
 }
 
 // Witness type
 message Witness {
-    oneof witness_type {
-        P2PKWitness p2pk_witness = 1;
-        HTLCWitness htlc_witness = 2;
-    }
+  oneof witness_type {
+    P2PKWitness p2pk_witness = 1;
+    HTLCWitness htlc_witness = 2;
+  }
 }
 
 // P2PKWitness type
 message P2PKWitness {
-    // List of signatures
-    repeated string signatures = 1;
+  // List of signatures
+  repeated string signatures = 1;
 }
 
 // HTLCWitness type
 message HTLCWitness {
-    // Preimage
-    string preimage = 1;
-    // List of signatures
-    repeated string signatures = 2;
+  // Preimage
+  string preimage = 1;
+  // List of signatures
+  repeated string signatures = 2;
 }
 
-
-
 enum ErrorCode {
-    UNKNOWN = 0;
-    AMOUNT_OUTSIDE_LIMIT = 1;
-    DUPLICATE_INPUTS_PROVIDED = 2;
-    DUPLICATE_OUTPUTS_PROVIDED = 3;
-    KEYSET_NOT_KNOWN = 4;
-    KEYSET_INACTIVE = 5;
-    MINTING_DISABLED = 6;
-    COULD_NOT_ROTATE_KEYSET = 7;
-    INVALID_PROOF = 8;
-    INVALID_BLIND_MESSAGE = 9;
-    UNIT_NOT_SUPPORTED = 10;
+  UNKNOWN = 0;
+  AMOUNT_OUTSIDE_LIMIT = 1;
+  DUPLICATE_INPUTS_PROVIDED = 2;
+  DUPLICATE_OUTPUTS_PROVIDED = 3;
+  KEYSET_NOT_KNOWN = 4;
+  KEYSET_INACTIVE = 5;
+  MINTING_DISABLED = 6;
+  COULD_NOT_ROTATE_KEYSET = 7;
+  INVALID_PROOF = 8;
+  INVALID_BLIND_MESSAGE = 9;
+  UNIT_NOT_SUPPORTED = 10;
 }
 
 message Error {
