@@ -96,4 +96,3 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [20]: 20.md
 [21]: 21.md
 [23]: 23.md
-[24]: 24.md
