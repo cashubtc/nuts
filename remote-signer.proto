@@ -18,6 +18,8 @@ message BlindSignResponse {
 
 message BlindedMessages {
   repeated BlindedMessage blinded_messages = 1;
+  Operation operation = 2;
+  string correlation_id = 3;
 }
 
 // Represents a blinded message
@@ -82,6 +84,8 @@ message CurrencyUnit {
 
 message Proofs {
   repeated Proof proof = 1;
+  Operation operation = 3;
+  string correlation_id = 4;
 }
 
 message Proof {
