@@ -1,10 +1,9 @@
 # NUT-23 Test Vectors
 
-The following list of items should encode to the target filter `5Ud5NvCtCqXvPaQZe9e6VWmfgAgUdgvVh/A=`, with parameters:
+The following list of items should encode to the target filter `z4fUCDVqdnxWR7Y9+YdT5o0IC9GxiSA2BGyg`, with parameters:
 
 - `p = 19`
 - `m = 784931`
-- `k = "00000000000000000000000000000000"`
 
 ```json
 [
