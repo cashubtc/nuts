@@ -101,7 +101,6 @@ message Proof {
   string keyset_id = 2;
   bytes secret = 3;
   bytes c = 4;
-  optional Witness witness = 5;
 }
 
 message ProofDLEQ {
