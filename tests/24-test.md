@@ -1,4 +1,4 @@
-# NUT-23 Test Vectors
+# NUT-XX Test Vectors
 
 The following list of items should encode to the target filter `z4fUCDVqdnxWR7Y9+YdT5o0IC9GxiSA2BGyg`, with parameters:
 
