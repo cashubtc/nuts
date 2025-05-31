@@ -57,7 +57,7 @@ message SignatoryKeysets {
 }
 
 message KeySet {
-  string id = 1;
+  bytes id = 1;
   CurrencyUnit unit = 2;
   bool active = 3;
   uint64 input_fee_ppk = 4;
