@@ -32,7 +32,7 @@ message BlindedMessages {
 // Represents a blinded message
 message BlindedMessage {
   uint64 amount = 1;
-  string keyset_id = 2;
+  bytes keyset_id = 2;
   bytes blinded_secret = 3;
 }
 
@@ -98,7 +98,7 @@ message Proofs {
 
 message Proof {
   uint64 amount = 1;
-  string keyset_id = 2;
+  bytes keyset_id = 2;
   bytes secret = 3;
   bytes c = 4;
 }
@@ -119,7 +119,7 @@ message BlindSignatures {
 
 message BlindSignature {
   uint64 amount = 1;
-  string keyset_id = 2;
+  bytes keyset_id = 2;
   bytes blinded_secret = 3;
   optional BlindSignatureDLEQ dleq = 4;
 }
