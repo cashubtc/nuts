@@ -8,9 +8,6 @@ This NUT define a standard way for Mints to communicate with a remote signer. Th
 
 Mints will connect to the signer and ask for validation of proofs as well signing blinded messages. This NUT does not specify the transport method needed to communicate with the mint.
 
-The purpose of this signers is only for cryptographic operations it should not keep any state about the proofs and
-blinded messages it sees.
-
 ## Protocol
 
 The signer MUST speak the same language using the GRPC protobuf defined in `remote-signer.proto` inside the repository.
