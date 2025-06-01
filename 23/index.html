@@ -8,13 +8,9 @@
       
       
       
-        <link rel="canonical" href="https://cashubtc.github.io/nuts/05/">
+        <link rel="canonical" href="https://cashubtc.github.io/nuts/23/">
       
       
-        <link rel="prev" href="../04/">
-      
-      
-        <link rel="next" href="../06/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -22,7 +18,7 @@
     
     
       
-        <title>NUT-05 - Melting tokens - Cashu NUTs Specifications</title>
+        <title>NUT-23: BOLT11 - Cashu NUTs Specifications</title>
       
     
     
@@ -74,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#nut-05-melting-tokens" class="md-skip">
+        <a href="#nut-23-bolt11" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              NUT-05 - Melting tokens
+              NUT-23: BOLT11
             
           </span>
         </div>
@@ -292,8 +288,6 @@
       
   
   
-    
-  
   
   
     
@@ -306,11 +300,13 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
@@ -326,7 +322,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             NUTs
@@ -337,8 +333,6 @@
                 
   
   
-    
-  
   
   
     
@@ -348,11 +342,13 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_1" >
         
           
           <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
@@ -368,7 +364,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_1">
             <span class="md-nav__icon md-icon"></span>
             Mandatory
@@ -494,32 +490,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    NUT-05 - Melting tokens
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../05/" class="md-nav__link">
         
   
   
@@ -530,104 +504,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#supported-methods" class="md-nav__link">
-    <span class="md-ellipsis">
-      Supported methods
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#general-flow" class="md-nav__link">
-    <span class="md-ellipsis">
-      General Flow
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#common-request-and-response-formats" class="md-nav__link">
-    <span class="md-ellipsis">
-      Common Request and Response Formats
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Common Request and Response Formats">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#requesting-a-melt-quote" class="md-nav__link">
-    <span class="md-ellipsis">
-      Requesting a Melt Quote
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#check-melt-quote-state" class="md-nav__link">
-    <span class="md-ellipsis">
-      Check Melt Quote State
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#executing-a-melt-quote" class="md-nav__link">
-    <span class="md-ellipsis">
-      Executing a Melt Quote
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-new-payment-methods" class="md-nav__link">
-    <span class="md-ellipsis">
-      Adding New Payment Methods
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#settings" class="md-nav__link">
-    <span class="md-ellipsis">
-      Settings
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1108,114 +984,210 @@
   
 
 
-<h1 id="nut-05-melting-tokens">NUT-05: Melting tokens<a class="headerlink" href="#nut-05-melting-tokens" title="Permanent link">&para;</a></h1>
-<p><code>mandatory</code></p>
-<p><code>used in: NUT-08, NUT-15, NUT-23</code></p>
+<h1 id="nut-23-bolt11">NUT-23: BOLT11<a class="headerlink" href="#nut-23-bolt11" title="Permanent link">&para;</a></h1>
+<p><code>optional</code></p>
+<p><code>depends on: NUT-04 NUT-05</code></p>
 <hr />
-<p>Melting tokens is the opposite of minting tokens (see <a href="../04/">NUT-04</a>). Like minting tokens, melting is a two-step process: requesting a melt quote and melting tokens. This document describes the general flow that applies to all payment methods, with specifics for each supported payment method provided in dedicated method-specific NUTs.</p>
-<h2 id="supported-methods">Supported methods<a class="headerlink" href="#supported-methods" title="Permanent link">&para;</a></h2>
-<p>Method-specific NUTs describe how to handle different payment methods. The currently specified models are:</p>
-<ul>
-<li><a href="../23/">NUT-23</a> for bolt11 Lightning invoices</li>
-</ul>
-<h2 id="general-flow">General Flow<a class="headerlink" href="#general-flow" title="Permanent link">&para;</a></h2>
-<p>The melting process follows these steps for all payment methods:</p>
-<ol>
-<li>The wallet requests a melt quote for a <code>request</code> it wants paid by the mint, specifying the payment <code>method</code> and the <code>unit</code> the wallet would like to spend</li>
-<li>The mint responds with a quote that includes a <code>quote</code> id and an <code>amount</code> demanded in the requested unit</li>
-<li>The wallet sends a melting request including the <code>quote</code> id and provides <code>inputs</code> of the required amount</li>
-<li>The mint executes the payment and responds with the payment <code>state</code> and any method-specific proof of payment</li>
-</ol>
-<h2 id="common-request-and-response-formats">Common Request and Response Formats<a class="headerlink" href="#common-request-and-response-formats" title="Permanent link">&para;</a></h2>
-<h3 id="requesting-a-melt-quote">Requesting a Melt Quote<a class="headerlink" href="#requesting-a-melt-quote" title="Permanent link">&para;</a></h3>
-<p>To request a melt quote, the wallet of <code>Alice</code> makes a <code>POST /v1/melt/quote/{method}</code> request where <code>method</code> is the payment method requested (e.g., <code>bolt11</code>, <code>bolt12</code>, etc.).</p>
-<div class="codehilite"><pre><span></span><code><span class="err">POST https://mint.host:3338/v1/melt/quote/{method}</span>
-</code></pre></div>
-
-<p>Depending on the payment method, the request structure may vary, but all methods will include at minimum:</p>
+<p>This document describes minting and melting ecash with the <code>bolt11</code> payment method, which uses Lightning Network invoices. It is an extension of <a href="../04/">NUT-04</a> and <a href="../05/">NUT-05</a> which cover the protocol steps of minting and melting ecash shared by any supported payment method.</p>
+<h2 id="mint-quote">Mint Quote<a class="headerlink" href="#mint-quote" title="Permanent link">&para;</a></h2>
+<p>For the <code>bolt11</code> method, the wallet includes the following specific <code>PostMintQuoteBolt11Request</code> data:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span>
-<span class="w">  </span><span class="c1">// Additional method-specific fields will be required</span>
-<span class="p">}</span>
-</code></pre></div>
-
-<p>The mint <code>Bob</code> responds with a quote that includes some common fields for all methods:</p>
-<div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">STATE</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span>
-<span class="w">  </span><span class="c1">// Additional method-specific fields will be included</span>
+<span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// Optional</span>
 <span class="p">}</span>
 </code></pre></div>
 
-<p>Where <code>quote</code> is the quote ID, <code>amount</code> and <code>unit</code> the amount and unit that need to be provided, and <code>expiry</code> is the Unix timestamp until which the melt quote is valid.</p>
-<p><code>state</code> is an enum string field with possible values <code>"UNPAID"</code>, <code>"PENDING"</code>, <code>"PAID"</code>:</p>
-<ul>
-<li><code>"UNPAID"</code> means that the request has not been paid yet.</li>
-<li><code>"PENDING"</code> means that the request is currently being paid.</li>
-<li><code>"PAID"</code> means that the request has been paid successfully.</li>
-</ul>
-<h3 id="check-melt-quote-state">Check Melt Quote State<a class="headerlink" href="#check-melt-quote-state" title="Permanent link">&para;</a></h3>
-<p>To check whether a melt quote has been paid, the wallet makes a <code>GET /v1/melt/quote/{method}/{quote_id}</code>.</p>
-<div class="codehilite"><pre><span></span><code><span class="err">GET https://mint.host:3338/v1/melt/quote/{method}/{quote_id}</span>
-</code></pre></div>
-
-<p>The mint responds with the same structure as the initial quote response.</p>
-<h3 id="executing-a-melt-quote">Executing a Melt Quote<a class="headerlink" href="#executing-a-melt-quote" title="Permanent link">&para;</a></h3>
-<p>To execute the melting process, the wallet calls the <code>POST /v1/melt/{method}</code> endpoint.</p>
-<div class="codehilite"><pre><span></span><code><span class="err">POST https://mint.host:3338/v1/melt/{method}</span>
-</code></pre></div>
-
-<blockquote>
-<p>[!IMPORTANT]
-For methods that involve external payments (like Lightning), this call may block until the payment either succeeds or fails. This can take a long time. Make sure to <strong>use no (or a very long) timeout when making this call</strong>!</p>
-</blockquote>
-<p>The wallet includes the following common data in its request:</p>
+<p>The mint responds with a <code>PostMintQuoteBolt11Response</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;inputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Proo</span><span class="kc">f</span><span class="p">]</span><span class="err">&gt;</span>
-<span class="w">  </span><span class="c1">// Additional method-specific fields may be required</span>
+<span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// The bolt11 invoice to pay</span>
+<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w">  </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">STATE</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span>
 <span class="p">}</span>
 </code></pre></div>
 
-<p>where <code>quote</code> is the melt quote ID and <code>inputs</code> are the proofs with a total amount sufficient to cover the requested amount plus any fees.</p>
-<p>The mint responds with a structure that indicates the payment state and includes any method-specific proof of payment when successful.</p>
-<h2 id="adding-new-payment-methods">Adding New Payment Methods<a class="headerlink" href="#adding-new-payment-methods" title="Permanent link">&para;</a></h2>
-<p>To add a new payment method (e.g., BOLT12), implement the following:</p>
-<ol>
-<li>Define the method-specific request and response structures following the pattern above</li>
-<li>Implement the three required endpoints: quote request, quote check, and melt execution</li>
-<li>Update the settings to include the new method</li>
-<li>Document any method-specific fields or behaviors that differ from the general flow</li>
-</ol>
-<h2 id="settings">Settings<a class="headerlink" href="#settings" title="Permanent link">&para;</a></h2>
-<p>The mint's settings for this NUT indicate the supported method-unit pairs for melting. They are part of the info response of the mint (<a href="../06/">NUT-06</a>):</p>
+<p><code>state</code> is an enum string field with possible values <code>"UNPAID"</code>, <code>"PAID"</code>, <code>"ISSUED"</code>:</p>
+<ul>
+<li><code>"UNPAID"</code> means that the quote's request has not been paid yet.</li>
+<li><code>"PAID"</code> means that the request has been paid.</li>
+<li><code>"ISSUED"</code> means that the quote has already been issued.</li>
+</ul>
+<p><code>expiry</code> is the Unix timestamp until which the <code>request</code> can be paid (i.e. the bolt11 invoice expiry).</p>
+<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
+<p>Request with curl:</p>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:3338/v1/mint/quote/bolt11<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;amount&quot;: 10, &quot;unit&quot;: &quot;sat&quot;}&#39;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
+</code></pre></div>
+
+<p>Response:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;5&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;methods&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">      </span><span class="err">&lt;Mel</span><span class="kc">t</span><span class="err">Me</span><span class="kc">t</span><span class="err">hodSe</span><span class="kc">tt</span><span class="err">i</span><span class="kc">n</span><span class="err">g&gt;</span><span class="p">,</span>
-<span class="w">      </span><span class="err">...</span>
-<span class="w">    </span><span class="p">],</span>
-<span class="w">    </span><span class="nt">&quot;disabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;bool&gt;</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DSGLX9kevM...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lnbc100n1pj4apw9...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UNPAID&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704757</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Check quote state:</p>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://localhost:3338/v1/mint/quote/bolt11/DSGLX9kevM...
+</code></pre></div>
+
+<p>Minting tokens:</p>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://mint.host:3338/v1/mint/bolt11<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="s1">&#39;{</span>
+<span class="s1">  &quot;quote&quot;: &quot;DSGLX9kevM...&quot;,</span>
+<span class="s1">  &quot;outputs&quot;: [</span>
+<span class="s1">    {</span>
+<span class="s1">      &quot;amount&quot;: 8,</span>
+<span class="s1">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
+<span class="s1">      &quot;B_&quot;: &quot;035015e6d7ade60ba8426cefaf1832bbd27257636e44a76b922d78e79b47cb689d&quot;</span>
+<span class="s1">    },</span>
+<span class="s1">    {</span>
+<span class="s1">      &quot;amount&quot;: 2,</span>
+<span class="s1">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
+<span class="s1">      &quot;B_&quot;: &quot;0288d7649652d0a83fc9c966c969fb217f15904431e61a44b14999fabc1b5d9ac6&quot;</span>
+<span class="s1">    }</span>
+<span class="s1">  ]</span>
+<span class="s1">}&#39;</span>
+</code></pre></div>
+
+<p>Response:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;C_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0224f1c4c564230ad3d96c5033efdc425582397a5a7691d600202732edc6d4b1ec&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;C_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0277d1de806ed177007e5b94a8139343b6382e472c752a74e99949d511f7194f6c&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="mint-settings">Mint Settings<a class="headerlink" href="#mint-settings" title="Permanent link">&para;</a></h2>
+<p>A <code>description</code> option <strong>MUST</strong> be set to indicate whether the <code>bolt11</code> payment method backend supports providing an invoice description.</p>
+<h3 id="example-mintmethodsetting">Example <code>MintMethodSetting</code><a class="headerlink" href="#example-mintmethodsetting" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bolt11&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;min_amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;max_amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;options&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 
-<p><code>MeltMethodSetting</code> indicates supported <code>method</code> and <code>unit</code> pairs and additional settings of the mint. <code>disabled</code> indicates whether melting is disabled.</p>
-<p><code>MeltMethodSetting</code> is of the form:</p>
+<h2 id="melt-quote">Melt Quote<a class="headerlink" href="#melt-quote" title="Permanent link">&para;</a></h2>
+<p>For the <code>bolt11</code> method, the wallet includes the following specific <code>PostMeltQuoteBolt11Request</code> data:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;min_amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;max_amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;options&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Objec</span><span class="kc">t</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span>
+<span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;options&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Optional</span>
+<span class="w">    </span><span class="nt">&quot;amountless&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;amount_msat&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 
-<p><code>min_amount</code> and <code>max_amount</code> indicate the minimum and maximum amount for an operation of this method-unit pair. <code>options</code> are method-specific and can be defined in method-specific NUTs.</p>
+<p>Here, <code>request</code> is the bolt11 Lightning invoice to be paid and <code>unit</code> is the unit the wallet would like to pay with. The <code>options</code> field can include support for amountless invoices if supported by the mint.</p>
+<p>The mint responds with a <code>PostMeltQuoteBolt11Response</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;fee_reserve&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">STATE</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;payment_preimage&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Where <code>fee_reserve</code> is the additional fee reserve required for the Lightning payment. The mint expects the wallet to include <code>Proofs</code> of <em>at least</em> <code>total_amount = amount + fee_reserve + fee</code> where <code>fee</code> is calculated from the keyset's <code>input_fee_ppk</code> as described in [NUT-02][02].</p>
+<h3 id="melting-tokens">Melting Tokens<a class="headerlink" href="#melting-tokens" title="Permanent link">&para;</a></h3>
+<p>For the <code>bolt11</code> method, the wallet can include an optional <code>outputs</code> field in the melt request to receive change for overpaid Lightning fees (see [NUT-08][08]):</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;inputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Proo</span><span class="kc">f</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dedMessage</span><span class="p">]</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// Optional</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>If the <code>outputs</code> field is included and there is excess from the <code>fee_reserve</code>, the mint will respond with a <code>change</code> field containing blind signatures for the overpaid amount:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;fee_reserve&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">STATE</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;payment_preimage&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;change&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dSig</span><span class="kc">nature</span><span class="p">]</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// Present if outputs were included and there&#39;s change</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h3>
+<p>Melt quote request:</p>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://mint.host:3338/v1/melt/quote/bolt11<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="s1">&#39;{&quot;request&quot;: &quot;lnbc100n1p3kdrv5sp5lpdxzghe5j67q...&quot;, &quot;unit&quot;: &quot;sat&quot;}&#39;</span>
+</code></pre></div>
+
+<p>Melt quote response:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TRmjduhIsPxd...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lnbc100n1p3kdrv5sp5lpdxzghe5j67q...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;fee_reserve&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UNPAID&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704757</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Check quote state:</p>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://localhost:3338/v1/melt/quote/bolt11/TRmjduhIsPxd...
+</code></pre></div>
+
+<p>Melt request:</p>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://mint.host:3338/v1/melt/bolt11<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="s1">&#39;{&quot;quote&quot;: &quot;od4CN5smMMS3K3QVHkbGGNCTxfcAIyIXeq8IrfhP&quot;, &quot;inputs&quot;: [...]}&#39;</span>
+</code></pre></div>
+
+<p>Successful melt response:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TRmjduhIsPxd...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lnbc100n1p3kdrv5sp5lpdxzghe5j67q...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;fee_reserve&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PAID&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704757</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;payment_preimage&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;c5a1ae1f639e1f4a3872e81500fd028bece7bedc1152f740cba5c3417b748c1b&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="example-meltmethodsetting">Example <code>MeltMethodSetting</code><a class="headerlink" href="#example-meltmethodsetting" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bolt11&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;min_amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;max_amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;options&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;amountless&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
 
 
 
