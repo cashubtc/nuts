@@ -70,7 +70,7 @@ The mint backup uses Nostr event kind `30078` (replaceable event) as specified i
 
 - `kind`: **MUST** be `30078` (replaceable event)
 - `content`: Encrypted mint backup data using NIP-44 encryption
-- `tags`: 
+- `tags`:
   - `d` tag with value `"mint-list"` (replaceable event identifier)
   - `client` tag with the client name (optional but recommended)
 - `created_at`: Unix timestamp of the backup creation
@@ -139,10 +139,7 @@ When decrypted, the content would reveal:
 
 ```json
 {
-  "mints": [
-    "https://mint.example.com",
-    "https://another-mint.org"
-  ],
+  "mints": ["https://mint.example.com", "https://another-mint.org"],
   "timestamp": 1703721600
 }
 ```
