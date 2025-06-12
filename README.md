@@ -33,7 +33,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [15][15] | Partial multi-path payments (MPP) | [Nutshell][py], [cdk-cli], [gonuts]                                          | [Nutshell][py], [cdk-mintd], [nutmix], [gonuts]              |
 | [16][16] | Animated QR codes                 | [Cashu.me][cashume], [macadamia], [Minibits]                                 | -                                                            |
 | [17][17] | WebSocket subscriptions           | [Nutshell][py], [cdk-cli][cdk-cli], [Cashu.me][cashume], [gonuts], [Minibits]| [Nutshell][py], [cdk-mintd][cdk-mintd], [gonuts], [nutmix]   |
-| [18][18] | Payment requests                  | [Cashu.me][cashume], [Boardwalk][bwc], [cdk-cli],[Minibits]                  | -                                                            |
+| [18][18] | Payment requests                  | [Cashu.me][cashume], [Boardwalk][bwc], [cdk-cli], [Minibits]                  | -                                                            |
 | [19][19] | Cached Responses                  | -                                                                            | [Nutshell][py], [cdk-mintd]                                  |
 | [20][20] | Signature on Mint Quote           | [cdk-cli], [Nutshell][py], [gonuts]                                          | [cdk-mintd], [Nutshell][py], [gonuts]                        |
 | [21][21] | Clear authentication              | [Nutshell][py], [cdk-cli]                                                    | [Nutshell][py], [cdk-mintd], [nutmix]                        |
