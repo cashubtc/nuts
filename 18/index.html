@@ -914,6 +914,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#locking-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Locking conditions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#transport" class="md-nav__link">
     <span class="md-ellipsis">
       Transport
@@ -1158,7 +1167,8 @@
 <span class="w">  </span><span class="nt">&quot;s&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">bool</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">Array</span><span class="p">[</span><span class="err">s</span><span class="kc">tr</span><span class="p">]</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;d&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">Array</span><span class="p">[</span><span class="err">Tra</span><span class="kc">ns</span><span class="err">por</span><span class="kc">t</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">Array</span><span class="p">[</span><span class="err">Tra</span><span class="kc">ns</span><span class="err">por</span><span class="kc">t</span><span class="p">]</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;nut10&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">NUT</span><span class="mi">10</span><span class="err">Op</span><span class="kc">t</span><span class="err">io</span><span class="kc">n</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1171,9 +1181,28 @@
 <li><code>m</code>: A set of mints from which the payment is requested</li>
 <li><code>d</code>: A human readable description that the sending wallet will display after scanning the request</li>
 <li><code>t</code>: The method of <code>Transport</code> chosen to transmit the payment (can be multiple, sorted by preference)</li>
+<li><code>nut10</code>: The required <a href="../10/">NUT-10</a> locking condition</li>
 </ul>
+<h2 id="locking-conditions">Locking conditions<a class="headerlink" href="#locking-conditions" title="Permanent link">&para;</a></h2>
+<p>The payment request can include <em>optional</em> locking conditions the payee requires from the payer. For example, the payee might require a P2PK-locked token so that they can receive payments offline.</p>
+<p>The <code>nut10</code> field specifies the payee's requested locking condition as a <code>NUT10Option</code> object. Its elements are derived from NUT-10's <a href="../10/#well-known-secret">well-known secret</a>. The <code>NUT10Option</code> reads:</p>
+<div class="codehilite"><pre><span></span><code>{
+  &quot;kind&quot;: str,
+  &quot;data&quot;: str,
+  &quot;tags&quot;: [[ &quot;key&quot;, &quot;value1&quot;, &quot;value2&quot;, ...],  ... ], // (optional)
+}
+</code></pre></div>
+
+<blockquote>
+<p>[!IMPORTANT]
+The payee must validate the incoming tokens themselves in order to decide whether they can accept the payment. This includes checking the DLEQ proof and whether the token includes a long-enough timelock to satisfy the payee.</p>
+</blockquote>
 <h2 id="transport">Transport<a class="headerlink" href="#transport" title="Permanent link">&para;</a></h2>
 <p><code>Transport</code> specifies methods for sending the ecash to the receiver. A transport consists of a type and a target.</p>
+<blockquote>
+<p>[!IMPORTANT]
+The transport can be empty! If the transport is empty, we implicitly assume that the payment will be in-band. An example is X-Cashu where the payment is expected in the HTTP header of a request. We can only hope that the protocol you're using has a well-defined transport.</p>
+</blockquote>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="p">,</span>
@@ -1217,7 +1246,7 @@
 <p>Here, <code>id</code> is the payment id (corresponding to <code>i</code> in request), <code>memo</code> is an optional memo to be sent to the receiver with the payment, <code>mint</code> is the mint URL from which the ecash is from, <code>unit</code> is the unit of the payment, and <code>proofs</code> is an array of proofs (see <a href="../00/">NUT-00</a>, can also include DLEQ proofs).</p>
 <h2 id="encoded-request">Encoded Request<a class="headerlink" href="#encoded-request" title="Permanent link">&para;</a></h2>
 <p>The payment request is serialized using CBOR, encoded in <code>base64_urlsafe</code>, together with a prefix <code>creq</code> and a version <code>A</code>:</p>
-<p><code>"creq" + "A" + base64(CBOR(PaymentRequest))</code></p>
+<p><code>"creq" + "A" + base64_urlsafe(CBOR(PaymentRequest))</code></p>
 <h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
 <p>This is an example payment request expressed as JSON:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
