@@ -4,11 +4,11 @@
 
 ---
 
-This document describes a method for wallets to backup their mint list as ephemeral Nostr events on one or more relays. This allows users to restore their mint configuration across different devices or wallet instances using their mnemonic seed phrase.
+This document describes a method for wallets to backup their mint list as Nostr events on one or more relays. This allows users to restore their mint configuration across different devices or wallet instances using their mnemonic seed phrase.
 
 ## Description
 
-Wallet users can optionally enable backup of their mint list to Nostr relays. The mint list is encrypted using NIP-44 encryption and published as replaceable Nostr events. The backup keys are deterministically derived from the wallet's mnemonic seed phrase, ensuring that the same seed can restore the mint list on any compatible wallet.
+Wallet users can optionally enable backup of their mint list to Nostr relays. The mint list is encrypted using NIP-44 encryption and published as addressable (parameterized replaceable) Nostr events. The backup keys are deterministically derived from the wallet's mnemonic seed phrase, ensuring that the same seed can restore the mint list on any compatible wallet.
 
 ## Key Derivation
 
@@ -49,7 +49,7 @@ function deriveMintBackupKeys(mnemonic: string): { privateKeyHex: string; public
 
 ### Event Kind
 
-The mint backup uses Nostr event kind `30078` (replaceable event) as specified in [NIP-78](https://github.com/nostr-protocol/nips/blob/master/78.md).
+The mint backup uses Nostr event kind `30078` (addressable event) as specified in [NIP-78](https://github.com/nostr-protocol/nips/blob/master/78.md).
 
 ### Event Structure
 
@@ -68,10 +68,10 @@ The mint backup uses Nostr event kind `30078` (replaceable event) as specified i
 
 ### Event Fields
 
-- `kind`: **MUST** be `30078` (replaceable event)
+- `kind`: **MUST** be `30078` (addressable event)
 - `content`: Encrypted mint backup data using NIP-44 encryption
 - `tags`:
-  - `d` tag with value `"mint-list"` (replaceable event identifier)
+  - `d` tag with value `"mint-list"` (addressable event identifier)
   - `client` tag with the client name (optional but recommended)
 - `created_at`: Unix timestamp of the backup creation
 - `pubkey`: The derived public key for mint backup
