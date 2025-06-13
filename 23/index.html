@@ -1012,8 +1012,8 @@
 <p><code>state</code> is an enum string field with possible values <code>"UNPAID"</code>, <code>"PAID"</code>, <code>"ISSUED"</code>:</p>
 <ul>
 <li><code>"UNPAID"</code> means that the quote's request has not been paid yet.</li>
-<li><code>"PAID"</code> means that the request has been paid.</li>
-<li><code>"ISSUED"</code> means that the quote has already been issued.</li>
+<li><code>"PAID"</code> means that the quote's request has been paid but the ecash is not issued yet.</li>
+<li><code>"ISSUED"</code> means that the quote has been paid and the ecash has been issued.</li>
 </ul>
 <p><code>expiry</code> is the Unix timestamp until which the <code>request</code> can be paid (i.e. the bolt11 invoice expiry).</p>
 <h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
