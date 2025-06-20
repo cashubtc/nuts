@@ -20,25 +20,25 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 
 ### Optional
 
-| #        | Description                       | Wallets                                                               | Mints                                              |
-| -------- | --------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------- |
-| [07][07] | Token state check                 | [Nutshell][py], [Nutstash][ns], [cashu-ts][ts], [cdk-cli], [Minibits] | [Nutshell][py], [cdk-mintd], [nutmix], [macadamia] |
-| [08][08] | Overpaid Lightning fees           | [Nutshell][py], [Nutstash][ns], [cashu-ts][ts], [cdk-cli], [Minibits] | [Nutshell][py], [cdk-mintd], [nutmix], [macadamia] |
-| [09][09] | Signature restore                 | [Nutshell][py], [cdk-cli], [Cashu.me][cashume], [Minibits]            | [Nutshell][py], [cdk-mintd], [macadamia]           |
-| [10][10] | Spending conditions               | [Nutshell][py], [cdk-cli], [cashu-ts][ts], [Minibits]                 | [Nutshell][py], [cdk-mintd], [nutmix]              |
-| [11][11] | Pay-To-Pubkey (P2PK)              | [Nutshell][py], [cdk-cli], [Cashu.me][cashume], [Minibits]            | [Nutshell][py], [cdk-mintd], [nutmix]              |
-| [12][12] | DLEQ proofs                       | [Nutshell][py], [cdk-cli], [cashu-ts][ts]                             | [Nutshell][py], [cdk-mintd], [nutmix]              |
-| [13][13] | Deterministic secrets             | [Nutshell][py], [cashu-ts][ts], [cdk-cli], [macadamia], [Minibits]    | -                                                  |
-| [14][14] | Hashed Timelock Contracts (HTLCs) | [Nutshell][py], [cdk-cli]                                             | [Nutshell][py], [cdk-mintd], [nutmix]              |
-| [15][15] | Partial multi-path payments (MPP) | [Nutshell][py], [cdk-cli]                                             | [Nutshell][py], [cdk-mintd], [nutmix]              |
-| [16][16] | Animated QR codes                 | [Cashu.me][cashume], [macadamia], [Minibits]                          | -                                                  |
-| [17][17] | WebSocket subscriptions           | [Nutshell][py], [cdk-cli][cdk-cli], [Cashu.me][cashume], [Minibits]   | [Nutshell][py], [cdk-mintd][cdk-mintd], [nutmix]   |
-| [18][18] | Payment requests                  | [Cashu.me][cashume], [Boardwalk][bwc], [cdk-cli], [Minibits]          | -                                                  |
-| [19][19] | Cached Responses                  | -                                                                     | [Nutshell][py], [cdk-mintd]                        |
-| [20][20] | Signature on Mint Quote           | [cdk-cli], [Nutshell][py]                                             | [cdk-mintd], [Nutshell][py]                        |
-| [21][21] | Clear authentication              | [Nutshell][py], [cdk-cli]                                             | [Nutshell][py], [cdk-mintd], [nutmix]              |
-| [22][22] | Blind authentication              | [Nutshell][py], [cdk-cli]                                             | [Nutshell][py], [cdk-mintd], [nutmix]              |
-| [23][23] | Payment Method: BOLT11            | [Nutshell][py], [cdk-cli]                                             | [Nutshell][py], [cdk-mintd], [nutmix]              |
+| #        | Description                       | Wallets                                                                            | Mints                                            |
+| -------- | --------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------ |
+| [07][07] | Token state check                 | [Nutshell][py], [Nutstash][ns], [cashu-ts][ts], [cdk-cli], [Minibits], [macadamia] | [Nutshell][py], [cdk-mintd], [nutmix]            |
+| [08][08] | Overpaid Lightning fees           | [Nutshell][py], [Nutstash][ns], [cashu-ts][ts], [cdk-cli], [Minibits], [macadamia] | [Nutshell][py], [cdk-mintd], [nutmix]            |
+| [09][09] | Signature restore                 | [Nutshell][py], [cdk-cli], [Cashu.me][cashume], [Minibits], [macadamia]            | [Nutshell][py], [cdk-mintd]                      |
+| [10][10] | Spending conditions               | [Nutshell][py], [cdk-cli], [cashu-ts][ts], [Minibits]                              | [Nutshell][py], [cdk-mintd], [nutmix]            |
+| [11][11] | Pay-To-Pubkey (P2PK)              | [Nutshell][py], [cdk-cli], [Cashu.me][cashume], [Minibits]                         | [Nutshell][py], [cdk-mintd], [nutmix]            |
+| [12][12] | DLEQ proofs                       | [Nutshell][py], [cdk-cli], [cashu-ts][ts]                                          | [Nutshell][py], [cdk-mintd], [nutmix]            |
+| [13][13] | Deterministic secrets             | [Nutshell][py], [cashu-ts][ts], [cdk-cli], [macadamia], [Minibits]                 | -                                                |
+| [14][14] | Hashed Timelock Contracts (HTLCs) | [Nutshell][py], [cdk-cli]                                                          | [Nutshell][py], [cdk-mintd], [nutmix]            |
+| [15][15] | Partial multi-path payments (MPP) | [Nutshell][py], [cdk-cli]                                                          | [Nutshell][py], [cdk-mintd], [nutmix]            |
+| [16][16] | Animated QR codes                 | [Cashu.me][cashume], [macadamia], [Minibits]                                       | -                                                |
+| [17][17] | WebSocket subscriptions           | [Nutshell][py], [cdk-cli][cdk-cli], [Cashu.me][cashume], [Minibits]                | [Nutshell][py], [cdk-mintd][cdk-mintd], [nutmix] |
+| [18][18] | Payment requests                  | [Cashu.me][cashume], [Boardwalk][bwc], [cdk-cli], [Minibits]                       | -                                                |
+| [19][19] | Cached Responses                  | -                                                                                  | [Nutshell][py], [cdk-mintd]                      |
+| [20][20] | Signature on Mint Quote           | [cdk-cli], [Nutshell][py]                                                          | [cdk-mintd], [Nutshell][py]                      |
+| [21][21] | Clear authentication              | [Nutshell][py], [cdk-cli]                                                          | [Nutshell][py], [cdk-mintd], [nutmix]            |
+| [22][22] | Blind authentication              | [Nutshell][py], [cdk-cli]                                                          | [Nutshell][py], [cdk-mintd], [nutmix]            |
+| [23][23] | Payment Method: BOLT11            | [Nutshell][py], [cdk-cli]                                                          | [Nutshell][py], [cdk-mintd], [nutmix]            |
 
 #### Wallets:
 
