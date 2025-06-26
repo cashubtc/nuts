@@ -8,26 +8,24 @@
       
       
       
-        <link rel="canonical" href="https://cashubtc.github.io/nuts/">
+        <link rel="canonical" href="https://cashubtc.github.io/nuts/24/">
       
       
       
-        <link rel="next" href="00/">
       
-      
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
     
     
       
-        <title>Cashu NUTs Specifications</title>
+        <title>NUT-24: HTTP 402 Payment Required - Cashu NUTs Specifications</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -46,7 +44,7 @@
       
     
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -72,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cashu-nuts-notation-usage-and-terminology" class="md-skip">
+        <a href="#nut-24-http-402-payment-required" class="md-skip">
           Skip to content
         </a>
       
@@ -88,7 +86,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Cashu NUTs Specifications" class="md-header__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+    <a href=".." title="Cashu NUTs Specifications" class="md-header__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
@@ -108,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              NUT-24: HTTP 402 Payment Required
             
           </span>
         </div>
@@ -241,7 +239,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Cashu NUTs Specifications" class="md-nav__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+    <a href=".." title="Cashu NUTs Specifications" class="md-nav__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
@@ -268,32 +266,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Home
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -304,83 +280,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#specifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      Specifications
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Specifications">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#mandatory" class="md-nav__link">
-    <span class="md-ellipsis">
-      Mandatory
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#optional" class="md-nav__link">
-    <span class="md-ellipsis">
-      Optional
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Optional">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#wallets" class="md-nav__link">
-    <span class="md-ellipsis">
-      Wallets:
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mints" class="md-nav__link">
-    <span class="md-ellipsis">
-      Mints:
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -479,7 +378,7 @@
   
   
     <li class="md-nav__item">
-      <a href="00/" class="md-nav__link">
+      <a href="../00/" class="md-nav__link">
         
   
   
@@ -502,7 +401,7 @@
   
   
     <li class="md-nav__item">
-      <a href="01/" class="md-nav__link">
+      <a href="../01/" class="md-nav__link">
         
   
   
@@ -525,7 +424,7 @@
   
   
     <li class="md-nav__item">
-      <a href="02/" class="md-nav__link">
+      <a href="../02/" class="md-nav__link">
         
   
   
@@ -548,7 +447,7 @@
   
   
     <li class="md-nav__item">
-      <a href="03/" class="md-nav__link">
+      <a href="../03/" class="md-nav__link">
         
   
   
@@ -571,7 +470,7 @@
   
   
     <li class="md-nav__item">
-      <a href="04/" class="md-nav__link">
+      <a href="../04/" class="md-nav__link">
         
   
   
@@ -594,7 +493,7 @@
   
   
     <li class="md-nav__item">
-      <a href="05/" class="md-nav__link">
+      <a href="../05/" class="md-nav__link">
         
   
   
@@ -617,7 +516,7 @@
   
   
     <li class="md-nav__item">
-      <a href="06/" class="md-nav__link">
+      <a href="../06/" class="md-nav__link">
         
   
   
@@ -690,7 +589,7 @@
   
   
     <li class="md-nav__item">
-      <a href="07/" class="md-nav__link">
+      <a href="../07/" class="md-nav__link">
         
   
   
@@ -713,7 +612,7 @@
   
   
     <li class="md-nav__item">
-      <a href="08/" class="md-nav__link">
+      <a href="../08/" class="md-nav__link">
         
   
   
@@ -736,7 +635,7 @@
   
   
     <li class="md-nav__item">
-      <a href="09/" class="md-nav__link">
+      <a href="../09/" class="md-nav__link">
         
   
   
@@ -759,7 +658,7 @@
   
   
     <li class="md-nav__item">
-      <a href="10/" class="md-nav__link">
+      <a href="../10/" class="md-nav__link">
         
   
   
@@ -782,7 +681,7 @@
   
   
     <li class="md-nav__item">
-      <a href="11/" class="md-nav__link">
+      <a href="../11/" class="md-nav__link">
         
   
   
@@ -805,7 +704,7 @@
   
   
     <li class="md-nav__item">
-      <a href="12/" class="md-nav__link">
+      <a href="../12/" class="md-nav__link">
         
   
   
@@ -828,7 +727,7 @@
   
   
     <li class="md-nav__item">
-      <a href="13/" class="md-nav__link">
+      <a href="../13/" class="md-nav__link">
         
   
   
@@ -851,7 +750,7 @@
   
   
     <li class="md-nav__item">
-      <a href="14/" class="md-nav__link">
+      <a href="../14/" class="md-nav__link">
         
   
   
@@ -874,7 +773,7 @@
   
   
     <li class="md-nav__item">
-      <a href="15/" class="md-nav__link">
+      <a href="../15/" class="md-nav__link">
         
   
   
@@ -897,7 +796,7 @@
   
   
     <li class="md-nav__item">
-      <a href="16/" class="md-nav__link">
+      <a href="../16/" class="md-nav__link">
         
   
   
@@ -920,7 +819,7 @@
   
   
     <li class="md-nav__item">
-      <a href="17/" class="md-nav__link">
+      <a href="../17/" class="md-nav__link">
         
   
   
@@ -943,7 +842,7 @@
   
   
     <li class="md-nav__item">
-      <a href="18/" class="md-nav__link">
+      <a href="../18/" class="md-nav__link">
         
   
   
@@ -966,7 +865,7 @@
   
   
     <li class="md-nav__item">
-      <a href="19/" class="md-nav__link">
+      <a href="../19/" class="md-nav__link">
         
   
   
@@ -989,7 +888,7 @@
   
   
     <li class="md-nav__item">
-      <a href="20/" class="md-nav__link">
+      <a href="../20/" class="md-nav__link">
         
   
   
@@ -1012,7 +911,7 @@
   
   
     <li class="md-nav__item">
-      <a href="21/" class="md-nav__link">
+      <a href="../21/" class="md-nav__link">
         
   
   
@@ -1035,7 +934,7 @@
   
   
     <li class="md-nav__item">
-      <a href="22/" class="md-nav__link">
+      <a href="../22/" class="md-nav__link">
         
   
   
@@ -1085,187 +984,37 @@
   
 
 
-<h1 id="cashu-nuts-notation-usage-and-terminology">Cashu NUTs (Notation, Usage, and Terminology)<a class="headerlink" href="#cashu-nuts-notation-usage-and-terminology" title="Permanent link">&para;</a></h1>
-<p>These documents each specify parts of the Cashu protocol. Read the specifications for the legacy API <a href="https://github.com/cashubtc/nuts/tree/74f26b81b6617db710fa1081eebc0c7203711213">here</a>.</p>
-<h2 id="specifications">Specifications<a class="headerlink" href="#specifications" title="Permanent link">&para;</a></h2>
-<p>Wallets and mints <code>MUST</code> implement all mandatory specs and <code>CAN</code> implement optional specs.</p>
-<h3 id="mandatory">Mandatory<a class="headerlink" href="#mandatory" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>NUT #</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="00/">00</a></td>
-<td>Cryptography and Models</td>
-</tr>
-<tr>
-<td><a href="01/">01</a></td>
-<td>Mint public keys</td>
-</tr>
-<tr>
-<td><a href="02/">02</a></td>
-<td>Keysets and fees</td>
-</tr>
-<tr>
-<td><a href="03/">03</a></td>
-<td>Swapping tokens</td>
-</tr>
-<tr>
-<td><a href="04/">04</a></td>
-<td>Minting tokens</td>
-</tr>
-<tr>
-<td><a href="05/">05</a></td>
-<td>Melting tokens</td>
-</tr>
-<tr>
-<td><a href="06/">06</a></td>
-<td>Mint info</td>
-</tr>
-</tbody>
-</table>
-<h3 id="optional">Optional<a class="headerlink" href="#optional" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>#</th>
-<th>Description</th>
-<th>Wallets</th>
-<th>Mints</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="07/">07</a></td>
-<td>Token state check</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://nutstash.app/">Nutstash</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="08/">08</a></td>
-<td>Overpaid Lightning fees</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://nutstash.app/">Nutstash</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="09/">09</a></td>
-<td>Signature restore</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a></td>
-</tr>
-<tr>
-<td><a href="10/">10</a></td>
-<td>Spending conditions</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="11/">11</a></td>
-<td>Pay-To-Pubkey (P2PK)</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="12/">12</a></td>
-<td>DLEQ proofs</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="13/">13</a></td>
-<td>Deterministic secrets</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="14/">14</a></td>
-<td>Hashed Timelock Contracts (HTLCs)</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="15/">15</a></td>
-<td>Partial multi-path payments (MPP)</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="16/">16</a></td>
-<td>Animated QR codes</td>
-<td><a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="17/">17</a></td>
-<td>WebSocket subscriptions</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="18/">18</a></td>
-<td>Payment requests</td>
-<td><a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/MakePrisms/boardwalkcash">Boardwalk</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="19/">19</a></td>
-<td>Cached Responses</td>
-<td>-</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a></td>
-</tr>
-<tr>
-<td><a href="20/">20</a></td>
-<td>Signature on Mint Quote</td>
-<td><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/cashubtc/nutshell">Nutshell</a></td>
-<td><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/cashubtc/nutshell">Nutshell</a></td>
-</tr>
-<tr>
-<td><a href="21/">21</a></td>
-<td>Clear authentication</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="22/">22</a></td>
-<td>Blind authentication</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="23/">23</a></td>
-<td>Payment Method: BOLT11</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="24/">24</a></td>
-<td>HTTP 402 Payment Required</td>
-<td>-</td>
-<td>-</td>
-</tr>
-</tbody>
-</table>
-<h4 id="wallets">Wallets:<a class="headerlink" href="#wallets" title="Permanent link">&para;</a></h4>
+<h1 id="nut-24-http-402-payment-required">NUT-24: HTTP 402 Payment Required<a class="headerlink" href="#nut-24-http-402-payment-required" title="Permanent link">&para;</a></h1>
+<p><code>optional</code></p>
+<p><code>uses: NUT-12</code></p>
+<p><code>depends on: NUT-18</code></p>
+<hr />
+<p>This NUT describes how Cashu tokens can be used with HTTP 402 Payment Required responses to enable payments for HTTP resources.</p>
+<h3 id="server-response">Server response<a class="headerlink" href="#server-response" title="Permanent link">&para;</a></h3>
+<p>HTTP servers may respond with the HTTP status code 402 with a <code>X-Cashu</code> header containing an <a href="../18/#encoded-request">encoded</a> NUT-18 <a href="../18/">payment request</a> with the following fields:</p>
+<div class="codehilite"><pre><span></span><code><span class="err">{</span>
+<span class="w">    </span><span class="ss">&quot;a&quot;</span><span class="err">:</span><span class="w"> </span><span class="nc">int</span><span class="p">,</span>
+<span class="w">    </span><span class="ss">&quot;u&quot;</span><span class="err">:</span><span class="w"> </span><span class="nf">str</span><span class="p">,</span>
+<span class="w">    </span><span class="ss">&quot;m&quot;</span><span class="err">:</span><span class="w"> </span><span class="k">Array</span><span class="o">[</span><span class="n">str</span><span class="o">]</span><span class="p">,</span>
+<span class="w">    </span><span class="ss">&quot;nut10&quot;</span><span class="err">:</span><span class="w"> </span><span class="n">NUT10Option</span><span class="w"> </span><span class="o">&lt;</span><span class="n">optional</span><span class="o">&gt;</span>
+<span class="err">}</span>
+</code></pre></div>
+
 <ul>
-<li><a href="https://github.com/cashubtc/nutshell">Nutshell</a></li>
-<li><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">CDK-cli</a></li>
-<li><a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a></li>
-<li><a href="https://github.com/zeugmaster/macadamia">Macadamia</a></li>
-<li><a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></li>
-<li><a href="https://nutstash.app/">Nutstash</a></li>
-<li><a href="https://cashu.me">Cashu.me</a></li>
-<li><a href="https://github.com/MakePrisms/boardwalkcash">Boardwalk</a></li>
+<li><code>a</code>: The amount required in the specified unit</li>
+<li><code>u</code>: The currency unit (e.g., "sat", "usd", "api")</li>
+<li><code>m</code>: Array of mint URLs that the server accepts tokens from</li>
+<li><code>nut10</code>: The required [NUT-10][10] locking condition</li>
 </ul>
-<h4 id="mints">Mints:<a class="headerlink" href="#mints" title="Permanent link">&para;</a></h4>
-<ul>
-<li><a href="https://github.com/cashubtc/nutshell">Nutshell</a></li>
-<li><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a></li>
-<li><a href="https://github.com/lescuer97/nutmix">Nutmix</a></li>
-</ul>
+<h3 id="client-payment">Client payment<a class="headerlink" href="#client-payment" title="Permanent link">&para;</a></h3>
+<p>After receiving a 402 response with a <code>X-Cashu</code> header, the client may retry the request with a <code>cashuB</code> token in the <code>X-Cashu</code> header as payment.</p>
+<p>The token MUST be from one of the mints listed in the <code>mints</code> array, and MUST be of the same <code>unit</code> and greater than or equal to the <code>amount</code>.</p>
+<blockquote>
+<p>[!IMPORTANT]
+The transport can be empty! If the transport is empty, we implicitly assume that the payment will be in-band. An example is X-Cashu where the payment is expected in the HTTP header of a request. We can only hope that the protocol you're using has a well-defined transport.</p>
+</blockquote>
+<h2 id="payment-response">Payment response<a class="headerlink" href="#payment-response" title="Permanent link">&para;</a></h2>
+<p>If the server receives tokens from a mint that is not in the <code>mints</code> array, an incorrect <code>unit</code>, an insufficient amount of tokens, or with insufficient locking conditions, it should respond with a HTTP <code>400</code> status code.</p>
 
 
 
@@ -1337,10 +1086,10 @@
     
     
       
-      <script id="__config" type="application/json">{"base": ".", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.highlight", "search.share", "toc.integrate", "content.code.copy", "content.tabs.link", "announce.dismiss"], "search": "assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.highlight", "search.share", "toc.integrate", "content.code.copy", "content.tabs.link", "announce.dismiss"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.13a4f30d.min.js"></script>
+      <script src="../assets/javascripts/bundle.13a4f30d.min.js"></script>
       
     
   </body>
