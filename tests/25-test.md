@@ -1,4 +1,4 @@
-# NUT-XX Test Vectors
+# NUT-25 Test Vectors
 
 The following list of items should encode to the target filter `z4fUCDVqdnxWR7Y9+YdT5o0IC9GxiSA2BGyg`, with parameters:
 
@@ -23,5 +23,11 @@ The following list of items should encode to the target filter `z4fUCDVqdnxWR7Y9
 Matching any given item from this list should return `True`, while matching any item from the following list
 should return `False`:
 ```json
-
-``` 
+[
+  "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3",
+  "d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6",
+  "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff00",
+  "ffeeddccbbaa99887766554433221100ffeeddccbbaa99887766554433221100ffee",
+  "1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c"
+]
+```
