@@ -20,4 +20,8 @@ The following list of items should encode to the target filter `z4fUCDVqdnxWR7Y9
 ]
 ```
 
-Matching every given item using `match_many` should return `True` for every item, while matching any other item should return `False`.
+Matching any given item from this list should return `True`, while matching any item from the following list
+should return `False`:
+```json
+
+``` 
