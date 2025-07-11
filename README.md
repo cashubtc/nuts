@@ -38,8 +38,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [20][20] | Signature on Mint Quote           | [cdk-cli], [Nutshell][py], [gonuts]                                          | [cdk-mintd], [Nutshell][py], [gonuts]                        |
 | [21][21] | Clear authentication              | [Nutshell][py], [cdk-cli]                                                    | [Nutshell][py], [cdk-mintd], [nutmix]                        |
 | [22][22] | Blind authentication              | [Nutshell][py], [cdk-cli]                                                    | [Nutshell][py], [cdk-mintd], [nutmix]                        |
-| [25][25] | Compact Nut Filters               | [Nutshell][py], [cdk-mintd], [cashu-ts][ts]                                  |
-[Nutshell][py], [cdk-mintd]
+| [25][25] | Compact Nut Filters               | [Nutshell][py], [cdk-mintd], [cashu-ts][ts]                                  |[Nutshell][py], [cdk-mintd]                                  |
 
 #### Wallets:
 
