@@ -1,6 +1,6 @@
 # NUT-25 Test Vectors
 
-The following list of items should encode to the target filter `z4fUCDVqdnxWR7Y9+YdT5o0IC9GxiSA2BGyg`, with parameters:
+The following list of items should encode to the target filter `7sdQJ7OweaujLCqS7KDHzu/3pySZrDsatjQA`, with parameters:
 
 - `p = 19`
 - `m = 784931`
