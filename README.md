@@ -40,7 +40,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [22][22] | Blind authentication              | [Nutshell][py], [cdk-cli]                                                          | [Nutshell][py], [cdk-mintd], [nutmix]            |
 | [23][23] | Payment Method: BOLT11            | [Nutshell][py], [cdk-cli]                                                          | [Nutshell][py], [cdk-mintd], [nutmix]            |
 | [24][24] | HTTP 402 Payment Required         | -                                                                                  | -                                                |
-| [25][25] | Compact Nut Filters               | [Nutshell][py], [cdk-mintd], [cashu-ts][ts]                                  |[Nutshell][py], [cdk-mintd]                                  |
+| [25][25] | Compact Nut Filters               | [Nutshell][py], [cdk-mintd], [cashu-ts][ts]                                        | [Nutshell][py], [cdk-mintd]                      |
 
 #### Wallets:
 
