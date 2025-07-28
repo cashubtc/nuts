@@ -44,9 +44,8 @@ A payment request with all optional fields included.
   "d": "Product purchase",
   "t": [
     {
-      "t": "http",
-      "a": "https://api.example.com/pay",
-      "g": [["method", "POST"]]
+      "t": "post",
+      "a": "https://api.example.com/pay"
     }
   ],
   "nut10": {
