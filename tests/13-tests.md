@@ -26,7 +26,6 @@ The integer representation of a keyset with an ID `01adc013fa9d85171586660abab27
 }
 ```
 
-
 ## Secret derivation
 
 Using derivation `m/129372'/0'/864559728'/{counter}'`, we derive values starting from the following BIP39 mnemonic.
