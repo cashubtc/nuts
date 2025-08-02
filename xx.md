@@ -190,13 +190,32 @@ For an example actually useful in practice, we can re-implement the P2PK spendin
 
 ## Mint info setting
 
-The [NUT-06][06] `MintMethodSetting` indicates support for this feature:
+The [NUT-06][06] `MintMethodSetting` indicates support for this feature, optional features, as well as some information for the configuration of the Cairo prover.
 
 ```json
 {
   "xx": {
     "supported": true,
-    "prover_version": "0.1.0" // TODO: put real version here
+    "optional_features": {
+      "bootloader": {
+        "supported": true, // tells the wallet that it can use bootloading to hide the Cairo program and make the proof shorter
+        "version": "0.13.0", // see https://github.com/starkware-libs/cairo-lang/tree/v0.13.1/src/starkware/cairo/bootloaders and https://github.com/Moonsong-Labs/cairo-bootloader
+        "hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef" // hash of the bootloader program, redundant with "version" field
+      }
+    },
+    "cairo_prover_config": {
+      "version": "0.1.0", // TODO: figure out what to put here
+      "pcs_config": {
+        "pow_bits": 26,
+        "fri_config": {
+          "log_last_layer_degree_bound": 0,
+          "log_blowup_factor": 1,
+          "n_queries": 70
+        }
+      },
+      "merkle_hasher": "Blake2sMerkleHasher",
+      "with_pedersen": false // corresponds to the `with_pedersen` flag in `cairo-prove` // TODO: is this really how we want to handle this?
+    }
   }
 }
 ```
