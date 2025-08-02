@@ -159,7 +159,7 @@ The following `Secret` requires the spender to prove that he knows a number `n` 
 ]
 ```
 
-The witness would contain the claim ($\exists n : \mathtt{is\_true}(n) == \mathtt{true}$) along with the STARK proof showing that the computation was performed correctly:
+The witness would contain the claim ($\exists n : \mathtt{is}\_ \mathtt{prime}(n) == \mathtt{true}$) along with the STARK proof showing that the computation was performed correctly:
 
 ```json
 {
@@ -186,7 +186,7 @@ The [NUT-06][06] `MintMethodSetting` indicates support for this feature:
 {
   "xx": {
     "supported": true,
-    "prover_version": "0.1.0" // TODO
+    "prover_version": "0.1.0" // TODO: put real version here
   }
 }
 ```
