@@ -22,7 +22,7 @@ Content-Type: application/json
 }
 ```
 
-- **quote**: an array of quote IDs previously obtained via the [NUT-04 creation process][04-creation].
+- **quote**: an array of **unique** quote IDs previously obtained via the [NUT-04 creation process][04-creation].
 
 The mint returns a JSON array of quote objects, each containing:
 
@@ -47,6 +47,8 @@ The mint returns a JSON array of quote objects, each containing:
 - **request**: the payment request string for that quote
 - **unit**: the unit type, matching what was requested
 
+NOTE: If a `quote_id` is not known by the mint it SHOULD omit it from the response.
+
 ---
 
 ## 2. Executing the Batched Mint
@@ -64,10 +66,10 @@ Content-Type: application/json
 }
 ```
 
-- **quote**: an array of quote IDs previously obtained via the [NUT-04 creation process][04-creation].
+- **quote**: an array of **unique** quote IDs previously obtained via the [NUT-04 creation process][04-creation].
 - **outputs**: an array of blinded messages (see [NUT-00][00]).
   - The total value represented by these blinded messages must equal the sum of the quote amounts.
-- signature: The signature for a NUT-20 locked quote. See
+- **signature**: The signature for a NUT-20 locked quote. See [NUT-20 Support][nut-20-support]
   The mint responds with:
 
 ```json
@@ -99,3 +101,4 @@ Example:
 
 [00]: 00.md
 [04-creation]: 04.md#requesting-a-mint-quote
+[nut-20-support]: #nut-20-support
