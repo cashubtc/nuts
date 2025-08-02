@@ -1,24 +1,26 @@
 # NUT-XX: STARK-proven Computations (Cairo)
 
-
 `optional`
 
 `depends on: NUT-10`
 
 ---
 
+This NUT describes the use of STARK proofs of Cairo program execution which defines a spending condition based on [NUT-10][10]'s well-known `Secret` format. Using Cairo STARK proofs, ecash tokens can be locked to the successful execution of a specific Cairo program with a given output. This enables use cases such as proving computational work, verifying complex logical conditions, or coupling ecash spending to arbitrary program execution.
 
-This NUT describes the use of STARK proofs (Cairo) which defines a spending condition based on [NUT-10][10]'s well-known `Secret` format. Using Cairo, we can lock ecash tokens requiring a valid STARK proof of some program defined by the sender is provided to the Mint by the receiver.
+`Cairo` spending conditions require a valid STARK proof of program execution as witness data. The STARK proof demonstrates that a specific Cairo program was executed correctly and produced the expected output. This differs from the cryptographic proofs used in Cashu's blind signature scheme - here we refer to zero-knowledge STARK proofs of computational integrity.
 
-## STARK-proven-Computation
+Caution: If the mint does not support this type of spending condition, proofs may be treated as a regular anyone-can-spend tokens. Applications need to make sure to check whether the mint supports a specific kind of spending condition by checking the mint's [info][06] endpoint.
+
+## Cairo
 
 [NUT-10][10] Secret `kind: Cairo`
 
-If for a `Proof`, `Proof.secret` is a `Secret` of kind `Cairo`, the proof must be unlocked by providing a witness `Proof.witness` and one or more valid signatures in the array `Proof.witness.signatures`.
+If for a `Proof`, `Proof.secret` is a `Secret` of kind `Cairo`, the proof must be unlocked by providing a witness `Proof.witness` containing a valid STARK proof of Cairo program execution.
 
-When spending a locked token, the mint requires a valid STARK proof-of-computation in `Proof.witness.stark_proof` *TODO: check that this is the correct name* of the corresponding program hash in `Proof.Secret.data`.
+When spending a locked token, the mint requires a valid STARK proof of computation in `Proof.witness.cairo_proof` that demonstrates the correct execution of the program whose bytecode hash is specified in `Secret.data` and produces an output matching one of the values in `Secret.tags.program_output`.
 
-To give a concrete example of the basic case, to mint a locked token we first create a Cairo `Secret` that read:
+To give a concrete example of the basic case, to mint a locked token we first create a Cairo `Secret` that reads:
 
 ```json
 [
@@ -26,42 +28,127 @@ To give a concrete example of the basic case, to mint a locked token we first cr
   {
     "nonce": "859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f",
     "data": "0249098aa8b9d2fbec49ff8598feb17b592b986e62319a4fa488a3dc36387157a7",
-    "tags": [["sigflag", "SIG_INPUTS"]]
+    "tags": [["program_output", "Felt(1)", "Felt(20)"]]
   }
 ]
 ```
 
-Here, `Secret.data` is the *TODO: INSERT HASHING METHOD HERE* hash of the program of which the witness will have to provide a stark proof-of-computation of. We serialize this `Secret` to a string in `Proof.secret` and get a blind signature by the mint that is stored in `Proof.C` (see [NUT-03][03]]).
+Here, `Secret.data` is the hash of the Cairo program's bytecode. We serialize this `Secret` to a string in `Proof.secret` and get a blind signature by the mint that is stored in `Proof.C` (see [NUT-03][03]).
 
-The recipient that has a STARK proof-of-computation of a program whose hash corresponds to the one present in `Secret.data` can spend this proof by providing the stark proof on the serialized `Proof.secret` string that is then added to `Proof.witness.stark_proof`:
+The recipient who possesses a valid STARK proof of the program's execution that resulted in an output present in the `Secret.tags.program_output` can spend this proof by providing the STARK proof in `Proof.witness.cairo_proof`:
 
 ```json
 {
   "amount": 1,
-  "secret": "[\"Cairo\",{\"nonce\":\"859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f\",\"data\":\"0249098aa8b9d2fbec49ff8598feb17b592b986e62319a4fa488a3dc36387157a7\",\"tags\":[[\"sigflag\",\"SIG_INPUTS\"]]}]",
+  "secret": "[\"Cairo\",{\"nonce\":\"859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f\",\"data\":\"0249098aa8b9d2fbec49ff8598feb17b592b986e62319a4fa488a3dc36387157a7\",\"tags\":[[\"program_output\",\"Felt(1)\",\"Felt(20)\"]]}]",
   "C": "02698c4e2b5f9534cd0687d87513c759790cf829aa5739184a3e3735471fbda904",
   "id": "009a1f293253e41e",
-  "witness": "{\"claim\":{\"public_data\":{\"public_memory\":{\"program\":[[0,[2147450879,67600385,0,0,0,0,0,0]],[1,[2,0,0,0,0,0,0,0]],[2,[2147581952,285507585,0,0,0,0,0,0]],[3,[4,0,0,0,0,0,0,0]],[4,[2147450879,17268737,0,0,0,0,0,0]],[5,[0,0,0,0,0,0,0,0]]]]}}}..."
+  "witness": "{\"cairo_proof\":{\"claim\":{\"public_data\":{\"public_memory\":{\"program\":[[0,[2147450879,67600385,0,0,0,0,0,0]],[1,[2,0,0,0,0,0,0,0]],[2,[2147581952,285507585,0,0,0,0,0,0]],[3,[4,0,0,0,0,0,0,0]],[4,[2147450879,17268737,0,0,0,0,0,0]],[5,[0,0,0,0,0,0,0,0]]]]}}}..."
 }
 ```
 
 #### Witness Format
+
 `CairoWitness` is a serialized JSON string of the form
 
 ```json
 {
-  "stark_proof": <json_str>,
+  "cairo_proof": <json_str>
 }
 ```
 
+#### STARK Proving Scheme
 
-#### Proving Scheme
+To spend a token locked with `Cairo`, the spender needs to include a STARK proof in the spent proofs. We use STARK proofs of [Cairo Programs] execution generated by the [STWO-Cairo] prover. The STARK proof demonstrates that the specified Cairo program was executed correctly and produced the expected output.
 
-To spend a token locked with `Cairo`, the spender needs to include the STARK proof in the spent proofs. We use STARK proofs of [Cairo Programs] execution generated by the [stwo-cairo] prover.
+Caution: Applications must ensure that the mint supports the specific version of the STWO-Cairo prover being used. Version compatibility should be verified through the mint's info.
+
+#### Tags
+
+`program_output: <felt_str>` determines the program's expected output. If more than one value is provided for this tag, the condition will be that the output of the STARK proof equals one of them.
+
+
+The program output is represented as Cairo `Felt` values in hexadecimal format.
 
 
 
 
+
+## Example Use Case
+
+### Prime Number Verification
+
+Tokens can be locked to require proof that a specific number is prime. Consider the following Cairo program that checks primality:
+
+```cairo
+/// Checks if a number is prime
+fn is_prime(n: u32) -> bool {
+    if n <= 1 {
+        return false;
+    }
+    if n == 2 {
+        return true;
+    }
+    if n % 2 == 0 {
+        return false;
+    }
+    let mut i = 3;
+    let mut is_prime = true;
+    loop {
+        if i * i > n {
+            break;
+        }
+        if n % i == 0 {
+            is_prime = false;
+            break;
+        }
+        i += 2;
+    }
+    is_prime
+}
+
+#[executable]
+fn main(input: u32) -> bool {
+    assert(input > 10000000)
+    is_prime(input)
+}
+```
+
+A bounty for finding large prime numbers could be implemented as a secret:
+
+```json
+[
+  "Cairo",
+  {
+    "nonce": "859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f",
+    "data": "e8d4a51000d4c8a9f1b2e3c5d7a9b8c6e4f2a1d3c5b7e9f1a3b5c7d9e1f3a5b7", // hash of the above cairo program
+    "tags": [["program_output", "1"]]
+  }
+]
+```
+
+This secret locks tokens that can only be spent by providing a STARK proof demonstrating that:
+1. The prime checking program was executed with an input ≥ 10,000,000 
+2. The program returned `true`, proving the input is indeed prime
+3. The computation was performed correctly according to the specified algorithm
+
+To claim the bounty, a user would:
+1. Find a prime number ≥ 10,000,000
+2. Execute the Cairo program with this input
+3. Generate a STARK proof of the execution 
+4. Spend the token by providing the proof as witness
+
+The witness would contain the STARK proof showing the prime verification computation was performed correctly:
+
+```json
+{
+  "amount": 1000,
+  "secret": "[\"Cairo\",{\"nonce\":\"859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f\",\"data\":\"e8d4a51000d4c8a9f1b2e3c5d7a9b8c6e4f2a1d3c5b7e9f1a3b5c7d9e1f3a5b7\",\"tags\":[[\"program_output\",\"1\"]]}]",
+  "C": "03f1e2d3c4b5a69708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f80",
+  "id": "009a1f293253e41e",
+  "witness": "{\"cairo_proof\":{\"public_input\":\"0x98967b\",\"public_output\":\"0x1\",\"trace_commitment\":\"0x...\",\"fri_proof\":\"0x...\"}}"
+}
+```
 
 ## Mint info setting
 
