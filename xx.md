@@ -58,8 +58,7 @@ The recipient who possesses a valid `CairoProof` of the program's execution that
   "secret": "[\"Cairo\",{\"nonce\":\"859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f\",\"data\":\"0x0249098aa8b9d2fbec49ff8598feb17b592b986e62319a4fa488a3dc36387157a7\",\"tags\":[[\"program_output\",\"154809849725474173771833689306955346864791482278938452209165301614543497938\"]]}]",
   "C": "02698c4e2b5f9534cd0687d87513c759790cf829aa5739184a3e3735471fbda904",
   "id": "009a1f293253e41e",
-  // "witness": "{\"cairo_proof\":{\"claim\":{\"public_data\":{\"public_memory\":{\"program\":[[0,[2147450879,67600385,0,0,0,0,0,0]],[1,[2,0,0,0,0,0,0,0]],[2,[2147581952,285507585,0,0,0,0,0,0]],[3,[4,0,0,0,0,0,0,0]],[4,[2147450879,17268737,0,0,0,0,0,0]],[5,[0,0,0,0,0,0,0,0]]]]}}}..."
-  "witness": // TODO generate a real one from rust code instead of this. this looks incorrect
+  "witness": "{\"cairo_proof\":{\"claim\":{\"public_data\":{\"public_memory\":{\"program\":[[0,[2147450879,67600385,0,0,0,0,0,0]],[1,[2,0,0,0,0,0,0,0]],[2,[2147581952,285507585,0,0,0,0,0,0]],[3,[4,0,0,0,0,0,0,0]],[4,[2147450879,17268737,0,0,0,0,0,0]],[5,[0,0,0,0,0,0,0,0]]]]}}}..."
 }
 ```
 
@@ -159,7 +158,7 @@ The following `Secret` requires the spender to prove that he knows a number `n` 
   "Cairo",
   {
     "nonce": "859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f",
-    "data": "e8d4a51000d4c8a9f1b2e3c5d7a9b8c6e4f2a1d3c5b7e9f1a3b5c7d9e1f3a5b7", // hash of the above cairo program // TODO: put the real actual hash here
+    "data": "e8d4a51000d4c8a9f1b2e3c5d7a9b8c6e4f2a1d3c5b7e9f1a3b5c7d9e1f3a5b7", // hash of the above cairo program
     "tags": [
       [
         "program_output",
@@ -178,8 +177,7 @@ The witness would contain the claim along with the STARK proof showing that the 
   "secret": "[\"Cairo\",{\"nonce\":\"859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f\",\"data\":\"e8d4a51000d4c8a9f1b2e3c5d7a9b8c6e4f2a1d3c5b7e9f1a3b5c7d9e1f3a5b7\",\"tags\":[[\"program_output\",\"154809849725474173771833689306955346864791482278938452209165301614543497938\"]]}]",
   "C": "03f1e2d3c4b5a69708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f80",
   "id": "009a1f293253e41e",
-  // "witness": "{\"cairo_proof\":{\"public_input\":\"0x98967b\",\"public_output\":\"0x1\",\"trace_commitment\":\"0x...\",\"fri_proof\":\"0x...\"}}"
-  "witness": // TODO generate a real one from rust code instead of this
+  "witness": "{\"cairo_proof\":{\"claim\":{\"public_data\":{\"public_memory\":{\"program\":[[0,[2147450879,67600385,0,0,0,0,0,0]],[1,[2,0,0,0,0,0,0,0]],[2,[2147581952,285507585,0,0,0,0,0,0]],[3,[4,0,0,0,0,0,0,0]],[4,[2147450879,17268737,0,0,0,0,0,0]],[5,[0,0,0,0,0,0,0,0]]]]}}}..."
 }
 ```
 
