@@ -204,7 +204,7 @@ The [NUT-06][06] `MintMethodSetting` indicates support for this feature, optiona
     },
     "cairo_prover_config": {
       "version": "0.1.1", // the version of the `stwo_cairo_prover` dependecy used
-      "merkle_hasher": "blake2s" // can be "blake2s"
+      "merkle_hasher": "blake2s" // can be "blake2s" or "poseidon252"
     }
   }
 }
