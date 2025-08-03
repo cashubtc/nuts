@@ -8,7 +8,7 @@
 
 This NUT describes the use of STARK proofs of Cairo program execution, which defines a spending condition based on [NUT-10][10]'s well-known `Secret` format. Using Cairo STARK proofs, ecash tokens can be locked to the successful execution of a specific Cairo program with a given output. Since Cairo is Turing-complete, this enables for user-defined arbitrary spending conditions, which can even stay private thanks to the zero-knowledge property of STARK proofs[^1].
 
-[^1]: This can be achieved with bootloading, see section 2.2.1 of [GPR21] for more details. // TODO: check if we can really do bootloading with our current setup. If not, implement it or modify the sentence above.
+[^1]: This can be achieved with bootloading, see section 2.2.1 of [GPR21] and [Optional feature: Bootloading](#optional-feature-bootloading) for more details.
 
 > [!CAUTION]
 > If the mint does not support this type of spending condition, proofs may be treated as a regular anyone-can-spend tokens. Applications need to make sure to check whether the mint supports a specific kind of spending condition by checking the mint's [info][06] endpoint.
@@ -69,21 +69,15 @@ The recipient who possesses a valid `CairoProof` of the program's execution that
 
 ```json
 {
-  "cairo_proof": <String> // TODO: For now its still `proof` instead of `cairo_proof` in the code, we need to refactor this.
+  "cairo_proof": <String>
 }
 ```
 
-where `cairo_proof` is a serialized `CairoProof<Blake2sMerkleHasher>`. // TODO: add a field to specify the MerkleHasher, or make it a generic parameter of CairoWitness.
+where `cairo_proof` is a serialized `CairoProof`.
 
 #### STARK Proving Scheme
 
 To spend a token locked with `Cairo`, the spender needs to include a `CairoProof` in the spent `Proof`s. It represents a claim of a [Cairo program]'s execution and output along with a valid corresponding STARK proof of computation, generated using the [S-two Cairo] prover. The STARK proof demonstrates that the specified Cairo program was executed correctly and produced the expected output.
-
-> [!TIP]
-> For testing purposes, the [cairo-prove](https://github.com/starkware-libs/stwo-cairo/tree/main/cairo-prove) tool can be used to generate valid `CairoProof`s from a Cairo executable.
-
-> [!NOTE]
-> For now, only programs without Pedersen are supported. // TODO: add option for proofs with Pedersen to the code and delete this note once it is implemented.
 
 > [!CAUTION]
 > Applications must ensure that the mint supports the specific version of the S-two Cairo prover being used. Version compatibility should be verified through the mint's info.
@@ -98,9 +92,16 @@ The program output is an array of Cairo `Felt` values (field elements). It is ha
 
 A `Felt` can be represented as a hexadecimal string or as a decimal string.
 
+#### Optional feature: Bootloading
+
+The mint can optionally choose to support the use of a [bootloader](https://zksecurity.github.io/stark-book/cairo/bootloader.html).
+This enables the prover to keep the bytecode of the executed program private, as only the hash of the instructions are revealed to the mint.
+
+The supported bootloader and its version should be specified in the mint info.
+
 ## Example Use Case
 
-### Prime Number Verification
+#### Prime Number Verification
 
 Tokens can be locked to require proof that the spender knows a prime number (this is just a toy example, as finding a prime number is not something difficult to do).
 
@@ -169,7 +170,7 @@ The following `Secret` requires the spender to prove that he knows a number `n` 
 ]
 ```
 
-The witness would contain the claim ($\exists n : \mathtt{is}\_ \mathtt{prime}(n) == \mathtt{true}$) along with the STARK proof showing that the computation was performed correctly:
+The witness would contain the claim along with the STARK proof showing that the computation was performed correctly:
 
 ```json
 {
@@ -182,11 +183,9 @@ The witness would contain the claim ($\exists n : \mathtt{is}\_ \mathtt{prime}(n
 }
 ```
 
-### P2PK in Cairo
+#### Complex Example
 
-For an example actually useful in practice, we can re-implement the P2PK spending condition from [NUT-11][11] using Cairo and choose whichever signature scheme we want.
-
-// TODO: finish this paragraph
+// TODO: make a real-world example of spending condtion + showcase the bootloading feature and how it improves privacy in the chosen scenario.
 
 ## Mint info setting
 
@@ -198,23 +197,14 @@ The [NUT-06][06] `MintMethodSetting` indicates support for this feature, optiona
     "supported": true,
     "optional_features": {
       "bootloader": {
-        "supported": true, // tells the wallet that it can use bootloading to hide the Cairo program and make the proof shorter
-        "version": "0.13.0", // see https://github.com/starkware-libs/cairo-lang/tree/v0.13.1/src/starkware/cairo/bootloaders and https://github.com/Moonsong-Labs/cairo-bootloader
-        "hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef" // hash of the bootloader program, redundant with "version" field
+        "supported": true,
+        "version": "0.14.0", // corresponds to https://github.com/starkware-libs/cairo-lang/blob/v0.13.0/src/starkware/cairo/bootloaders/bootloader/bootloader.cairo and https://github.com/Moonsong-Labs/cairo-bootloader
+        "hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef" // hash of the bootloader program
       }
     },
     "cairo_prover_config": {
-      "version": "0.1.0", // TODO: figure out what to put here
-      "pcs_config": {
-        "pow_bits": 26,
-        "fri_config": {
-          "log_last_layer_degree_bound": 0,
-          "log_blowup_factor": 1,
-          "n_queries": 70
-        }
-      },
-      "merkle_hasher": "Blake2sMerkleHasher",
-      "with_pedersen": false // corresponds to the `with_pedersen` flag in `cairo-prove` // TODO: is this really how we want to handle this?
+      "version": "0.1.1", // the version of the `stwo_cairo_prover` dependecy used
+      "merkle_hasher": "blake2s" // can be "blake2s"
     }
   }
 }
