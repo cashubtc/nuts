@@ -26,6 +26,9 @@ This NUT describes the use of STARK proofs of Cairo program execution, which def
 
 If for a `Proof`, `Proof.secret` is a `Secret` of kind `Cairo`, the hash of the program's bytecode is in `Proof.secret.data`. The proof must be unlocked by providing a witness `Proof.witness` containing a valid `CairoProof`.
 
+> [!NOTE]
+> The Cairo program itself is not stored by the mint and must be communicated through other means (e.g., shared publicly, transmitted off-band, or derived from agreed-upon specifications). The mint only stores and verifies the hash of the program's bytecode in `Secret.data`.
+
 The mint will check that hash of `CairoProof.claim.public_data.public_memory.program` matches with `Proof.secret.data`, and verify the correctness of the STARK proof.
 
 Additionally, it will also check that the hash of `CairoProof.claim.public_data.public_memory.output` matches one of the values in `Proof.secret.tags.program_output`, if the tag is present.
