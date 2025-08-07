@@ -37,7 +37,8 @@ The mint responds with a `PostMintQuoteLookupResponse` containing only the quote
   "quotes": [
     {
       "pubkey": <str>,
-      "quote": <str>
+      "quote": <str>,
+      "method": <str>
     }
   ]
 }
@@ -47,6 +48,7 @@ Where:
 - `quotes` is an array of quote objects matching the provided public keys (empty array if no matches)
 - `pubkey` is the public key associated with this quote
 - `quote` is the quote ID that can be used for further operations
+- `method` is the payment method of the quote (e.g., "bolt11")
 
 **Note:** Only public keys that have associated quotes are included in the response. Public keys without matching quotes are omitted from the response array.
 
@@ -71,11 +73,13 @@ Response:
   "quotes": [
     {
       "pubkey": "1a02b9355b1df74574ca1a85ee96f2a8cad9d650aacbec26734f9ba7309b07b2",
-      "quote": "85233cdc-02ea-45e6-b96f-dd6dad19d28e"
+      "quote": "85233cdc-02ea-45e6-b96f-dd6dad19d28e",
+      "method": "bolt11"
     },
     {
       "pubkey": "8d4f72043ca8ccb7dfb62b351e7589ca34b58ffa069834ecb0f069e3e1504c24",
-      "quote": "490fd953-89da-441d-b43e-9df6029be769"
+      "quote": "490fd953-89da-441d-b43e-9df6029be769",
+      "method": "bolt11"
     }
   ]
 }
