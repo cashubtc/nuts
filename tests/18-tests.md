@@ -101,7 +101,10 @@ A payment request using Nostr transport with NIP-17 support.
     {
       "t": "nostr",
       "a": "npub1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq28spj3",
-      "g": [["n", "17"], ["n", "9735"]]
+      "g": [
+        ["n", "17"],
+        ["n", "9735"]
+      ]
     }
   ]
 }
