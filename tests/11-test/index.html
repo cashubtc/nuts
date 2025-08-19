@@ -985,6 +985,7 @@
 
 
 <h1 id="nut-11-test-vectors">NUT-11 Test Vectors<a class="headerlink" href="#nut-11-test-vectors" title="Permanent link">&para;</a></h1>
+<h3 id="sig_inputs-test-vectors">SIG_INPUTS Test Vectors<a class="headerlink" href="#sig_inputs-test-vectors" title="Permanent link">&para;</a></h3>
 <p>The following is a <code>Proof</code> with a valid signature.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
@@ -1042,6 +1043,178 @@
 <span class="w">  </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[\&quot;P2PK\&quot;,{\&quot;nonce\&quot;:\&quot;64c46e5d30df27286166814b71b5d69801704f23a7ad626b05688fbdb48dcc98\&quot;,\&quot;data\&quot;:\&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a\&quot;,\&quot;tags\&quot;:[[\&quot;pubkeys\&quot;,\&quot;0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798\&quot;,\&quot;03142715675faf8da1ecc4d51e0b9e539fa0d52fdd96ed60dbe99adb15d6b05ad9\&quot;],[\&quot;locktime\&quot;,\&quot;21\&quot;],[\&quot;n_sigs\&quot;,\&quot;2\&quot;],[\&quot;refund\&quot;,\&quot;0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798\&quot;],[\&quot;sigflag\&quot;,\&quot;SIG_INPUTS\&quot;]]}]&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;C&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02698c4e2b5f9534cd0687d87513c759790cf829aa5739184a3e3735471fbda904&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;witness&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{\&quot;signatures\&quot;:[\&quot;f661d3dc046d636d47cb3d06586da42c498f0300373d1c2a4f417a44252cdf3809bce207c8888f934dba0d2b1671f1b8622d526840f2d5883e571b462630c1ff\&quot;]}&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="sig_all-test-vectors">SIG_ALL Test Vectors<a class="headerlink" href="#sig_all-test-vectors" title="Permanent link">&para;</a></h3>
+<p>Example <code>SwapRequest</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;inputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[\&quot;P2PK\&quot;,{\&quot;nonce\&quot;:\&quot;c537ea76c1ac9cfa44d15dac91a63315903a3b4afa8e4e20f868f87f65ff2d16\&quot;,\&quot;data\&quot;:\&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a\&quot;,\&quot;tags\&quot;:[[\&quot;pubkeys\&quot;,\&quot;03142715675faf8da1ecc4d51e0b9e539fa0d52fdd96ed60dbe99adb15d6b05ad9\&quot;],[\&quot;n_sigs\&quot;,\&quot;2\&quot;],[\&quot;sigflag\&quot;,\&quot;SIG_ALL\&quot;]]}]&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;C&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;witness&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{\&quot;signatures\&quot;:[\&quot;c38cf7943f59206dc22734d39c17e342674a4025e6d3b424eb79d445a57257d57b45dd94fcd1b8dd8013e9240a4133bdef6523f64cd7288d890f3bbb8e3c6453\&quot;,\&quot;f766dbb80e5c27de9a4770486e11e1bac0b1c4f782bf807a5189ea9c3e294559a3de4e217d3dfceafd4d9e8dcbfe4e9a188052d6dab9df07df7844224292de36\&quot;]}&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The following is the <code>msg_to_sign</code> on the above <code>SwapRequest</code>.</p>
+<div class="codehilite"><pre><span></span><code>[&quot;P2PK&quot;,{&quot;nonce&quot;:&quot;c537ea76c1ac9cfa44d15dac91a63315903a3b4afa8e4e20f868f87f65ff2d16&quot;,&quot;data&quot;:&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a&quot;,&quot;tags&quot;:[[&quot;pubkeys&quot;,&quot;03142715675faf8da1ecc4d51e0b9e539fa0d52fdd96ed60dbe99adb15d6b05ad9&quot;],[&quot;n_sigs&quot;,&quot;2&quot;],[&quot;sigflag&quot;,&quot;SIG_ALL&quot;]]}]026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a
+</code></pre></div>
+
+<p>The following is a <code>SwapRequest</code> with a valid sig_all signature.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;inputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[\&quot;P2PK\&quot;,{\&quot;nonce\&quot;:\&quot;fc14ca312b7442d05231239d0e3cdcb6b2335250defcb8bec7d2efe9e26c90a6\&quot;,\&quot;data\&quot;:\&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a\&quot;,\&quot;tags\&quot;:[[\&quot;sigflag\&quot;,\&quot;SIG_ALL\&quot;]]}]&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;C&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;witness&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{\&quot;signatures\&quot;:[\&quot;aa6f3b3f112ec3e834aded446ea67a90cdb26b43e08cfed259e0bbd953395c4af11117c58ec0ec3de404f31076692426cde40d2c1602d9dd067a872cb11ac3c0\&quot;]}&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41f&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[\&quot;P2PK\&quot;,{\&quot;nonce\&quot;:\&quot;fc14ca312b7442d05231239d0e3cdcb6b2335250defcb8bec7d2efe9e26c90a6\&quot;,\&quot;data\&quot;:\&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a\&quot;,\&quot;tags\&quot;:[[\&quot;sigflag\&quot;,\&quot;SIG_ALL\&quot;]]}]&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;C&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The following is a <code>SwapRequest</code> that is invalid as there are multiple secrets.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;inputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[\&quot;P2PK\&quot;,{\&quot;nonce\&quot;:\&quot;859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f\&quot;,\&quot;data\&quot;:\&quot;0249098aa8b9d2fbec49ff8598feb17b592b986e62319a4fa488a3dc36387157a7\&quot;,\&quot;tags\&quot;:[[\&quot;sigflag\&quot;,\&quot;SIG_ALL\&quot;]]}]&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;C&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02698c4e2b5f9534cd0687d87513c759790cf829aa5739184a3e3735471fbda904&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;witness&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{\&quot;signatures\&quot;:[\&quot;60f3c9b766770b46caac1d27e1ae6b77c8866ebaeba0b9489fe6a15a837eaa6fcd6eaa825499c72ac342983983fd3ba3a8a41f56677cc99ffd73da68b59e1383\&quot;]}&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[\&quot;P2PK\&quot;,{\&quot;nonce\&quot;:\&quot;859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f\&quot;,\&quot;data\&quot;:\&quot;02a60c27104cf6023581e790970fc33994a320abe36e7ceed16771b0f8d76f0666\&quot;,\&quot;tags\&quot;:[[\&quot;sigflag\&quot;,\&quot;SIG_ALL\&quot;]]}]&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;C&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02698c4e2b5f9534cd0687d87513c759790cf829aa5739184a3e3735471fbda904&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41f&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;witness&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{\&quot;signatures\&quot;:[\&quot;60f3c9b766770b46caac1d27e1ae6b77c8866ebaeba0b9489fe6a15a837eaa6fcd6eaa825499c72ac342983983fd3ba3a8a41f56677cc99ffd73da68b59e1383\&quot;]}&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02698c4e2b5f9534cd0687d87513c759790cf829aa5739184a3e3735471fbda904&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The following is a <code>SwapRequest</code> multiple valid signatures are provided and required.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;inputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[\&quot;P2PK\&quot;,{\&quot;nonce\&quot;:\&quot;c537ea76c1ac9cfa44d15dac91a63315903a3b4afa8e4e20f868f87f65ff2d16\&quot;,\&quot;data\&quot;:\&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a\&quot;,\&quot;tags\&quot;:[[\&quot;pubkeys\&quot;,\&quot;03142715675faf8da1ecc4d51e0b9e539fa0d52fdd96ed60dbe99adb15d6b05ad9\&quot;],[\&quot;n_sigs\&quot;,\&quot;2\&quot;],[\&quot;sigflag\&quot;,\&quot;SIG_ALL\&quot;]]}]&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;C&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;witness&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{\&quot;signatures\&quot;:[\&quot;c38cf7943f59206dc22734d39c17e342674a4025e6d3b424eb79d445a57257d57b45dd94fcd1b8dd8013e9240a4133bdef6523f64cd7288d890f3bbb8e3c6453\&quot;,\&quot;f766dbb80e5c27de9a4770486e11e1bac0b1c4f782bf807a5189ea9c3e294559a3de4e217d3dfceafd4d9e8dcbfe4e9a188052d6dab9df07df7844224292de36\&quot;]}&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Example <code>MeltRequest</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2fc40ad3-2f6a-4a7e-91fb-b8c2b5dc2bf7&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;inputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[\&quot;P2PK\&quot;,{\&quot;nonce\&quot;:\&quot;1d0db9cbd2aa7370a3d6e0e3ce5714758ed7a085e2f8da9814924100e1fc622e\&quot;,\&quot;data\&quot;:\&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a\&quot;,\&quot;tags\&quot;:[[\&quot;pubkeys\&quot;,\&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a\&quot;,\&quot;03142715675faf8da1ecc4d51e0b9e539fa0d52fdd96ed60dbe99adb15d6b05ad9\&quot;],[\&quot;n_sigs\&quot;,\&quot;2\&quot;],[\&quot;sigflag\&quot;,\&quot;SIG_ALL\&quot;]]}]&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;C&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;witness&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{\&quot;signatures\&quot;:[\&quot;b2077717cfe43086582679ce3fbe1802f9b8652f93828c2e1a75b9e553c0ab66cd14b9c5f6c45a098375fe6583e106c7ccdb1421636daf893576e15815f3483f\&quot;,\&quot;179f687c2236c3d0767f3b2af88478cad312e7f76183fb5781754494709334c578c7232dc57017d06b9130a406f8e3ece18245064cda4ef66808ed3ff68c933e\&quot;]}&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;028b708cfd03b38bdc0a561008119594106f0c563061ae3fbfc8981b5595fd4e2b&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The following is the valid <code>msg_to_sign</code> on the above <code>MeltRequest</code>.</p>
+<div class="codehilite"><pre><span></span><code>[&quot;P2PK&quot;,{&quot;nonce&quot;:&quot;1d0db9cbd2aa7370a3d6e0e3ce5714758ed7a085e2f8da9814924100e1fc622e&quot;,&quot;data&quot;:&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a&quot;,&quot;tags&quot;:[[&quot;pubkeys&quot;,&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a&quot;,&quot;03142715675faf8da1ecc4d51e0b9e539fa0d52fdd96ed60dbe99adb15d6b05ad9&quot;],[&quot;n_sigs&quot;,&quot;2&quot;],[&quot;sigflag&quot;,&quot;SIG_ALL&quot;]]}]028b708cfd03b38bdc0a561008119594106f0c563061ae3fbfc8981b5595fd4e2b2fc40ad3-2f6a-4a7e-91fb-b8c2b5dc2bf7
+</code></pre></div>
+
+<p>The following is a valid <code>SIG_ALL</code> <code>MeltRequest</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0f983814-de91-46b8-8875-1b358a35298a&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;inputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[\&quot;P2PK\&quot;,{\&quot;nonce\&quot;:\&quot;600050bd36cccdc71dec82e97679fa3e7712c22ea33cf4fe69d4d78223757e57\&quot;,\&quot;data\&quot;:\&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a\&quot;,\&quot;tags\&quot;:[[\&quot;pubkeys\&quot;,\&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a\&quot;],[\&quot;sigflag\&quot;,\&quot;SIG_ALL\&quot;]]}]&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;C&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;witness&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{\&quot;signatures\&quot;:[\&quot;b66c342654ccc95a62100f8f4a76afe1aea612c9c63383be3c7feb5110bb8eabe7ccaa9f117abd524be8c9a2e331e7d70248aeae337b9ce405625b3c49fc627d\&quot;]}&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The following is a valid multi-sig <code>SIG_ALL</code> <code>MeltRequest</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2fc40ad3-2f6a-4a7e-91fb-b8c2b5dc2bf7&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;inputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[\&quot;P2PK\&quot;,{\&quot;nonce\&quot;:\&quot;1d0db9cbd2aa7370a3d6e0e3ce5714758ed7a085e2f8da9814924100e1fc622e\&quot;,\&quot;data\&quot;:\&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a\&quot;,\&quot;tags\&quot;:[[\&quot;pubkeys\&quot;,\&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a\&quot;,\&quot;03142715675faf8da1ecc4d51e0b9e539fa0d52fdd96ed60dbe99adb15d6b05ad9\&quot;],[\&quot;n_sigs\&quot;,\&quot;2\&quot;],[\&quot;sigflag\&quot;,\&quot;SIG_ALL\&quot;]]}]&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;C&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;witness&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{\&quot;signatures\&quot;:[\&quot;b2077717cfe43086582679ce3fbe1802f9b8652f93828c2e1a75b9e553c0ab66cd14b9c5f6c45a098375fe6583e106c7ccdb1421636daf893576e15815f3483f\&quot;,\&quot;179f687c2236c3d0767f3b2af88478cad312e7f76183fb5781754494709334c578c7232dc57017d06b9130a406f8e3ece18245064cda4ef66808ed3ff68c933e\&quot;]}&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;028b708cfd03b38bdc0a561008119594106f0c563061ae3fbfc8981b5595fd4e2b&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
 
