@@ -1141,7 +1141,7 @@
 </code></pre></div>
 
 <p>with the requested <code>amount</code>,<code>unit</code>, and <code>description</code> according to <a href="../04/">NUT-04</a>.</p>
-<p><code>pubkey</code> is the public key that will be required for signature verification during the minting operation. The mint will only mint ecash after receiving a valid signature from the corresponding private key in the subsequent <code>PostMintRequest</code>.</p>
+<p><code>pubkey</code> is the compressed secp256k1 public key (33 bytes, hex-encoded) that will be required for signature verification during the minting operation. The mint will only mint ecash after receiving a valid signature from the corresponding private key in the subsequent <code>PostMintRequest</code>.</p>
 <blockquote>
 <p>[!IMPORTANT]</p>
 <p><strong>Privacy:</strong> To prevent the mint from being able to link multiple mint quotes, wallets <strong>SHOULD</strong> generate a unique public key for each mint quote request.</p>
