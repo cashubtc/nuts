@@ -63,6 +63,7 @@ message KeySet {
   uint64 input_fee_ppk = 4;
   Keys keys = 5;
   uint64 version  = 6;
+  uint64 final_expiry  = 7;
 }
 
 message Keys {
@@ -73,6 +74,8 @@ message RotationRequest {
   CurrencyUnit unit = 1;
   uint64 input_fee_ppk = 2;
   repeated uint64 amounts = 3;
+  // unix timestamp for expiration
+  uint64 final_expiry = 4;
 }
 
 enum CurrencyUnitType {
