@@ -31,7 +31,7 @@ If for a `Proof`, `Proof.secret` is a `Secret` of kind `Cairo`, the hash of the 
 
 The mint will check that hash of `CairoProof.claim.public_data.public_memory.program` matches with `Proof.secret.data`, and verify the correctness of the STARK proof.
 
-Additionally, it will also check that the hash of `CairoProof.claim.public_data.public_memory.output` matches one of the values in `Proof.secret.tags.program_output`, if the tag is present.
+Additionally, it will also check that the hash of `CairoProof.claim.public_data.public_memory.output` matches the value in `Proof.secret.tags.program_output`.
 
 To give a concrete example of the basic case, to mint a locked token we first create a Cairo `Secret` that reads:
 
@@ -40,11 +40,11 @@ To give a concrete example of the basic case, to mint a locked token we first cr
   "Cairo",
   {
     "nonce": "859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f",
-    "data": "0x0249098aa8b9d2fbec49ff8598feb17b592b986e62319a4fa488a3dc36387157a7",
+    "data": "0x0249098aa8b9d2fbec49ff8598feb17b592b986e62319a4fa488a3dc36387157a7", // the hash of the program's bytecode.
     "tags": [
       [
         "program_output",
-        "154809849725474173771833689306955346864791482278938452209165301614543497938"
+        "154809849725474173771833689306955346864791482278938452209165301614543497938", // the expected output of the program's execution.
       ]
     ]
   }
@@ -71,7 +71,8 @@ The recipient who possesses a valid `CairoProof` of the program's execution that
 
 ```json
 {
-  "cairo_proof": <String>
+  "cairo_proof": <String>,
+  "with_bootloader": <bool>,
 }
 ```
 
@@ -86,13 +87,9 @@ To spend a token locked with `Cairo`, the spender needs to include a `CairoProof
 
 #### Tags
 
-`program_output: <felt_str>` determines the hash of the program's expected output. If more than one value is provided for this tag, the condition will be that the output of the STARK proof equals one of them.
+`program_output: <felt_str>` determines the hash of the program's expected output. 
 
-<!-- The program output is represented as Cairo `Felt` values in hexadecimal format. -->
-
-The program output is an array of Cairo `Felt` values (field elements). It is hashed using the `Poseidon::hash_array` function, which returns a single `Felt` value.
-
-A `Felt` can be represented as a hexadecimal string or as a decimal string.
+The program output is a Cairo `Felt` values (field elements). It is hashed using the `Blake2s` hash function.
 
 #### Optional feature: Bootloading
 
@@ -184,10 +181,6 @@ The witness would contain the claim along with the STARK proof showing that the 
 }
 ```
 
-#### Complex Example
-
-// TODO: make a real-world example of spending condtion + showcase the bootloading feature and how it improves privacy in the chosen scenario.
-
 ## Mint info setting
 
 The [NUT-06][06] `MintMethodSetting` indicates support for this feature, optional features, as well as some information for the configuration of the Cairo prover.
@@ -205,7 +198,6 @@ The [NUT-06][06] `MintMethodSetting` indicates support for this feature, optiona
     },
     "cairo_prover_config": {
       "version": "0.1.1", // the version of the `stwo_cairo_prover` dependecy used
-      "merkle_hasher": "blake2s" // can be "blake2s" or "poseidon252"
     }
   }
 }
