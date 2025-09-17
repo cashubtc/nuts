@@ -73,10 +73,11 @@ The recipient who possesses a valid `CairoProof` of the program's execution that
 {
   "cairo_proof": <String>,
   "with_bootloader": <bool>,
+  "with_pedersen": <bool>,
 }
 ```
 
-where `cairo_proof` is a serialized `CairoProof`.
+where `cairo_proof` is a serialized `CairoProof` and the `with_pedersen` flag indicates whether the proof contains a pedersen execution trace, necessary for instance when a bootloader is used.
 
 #### STARK Proving Scheme
 
