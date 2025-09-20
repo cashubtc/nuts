@@ -6,7 +6,7 @@
 
 ---
 
-This NUT describes the use of STARK proofs of Cairo program execution, which defines a spending condition based on [NUT-10][10]'s well-known `Secret` format. Using Cairo STARK proofs, ecash tokens can be locked to the successful execution of a specific Cairo program with a given output. Since Cairo is Turing-complete, this enables for user-defined arbitrary spending conditions, which can even stay private thanks to the zero-knowledge property of STARK proofs[^1].
+This NUT describes the use of STARK proofs of Cairo program execution, which defines a spending condition based on [NUT-10][10]'s well-known `Secret` format. Using Cairo STARK proofs, ecash tokens can be locked to the successful execution of a specific Cairo program with a given output. Since Cairo is Turing-complete, this enables for user-defined arbitrary spending conditions, which can stay private even from the mint thanks to the zero-knowledge property of STARK proofs[^1].
 
 [^1]: This can be achieved with bootloading, see section 2.2.1 of [GPR21] and [Optional feature: Bootloading](#optional-feature-bootloading) for more details.
 
@@ -40,11 +40,11 @@ To give a concrete example of the basic case, to mint a locked token we first cr
   "Cairo",
   {
     "nonce": "859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f",
-    "data": "0x0249098aa8b9d2fbec49ff8598feb17b592b986e62319a4fa488a3dc36387157a7", // hash(program_bytecode)
+    "data": "0x0249098aa8b9d2fbec49ff8598feb17b592b986e62319a4fa488a3dc36387157a7",
     "tags": [
       [
         "program_output",
-        "0xa431d77da3757f6f3ba829b9cdc171ea170073d1b06caaaae58bf169e9bfc380" // hash(output_condition)
+        "0xa431d77da3757f6f3ba829b9cdc171ea170073d1b06caaaae58bf169e9bfc380"
       ]
     ]
   }
@@ -98,6 +98,9 @@ The mint can optionally choose to support the use of a [bootloader](https://zkse
 This enables the prover to keep the bytecode of the executed program private, as only the hash of the instructions are revealed to the mint.
 
 The supported bootloader and its version should be specified in the mint info.
+
+> [!NOTE]
+> This feature is optional because the same behavior can be achieved without any additional mint-side logic (a bootloader is just a Cairo program after all). This is simply a more convenient and generic way to do it for the sender.
 
 ## Example Use Case
 
@@ -194,11 +197,11 @@ The [NUT-06][06] `MintMethodSetting` indicates support for this feature, optiona
       "bootloader": {
         "supported": true,
         "version": "0.14.0", // corresponds to https://github.com/starkware-libs/cairo-lang/blob/v0.13.0/src/starkware/cairo/bootloaders/bootloader/bootloader.cairo and https://github.com/Moonsong-Labs/cairo-bootloader
-        "hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef" // hash of the bootloader program
+        "hash": "0xaee9298fc7ffd8f4cbcc277b689cbf3a545379fb09ab90cc0245b7fe15c393a9" // hash of the bootloader program
       }
     },
     "cairo_prover_config": {
-      "version": "0.1.1" // the version of the `stwo_cairo_prover` dependecy used
+      "version": "0.1.1" // the version of the `stwo_cairo_prover` dependency used
     }
   }
 }
