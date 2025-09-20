@@ -40,11 +40,11 @@ To give a concrete example of the basic case, to mint a locked token we first cr
   "Cairo",
   {
     "nonce": "859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f",
-    "data": "0x0249098aa8b9d2fbec49ff8598feb17b592b986e62319a4fa488a3dc36387157a7", // the hash of the program's bytecode.
+    "data": "0x0249098aa8b9d2fbec49ff8598feb17b592b986e62319a4fa488a3dc36387157a7", // hash(program_bytecode)
     "tags": [
       [
         "program_output",
-        "154809849725474173771833689306955346864791482278938452209165301614543497938", // the expected output of the program's execution.
+        "0xa431d77da3757f6f3ba829b9cdc171ea170073d1b06caaaae58bf169e9bfc380" // hash(output_condition)
       ]
     ]
   }
@@ -58,7 +58,7 @@ The recipient who possesses a valid `CairoProof` of the program's execution that
 ```json
 {
   "amount": 1,
-  "secret": "[\"Cairo\",{\"nonce\":\"859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f\",\"data\":\"0x0249098aa8b9d2fbec49ff8598feb17b592b986e62319a4fa488a3dc36387157a7\",\"tags\":[[\"program_output\",\"154809849725474173771833689306955346864791482278938452209165301614543497938\"]]}]",
+  "secret": "[\"Cairo\",{\"nonce\":\"859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f\",\"data\":\"0x0249098aa8b9d2fbec49ff8598feb17b592b986e62319a4fa488a3dc36387157a7\",\"tags\":[[\"program_output\",\"0xa431d77da3757f6f3ba829b9cdc171ea170073d1b06caaaae58bf169e9bfc380\"]]}]",
   "C": "02698c4e2b5f9534cd0687d87513c759790cf829aa5739184a3e3735471fbda904",
   "id": "009a1f293253e41e",
   "witness": "{\"cairo_proof\":{\"claim\":{\"public_data\":{\"public_memory\":{\"program\":[[0,[2147450879,67600385,0,0,0,0,0,0]],[1,[2,0,0,0,0,0,0,0]],[2,[2147581952,285507585,0,0,0,0,0,0]],[3,[4,0,0,0,0,0,0,0]],[4,[2147450879,17268737,0,0,0,0,0,0]],[5,[0,0,0,0,0,0,0,0]]]]}}}..."
@@ -88,7 +88,7 @@ To spend a token locked with `Cairo`, the spender needs to include a `CairoProof
 
 #### Tags
 
-`program_output: <felt_str>` determines the hash of the program's expected output. 
+`program_output: <felt_str>` determines the hash of the program's expected output.
 
 The program output is a Cairo `Felt` values (field elements). It is hashed using the `Blake2s` hash function.
 
@@ -159,13 +159,13 @@ The following `Secret` requires the spender to prove that he knows a number `n` 
   "Cairo",
   {
     "nonce": "859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f",
-    "data": "e8d4a51000d4c8a9f1b2e3c5d7a9b8c6e4f2a1d3c5b7e9f1a3b5c7d9e1f3a5b7", // hash of the above cairo program
+    "data": "e8d4a51000d4c8a9f1b2e3c5d7a9b8c6e4f2a1d3c5b7e9f1a3b5c7d9e1f3a5b7",
     "tags": [
       [
         "program_output",
-        "154809849725474173771833689306955346864791482278938452209165301614543497938"
+        "0xa431d77da3757f6f3ba829b9cdc171ea170073d1b06caaaae58bf169e9bfc380"
       ]
-    ] // Poseidon::hash_array([1])
+    ]
   }
 ]
 ```
@@ -198,7 +198,7 @@ The [NUT-06][06] `MintMethodSetting` indicates support for this feature, optiona
       }
     },
     "cairo_prover_config": {
-      "version": "0.1.1", // the version of the `stwo_cairo_prover` dependecy used
+      "version": "0.1.1" // the version of the `stwo_cairo_prover` dependecy used
     }
   }
 }
