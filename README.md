@@ -18,10 +18,6 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [05][05] | Melting tokens          |
 | [06][06] | Mint info               |
 
-### Optional
-
-| #        | Description                       | Wallets                                                                            | Mints                                            |
-| -------- | --------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------ |
 | [07][07] | Token state check                 | [Nutshell][py], [Nutstash][ns], [cashu-ts][ts], [cdk-cli], [Minibits], [macadamia] | [Nutshell][py], [cdk-mintd], [nutmix]            |
 | [08][08] | Overpaid Lightning fees           | [Nutshell][py], [Nutstash][ns], [cashu-ts][ts], [cdk-cli], [Minibits], [macadamia] | [Nutshell][py], [cdk-mintd], [nutmix]            |
 | [09][09] | Signature restore                 | [Nutshell][py], [cdk-cli], [Cashu.me][cashume], [Minibits], [macadamia]            | [Nutshell][py], [cdk-mintd]                      |
@@ -41,6 +37,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [23][23] | Payment Method: BOLT11            | [Nutshell][py], [cdk-cli]                                                          | [Nutshell][py], [cdk-mintd], [nutmix]            |
 | [24][24] | HTTP 402 Payment Required         | -                                                                                  | -                                                |
 | [25][25] | Payment Method: BOLT12            | [cdk-cli], [cashu-ts][ts]                                                          | [cdk-mintd]                                      |
+| [26][26] | Pay-to-Blinded-Key (P2BK)         | [cashu-ts][ts]                                                                     | -                                                |
 
 #### Wallets:
 
