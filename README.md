@@ -18,6 +18,9 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [05][05] | Melting tokens          |
 | [06][06] | Mint info               |
 
+### Optional
+| #        | Description                       | Wallets                                                                            | Mints                                            |
+| -------- | --------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------ |
 | [07][07] | Token state check                 | [Nutshell][py], [Nutstash][ns], [cashu-ts][ts], [cdk-cli], [Minibits], [macadamia] | [Nutshell][py], [cdk-mintd], [nutmix]            |
 | [08][08] | Overpaid Lightning fees           | [Nutshell][py], [Nutstash][ns], [cashu-ts][ts], [cdk-cli], [Minibits], [macadamia] | [Nutshell][py], [cdk-mintd], [nutmix]            |
 | [09][09] | Signature restore                 | [Nutshell][py], [cdk-cli], [Cashu.me][cashume], [Minibits], [macadamia]            | [Nutshell][py], [cdk-mintd]                      |
