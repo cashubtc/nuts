@@ -19,6 +19,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [06][06] | Mint info               |
 
 ### Optional
+
 | #        | Description                       | Wallets                                                                            | Mints                                            |
 | -------- | --------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------ |
 | [07][07] | Token state check                 | [Nutshell][py], [Nutstash][ns], [cashu-ts][ts], [cdk-cli], [Minibits], [macadamia] | [Nutshell][py], [cdk-mintd], [nutmix]            |
