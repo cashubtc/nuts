@@ -37,11 +37,15 @@ The total value of all those proofs is the channel capacity and is the maximum a
 
 Bob can verify all of these proofs with the mint using NUT-07, before going offline.
 
+When both Alice and Bob have all the following, the channel is open:
+
+ - Bob prepares one _output_ for each of the proofs that Alice prepares. These are where Bob's final balance will be sent. In principle, Bob is free to choose any output, but Alice may require that they are locked up for a period of time in order to give Bob an incentive to cooperate with a cooperative close.
+ - The proofs prepared prepared by Alice, each one based on an output prepared by Bob, which Bob can verify with the mint
+
 # transactions
 
 To update the balance, Alice shall take the special 1-millisat proof mentioned above, and combine it with
-whatever subset of the other proofs is needed to reach the new balance, and sign the combination and give the
-signature to Bob. Bob can verify this signature offline
+whatever subset of the other proofs is needed to reach the new balance, and sign the combination spending those proofs to the corresponding outputs prepared by Bob, and give the signature to Bob. Bob can verify this signature offline
 
 # double-spending, and unidirecionality
 
@@ -51,6 +55,7 @@ include the special proof (SIG_ALL), and the mint will see that the special proo
 As he can only redeem one transaction, and therefore one set of proofs that were signed together, he will redeem
 the most valuable transaction. This explains why these are unidirectional.
 
-# Fees
+# cooperative channel close
 
-???
+?
+
