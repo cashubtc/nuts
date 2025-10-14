@@ -47,6 +47,8 @@ When both Alice and Bob have all the following, the channel is open:
 To update the balance, Alice shall take the special 1-millisat proof mentioned above, and combine it with
 whatever subset of the other proofs is needed to reach the new balance, and sign the combination spending those proofs to the corresponding outputs prepared by Bob, and give the signature to Bob. Bob can verify this signature offline
 
+For each update, Alice simply sends a number recording the new balance, and her signature on the updated transaction. That is sufficient to allow Bob to construct the updated transaction and verify the signature. This can allow a very high frequency of updates
+
 # double-spending, and unidirecionality
 
 As Alice is using SIG_ALL, and the special 1-millisat proof is used in all of the transactions,
