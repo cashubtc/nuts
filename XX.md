@@ -35,7 +35,7 @@ One of these 1-millisat proofs is a special proof that will be included in every
 Alice shall prepare one proof for every other power of 2: 2-millisats, 4-millisats, 8-millisats, ..., up to some pre-agreed maximum.
 The total value of all those proofs is the channel capacity and is the maximum amount that Alice can send to Bob through this channel
 
-Bob can verify all of these proofs with the mint, before going offline.
+Bob can verify all of these proofs with the mint using NUT-07, before going offline.
 
 # transactions
 
