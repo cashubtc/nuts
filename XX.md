@@ -2,7 +2,7 @@
 
 `optional`
 
-`depends on: NUT-11, NUT-12`
+`depends on: NUT-11, NUT-12 (or we allow 07 as a substitute for 12?)`
 
 ---
 
