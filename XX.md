@@ -2,7 +2,7 @@
 
 `optional`
 
-`depends on: NUT-11`
+`depends on: NUT-11, NUT-12`
 
 ---
 
@@ -35,7 +35,7 @@ One of these 1-millisat proofs is a special proof that will be included in every
 Alice shall prepare one proof for every other power of 2: 2-millisats, 4-millisats, 8-millisats, ..., up to some pre-agreed maximum.
 The total value of all those proofs is the channel capacity and is the maximum amount that Alice can send to Bob through this channel
 
-Bob can verify all of these proofs with the mint using NUT-07, before going offline.
+Bob can verify all of these proofs with the mint using NUT-12, before going offline.
 
 When both Alice and Bob have all the following, the channel is open:
 
@@ -59,5 +59,5 @@ the most valuable transaction. This explains why these are unidirectional.
 
 # cooperative channel close
 
-?
+The above gives Bob unilateral exit with immediate access. Alice has to wait some time before she can collect the refund
 
