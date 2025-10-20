@@ -1184,6 +1184,10 @@
 <div class="codehilite"><pre><span></span><code><span class="kd">enum</span><span class="w"> </span><span class="nx">SubscriptionKind</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">bolt11_melt_quote</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;bolt11_melt_quote&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">bolt11_mint_quote</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;bolt11_mint_quote&quot;</span><span class="p">,</span>
+
+<span class="w">  </span><span class="nx">bolt12_melt_quote</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;bolt12_melt_quote&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">bolt12_mint_quote</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;bolt12_mint_quote&quot;</span><span class="p">,</span>
+
 <span class="w">  </span><span class="nx">proof_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;proof_state&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -1319,7 +1323,7 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p>Here, <code>commands</code> is an array of the commands that the mint supports. A mint that supports all commands would return <code>["bolt11_mint_quote", "bolt11_melt_quote", "proof_state"]</code>. Supported commands are given for each method-unit pair.</p>
+<p>Here, <code>commands</code> is an array of the commands that the mint supports. A mint that supports all commands would return <code>["bolt11_mint_quote", "bolt11_melt_quote", "bolt12_mint_quote", "bolt12_melt_quote", "proof_state"]</code>. Supported commands are given for each method-unit pair.</p>
 <p>Example:</p>
 <div class="codehilite"><pre><span></span><code><span class="nt">&quot;nuts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;17&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
