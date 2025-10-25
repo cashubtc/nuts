@@ -86,7 +86,7 @@ Example `SwapRequest`:
       "id": "00bfa73302d12ffd",
       "secret": "[\"P2PK\",{\"nonce\":\"3631a459b0c72c3cf0644b5371b6dd880d1c7289e12069463c1df7d700aad1e3\",\"data\":\"0363b7681807978a4d92187edc5ef9cbd6ecb00f5c0c0c322fe9d6c05c5722813d\",\"tags\":[[\"pubkeys\",\"02b2a6d3cd52ff1c78c904aa3e301bb3592f4556e01612fd922f1693848c68b4f3\"],[\"n_sigs\",\"2\"],[\"sigflag\",\"SIG_ALL\"]]}]",
       "C": "021f6ea91bd3a99531b5290f62343f21ab5e7c5a0de4401444e4e1bec16aed73b6",
-      "witness": "{\"signatures\":[\"ed7cd61855bd8b318db0df0a70bc37aead8aa9bf908056e5d4576d95d6ddd02476ebd364e1fe697158ee11e7281e845625cb3a45d1308c9967f42656e702c6c7\",\"3dea6ebd40be312888e55f9446126dbf2586d84b1bf3238488fa0259f021ddac7246e95ffb3e25c800c3159c5bb1d9a985f55ecd5170b16a06223892c4d3ef3b\"]}",
+      "witness": "{\"signatures\":[\"ed7cd61855bd8b318db0df0a70bc37aead8aa9bf908056e5d4576d95d6ddd02476ebd364e1fe697158ee11e7281e845625cb3a45d1308c9967f42656e702c6c7\",\"3dea6ebd40be312888e55f9446126dbf2586d84b1bf3238488fa0259f021ddac7246e95ffb3e25c800c3159c5bb1d9a985f55ecd5170b16a06223892c4d3ef3b\"]}"
     }
   ],
   "outputs": [
@@ -211,7 +211,7 @@ The following is a `SwapRequest` multiple valid signatures are provided and requ
 }
 ```
 
-The following is an invalid `SwapRequest` with pubkeys and refund mixed. 
+The following is an invalid `SwapRequest` with pubkeys and refund mixed.
 
 ```json
 {
@@ -238,7 +238,6 @@ The following is an invalid `SwapRequest` with pubkeys and refund mixed.
   ]
 }
 ```
-
 
 The following is a `SwapRequest` with locktime passed and refund keys signatures are valid
 
@@ -267,8 +266,6 @@ The following is a `SwapRequest` with locktime passed and refund keys signatures
   ]
 }
 ```
-
-
 
 Example `MeltRequest`:
 
