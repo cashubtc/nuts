@@ -296,6 +296,76 @@ Example `MeltRequest`:
 }
 ```
 
+The following is a valid `SwapRequest` with an HTLC also locked to a public key
+
+```json
+{
+  "inputs": [
+    {
+      "amount": 2,
+      "id": "00bfa73302d12ffd",
+      "secret": "[\"HTLC\",{\"nonce\":\"247864413ecc86739078f8ab56deb8006f9c304fc270f20eb30340beca173088\",\"data\":\"ec4916dd28fc4c10d78e287ca5d9cc51ee1ae73cbfde08c6b37324cbfaac8bc5\",\"tags\":[[\"pubkeys\",\"03f2a205a6468f29af3948f036e8e35e0010832d8d0b43b0903331263a45f93f31\"],[\"sigflag\",\"SIG_ALL\"]]}]",
+      "C": "0394ffcb2ec2a96fd58c1b935784a7709c62954f7f11f1e684de471f808ccfb0bf",
+      "witness": "{\"preimage\":\"0000000000000000000000000000000000000000000000000000000000000001\",\"signatures\":[\"fa820534d75faac577eb5b42e9929a9f648baaaf28876cbcb7c10c6047cf97f6197d1cbf4907d94c1e77decf4b1acf0c85816a30524ee1b546181a19b838b535\"]}"
+    }
+  ],
+  "outputs": [
+    {
+      "amount": 2,
+      "id": "00bfa73302d12ffd",
+      "B_": "038ec853d65ae1b79b5cdbc2774150b2cb288d6d26e12958a16fb33c32d9a86c39"
+    }
+  ]
+}
+```
+
+The following is an invalid `SwapRequest` with an HTLC also locked to a public key, locktime and refund key. locktime is
+not expired but proof is signed with refund key.
+
+```json
+{
+  "inputs": [
+    {
+      "amount": 2,
+      "id": "00bfa73302d12ffd",
+      "secret": "[\"HTLC\",{\"nonce\":\"b6f0c59ea4084369d4196e1318477121c2451d59ae767060e083cb6846e6bbe0\",\"data\":\"ec4916dd28fc4c10d78e287ca5d9cc51ee1ae73cbfde08c6b37324cbfaac8bc5\",\"tags\":[[\"pubkeys\",\"0329fdfde4becf9ff871129653ff6464bb2c922fbcba442e6166a8b5849599604f\"],[\"locktime\",\"4854185133\"],[\"refund\",\"035fcf4a5393e4bdef0567aa0b8a9555edba36e5fcb283f3bbce52d86a687817d3\"],[\"sigflag\",\"SIG_ALL\"]]}]",
+      "C": "024fbbee3f3cc306a48841ba327435b64de20b8b172b98296a3e573c673d52562b",
+      "witness": "{\"preimage\":\"0000000000000000000000000000000000000000000000000000000000000001\",\"signatures\":[\"7526819070a291f731e77acfbe9da71ddc0f748fd2a3e6c2510bc83c61daaa656df345afa3832fe7cb94352c8835a4794ad499760729c0be29417387d1fc3cd1\"]}"
+    }
+  ],
+  "outputs": [
+    {
+      "amount": 2,
+      "id": "00bfa73302d12ffd",
+      "B_": "038ec853d65ae1b79b5cdbc2774150b2cb288d6d26e12958a16fb33c32d9a86c39"
+    }
+  ]
+}
+```
+
+The following is a valid `SwapRequest` with a multisig HTLC also locked to locktime and refund keys.
+
+```json
+{
+  "inputs": [
+    {
+      "amount": 2,
+      "id": "00bfa73302d12ffd",
+      "secret": "[\"HTLC\",{\"nonce\":\"d4e089a466a5dd15031a406a3733adecf6f82aa76eee31d6bc8eaff3d78f6daa\",\"data\":\"ec4916dd28fc4c10d78e287ca5d9cc51ee1ae73cbfde08c6b37324cbfaac8bc5\",\"tags\":[[\"pubkeys\",\"0367ec6c26c688ddd6162907298726c6d5ad669f99cf27b3ac6240c64fa7c5036f\"],[\"locktime\",\"1\"],[\"refund\",\"0302208be01ac255b9845e88a571120d2ce2df3f877414a430e17b5c0d993b66de\",\"0275a814c7a891f3241aca84097253cd173b933d012009b1335a981599bec3cb3f\"],[\"n_sigs_refund\",\"2\"],[\"sigflag\",\"SIG_ALL\"]]}]",
+      "C": "0374419050d909ba80122ed5e1e8ae6cc569c269fdff257fc5eae32945ca6076fe",
+      "witness": "{\"preimage\":\"0000000000000000000000000000000000000000000000000000000000000001\",\"signatures\":[\"4c7d55d6447c6d950fe2d2629441e8e69368be6e0f576bc4f343e830bcdc1e2296ddce74cb5a64245639464814ca98b129b06461b0897b0d1b94133050f233bd\",\"bb7fd77512ac69a47462e91c5e47e20b5ad1466d28ea71ffbdf5d0ae40d2865b90ffc34fc3202f3b775b9428667c9aa54d778af2055a530946db3a0311a28493\"]}"
+    }
+  ],
+  "outputs": [
+    {
+      "amount": 2,
+      "id": "00bfa73302d12ffd",
+      "B_": "038ec853d65ae1b79b5cdbc2774150b2cb288d6d26e12958a16fb33c32d9a86c39"
+    }
+  ]
+}
+```
+
 The following is the valid `msg_to_sign` on the above `MeltRequest`.
 
 ```
