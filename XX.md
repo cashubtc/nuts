@@ -2,7 +2,10 @@
 
 `optional`
 
-`depends on: NUT-11 (P2PK), NUT-12 (DLEQ)`
+`depends on: NUT-11 (P2PK), NUT-12 (DLEQ), (and probably NUT-09) too`
+
+_2025-11-01: we'll likely make a change to this, by signing over _all_ inputs, not just the inputs that are sufficient to cover Bob's latest balance.
+Combined with the restore endpoint (NUT-09), Alice will be able to get her refund immediately in the case of an uncooperative close.`._
 
 ---
 
