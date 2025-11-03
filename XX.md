@@ -1,11 +1,12 @@
-# NUT-XX: Offline Spillman (unidirectional) channel 
+# NUT-XX: Offline Spilman (unidirectional) channel
 
 `optional`
 
-`depends on: NUT-11 (P2PK), NUT-12 (DLEQ), (and probably NUT-09) too`
+`depends on: NUT-11 (P2PK), NUT-12 (DLEQ), NUT-09 (restore signatures), NUT-07 (token state check)`
 
-_2025-11-01: we'll likely make a change to this, by signing over _all_ inputs, not just the inputs that are sufficient to cover Bob's latest balance.
-Combined with the restore endpoint (NUT-09), Alice will be able to get her refund immediately in the case of an uncooperative close.`._
+_TODO: who pays the fees? (see the multi-swap zero-receiver-setup deterministic outputs below) If Alice spends 101 sats to fund the 'funding token' which has a _nominal_ value of 100 sats, and Bob's exit with the full capacity gives him just nominal 99 sats in his 1-of-1 P2PK outputs, which decrease to 98 sats when he finally swaps them to anyone-can-spend tokens in his wallet, then who should pay those fees? Which of those four numbers is the capacity of the network?_
+
+_TODO: question for the reviewer: Could we use pay-to-blinded-pubkey here? Where exactly? And should we make P2BPK required or optional?_
 
 ---
 
@@ -13,73 +14,128 @@ Alice and Bob wish to set up a payment channel, funded by Alice, such that Bob's
 increases (unidirectional) over time. This is 'offline' because it allows - once the channel has been
 set up - for the two parties to transact simply by Alice sending signatures to Bob which Bob can verify
 without needing to contact the mint after each micropayment.
+A small number of swaps are needed to setup and to close the channel, but there is no mint involvement
+while the channel is open and while the channel payments are made.
 
-Both parties trust the mint, but not each other. This works with any mint that supports NUT-11 and NUT-12.
+Knowing only Bob's pubkey and a mint trusted by him, Alice can set up the channel - via one swap with the mint - and make the
+first payment to Bob without any setup from Bob.
+This may be useful in streaming video services or with Nostr relays, where it will be convenient
+for Alice to start a HTTP download from Bob and make the first payment within the HTTP request,
+or to include the first payment when opening any WebSocket.
 
-Bob can then unilaterally exit at any time, by taking the latest signature to the mint.
-If, after this exit, Bob doesn't sign a transaction which releases Alice's remaining balance to her immediately,
-she can redeem the remainder after a certain pre-defined time has elapsed.
+Assuming Bob checks that this channel is new to him (the channel ids are deterministic, so he can easily
+check if the channel is new), Bob can verify everything offline and doesn't need to
+check the state with the mint and he can immediately provide the service that Alice has paid for
+with the first payment.
 
-One simple alternative is for Alice to prepare a large number (millions perhaps) of tiny-amount proofs
-in advance. However, that requires a lot of bandwidth and places heavy strain on the mint.
-This NUT describes how a smaller set of proofs, of various amounts, can solve the same
-problem, allowing potentially billions of payments with only a few dozen proofs.
+# Trust
 
-# The channel
+Both parties trust the mint, but not each other.
+Bob can unilaterally exit at any time, by adding his signature to Alice's and swapping at the mint.
+That swap will spend all the 'funding proofs' that Alice prepared in the funding token, and the swap
+will also unlock Alice's outputs allowing her to immediately exit with her balance.
+If Bob never exits, then - after the predefined locktime has expired - all the funding becomes spendable
+by Alice alone, allowing her to reclaim her funds.
 
-Alice takes Bob's public key and 'outputs' provided by him and, with any mint supporting NUT-11, creates a set of 2-of-2 multisig proofs
-of various amounts, where both Alice and Bob's signature is needed to redeem.
-Each of these proofs refunds to Alice after a pre-defined 'locktime' (e.g. one week).
-Before the locktime, the proofs can only be redeemed with a signature from both. After the locktime, Alice's signature is sufficient.
-`SIG_ALL` is used, for reasons described in 'double-spending' below.
-The signature scheme and locktime and `SIG_ALL`, are as described in NUT-11.
+# Efficiency
 
-The details of the amounts and outputs are described next.
+Alice funds the channel by making one swap with the mint which creates a 2-of-2 P2PK token.
+This token can have an arbitrarily large value, and it doesn't require many proofs within the token;
+dozens of proofs are sufficient for billions of sats (or millisats) of channel capacity.
 
-## Amounts, and the details of opening and funding the channel
+Each payment simply requires Alice sending the new amount as an integer and her signature
+on an updated transaction, along with some metadata to identify the channel.
 
-_This assumes that 1 millisat is the smallest 'resolution' of interest, but another resolution may be agreed_
+Closing the channel requires a maximum of three swaps.
 
-_This assumes that the mint's amounts are in powers of two. While that appears to be the typical case, it's not required by the protocol_
+# Setting up the channel, and paying via 'commitment transactions'
 
-There shall be _2_ such proofs with 1-millisat value, and one proof for every other power of 2: 2-millisats, 4-millisats, 8-millisats, ..., up to some pre-agreed maximum.
-The total value of all those proofs is the channel capacity and is the maximum amount that Alice can send to Bob through this channel.
+Alice takes Bob's public key and create one _funding token_.
+Each proof in that token is a P2PK _funding proof_, with two spending paths.
+Before the locktime, the signatures of both Alice and Bob are required to spend.
+After the locktime, only Alice's is needed.
+`SIG_ALL` is used, as described in NUT-11.
 
-First, Bob prepares his outputs (BlindedMessage), one for each of those amounts (two 1-millisat outputs).
-These are where Bob's final balance will be sent. Bob is free to choose any output, and will typically prepare an anyone-can-spend output with a random secret that he created.
+While the channel is open, any payment is made by Alice constructing an
+updated _commitment transaction_ for the new balance and by her signing it
+and sending the amount and the signature to Bob,
+where he can independently construct the same commitment transaction and verify Alice's signature.
 
-Alice then takes Bob's outputs and funds a 'swap' with her own inputs. The result is a set of proofs with the 2-of-2-multisig rules mentioned above, including the refund to Alice after a locktime has expired.
+The commitment transaction is a swap which spends all the funding proofs,
+distributing some of the value to Bob's outputs and the remainder to Alice's outputs.
 
-Alice then sends all those proofs to Bob. Bob can verify all of these proofs with the mint using NUT-12, and also check  that the signatures and locktimes have been set up correctly, before going offline.
+Most of these transactions are never taken to the mint to be swapped.
+Only the final one is taken by Bob when he chooses to exit.
 
-One of these 1-millisat proofs is a special proof that will be included in every transaction.
+# Deterministic outputs, and how Alice gets an immediate refund if Bob exists uncooperatively
 
-# transactions
+The commitment transaction takes the funding proofs as input.
+The outputs of the commitment transaction follow a deterministic scheme (details to be written up precisely, based
+on the channel params...)
+to compute the secrets and blinding factors and outputs (blinded messages) which distribute to Bob and Alice.
 
-To update the balance, Alice shall take the special 1-millisat proof mentioned above, and combine it with
-whatever subset of the other proofs is needed to reach the new balance, and sign the combination spending those proofs to the corresponding outputs prepared by Bob, and give the signature to Bob.
-For example, to update the balance to 16 msat, Alice will take the special proof and the unique set of proofs which add to 15, because 16=1+15=1+1+2+4+8.
+This deterministic scheme is known to both Alice and Bob, allowing either to construct the transaction
+and allowing either party to unblind all BlindSignatures when the channel is closed.
 
-Bob can verify this signature offline. Bob _could_ sign this transaction himself immediately and 'swap' it for the proofs, but he will not do so until he is ready to exit and close the channel.
+This determinism allows Alice to setup the channel with no input from Bob, where she can
+'cold open' with a first payment to Bob.
 
-For each update, Alice simply sends a number recording the new balance, and her signature on the updated transaction. That is sufficient to allow Bob to construct the updated transaction and verify the signature; he has the same proofs and outputs that Alice is working on and therefore he can reconstruct the same updated transaction that Alice just signed.
-This can allow a very high frequency of updates
+While both parties know all the secrets and blinding factors for these outputs, they cannot
+steal each other's outputs as all the outputs are P2PK-locked in a 1-of-1 proof to the
+intended recipient.
 
-# double-spending, and unidirecionality
+When Bob exits, that spends all the funding proofs.
+Using NUT-07, Alice can monitor the state of any of the funding proofs to detect
+when Bob has exit.
+Usually, Bob is rational and will have spent the latest transaction as it has the maximum
+value for him. But that is not guaranteed.
+If Bob doesn't cooperate with Alice, she can use the response of the NUT-07 to get
+the `witness` from the mint and identify which of her signatures was used and from
+there to idenfity the amount. With the amount, she can reconstruct the transcation
+and the deterministic outputs. As she now knows that all outputs have been signed,
+she can use NUT-09 (restore token) to get the blind signatures from the mint
+and can unblind to get her 1-of-1 P2PK output.
 
-As Alice is using SIG_ALL, and the special 1-millisat proof is used in all of the transactions,
-Bob can redeem only one of the transactions. If he attempts to redeem a second transaction, he will need to
-include the special proof (SIG_ALL), and the mint will see that the special proof has already been redeemed.
-As he can only redeem one transaction, and therefore one set of proofs that were signed together, he will redeem
-the most valuable transaction.
-This explains why these are unidirectional.
+_The paragraph above requires Alice to remember all the signatures and amounts
+that she has sent, but I'm pretty sure there is a way to avoid this dependence
+and allow her to restore even if she doesn't know the balance.
 
-# cooperative channel close
 
-The above gives Bob unilateral exit with immediate access. Alice has to wait some time before she can collect the refund.
-When closing the channel, Bob should sign a similar transaction returning the remaining proofs to Alice,
-but we cannot force him to do so and therefore Alice may need to way until the locktime has expired.
+
+## Channel capacity?
+
+The channel capacity is ... _depends on the fee policy. As mentioned at the top, there are mulitiple swaps; how is responsible for
+paying all those swaps?_
+
+## Channel parameters, and channel reuse
+
+The channel parameters include:
+ - sender pubkey (Alice)
+ - receiver pubkey (Bob)
+ - mint
+ - active_keyset_id - the keyset of the funding token and also of the 1-of-1 P2PK outputs
+ - unit (e.g. 'sat' or 'msat', or 'usd')
+ - locktime - the time after which Alice can spend all the funding proofs to herself
+ - setup_timestamp
+ - sender_nonce - a random/arbritrary string added by the sender Alice, in case it's desirable to have two channels at the same time between the same parties
+
+and the channel_id is a deterministic function of the above
+
+In the naive case, Alice could try to reuse a channel with Bob that she earlier reused, or otherwise lie about the
+current balance.
+To avoid this, Bob should remember the current balance of every channel which he hasn't yet closed, and
+he should also keep a set of the recently-closed channels. He can assume that any channel past it's `locktime`
+has been closed, and therefore he doesn't need to keep a record
+
+If Bob follows this, he doesn't need to check with the mint in order to consider the channel
+open.
+He can know when a new channel has been setup, and he can use DLEQ proofs to verify
+that the funding proof is valid and unspent.
+As the deterministic outputs are different in every channel (the outputs depend on the channel id),
+giving Bob confidence that his outputs in any new channel are unspent outputs.
+
 
 # proof-of-concept
 
-There is a proof of concept based on the CDK, showing how both parties can do the verification at each step. TODO: link to it
+There is a proof of concept based on the CDK, showing how both parties can do the verification at each step, also including
+the latest SIG_ALL message update. _TODO: link to it. As of 2025-11-02, it's implemented and working with this new deterministic output setup, but the latest code isn't on github yet_
