@@ -90,9 +90,9 @@ This are the expected integer for unit strings:
 ```json
 {
  "sat" = 866057899
- "msat" = 4128155635
- "auth" = 3186924604
- "eur" = 3122566600
- "usd" = 3591355783
+ "msat" = 1980671987
+ "auth" = 1039440956 
+ "eur" = 975082952
+ "usd" = 1443872135
 }
 ```
