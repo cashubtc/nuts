@@ -91,7 +91,7 @@ This are the expected integer for unit strings:
 {
  "sat" = 866057899
  "msat" = 1980671987
- "auth" = 1039440956 
+ "auth" = 1039440956
  "eur" = 975082952
  "usd" = 1443872135
 }
