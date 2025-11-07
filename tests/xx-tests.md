@@ -74,14 +74,14 @@ The following are keysets corresponding to the id: `00f7e28916369569`.
 }
 ```
 
-Keyset id: `000aea2e997de6f5`.
+Keyset id: `00e9bc5dbbd46eeb`.
 
 - `version` = 1
 - `unit` = auth
 
 ```json
 {
-  "1": "02e18e9970c71607bcb5b41d4aac4cc007df236a15ed22ca0a8c2a26eb6f78ba96"
+  "1": "02cd342a0ecc384f6d752a16fe4892b2f59cb4ea450ec42068b68eae5ffbb398b6"
 }
 ```
 
