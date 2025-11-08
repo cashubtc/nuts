@@ -62,7 +62,7 @@ message KeySet {
   bool active = 3;
   uint64 input_fee_ppk = 4;
   Keys keys = 5;
-  uint64 version  = 6;
+  uint32 version  = 6;
   optional uint64 final_expiry  = 7;
 }
 
