@@ -222,7 +222,7 @@ The following is an invalid `SwapRequest` with pubkeys and refund mixed.
 
 The following is a `SwapRequest` with locktime passed and refund keys signatures are valid
 
-````json
+```json
 {
   "inputs": [
     {
@@ -240,7 +240,8 @@ The following is a `SwapRequest` with locktime passed and refund keys signatures
       "B_": "038ec853d65ae1b79b5cdbc2774150b2cb288d6d26e12958a16fb33c32d9a86c39"
     }
   ]
-}```
+}
+```
 
 The following is a valid `SwapRequest` with an HTLC also locked to a public key
 
