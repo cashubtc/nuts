@@ -264,7 +264,7 @@ The following is a valid `SwapRequest` with an HTLC also locked to a public key
     }
   ]
 }
-````
+```
 
 The following is an invalid `SwapRequest` with an HTLC also locked to a public key, locktime and refund key. locktime is
 not expired but proof is signed with refund key.
