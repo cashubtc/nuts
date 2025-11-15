@@ -1503,19 +1503,19 @@
 <h4 id="message-aggregation-for-sig_all">Message aggregation for <code>SIG_ALL</code><a class="headerlink" href="#message-aggregation-for-sig_all" title="Permanent link">&para;</a></h4>
 <p>The message to be signed depends on the type of transaction containing an input with signature flag <code>SIG_ALL</code>.</p>
 <h5 id="aggregation-for-swap">Aggregation for <code>swap</code><a class="headerlink" href="#aggregation-for-swap" title="Permanent link">&para;</a></h5>
-<p>A swap contains <code>inputs</code> and <code>outputs</code> (see <a href="../03/">NUT-03</a>). To provide a valid signature, the owner (or owners) of the signing public keys must concatenate the <code>secret</code> fields of all <code>Proofs</code> (inputs), and the <code>B_</code> fields of all <code>BlindedMessages</code> (outputs, see <a href="../00/">NUT-00</a>) to a single message string in the order they appear in the transaction. This string concatenated is then hashed and signed (see <a href="#signature-scheme">Signature scheme</a>).</p>
+<p>A swap contains <code>inputs</code> and <code>outputs</code> (see <a href="../03/">NUT-03</a>). To provide a valid signature, the owner (or owners) of the signing public keys must concatenate the <code>secret</code> and <code>C</code> fields of all <code>Proofs</code> (inputs) with the <code>amount</code> and <code>B_</code> fields of all <code>BlindedMessages</code> (outputs, see <a href="../00/">NUT-00</a>) to a single message string in the order they appear in the transaction. This concatenated string is then hashed and signed (see <a href="#signature-scheme">Signature scheme</a>).</p>
 <p>If a swap transaction has <code>n</code> inputs and <code>m</code> outputs, the message to sign becomes:</p>
-<div class="codehilite"><pre><span></span><code>msg = secret_0 || ... || secret_n || B_0 || ... || B_m
+<div class="codehilite"><pre><span></span><code>msg = secret_0 || C_0 || ... || secret_n || C_n || amount_0 ||  B_0 || ... || amount_m || B_m
 </code></pre></div>
 
-<p>Here, <code>||</code> denotes string concatenation. The <code>B_</code> of each output is <strong>a hex string</strong>.</p>
+<p>Here, <code>||</code> denotes string concatenation. The <code>C</code> of each input and <code>B_</code> of each output are <strong>hex strings</strong> and <code>amount</code> is a UTF-encoded string.</p>
 <h5 id="aggregation-for-melt">Aggregation for <code>melt</code><a class="headerlink" href="#aggregation-for-melt" title="Permanent link">&para;</a></h5>
 <p>For a melt transaction, the message to sign is composed of all the inputs, the quote ID being paid, and the <a href="../08/">NUT-08</a> blank <code>outputs</code>.</p>
 <p>If a melt transaction has <code>n</code> inputs, <code>m</code> blank outputs, and a quote ID <code>quote_id</code>, the message to sign becomes:</p>
-<div class="codehilite"><pre><span></span><code>msg = secret_0 || ... || secret_n || B_0 || ... || B_m || quote_id
+<div class="codehilite"><pre><span></span><code>msg = secret_0 || C_0 || ... || secret_n || C_n || amount_0 || B_0 || ... || amount_m || B_m || quote_id
 </code></pre></div>
 
-<p>Here, <code>||</code> denotes string concatenation. The <code>B_</code> of each output is <strong>a hex string</strong>.</p>
+<p>Here, <code>||</code> denotes string concatenation. The <code>C</code> of each input and <code>B_</code> of each output are <strong>hex strings</strong> and <code>amount</code> is a UTF-encoded string.</p>
 <h3 id="multisig">Multisig<a class="headerlink" href="#multisig" title="Permanent link">&para;</a></h3>
 <p>Cashu offers two levels of multi-signature protection: <code>Locktime MultiSig</code> and <code>Refund MultiSig</code>, which are activated depending on the status of the proof's <code>locktime</code> tag.</p>
 <h4 id="locktime-multisig">Locktime MultiSig<a class="headerlink" href="#locktime-multisig" title="Permanent link">&para;</a></h4>
