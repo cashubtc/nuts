@@ -19,14 +19,6 @@ while the channel is open and while the channel payments are made.
 
 Knowing only Bob's pubkey and a mint trusted by him, Alice can set up the channel - via one swap with the mint - and make the
 first payment to Bob without any setup from Bob.
-This may be useful in streaming video services or with Nostr relays, where it will be convenient
-for Alice to start a HTTP download from Bob and make the first payment within the HTTP request,
-or to include the first payment when opening any WebSocket.
-
-Assuming Bob checks that this channel is new to him (the channel ids are deterministic, so he can easily
-check if the channel is new), Bob can verify everything offline and doesn't need to
-check the state with the mint and he can immediately provide the service that Alice has paid for
-with the first payment.
 
 # Trust
 
@@ -38,107 +30,181 @@ will also unlock Alice's outputs allowing her to immediately exit with her balan
 If Bob never exits, then - after the predefined locktime has expired - all the funding becomes spendable
 by Alice alone, allowing her to reclaim her funds.
 
-# Efficiency
+# The channel parameters, and channel_id
 
-Alice funds the channel by making one swap with the mint which creates a 2-of-2 P2PK token.
-This token can have an arbitrarily large value, and it doesn't require many proofs within the token;
-dozens of proofs are sufficient for billions of sats (or millisats) of channel capacity.
+Knowing Bob's public key, and the set of mints and _units_ that are trusted by Bob, and a minimum channel lifetime that Bob requires, Alice defines the channel parameters as follows:
 
-Each payment simply requires Alice sending the new amount as an integer and her signature
-on an updated transaction, along with some metadata to identify the channel.
+ - `sender_pubkey`: Alice's key ?how exactly to encode this?
+ - `receiver_pubkey`: Bob's key ?how exactly to encode this?
+ - `mint` string: URL of mint
+ - `unit`: typically `sat` or `msat`
+ - `capacity`: the number of sats in the _funding token_ that Alice will create while funding the channel. _**If the fees are non-zero, Bob's maximum possible balance will be less than the `capacity`**_
+ - `active_keyset_id`: An _active_ keyset for that unit at that mint
+ - `expiry`  unix timestamp: If Bob doesn't close before this time, Alice can re-claim all the funds after this has expired
+ - `setup_timestamp`: unix timestamp: the time when Alice is setting up this channel
+ - `sender_nonce`: Random data selected by Alice to add more randomness. May be useful if Alice and Bob have multiple concurrent channels.
 
-Closing the channel requires a maximum of three swaps.
+The `channel_id` is the SHA256 hash of the '|'-delimited concatenation of all the above.
 
-# Setting up the channel, and paying via 'commitment transactions'
+# Funding the channel
 
-Alice takes Bob's public key and create one _funding token_.
-Each proof in that token is a P2PK _funding proof_, with two spending paths.
-Before the locktime, the signatures of both Alice and Bob are required to spend.
-After the locktime, only Alice's is needed.
-`SIG_ALL` is used, as described in NUT-11.
+Alice, with the mint, creates a _funding token_ worth `capacity` units.
+Each proof in this token is a P2PK (NUT-11) proof which requires both signatures
+before the expiry of the channel, and where Alice's signature alone is sufficient afterwards:
 
-While the channel is open, any payment is made by Alice constructing an
-updated _commitment transaction_ for the new balance and by her signing it
-and sending the amount and the signature to Bob,
-where he can independently construct the same commitment transaction and verify Alice's signature.
-
-The commitment transaction is a swap which spends all the funding proofs,
-distributing some of the value to Bob's outputs and the remainder to Alice's outputs.
-
-Most of these transactions are never taken to the mint to be swapped.
-Only the final one is taken by Bob when he chooses to exit.
-
-# Deterministic outputs, and how Alice gets an immediate refund if Bob exists uncooperatively
-
-The commitment transaction takes the funding proofs as input.
-The outputs of the commitment transaction follow a deterministic scheme (details to be written up precisely, based
-on the channel params...)
-to compute the secrets and blinding factors and outputs (blinded messages) which distribute to Bob and Alice.
-
-This deterministic scheme is known to both Alice and Bob, allowing either to construct the transaction
-and allowing either party to unblind all BlindSignatures when the channel is closed.
-
-This determinism allows Alice to setup the channel with no input from Bob, where she can
-'cold open' with a first payment to Bob.
-
-While both parties know all the secrets and blinding factors for these outputs, they cannot
-steal each other's outputs as all the outputs are P2PK-locked in a 1-of-1 proof to the
-intended recipient.
-
-When Bob exits, that spends all the funding proofs.
-Using NUT-07, Alice can monitor the state of any of the funding proofs to detect
-when Bob has exited. (... [websockets in NUT17](https://github.com/cashubtc/nuts/blob/e8a23cc73f84ac8e1f171ea984a0ea471b718c65/17.md#example-proofstate-subscription))
-
-Usually, Bob is rational and will have spent the latest transaction as it has the maximum
-value for him. But that is not guaranteed.
-If Bob doesn't cooperate with Alice, she can use the response of the NUT-07 to get
-the `witness` from the mint and identify which of her signatures was used and from
-there to idenfity the amount that Bob took. With the amount, she can reconstruct the transcation
-and the deterministic outputs. As she now knows that all outputs have been blind-signed by the mint,
-she can use NUT-09 (restore token) to get the blind signatures from the mint
-and can unblind to get her 1-of-1 P2PK output.
-
-_The paragraph above requires Alice to remember all the signatures and amounts
-that she has sent, but I'm pretty sure there is a way to avoid this dependence
-and allow her to restore even if she doesn't know the balance; I'll update my code soon to use
-a deterministic system that doesn't require this knowledge._
+ - `data`: Alice's key
+ - `pubkeys`: Bob's key
+ - `n_sigs`: 2
+ - `locktime`: the `expiry` timestamp defined in the channel parameters
+ - `refund`: Alice's key
+ - `sig_flag`: `SIG_ALL`
 
 
+# Bob's verification
 
-## Channel capacity
+The following information should be sent to Bob with, or before, the first payment in this channel,
+enabling Bob to verify everything. He can verify without communicating with the mint:
+
+ - the channel parameters
+ - the funding token, including the DLEQ proofs (NUT-12) allowing Bob to verify that the funding proofs have been signed.
+
+Both sides should store the funding proofs in the order that Alice created them, to ensure both sides can construct the relevant transactions deterministically.
+
+# Payments
+
+Each payment requires Alice to update the balance and then construct the updated
+'commitment' transaction. She then signs the transaction and sends her signature
+and the new balance to Bob. This signature and amount, combined with the channel parameters,
+is sufficient for Bob to reconstruct the commitment transaction and verify the signature
+
+The commitment transaction spends all of the _funding token_, sending Bob's balance
+to deterministic outputs (defined below) that only Bob can redeem, and the remainder
+are sent to deterministic outputs that are redeemable only by Alice
+
+## determistic outputs
+
+To construct the deterministic outputs, i.e. the set of _Blinded Messages_ that
+transfer a given amount to one of the two parties, we start with the set
+of amounts that are available in the keyset of the `active_keyset_id`.
+
+While it is common for mints to use powers-of-2, it is not required. (TODO: or is it?)
+
+For a given target amount (Bob's balance, or Alice's remainder),
+we first identify the largest amount in the keyset which is less than
+the target amount. We'll use as many proofs as possible of this largest
+amount, as long as we don't exceed the target.
+
+_TODO: don't forget about fees!_
+
+For example, if the target is 543 sats, and the keyset has powers of 
+ten (1, 10, 100, 100 ...) as the amounts, then we'll use 5 of the 100-sat
+proofs.
+
+The remainder, 43 in this example, will undergo the same process, taking
+as many copies as possible of the next biggest amount until the target
+is reached.
+
+As 543 = 5 * 100 + 4 * 10 + 3 * 1 in this example, the outputs will
+be created an ordered from smallest to biggest
+
+1, 1, 1, 10, 10, 10 , 10,  100, 100, 100, 100, 100
+
+Assuming these outputs are for Bob (the same procedure will be repeated for Alice's remainder),
+each output is created deterministically.
+Everything about the output (the secret, the BlindMessage, and the blinding factor)
+can be constructed by either party (and by any third party that knows all the channel parameters).
+
+When contructing the four 10-sat amounts, in this example, we have an _index_
+ranging from 0 to 3 inclusive to identify each of those four outputs.
+(Where the keyset amounts are just powers of 2, the index will never be non-zero)
+Each output will be constructed as follows: the channel_id, pubkey(Bob in this case), amount (in this example, the power of ten), and the index are combined and hashed to compute the _deterministic nonce_ `SHA256(channel_id || pubkey || amount || "nonce" || index)`
+
+Deterministic Secret:
+
+```
+[
+  "P2PK",
+  {
+    "nonce": "<deterministic nonce computed above>",
+    "data": "<Bob's pubkey>",
+    "tags": [["sigflag", "SIG_INPUTS"]]
+  }
+]
+```
+
+The corresponding blinding factor is `SHA256(channel_id || pubkey || amount || "blinding" || index)`,
+and so the deterministic output (BlindedMessage) is contructed by applying that
+blinding factor to that secret in the usual way.
+
+That describes how Bob's balance is paid in the commitment transaction.
+The same process is applied to send the remainder to Alice.
+
+# Commitment transaction, and balance update, in detail
+
+The commitment transaction can now be specified more clearly.
+It is a _swap_ which takes the _funding proof_ as input.
+The outputs start with the payments to Bob, ordered
+by amount and then by index, followed by Alice's outputs similarly ordered.
+
+Alice then signs this (SIG_ALL). Alice can then send three pieces of data to Bob: the `channel_id`, the balance for Bob, and her signature.
+
+As already mentioned, Alice must send the full set of channel parameters to Bob in the first payment -
+if she hasn't already sent them beforehard - but after this it is sufficient for her to send those
+three pieces of data.
+
+Bob can reconstruct the transaction and verify the signature.
+
+Bob should maintain a dictionary mapping the channel to the current balance of that channel,
+in order to ensure that Alice doesn't decrease the balance and to allow him to identify
+the magnitude of the increase in each payment.
+This map doesn't need to store any channels that have expired.
+
+# Closing the channel
+
+Most of the commitment transactions are never sent to the mint.
+
+When Bob exits, he adds his signature to Alice's on the most recent transaction and sends the complete
+swap to the mint. This swap spends the _funding token_ and returns
+blind signatures (the deterministic outputs, signed by the mint) for both parties.
+
+As the swap spends the entire funding token, Alice can detect Bob's spend
+via NUT-07 (token state check). NUT-17, if supported by the mint, helps here too.
+
+Bob should return Alice's blind signatures to her, but if he doesn't then Alice
+can use NUT-09 to restore the signatures.
+While we assume that Bob will usually take the most recent commitment, as it's
+the most valuable, it is not guaranteed that he will do that.
+Alice can iterate over the amounts, for - for each amount - loop over the indices
+in order to reconstruct the deterministic output and restore the signature.
+When a given restoration fails, she can stop increasing the _index_ and
+move on to the next amount instead.
+
+```
+for amount in amounts_in_this_keyset:
+    index = 0
+    while True:
+        if (restore fails for this 'amount' and this 'index'):
+            continue # to the next amount
+        else:
+            .. unblind the signature and add the proof to Alice's wallet
+```
+
+# Expiry
+
+Bob should remember to close channels as the expiry time closes.
+He should also keep a record of channel_ids that he has closed, where
+the expiry time has not been reached, in order to ensure that
+Alice does not attempt to reuse a channel.
+
+
+# Channel capacity
 
 The channel capacity is ??? _depends on the fee policy. As mentioned at the top, there are mulitiple swaps; how is responsible for
 paying all those swaps?_
 
-## Channel parameters, and channel reuse
-
-The channel parameters include:
- - sender pubkey (Alice)
- - receiver pubkey (Bob)
- - mint
- - active_keyset_id - the keyset of the funding token and also of the 1-of-1 P2PK outputs
- - unit (e.g. 'sat' or 'msat', or 'usd')
- - locktime - the time after which Alice can spend all the funding proofs to herself
- - setup_timestamp - the time at which Alice created the funding token
- - sender_nonce - a random/arbritrary string added by the sender Alice, in case it's desirable to have two channels at the same time between the same parties
-
-and the channel_id is a deterministic function of the above.
-
-In the naive case, Alice could try to reuse a channel with Bob that she earlier reused, or otherwise lie about the
-current balance.
-To avoid this, Bob should remember the current balance of every channel which he hasn't yet closed, and
-he should also keep a set of the recently-closed channels.
-He can assume that any channel past its `locktime`
-has been closed, and therefore he doesn't need to keep a record of older channels.
-
-If Bob follows this, he doesn't need to check with the mint in order to consider the channel
-open.
-He can know when a new channel has been setup, and he can use DLEQ proofs to verify
-that the funding proof is valid and unspent.
-As the deterministic outputs are different in every channel (the determinism depends on the channel id),
-this gives Bob confidence that his outputs in any new channel are unspent outputs.
-
 # proof-of-concept
+
+_This PoC is now (2025-11-17) quite out of date. It has deterministic outputs and so on, and makes use of NUT-09 and NUT-07, but it doesn't follow the above closely_
 
 There is a proof of concept based on the CDK, showing how both parties can do the verification at each step, also including
 the latest SIG_ALL message update. _TODO: link to it. As of 2025-11-02, it's implemented and working with this new deterministic output setup, but the latest code isn't on github yet_
