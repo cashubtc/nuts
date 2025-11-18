@@ -4,7 +4,7 @@
 
 `depends on: NUT-04`
 
-This spec describes how a wallet can mint multiple proofs in one batch operation.
+This spec describes how a wallet can mint multiple quotes in one batch operation.
 
 ---
 
