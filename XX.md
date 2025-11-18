@@ -89,6 +89,11 @@ of amounts that are available in the keyset of the `active_keyset_id`.
 
 While it is common for mints to use powers-of-2, it is not required. (TODO: or is it?)
 
+Remember, the 'outputs' described here are just BlindedMessages and their blinding factors
+that are computed by Alice and Bob.
+They are _not_ sent to the mint until Bob decides to exit; many of the outputs computed
+during the lifetime of a channel will never be seen by the mint.
+
 For a given target amount (Bob's balance, or Alice's remainder),
 we first identify the largest amount in the keyset which is less than
 the target amount. We'll use as many proofs as possible of this largest
@@ -116,7 +121,7 @@ can be constructed by either party (and by any third party that knows all the ch
 
 When contructing the four 10-sat amounts, in this example, we have an _index_
 ranging from 0 to 3 inclusive to identify each of those four outputs.
-(Where the keyset amounts are just powers of 2, the index will never be non-zero)
+(Where the keyset amounts are just powers of 2, the index will never be non-zero.)
 Each output will be constructed as follows: the channel_id, pubkey(Bob in this case), amount (in this example, the power of ten), and the index are combined and hashed to compute the _deterministic nonce_ `SHA256(channel_id || pubkey || amount || "nonce" || index)`
 
 Deterministic Secret:
@@ -154,7 +159,7 @@ three pieces of data.
 
 Bob can reconstruct the transaction and verify the signature.
 
-Bob should maintain a dictionary mapping the channel to the current balance of that channel,
+Bob should maintain a dictionary mapping the `channel_id` to the current balance of that channel,
 in order to ensure that Alice doesn't decrease the balance and to allow him to identify
 the magnitude of the increase in each payment.
 This map doesn't need to store any channels that have expired.
@@ -174,7 +179,7 @@ Bob should return Alice's blind signatures to her, but if he doesn't then Alice
 can use NUT-09 to restore the signatures.
 While we assume that Bob will usually take the most recent commitment, as it's
 the most valuable, it is not guaranteed that he will do that.
-Alice can iterate over the amounts, for - for each amount - loop over the indices
+Alice can iterate over the amounts, and - for each amount - loop over the indices
 in order to reconstruct the deterministic output and restore the signature.
 When a given restoration fails, she can stop increasing the _index_ and
 move on to the next amount instead.
@@ -194,7 +199,7 @@ for amount in amounts_in_this_keyset:
 Bob should remember to close channels as the expiry time closes.
 He should also keep a record of channel_ids that he has closed, where
 the expiry time has not been reached, in order to ensure that
-Alice does not attempt to reuse a channel.
+Alice does not attempt to reuse a channel that was already closed.
 
 
 # Channel capacity
