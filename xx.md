@@ -18,7 +18,7 @@ POST https://mint.host:3338/v1/mint/{method}/check
 Content-Type: application/json
 
 {
-  "quote": [ "quote_id_1", "quote_id_2", … ]
+  "quotes": [ "quote_id_1", "quote_id_2", … ]
 }
 ```
 
@@ -60,7 +60,7 @@ POST https://mint.host:3338/v1/mint/{method}
 Content-Type: application/json
 
 {
-  "quote":   [ "quote_id_1", "quote_id_2", … ],
+  "quotes":   [ "quote_id_1", "quote_id_2", … ],
   "outputs": [ BlindedMessage_1, BlindedMessage_2, … ],
   "signature": [signature_1, signature_2, ... ]
 }
@@ -93,7 +93,7 @@ Example:
 
 ```json
 {
-  "quote":   [ "locked_quote_id_1", "quote_id_2", "locked_quote_id_3" ],
+  "quotes":   [ "locked_quote_id_1", "quote_id_2", "locked_quote_id_3" ],
   "outputs": [ BlindedMessage_1, BlindedMessage_2, ... ],
   "signature": [signature_1, null, signature_3 ]
 }
