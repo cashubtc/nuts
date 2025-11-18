@@ -626,6 +626,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="General Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#synchronous-vs-asynchronous-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Synchronous vs Asynchronous Processing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -667,6 +684,67 @@
     <span class="md-ellipsis">
       
         Executing a Melt Quote
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Executing a Melt Quote">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#synchronous-processing-default" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Synchronous Processing (Default)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asynchronous-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asynchronous Processing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#synchronous-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Synchronous Response
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asynchronous-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asynchronous Response
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-asynchronous-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example Asynchronous Flow
       
     </span>
   </a>
@@ -1298,6 +1376,9 @@
 <li>The wallet sends a melting request including the <code>quote</code> id and provides <code>inputs</code> of the required amount</li>
 <li>The mint executes the payment and responds with the payment <code>state</code> and any method-specific proof of payment</li>
 </ol>
+<h3 id="synchronous-vs-asynchronous-processing">Synchronous vs Asynchronous Processing<a class="headerlink" href="#synchronous-vs-asynchronous-processing" title="Permanent link">&para;</a></h3>
+<p><strong>Synchronous (Default):</strong> The melt request blocks until payment completion. This ensures immediate finality but may result in long request times for slow payment methods.</p>
+<p><strong>Asynchronous (Optional):</strong> When the <code>Prefer: respond-async</code> header is included and supported by the mint, the request returns immediately after validation with a <code>"PENDING"</code> state. The wallet must then monitor the payment progress through polling or websocket notifications.</p>
 <h2 id="common-request-and-response-formats">Common Request and Response Formats<a class="headerlink" href="#common-request-and-response-formats" title="Permanent link">&para;</a></h2>
 <h3 id="requesting-a-melt-quote">Requesting a Melt Quote<a class="headerlink" href="#requesting-a-melt-quote" title="Permanent link">&para;</a></h3>
 <p>To request a melt quote, the wallet of <code>Alice</code> makes a <code>POST /v1/melt/quote/{method}</code> request where <code>method</code> is the payment method requested (e.g., <code>bolt11</code>, <code>bolt12</code>, etc.).</p>
@@ -1341,10 +1422,32 @@
 <div class="codehilite"><pre><span></span><code><span class="err">POST https://mint.host:3338/v1/melt/{method}</span>
 </code></pre></div>
 
+<h4 id="synchronous-processing-default">Synchronous Processing (Default)<a class="headerlink" href="#synchronous-processing-default" title="Permanent link">&para;</a></h4>
 <blockquote>
 <p>[!IMPORTANT]
 For methods that involve external payments (like Lightning), this call may block until the payment either succeeds or fails. This can take a long time. Make sure to <strong>use no (or a very long) timeout when making this call</strong>!</p>
 </blockquote>
+<h4 id="asynchronous-processing">Asynchronous Processing<a class="headerlink" href="#asynchronous-processing" title="Permanent link">&para;</a></h4>
+<p>The wallet can include the <code>Prefer: respond-async</code> header to request asynchronous processing:</p>
+<div class="codehilite"><pre><span></span><code><span class="err">POST https://mint.host:3338/v1/melt/{method}</span>
+<span class="err">Prefer: respond-async</span>
+</code></pre></div>
+
+<p>When the <code>Prefer: respond-async</code> header is included:</p>
+<ul>
+<li><strong>If the mint supports asynchronous processing:</strong></li>
+<li>The mint will verify the request (including proof validation)</li>
+<li>If valid, the mint responds immediately with a <code>200 OK</code> status and the quote state set to <code>"PENDING"</code></li>
+<li>The payment processing begins in the background</li>
+<li>
+<p>The wallet can poll the quote state endpoint or subscribe to websocket notifications to monitor payment progress</p>
+</li>
+<li>
+<p><strong>If the mint does not support asynchronous processing:</strong></p>
+</li>
+<li>The mint ignores the <code>Prefer</code> header and processes the request synchronously</li>
+<li>The response follows the standard synchronous flow with final payment state</li>
+</ul>
 <p>The wallet includes the following common data in its request:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
@@ -1354,7 +1457,79 @@ For methods that involve external payments (like Lightning), this call may block
 </code></pre></div>
 
 <p>where <code>quote</code> is the melt quote ID and <code>inputs</code> are the proofs with a total amount sufficient to cover the requested amount plus any fees.</p>
-<p>The mint responds with a structure that indicates the payment state and includes any method-specific proof of payment when successful.</p>
+<h4 id="synchronous-response">Synchronous Response<a class="headerlink" href="#synchronous-response" title="Permanent link">&para;</a></h4>
+<p>For synchronous processing, the mint responds with a structure that indicates the final payment state and includes any method-specific proof of payment when successful.</p>
+<h4 id="asynchronous-response">Asynchronous Response<a class="headerlink" href="#asynchronous-response" title="Permanent link">&para;</a></h4>
+<p>For asynchronous processing with <code>Prefer: respond-async</code>, the mint responds with:</p>
+<div class="codehilite"><pre><span></span><code><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PENDING&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span>
+<span class="w">  </span><span class="c1">// Additional method-specific fields may be included</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The wallet should then either:</p>
+<ul>
+<li>Poll the quote state using <code>GET /v1/melt/quote/{method}/{quote_id}</code></li>
+<li>Subscribe to websocket notifications for real-time updates (if supported by the mint)</li>
+</ul>
+<h3 id="example-asynchronous-flow">Example Asynchronous Flow<a class="headerlink" href="#example-asynchronous-flow" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Request asynchronous melt:</strong></li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="err">POST https://mint.host:3338/v1/melt/bolt11</span>
+<span class="err">Prefer: respond-async</span>
+<span class="err">Content-Type: application/json</span>
+
+<span class="err">{</span>
+<span class="err">  &quot;quote&quot;: &quot;TRmjduhIsPxd...&quot;,</span>
+<span class="err">  &quot;inputs&quot;: [...]</span>
+<span class="err">}</span>
+</code></pre></div>
+
+<ol>
+<li><strong>Immediate response (200 OK):</strong></li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TRmjduhIsPxd...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PENDING&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704757</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<ol>
+<li><strong>Poll for status:</strong></li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="err">GET https://mint.host:3338/v1/melt/quote/bolt11/TRmjduhIsPxd...</span>
+</code></pre></div>
+
+<ol>
+<li><strong>Final status response:</strong></li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TRmjduhIsPxd...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lnbc100n1p3kdrv5sp5...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;fee_reserve&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PAID&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704757</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;payment_preimage&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;c5a1ae1f639e1f4a3872e81500fd028bece7bedc1152f740cba5c3417b748c1b&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
 <h2 id="adding-new-payment-methods">Adding New Payment Methods<a class="headerlink" href="#adding-new-payment-methods" title="Permanent link">&para;</a></h2>
 <p>To add a new payment method (e.g., BOLT12), implement the following:</p>
 <ol>
