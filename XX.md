@@ -10,25 +10,77 @@ _TODO: question for the reviewer: Could we use pay-to-blinded-pubkey here? Where
 
 ---
 
-Alice and Charlie wish to set up a payment channel, funded by Alice, such that Charlie's balance starts at zero and his balance
-increases (unidirectional) over time. This is 'offline' because it allows - once the channel has been
-set up - for the two parties to transact simply by Alice sending signatures to Charlie which Charlie can verify
-without needing to contact the mint after each micropayment.
-A small number of swaps are needed to setup and to close the channel, but there is no mint involvement
-while the channel is open and while the channel payments are made.
+This describes how Alice can set up a one-way payment channel from herself to Charlie.
+Using public information such as Charlie's public key and his preferred mints,
+Alice prepares a _funding token_
+and she can send an initial payment to Charlie without any prior involvement from Charlie.
 
-Knowing only Charlie's pubkey and a mint trusted by him, Alice can set up the channel - via one swap with the mint - and make the
-first payment to Charlie without any setup from Charlie.
+Throughout the lifetime of the channel, Alice signs transactions which redistribute
+the value in that funding token between herself and Charlie,
+where each transaction increases the balance in favour of Charlie.
 
-# Trust
+Charlie does not need to trust Alice; he can verify each transaction in the
+channel locally without needing to check anything with the mint.
 
-Both parties trust the mint, but not each other.
-Charlie can unilaterally exit at any time, by adding his signature to Alice's and swapping at the mint.
-That swap will spend all the 'funding proofs' that Alice prepared in the funding token, and the swap
-will also unlock Alice's outputs allowing her to immediately exit with her balance.
+Charlie can unilaterally exit at any time, by adding his signature to the most recent
+signature from Alice and swapping the _funding token_ for the outputs.
+Alice can then immediately claim her balance, even if Charlie does not cooperate with her.
 
-If Charlie never exits, then - after the predefined locktime has expired - all the funding becomes spendable
-by Alice alone, allowing her to reclaim her funds.
+The mint, Bob, is involved only at the start for the initial swap where Alice prepares
+the _funding token_, and at the end where each of the two parties swap their
+final balances into their cashu wallets.
+
+# Exiting and fees, and the capacity of the channel
+
+When the channel is closing, there are two stages, and there are fees to be paid
+in each of those two stages.
+First, the _funding token_ token is swapped to create the _deterministic outputs_
+(defined below) for each of the two parties.
+
+All the proofs in the _funding token_ are in the same _active_ keyset, with fee rate `input_fee_ppk`.
+If there are `n_funding_proofs` proofs in that funding token, the fees of that swap cost
+`(input_fee_ppk * n_funding_proofs + 999) // 1000`,
+where `//` rounds non-integer results down to an integer.
+
+The deterministic outputs, which are made up of some outputs for Alice and some for Charlie,
+are also in the same keyset and they are P2PK-locked to the intended recipient.
+
+In the second stage of the exit, Alice and Charlie swap these deterministic outputs
+for conventional anyone-can-spend proofs. This also requires paying fees.
+
+If there are non-zero fees, i.e. `input_fee_ppk > 0', Alice is responsible for paying all the fees.
+
+The method for constructing the determistic outputs is described in more detail below.
+For now, consider a function `deterministic_value_after_fees(x)` which constructs the
+deterministic outputs with _nominal_ value `x` and then substracts the fees that would
+result from swapping those deterministic outputs.
+Where `num_deterministic_outputs(x)` is the number of outputs needed,
+
+`deterministic_value_after_fees(x) = x - (input_fee_ppk * num_deterministic_outputs(x) + 999) // 1000`
+
+To ensure that Bob's final balance is `bobs_balance`, Alice must compute the inverse
+of 'deterministic_value_after_fees`, i.e. `x = inverse_deterministic_value(bobs_balance)`,
+which is the smallest `x` such that `deterministic_value_after_fees(x) = bobs_balance`.
+
+To make a payment which brings Bob's balance to `bobs_balance`, the following summarizes the values and fees:
+
+ - `x` = `inverse_deterministic_value(bobs_balance)`, the nominal value of Bob's deterministic outputs
+ - `y` = `funding_token_total_value - x - (input_fee_ppk * n_funding_proofs + 999) // 1000`, the value that is left in the funding token to create Alice's deterministic outputs, after the remaining value is used for paying fees and creating Bob's deterministic outputs.
+ - Alice is then left with `deterministic_value_after_fees(y)`, the final amount left in her wallet after swapping her determististic outputs into her wallet
+
+If the nominal value of the funding token is `raw_total_value_of_funding`, then Bob's maximum balance is
+`raw_total_value_of_funding - (input_fee_ppk * n_funding_proofs + 999) // 1000`.
+This is the `capacity`, and also represents that value that Alice can reclaim if the channel is closed
+with `bobs_balance = 0`.
+
+
+.... TODO: Ascii art showing the fees and how the values is distributed?
+
+.... TODO: tidy up the remainder of this, especially to sync with the fees issue discussed above
+
+... TODO: recommend that the first payment be for zero sats, to allow the channel to be instantly closed if Bob is unable to provide service now. Typically, therefore, Alice will provide two payments immediately the at the start ...
+
+
 
 # The channel parameters, and channel_id
 
