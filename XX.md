@@ -86,13 +86,13 @@ with `charlies_balance = 0`.
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                         FUNDING TOKEN                                   │
 │                  (total_value_of_funding_token)                         │
-│                                                                          │
-│  Created by Alice with P2PK proofs requiring both signatures (SIG_ALL) │
+│                                                                         │
+│  Created by Alice with P2PK proofs requiring both signatures (SIG_ALL)  │
 └─────────────────────────────────────────────────────────────────────────┘
                                   │
                                   │ STAGE 1: Swap funding token
                                   │
-                                  ▼
+                                  │
                     ┌─────────────┼─────────────┐
                     │             │             │
                     ▼             ▼             ▼
@@ -109,7 +109,7 @@ with `charlies_balance = 0`.
                     │ STAGE 2:                           │ STAGE 2:
                     │ Charlie swaps                      │ Alice swaps
                     │ his outputs                        │ her outputs
-                    ▼                                    ▼
+                    │                                    │
               ┌─────┴─────┐                        ┌─────┴─────┐
               │           │                        │           │
               ▼           ▼                        ▼           ▼
