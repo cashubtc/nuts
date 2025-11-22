@@ -40,11 +40,9 @@ If there are `n_funding_proofs` proofs in that funding token, the fees of that s
 `(input_fee_ppk * n_funding_proofs + 999) // 1000`,
 where `//` rounds non-integer results down to an integer.
 
-In the second stage of the exit, Alice and Charlie swap these deterministic outputs
+In the second stage of the exit, Alice and Charlie swap their deterministic outputs
 for conventional anyone-can-spend proofs.
-This also requires paying fees. these outputs are also in the same keyset as the funding token.
-
-If there are non-zero fees, i.e. `input_fee_ppk > 0', Alice is responsible for paying all the fees.
+This also requires paying fees. These outputs are also in the same keyset as the funding token.
 
 The method for constructing the determistic outputs is described in more detail later in this document.
 For now, we focus on the fees.
@@ -69,8 +67,8 @@ To make a payment which brings Bob's balance to `bobs_balance`, the following su
  - `y` = `funding_token_total_value - x - (input_fee_ppk * n_funding_proofs + 999) // 1000`, the value that is left in the funding token to create Alice's deterministic outputs, after the remaining value is used for paying fees and creating Bob's deterministic outputs.
  - Alice is then left with `deterministic_value_after_fees(y)`, the final amount left in her wallet after swapping her determististic outputs into her wallet
 
-If the nominal value of the funding token is `raw_total_value_of_funding`, then Bob's maximum balance is
-`raw_total_value_of_funding - (input_fee_ppk * n_funding_proofs + 999) // 1000`.
+If the nominal value of the funding token is `total_value_of_funding_token`, then Bob's maximum balance is
+`total_value_of_funding_token - (input_fee_ppk * n_funding_proofs + 999) // 1000`.
 This is the `capacity`, and also represents that value that Alice can reclaim if the channel is closed
 with `bobs_balance = 0`.
 
@@ -91,7 +89,8 @@ Knowing Charlie's public key, and the set of mints and _units_ that are trusted 
  - `receiver_pubkey`: Charlie's key ?how exactly to encode this?
  - `mint` string: URL of mint
  - `unit`: typically `sat` or `msat`
- - `capacity`: the number of sats in the _funding token_ that Alice will create while funding the channel. _**If the fees are non-zero, Charlie's maximum possible balance will be less than the `capacity`**_
+ - `total_value_of_funding_token`
+ - `capacity`: the maximum balance that will be payable to Bob. Equals `total_value_of_funding_token - (input_fee_ppk * n_funding_proofs + 999) // 1000`, where `n_funding_proofs` is the number of proofs in the funding token.
  - `active_keyset_id`: An _active_ keyset for that unit at that mint
  - `input_fee_ppk`: As all the proofs in the funding token, and in the deterministic outputs, are in the same keyset, the `input_fee_ppk` is fixed.
  - `expiry`  unix timestamp: If Charlie doesn't close before this time, Alice can re-claim all the funds after this has expired
@@ -100,9 +99,11 @@ Knowing Charlie's public key, and the set of mints and _units_ that are trusted 
 
 The `channel_id` is the SHA256 hash of the '|'-delimited concatenation of all the above.
 
+_TODO: should the channel parameters have a `maximum_output_size`, to put an upper bound on the size of any deterministic output? This could help a little with privacy._
+
 # Funding the channel
 
-Alice, with the mint, creates a _funding token_ worth `capacity` units.
+Alice, with the mint, creates a _funding token_ worth `total_value_of_funding_token` units.
 Each proof in this token is a P2PK (NUT-11) proof which requires both signatures
 before the expiry of the channel, and where Alice's signature alone is sufficient afterwards:
 
