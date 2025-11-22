@@ -46,7 +46,7 @@ In the second stage of the exit, Alice and Charlie swap their deterministic outp
 for conventional anyone-can-spend proofs.
 This also requires paying fees. These outputs are also in the same keyset as the funding token.
 
-The method for constructing the determistic outputs is described in more detail later in this document.
+The method for constructing the deterministic outputs is described in more detail later in this document.
 For now, we focus on the fees.
 Consider a function `deterministic_value_after_fees(x)` which constructs the
 deterministic outputs with _nominal_ value `x` and then substracts the fees that would
@@ -110,17 +110,15 @@ with `charlies_balance = 0`.
                     │ Charlie swaps                      │ Alice swaps
                     │ his outputs                        │ her outputs
                     ▼                                    ▼
-          ┌─────────┼─────────┐                ┌────────┼────────┐
-          │         │         │                │        │        │
-          ▼         ▼         │                ▼        ▼        │
-    ┌─────────┐ ┌──────────┐ │          ┌─────────┐ ┌──────────┐│
-    │Charlie's│ │Charlie's │ │          │ Alice's │ │ Alice's  ││
-    │ Final   │ │ Stage 2  │ │          │ Final   │ │ Stage 2  ││
-    │ Balance │ │ Fees     │ │          │ Balance │ │ Fees     ││
-    │         │ │          │ │          │         │ │          ││
-    └─────────┘ └──────────┘ │          └─────────┘ └──────────┘│
-                              │                                   │
-                              └───────────────────────────────────┘
+              ┌─────┴─────┐                        ┌─────┴─────┐
+              │           │                        │           │
+              ▼           ▼                        ▼           ▼
+        ┌─────────┐ ┌──────────┐            ┌─────────┐ ┌──────────┐
+        │Charlie's│ │Charlie's │            │ Alice's │ │ Alice's  │
+        │ Final   │ │ Stage 2  │            │ Final   │ │ Stage 2  │
+        │ Balance │ │ Fees     │            │ Balance │ │ Fees     │
+        │         │ │          │            │         │ │          │
+        └─────────┘ └──────────┘            └─────────┘ └──────────┘
 
 Where:
   Stage 1 Fees = (input_fee_ppk * n_funding_proofs + 999) // 1000
@@ -196,7 +194,7 @@ The commitment transaction spends all of the _funding token_, sending Charlie's 
 to deterministic outputs (defined below) that only Charlie can redeem, and the remainder
 are sent to deterministic outputs that are redeemable only by Alice
 
-## determistic outputs
+## deterministic outputs
 
 To construct the deterministic outputs, i.e. the set of _Blinded Messages_ that
 transfer a given amount to one of the two parties, we start with the set
