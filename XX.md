@@ -28,6 +28,8 @@ final balances into their wallets.
 
 # Exiting and fees, and the capacity of the channel
 
+There is an ASCII art diagram below, showing all the fees and the two-stage exit process.
+
 When the channel is closing, there are two stages, and there are fees to be paid
 in each of those two stages.
 First, the _funding token_ token is swapped to create the _deterministic outputs_
@@ -78,8 +80,60 @@ capacity
 This `capacity`, and also represents that value that Alice can reclaim if the channel is closed
 with `charlies_balance = 0`.
 
+## Fee and value distribution diagram
 
-.... TODO: Ascii art showing the fees and how the values is distributed?
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         FUNDING TOKEN                                   │
+│                  (total_value_of_funding_token)                         │
+│                                                                          │
+│  Created by Alice with P2PK proofs requiring both signatures (SIG_ALL) │
+└─────────────────────────────────────────────────────────────────────────┘
+                                  │
+                                  │ STAGE 1: Swap funding token
+                                  │
+                                  ▼
+                    ┌─────────────┼─────────────┐
+                    │             │             │
+                    ▼             ▼             ▼
+    ┌───────────────────┐  ┌──────────────┐  ┌───────────────────┐
+    │ Charlie's         │  │  Stage 1     │  │ Alice's           │
+    │ Deterministic     │  │  Fees        │  │ Deterministic     │
+    │ Outputs           │  │  (to mint)   │  │ Outputs           │
+    │ (nominal value x) │  │              │  │ (nominal value y) │
+    │                   │  └──────────────┘  │                   │
+    │ P2PK locked to    │                    │ P2PK locked to    │
+    │ Charlie           │                    │ Alice             │
+    └───────────────────┘                    └───────────────────┘
+                    │                                    │
+                    │ STAGE 2:                           │ STAGE 2:
+                    │ Charlie swaps                      │ Alice swaps
+                    │ his outputs                        │ her outputs
+                    ▼                                    ▼
+          ┌─────────┼─────────┐                ┌────────┼────────┐
+          │         │         │                │        │        │
+          ▼         ▼         │                ▼        ▼        │
+    ┌─────────┐ ┌──────────┐ │          ┌─────────┐ ┌──────────┐│
+    │Charlie's│ │Charlie's │ │          │ Alice's │ │ Alice's  ││
+    │ Final   │ │ Stage 2  │ │          │ Final   │ │ Stage 2  ││
+    │ Balance │ │ Fees     │ │          │ Balance │ │ Fees     ││
+    │         │ │          │ │          │         │ │          ││
+    └─────────┘ └──────────┘ │          └─────────┘ └──────────┘│
+                              │                                   │
+                              └───────────────────────────────────┘
+
+Where:
+  Stage 1 Fees = (input_fee_ppk * n_funding_proofs + 999) // 1000
+  x = inverse_deterministic_value(charlies_balance)
+  y = total_value_of_funding_token - x - stage1_fees
+  Charlie's Stage 2 Fees = (input_fee_ppk * num_outputs(x) + 999) // 1000
+  Alice's Stage 2 Fees = (input_fee_ppk * num_outputs(y) + 999) // 1000
+  charlies_balance = deterministic_value_after_fees(x) = x - Charlie's Stage 2 Fees
+  Alice's final balance = deterministic_value_after_fees(y) = y - Alice's Stage 2 Fees
+
+Maximum Charlie can receive (capacity):
+  = deterministic_value_after_fees(total_value_of_funding_token - stage1_fees)
+```
 
 .... TODO: tidy up the remainder of this, especially to sync with the fees issue discussed above
 
