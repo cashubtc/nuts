@@ -4,10 +4,6 @@
 
 `depends on: NUT-11 (P2PK), NUT-12 (DLEQ), NUT-09 (restore signatures), NUT-07 (token state check) (NUT-17 is beneficial, but not required)`
 
-_TODO: who pays the fees? (see the multi-swap zero-receiver-setup deterministic outputs below) If Alice spends 101 sats to fund the 'funding token' which has a _nominal_ value of 100 sats, and Charlie's exit with the full capacity gives him just nominal 99 sats in his 1-of-1 P2PK outputs, which decrease to 98 sats when he finally swaps them to anyone-can-spend tokens in his wallet, then who should pay those fees? Which of those four numbers is the capacity of the network?_
-
-_TODO: question for the reviewer: Could we use pay-to-blinded-pubkey here? Where exactly? And should we make P2BPK required or optional?_
-
 ---
 
 This describes how Alice can set up a one-way payment channel from herself to Charlie.
@@ -28,7 +24,7 @@ Alice can then immediately claim her balance, even if Charlie does not cooperate
 
 The mint, Bob, is involved only at the start for the initial swap where Alice prepares
 the _funding token_, and at the end where each of the two parties swap their
-final balances into their cashu wallets.
+final balances into their wallets.
 
 # Exiting and fees, and the capacity of the channel
 
@@ -36,30 +32,35 @@ When the channel is closing, there are two stages, and there are fees to be paid
 in each of those two stages.
 First, the _funding token_ token is swapped to create the _deterministic outputs_
 (defined below) for each of the two parties.
+Some of the deterministic outputs are P2PK-locked to Bob's public key, and the remainder
+are of the deterministic outputs are P2PK-locked to Alice's public key.
 
 All the proofs in the _funding token_ are in the same _active_ keyset, with fee rate `input_fee_ppk`.
 If there are `n_funding_proofs` proofs in that funding token, the fees of that swap cost
 `(input_fee_ppk * n_funding_proofs + 999) // 1000`,
 where `//` rounds non-integer results down to an integer.
 
-The deterministic outputs, which are made up of some outputs for Alice and some for Charlie,
-are also in the same keyset and they are P2PK-locked to the intended recipient.
-
 In the second stage of the exit, Alice and Charlie swap these deterministic outputs
-for conventional anyone-can-spend proofs. This also requires paying fees.
+for conventional anyone-can-spend proofs.
+This also requires paying fees. these outputs are also in the same keyset as the funding token.
 
 If there are non-zero fees, i.e. `input_fee_ppk > 0', Alice is responsible for paying all the fees.
 
-The method for constructing the determistic outputs is described in more detail below.
-For now, consider a function `deterministic_value_after_fees(x)` which constructs the
+The method for constructing the determistic outputs is described in more detail later in this document.
+For now, we focus on the fees.
+Consider a function `deterministic_value_after_fees(x)` which constructs the
 deterministic outputs with _nominal_ value `x` and then substracts the fees that would
 result from swapping those deterministic outputs.
 Where `num_deterministic_outputs(x)` is the number of outputs needed,
 
-`deterministic_value_after_fees(x) = x - (input_fee_ppk * num_deterministic_outputs(x) + 999) // 1000`
+```
+deterministic_value_after_fees(x)
+  =
+    x - (input_fee_ppk * num_deterministic_outputs(x) + 999) // 1000
+```
 
 To ensure that Bob's final balance is `bobs_balance`, Alice must compute the inverse
-of 'deterministic_value_after_fees`, i.e. `x = inverse_deterministic_value(bobs_balance)`,
+of `deterministic_value_after_fees`, i.e. `x = inverse_deterministic_value(bobs_balance)`,
 which is the smallest `x` such that `deterministic_value_after_fees(x) = bobs_balance`.
 
 To make a payment which brings Bob's balance to `bobs_balance`, the following summarizes the values and fees:
@@ -92,6 +93,7 @@ Knowing Charlie's public key, and the set of mints and _units_ that are trusted 
  - `unit`: typically `sat` or `msat`
  - `capacity`: the number of sats in the _funding token_ that Alice will create while funding the channel. _**If the fees are non-zero, Charlie's maximum possible balance will be less than the `capacity`**_
  - `active_keyset_id`: An _active_ keyset for that unit at that mint
+ - `input_fee_ppk`: As all the proofs in the funding token, and in the deterministic outputs, are in the same keyset, the `input_fee_ppk` is fixed.
  - `expiry`  unix timestamp: If Charlie doesn't close before this time, Alice can re-claim all the funds after this has expired
  - `setup_timestamp`: unix timestamp: the time when Alice is setting up this channel
  - `sender_nonce`: Random data selected by Alice to add more randomness. May be useful if Alice and Charlie have multiple concurrent channels.
@@ -188,6 +190,8 @@ Deterministic Secret:
   }
 ]
 ```
+
+_TODO? Optional: If Bob, along with his public key, advertizes that he supports pay-to-blinded-pubkey, we could determistically compute an ephemeral private key for blinding, and include the corresponding ephemeral public key in the proof, as per the P2BPK NUT_
 
 The corresponding blinding factor is `SHA256(channel_id || pubkey || amount || "blinding" || index)`,
 and so the deterministic output (BlindedMessage) is contructed by applying that
