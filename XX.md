@@ -32,7 +32,7 @@ When the channel is closing, there are two stages, and there are fees to be paid
 in each of those two stages.
 First, the _funding token_ token is swapped to create the _deterministic outputs_
 (defined below) for each of the two parties.
-Some of the deterministic outputs are P2PK-locked to Bob's public key, and the remainder
+Some of the deterministic outputs are P2PK-locked to Charlie's public key, and the remainder
 are of the deterministic outputs are P2PK-locked to Alice's public key.
 
 All the proofs in the _funding token_ are in the same _active_ keyset, with fee rate `input_fee_ppk`.
@@ -57,27 +57,33 @@ deterministic_value_after_fees(x)
     x - (input_fee_ppk * num_deterministic_outputs(x) + 999) // 1000
 ```
 
-To ensure that Bob's final balance is `bobs_balance`, Alice must compute the inverse
-of `deterministic_value_after_fees`, i.e. `x = inverse_deterministic_value(bobs_balance)`,
-which is the smallest `x` such that `deterministic_value_after_fees(x) = bobs_balance`.
+To ensure that Charlie's final balance is `charlies_balance`, Alice must compute the inverse
+of `deterministic_value_after_fees`, i.e. `x = inverse_deterministic_value(charlies_balance)`,
+which is the smallest `x` such that `deterministic_value_after_fees(x) = charlies_balance`.
 
-To make a payment which brings Bob's balance to `bobs_balance`, the following summarizes the values and fees:
+To make a payment which brings Charlie's balance to `charlies_balance`, the following summarizes the values and fees:
 
- - `x` = `inverse_deterministic_value(bobs_balance)`, the nominal value of Bob's deterministic outputs
- - `y` = `funding_token_total_value - x - (input_fee_ppk * n_funding_proofs + 999) // 1000`, the value that is left in the funding token to create Alice's deterministic outputs, after the remaining value is used for paying fees and creating Bob's deterministic outputs.
+ - `x` = `inverse_deterministic_value(charlies_balance)`, the nominal value of Charlie's deterministic outputs
+ - `y` = `funding_token_total_value - x - (input_fee_ppk * n_funding_proofs + 999) // 1000`, the value that is left in the funding token to create Alice's deterministic outputs, after the remaining value is used for paying fees and creating Charlie's deterministic outputs.
  - Alice is then left with `deterministic_value_after_fees(y)`, the final amount left in her wallet after swapping her determististic outputs into her wallet
 
-If the nominal value of the funding token is `total_value_of_funding_token`, then Bob's maximum balance is
-`total_value_of_funding_token - (input_fee_ppk * n_funding_proofs + 999) // 1000`.
-This is the `capacity`, and also represents that value that Alice can reclaim if the channel is closed
-with `bobs_balance = 0`.
+If the nominal value of the funding token is `total_value_of_funding_token`, then Charlie's maximum balance is
+
+```
+capacity
+ = 
+   deterministic_value_after_fees(total_value_of_funding_token - (input_fee_ppk * n_funding_proofs + 999) // 1000)
+```
+
+This `capacity`, and also represents that value that Alice can reclaim if the channel is closed
+with `charlies_balance = 0`.
 
 
 .... TODO: Ascii art showing the fees and how the values is distributed?
 
 .... TODO: tidy up the remainder of this, especially to sync with the fees issue discussed above
 
-... TODO: recommend that the first payment be for zero sats, to allow the channel to be instantly closed if Bob is unable to provide service now. Typically, therefore, Alice will provide two payments immediately the at the start ...
+... TODO: recommend that the first payment be for zero sats, to allow the channel to be instantly closed if Charlie is unable to provide service now. Typically, therefore, Alice will provide two payments immediately the at the start ...
 
 
 
@@ -90,7 +96,7 @@ Knowing Charlie's public key, and the set of mints and _units_ that are trusted 
  - `mint` string: URL of mint
  - `unit`: typically `sat` or `msat`
  - `total_value_of_funding_token`
- - `capacity`: the maximum balance that will be payable to Bob. Equals `total_value_of_funding_token - (input_fee_ppk * n_funding_proofs + 999) // 1000`, where `n_funding_proofs` is the number of proofs in the funding token.
+ - `capacity`: the maximum balance that will be payable to Charlie. Equals `total_value_of_funding_token - (input_fee_ppk * n_funding_proofs + 999) // 1000`, where `n_funding_proofs` is the number of proofs in the funding token.
  - `active_keyset_id`: An _active_ keyset for that unit at that mint
  - `input_fee_ppk`: As all the proofs in the funding token, and in the deterministic outputs, are in the same keyset, the `input_fee_ppk` is fixed.
  - `expiry`  unix timestamp: If Charlie doesn't close before this time, Alice can re-claim all the funds after this has expired
@@ -192,7 +198,7 @@ Deterministic Secret:
 ]
 ```
 
-_TODO? Optional: If Bob, along with his public key, advertizes that he supports pay-to-blinded-pubkey, we could determistically compute an ephemeral private key for blinding, and include the corresponding ephemeral public key in the proof, as per the P2BPK NUT_
+_TODO? Optional: If Charlie, along with his public key, advertizes that he supports pay-to-blinded-pubkey, we could determistically compute an ephemeral private key for blinding, and include the corresponding ephemeral public key in the proof, as per the P2BPK NUT_
 
 The corresponding blinding factor is `SHA256(channel_id || pubkey || amount || "blinding" || index)`,
 and so the deterministic output (BlindedMessage) is contructed by applying that
