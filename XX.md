@@ -26,9 +26,9 @@ The mint, Bob, is involved only at the start for the initial swap where Alice pr
 the _funding token_, and at the end where each of the two parties swap their
 final balances into their wallets.
 
-# Exiting and fees, and the capacity of the channel
+# Exiting, fees, the `capacity` of the channel, and "impossible" balances
 
-There is an ASCII art diagram below, showing all the fees and the two-stage exit process.
+This text is followed by an ASCII art diagram, showing all the fees and the two-stage exit process.
 
 When the channel is closing, there are two stages, and there are fees to be paid
 in each of those two stages.
@@ -42,7 +42,9 @@ If there are `n_funding_proofs` proofs in that funding token, the fees of that f
 `(input_fee_ppk * n_funding_proofs + 999) // 1000`,
 where `//` rounds non-integer results down to an integer.
 
-In the second stage of the exit, Alice and Charlie swap their deterministic outputs
+**We therefore define `funding_token_after_stage1_fees = total_value_of_funding_token - (input_fee_ppk * n_funding_proofs + 999) // 1000`. It's a constant - independent of the current distribution of the balance between Alice and Charlie**
+
+In the second stage of the exit, Alice and Charlie each separately swap their deterministic outputs
 for conventional anyone-can-spend proofs.
 This also requires paying fees. These deterministic outputs are also in the same keyset as the funding token.
 
@@ -61,25 +63,24 @@ deterministic_value_after_fees(x)
 
 To ensure that Charlie's final balance is `charlies_balance`, Alice must compute the inverse
 of `deterministic_value_after_fees`, i.e. `x = inverse_deterministic_value(charlies_balance)`,
-which is the smallest `x` such that `deterministic_value_after_fees(x) = charlies_balance`.
+which is the smallest `x` such that `deterministic_value_after_fees(x) >= charlies_balance`.
+
+Notice the `>=`, not `=`, in that previous paragraph. Sometimes, due to fees, there is no
+`x` for which `deterministic_value_after_fees(x) = charlies_balance`.
+In those cases, to be conservative, Charlie will receive slightly more than intended.
 
 To make a payment which brings Charlie's balance to `charlies_balance`, the following summarizes the values and fees:
 
  - `charlies_balance`, we start our computation with this, the balance that we wish Charlie to have in this transaction.
  - `x` = `inverse_deterministic_value(charlies_balance)`, the nominal value of Charlie's deterministic outputs.
- - `y` = `funding_token_total_value - x - (input_fee_ppk * n_funding_proofs + 999) // 1000`, the value that is left in the funding token to create Alice's deterministic outputs, after the remaining value is used for paying fees and creating Charlie's deterministic outputs.
+ - `y` = `funding_token_after_stage1_fees - x`, the value that is left from the funding token to create Alice's deterministic outputs, after the fees and creating Charlie's deterministic outputs.
  - Alice is then left with `deterministic_value_after_fees(y)`, the final amount left in her wallet after swapping her determististic outputs into her wallet
 
-If the nominal value of the funding token is `total_value_of_funding_token`, then Charlie's maximum balance is
-
-```
-capacity
- = 
-   deterministic_value_after_fees(total_value_of_funding_token - (input_fee_ppk * n_funding_proofs + 999) // 1000)
-```
-
-This `capacity`, and also represents that value that Alice can reclaim if the channel is closed
-with `charlies_balance = 0`.
+We define the **capacity** as the maximum payment, after both stages, that can be made to Charlie. It's a parameter of the channel.
+Alice can therefore take one of two approaches.
+She could create a funding token, and then compute `funding_token_after_stage1_fees` and then define `capacity = deterministic_value_after_fees(funding_token_after_stage1_fees)`.
+Alternatively, she could start with a given `capacity` in mind and then create a funding token that is sufficiently large by first computing `inverse_deterministic_value(capacity)` and then
+creating a funding token such that `funding_token_after_stage1_fees >= inverse_deterministic_value(capacity)`
 
 ## Fee and value distribution diagram
 
