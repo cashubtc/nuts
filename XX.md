@@ -6,6 +6,8 @@
 
 ---
 
+_TODO: the 'funding token' should be somewhat deterministic too, or at least some mechanism to ensure that Alice can't reuse one token in a second channel_
+
 This describes how Alice can set up a one-way payment channel from herself to Charlie.
 Using public information such as Charlie's public key and his preferred mints,
 Alice prepares a _funding token_
