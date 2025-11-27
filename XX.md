@@ -336,14 +336,25 @@ As recommended in NUT-03, the outputs are in ascending order of amount.
 
 The outputs includes all the commitment outputs for Charlie and also
 those for Alice.
-They are ordered for by amount (increasing). For any given amount,
+They are ordered by amount (increasing). For any given amount,
 we have Charlie's deterministic outputs first, ordered by _index_ (increasing),
-and then Alice's similarly ordered
+and then Alice's similarly ordered. For example, if you're distributing
+a few hundred sats to each party, the first few outputs of the swap are:
+
+```
+context    | amount | index
+
+"receiver" | 100    |     0
+"receiver" | 100    |     1
+"sender"   | 100    |     0
+"sender"   | 100    |     1
+...
+```
 
 > [!NOTE]
 > If you have a vector of Charlie's outputs, ordered by amount and index, and then you append
 > Alice's similarly ordered,
-> then you can apply a _stable sort_, such as Rust's `all_outputs.sort_by_key(|(output, _)| output.amount)` or Python's `sorted(all_outputs, key = lambma o: o.amount` to get this ordering.
+> then you can apply a _stable sort_, such as Rust's `all_outputs.sort_by_key(|(output, _)| output.amount)` or Python's `sorted(all_outputs, key = lambma o: o.amount` to get the required ordering.
 
 Alice then signs this (SIG_ALL). Alice can then send three pieces of data to Charlie: the `channel_id`, the balance for Charlie, and her signature.
 
