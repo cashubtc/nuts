@@ -6,6 +6,10 @@
 
 ---
 
+_TODO: privacy: don't just put charlie's deterministic outputs after alices. The ordering will make it clear that it's a channel. Order some other way (and use P2BPK) for more privacy. Relevant quote: "the client SHOULD ensure that the list requested outputs is ordered by amount in ascending order." from https://cashubtc.github.io/nuts/03/?h=order#swap-to-send ._
+
+_TODO: For a little more privacy (for those not using P2BPK) Alice and Charlie could easy specify two public keys, one for the 2-of-2 multisig in the funding and another in the 1-of-1 multisig that pays to each specificcally. What do you think?_
+
 _TODO: the 'funding token' should be somewhat deterministic too, or at least some mechanism to ensure that Alice can't reuse one token in a second channel_
 
 This describes how Alice can set up a one-way payment channel from herself to Charlie.
@@ -14,7 +18,7 @@ Alice prepares a _funding token_
 and she can send an initial payment to Charlie without any prior involvement from Charlie.
 
 Throughout the lifetime of the channel, Alice signs transactions which redistribute
-the value in that funding token between herself and Charlie,
+('commit') the value in that funding token between herself and Charlie,
 where each transaction increases the balance in favour of Charlie.
 
 Charlie does not need to trust Alice; he can verify each transaction in the
@@ -32,30 +36,33 @@ final balances into their wallets.
 
 This text is followed by an ASCII art diagram, showing all the fees and the two-stage exit process.
 
+An important parameter is the `capacity`; it's the maximum balance that can be sent to Charlie in this channel.
+If the fee-rate is non-zero, then Alice is responsible for the fees, as described here:
+
 When the channel is closing, there are two stages, and there are fees to be paid
 in each of those two stages.
-In the first stage, the _funding token_ token is swapped to create the _deterministic outputs_
-(defined below) for each of the two parties.
-Some of the deterministic outputs are P2PK-locked to Charlie's public key, and the remainder
-are of the deterministic outputs are P2PK-locked to Alice's public key.
+In the first stage, the _funding token_ token is swapped to create the _commitment outputs_
+for each of the two parties.
+Some of the commitment outputs are P2PK-locked to Charlie's public key, and the remainder
+are of the commitment outputs are P2PK-locked to Alice's public key.
+This first swap will cost fees.
 
-All the proofs in the _funding token_ are in the same _active_ keyset, with fee rate `input_fee_ppk`.
-If there are `n_funding_proofs` proofs in that funding token, the fees of that first stage are
-`(input_fee_ppk * n_funding_proofs + 999) // 1000`,
-where `//` rounds non-integer results down to an integer.
+In the second stage of the exit, Alice and Charlie each separately swap their commitment outputs
+- which are locked to them via 1-of-1 P2PK -
+for conventional anyone-can-spend proofs to store in their wallet.
+This second swap also requires paying fees.
 
-**We therefore define `funding_token_after_stage1_fees = total_value_of_funding_token - (input_fee_ppk * n_funding_proofs + 999) // 1000`. It's a constant - independent of the current distribution of the balance between Alice and Charlie**
+All of the P2PK outputs discussed above, those in the _funding token_ and in the
+_commitment outputs_, are in the same keyset and therefore a single feerate `input_fee_ppk`
+applies to all.
 
-In the second stage of the exit, Alice and Charlie each separately swap their deterministic outputs
-for conventional anyone-can-spend proofs.
-This also requires paying fees. These deterministic outputs are also in the same keyset as the funding token.
-
-The method for constructing the deterministic outputs is described in more detail later in this document.
-For now, we focus on the fees.
-Consider a function `deterministic_value_after_fees(x)` which constructs the
-deterministic outputs with _nominal_ value `x` and then substracts the fees that would
-result from swapping those deterministic outputs.
-Where `num_deterministic_outputs(x)` is the number of outputs needed,
+The method for constructing the _secrets_ and _blinding factors_ for all those P2PK
+outputs is deterministic; the details and motivation are given below.
+With this determinism, there is a function `deterministic_value_after_fees(x)`
+which computes the 'post-swap' value of proofs where the proofs are deterministically
+constructed to have total nominal value `x`.
+Where `num_deterministic_proofs(x)` is the number of outputs required by this
+deterministic algorithm, we can implement `deterministic_value_after_fees(x)` as
 
 ```
 deterministic_value_after_fees(x)
@@ -63,35 +70,36 @@ deterministic_value_after_fees(x)
     x - (input_fee_ppk * num_deterministic_outputs(x) + 999) // 1000
 ```
 
-To ensure that Charlie's final balance is `charlies_balance`, Alice must compute the inverse
-of `deterministic_value_after_fees`, i.e. `x = inverse_deterministic_value(charlies_balance)`,
-which is the smallest `x` such that `deterministic_value_after_fees(x) >= charlies_balance`.
+We also have a function to invert that, `inverse_deterministic_value`,
+to find the smallest `y` such that `deterministic_value_after_fees(y) >= x`
+Notice the `>=`, not `=`, in that previous paragraph.
+Sometimes, due to fees, there is no value `y` for which equality can be attained;
+in this case Charlie will find he is slightly overpaid as the desired balance
+is impossible.
 
-Notice the `>=`, not `=`, in that previous paragraph. Sometimes, due to fees, there is no
-`x` for which `deterministic_value_after_fees(x) = charlies_balance`.
-In those cases, to be conservative, Charlie will receive slightly more than intended.
+As there are two stages to the swapping, and each costs fees, Alice must
+create the _funding token_ with value:
 
-To make a payment which brings Charlie's balance to `charlies_balance`, the following summarizes the values and fees:
+```
+total_funding_token_amount = inverse_deterministic_value(inverse_deterministic_value(capacity))
+```
+
+To make a payment which brings Charlie's balance to `charlies_balance`, the following describe how Alice computes the values of the various parts. Where `deterministic_value_after_fees(total_funding_token_amount)` is the nominal value when the _funding token_ goes through the first swap:
 
  - `charlies_balance`, we start our computation with this, the balance that we wish Charlie to have in this transaction.
- - `x` = `inverse_deterministic_value(charlies_balance)`, the nominal value of Charlie's deterministic outputs.
- - `y` = `funding_token_after_stage1_fees - x`, the value that is left from the funding token to create Alice's deterministic outputs, after the fees and creating Charlie's deterministic outputs.
- - Alice is then left with `deterministic_value_after_fees(y)`, the final amount left in her wallet after swapping her determististic outputs into her wallet
-
-We define the **capacity** as the maximum payment, after both stages, that can be made to Charlie. It's a parameter of the channel.
-Alice can therefore take one of two approaches.
-She could create a funding token, and then compute `funding_token_after_stage1_fees` and then define `capacity = deterministic_value_after_fees(funding_token_after_stage1_fees)`.
-Alternatively, she could start with a given `capacity` in mind and then create a funding token that is sufficiently large by first computing `inverse_deterministic_value(capacity)` and then
-creating a funding token such that `funding_token_after_stage1_fees >= inverse_deterministic_value(capacity)`
+ - `p` = `inverse_deterministic_value(charlies_balance)`, the nominal value of Charlie's commitment outputs.
+ - `q` = `deterministic_value_after_fees(total_funding_token_amount) - p`, the value that is left from the funding token to create Alice's commitment outputs, after the fees and creating Charlie's commitment outputs.
+ - Alice is then left with `deterministic_value_after_fees(y)`, the final amount left in her wallet after swapping her commitment outputs into her wallet
 
 ## Fee and value distribution diagram
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                         FUNDING TOKEN                                   │
-│                  (total_value_of_funding_token)                         │
+│                  (total_funding_token_amount)                         │
 │                                                                         │
 │  Created by Alice with P2PK proofs requiring both signatures (SIG_ALL)  │
+│  After the expiry time, Alice's signature alone is sufficient           │
 └─────────────────────────────────────────────────────────────────────────┘
                                   │
                                   │ STAGE 1 of channel closure: Swap funding token
@@ -102,11 +110,11 @@ creating a funding token such that `funding_token_after_stage1_fees >= inverse_d
                     ▼             ▼             ▼
     ┌───────────────────┐  ┌──────────────┐  ┌───────────────────┐
     │ Charlie's         │  │  Stage 1     │  │ Alice's           │
-    │ Deterministic     │  │  Fees        │  │ Deterministic     │
+    │ Commitment        │  │  Fees        │  │ Commitment        │
     │ Outputs           │  │  (to mint)   │  │ Outputs           │
     │ (nominal value x) │  │              │  │ (nominal value y) │
     │                   │  └──────────────┘  │                   │
-    │ P2PK locked to    │                    │ P2PK locked to    │
+    │ P2PK-locked to    │                    │ P2PK-locked to    │
     │ Charlie           │                    │ Alice             │
     └───────────────────┘                    └───────────────────┘
                     │                                    │
@@ -124,23 +132,11 @@ creating a funding token such that `funding_token_after_stage1_fees >= inverse_d
         │         │ │          │            │         │ │          │
         └─────────┘ └──────────┘            └─────────┘ └──────────┘
 
-Where:
-  Stage 1 Fees = (input_fee_ppk * n_funding_proofs + 999) // 1000
-  x = inverse_deterministic_value(charlies_balance)
-  y = total_value_of_funding_token - x - stage1_fees
-  Charlie's Stage 2 Fees = (input_fee_ppk * num_outputs(x) + 999) // 1000
-  Alice's Stage 2 Fees = (input_fee_ppk * num_outputs(y) + 999) // 1000
-  charlies_balance = deterministic_value_after_fees(x) = x - Charlie's Stage 2 Fees
-  Alice's final balance = deterministic_value_after_fees(y) = y - Alice's Stage 2 Fees
-
-Maximum Charlie can receive (capacity):
-  = deterministic_value_after_fees(total_value_of_funding_token - stage1_fees)
 ```
 
 .... TODO: tidy up the remainder of this, especially to sync with the fees issue discussed above
 
-... TODO: recommend that the first payment be for zero sats, to allow the channel to be instantly closed if Charlie is unable to provide service now. Typically, therefore, Alice will provide two payments immediately the at the start ...
-
+... TODO: recommend that the first payment be for zero sats, to allow the channel to be instantly closed if Charlie is unable to provide service now. Typically, therefore, Alice will provide two payments immediately the at the start, one with zero sats and another with the first 'real' payment ...
 
 # The channel parameters, and channel_id
 
@@ -148,23 +144,24 @@ Knowing Charlie's public key, and the set of mints and _units_ that are trusted 
 
  - `sender_pubkey`: Alice's key ?how exactly to encode this?
  - `receiver_pubkey`: Charlie's key ?how exactly to encode this?
+
  - `mint` string: URL of mint
  - `unit`: typically `sat` or `msat`
- - `total_value_of_funding_token`
- - `capacity`: the maximum balance that will be payable to Charlie. Equals `total_value_of_funding_token - (input_fee_ppk * n_funding_proofs + 999) // 1000`, where `n_funding_proofs` is the number of proofs in the funding token.
+ - `capacity`: the maximum balance that will be payable to Charlie
+
  - `active_keyset_id`: An _active_ keyset for that unit at that mint
- - `input_fee_ppk`: As all the proofs in the funding token, and in the deterministic outputs, are in the same keyset, the `input_fee_ppk` is fixed.
+ - `input_fee_ppk`: As all the proofs in the funding token, and in the commitment outputs, are in the same keyset, the `input_fee_ppk` is fixed.
+ - `maximum_amount_for_one_output`: used in the deterministic amount-selection algorithm as an upper bound on the size of any output in the funding token or in the commitment outputs.
+
  - `expiry`  unix timestamp: If Charlie doesn't close before this time, Alice can re-claim all the funds after this has expired
- - `setup_timestamp`: unix timestamp: the time when Alice is setting up this channel
+ - `setup_timestamp` unix timestamp: the time when Alice is setting up this channel
  - `sender_nonce`: Random data selected by Alice to add more randomness. May be useful if Alice and Charlie have multiple concurrent channels.
 
 The `channel_id` is the SHA256 hash of the '|'-delimited concatenation of all the above.
 
-_TODO: should the channel parameters have a `maximum_output_size`, to put an upper bound on the size of any deterministic output? This could help a little with privacy._
-
 # Funding the channel
 
-Alice, with the mint, creates a _funding token_ worth `total_value_of_funding_token` units.
+Alice, with the mint, creates a _funding token_ worth `total_funding_token_amount` units.
 Each proof in this token is a P2PK (NUT-11) proof which requires both signatures
 before the expiry of the channel, and where Alice's signature alone is sufficient after the expiry:
 
@@ -174,7 +171,6 @@ before the expiry of the channel, and where Alice's signature alone is sufficien
  - `locktime`: the `expiry` timestamp defined in the channel parameters
  - `refund`: Alice's key
  - `sig_flag`: `SIG_ALL`
-
 
 # Charlie's verification
 
@@ -186,58 +182,120 @@ enabling Charlie to verify everything. He can verify without communicating with 
 
 Both sides should store the funding proofs in the order that Alice created them, to ensure both sides can construct the relevant transactions deterministically.
 
+The secrets and blinding factors in the outputs that created this funding token are created
+deterministically. Charlie can verify these. _TODO: clarify this..._
+
 # Payments
 
 Each payment requires Alice to update the balance and then construct the updated
 'commitment' transaction. She then signs the transaction and sends her signature
-and the new balance to Charlie. This signature and amount, combined with the channel parameters,
-is sufficient for Charlie to reconstruct the commitment transaction and verify the signature
+and the new balance to Charlie. This signature and amount, combined with the channel_id,
+is sufficient for Charlie to reconstruct the commitment transaction and verify the signature,
+as long as Alice has sent all the channel parameters with - or before - the first payment.
 
-## deterministic outputs
+## deterministic outputs, for the funding token and also for the commitment outputs
 
-To construct the deterministic outputs, i.e. the set of _Blinded Messages_ that
-transfer a given amount to one of the two parties, we start with the set
+To construct the deterministic outputs in the funding token and also
+in the commitment outputs, we start with the target amount we
+wish to reach and the set
 of amounts that are available in the keyset of the `active_keyset_id`.
+A _deterministic output_ is a _secret_ and a _blinding factor_ constructed deterministically.
+
+We ignore any amounts greater than `params.maximum_amount_for_one_output`.
+The algorithm greedily takes the largest amount,
+smaller than that maximum amount,
+until it can't take any more as it would overflow the target.
+Then it moves on to the next-smallest amount repeatedly
+until the target is reached
+
+```
+
+# Pseudocode implementation, showing how the amounts are selected
+
+def compute_the_set_of_deterministic_amounts(target):
+
+    selected_amounts = [] # the vector to store all selected amounts
+
+    # loop over all amounts available in this keyset, largest first
+    for amount in available_amounts__largest_first:
+        if amount <= params.maximum_amount_for_one_output:
+            while amount <= target:
+                selected_amounts.append(amount)
+                target -= amount
+    assert target == 0
+    return selected_amounts
+```
 
 While it is common for mints to use powers-of-2, it is not required.
+In a power-of-2 mint, there will be at most one selected for each available amount.
+But for other mints, a given _amount_ may be selected more than once.
 
-Remember, the 'outputs' described here are just BlindedMessages and their blinding factors
-that are computed by Alice and Charlie.
-They are _not_ sent to the mint until Charlie decides to exit; many of the outputs computed
-during the lifetime of a channel will never be seen by the mint.
+For example, if the target is 543 sats, and the keyset has powers of ten
+(1, 10, 100, 100 ...) as the amounts, then we'll use 5 of the 100-sat
+outputs and 4 of the 10-sat outputs and 3 single-sat outputs.
+We use an _index_ - starting from zero for each amount - to distinguish them.
 
-For a given target amount (Charlie's balance, or Alice's remainder),
-we first identify the largest amount in the keyset which is less than
-the target amount. We'll use as many proofs as possible of this largest
-amount, as long as we don't exceed the target.
+In our 543-sat example, where the available amounts are powers of 10, there are 12 determistic outputs:
 
-For example, if the target is 543 sats, and the keyset has powers of 
-ten (1, 10, 100, 100 ...) as the amounts, then we'll use 5 of the 100-sat
-proofs.
+```
+amount | index
 
-The remainder, 43 in this example, will undergo the same process, taking
-as many copies as possible of the next biggest amount until the target
-is reached.
+100    |     0
+100    |     1
+100    |     2
+100    |     3
+100    |     4
 
-As 543 = 5 * 100 + 4 * 10 + 3 * 1 in this example, the outputs will
-be created an ordered from smallest to biggest
+10     |     0
+10     |     1
+10     |     2
+10     |     3
 
-1, 1, 1, 10, 10, 10 , 10,  100, 100, 100, 100, 100
+1      |     0
+1      |     1
+1      |     2
+```
 
-Assuming these outputs are for Charlie (the same procedure will be repeated for Alice's remainder),
-each output is created deterministically.
-Everything about the output (the secret, the BlindMessage, and the blinding factor)
-can be constructed by either party (and by any third party that knows all the channel parameters).
+The deterministic outputs are created in one of three contexts:
+ - `context = "funding"` for creating the funding token, where each secret is 2-of-2 P2PK
+ - `context = "receiver"` for creating the commitment outputs for Charlie, which result from swapping the funding token, which are P2PK-locked to him.
+ - `context = "sender"` for creating the commitment outputs for Alice, which send the remaining balance to Alice, which are P2PK-locked to her.
 
-When contructing the four 10-sat amounts, in this example, we have an _index_
-ranging from 0 to 3 inclusive to identify each of those four outputs.
-(Where the keyset amounts are just powers of 2, the index will never be non-zero.)
-Each output will be constructed as follows: the channel_id, pubkey(Charlie in this case), amount (in this example, the power of ten), and the index are combined and hashed to compute the _deterministic nonce_ `SHA256(channel_id || pubkey || amount || "nonce" || index)`
+A deterministic output is a _BlindedMessage_ created from
+a deterministic _secret_ (P2PK-locked to one or both parties),
+and a deterministic _blinding factor_.
+The deterministic process is a function of four things:
+
+ - the `channel_id`
+ - the `context`
+ - the `amount`
+ - the `index`
+
+As these are all deterministic and based on information known to both parties,
+both parties can construct all these outputs.
+We use P2PK to stop either party from stealing the other's funds.
+
+Each output iso be constructed as follows: the channel_id, context, amount, and the index are combined and hashed to compute the _deterministic nonce_:
+
+```
+deterministic_node(...) = SHA256(channel_id || context || amount || index || "nonce")`
 
 Deterministic Secret:
 
 ```
-[
+secret_for_funding_token = [
+  "P2PK",
+  {
+    "nonce": "<deterministic nonce computed above>",
+    "data": "..."
+    "tags": [
+        TODO: fill this in correctly: 2-of-2 with expiry
+    ["sigflag", "SIG_ALL"]
+    ]
+  }
+]
+
+secret_for_charlies_commitment_output = [
   "P2PK",
   {
     "nonce": "<deterministic nonce computed above>",
@@ -245,61 +303,61 @@ Deterministic Secret:
     "tags": [["sigflag", "SIG_INPUTS"]]
   }
 ]
-```
 
-In our 543-sat example, where the available amounts are powers of 10, there are 12 determistic outputs:
-
-```
-amount | index
-100    |     0
-100    |     1
-100    |     2
-100    |     3
-100    |     4
-10     |     0
-10     |     1
-10     |     2
-10     |     3
-1      |     0
-1      |     1
-1      |     2
+secret_for_alices_commitment_output = [
+  "P2PK",
+  {
+    "nonce": "<deterministic nonce computed above>",
+    "data": "<Alice's pubkey>",
+    "tags": [["sigflag", "SIG_INPUTS"]]
+  }
+]
 ```
 
 _TODO? Optional: If Charlie, along with his public key, advertizes that he supports pay-to-blinded-pubkey, we could determistically compute an ephemeral private key for blinding, and include the corresponding ephemeral public key in the proof, as per the P2BPK NUT_
 
-The corresponding blinding factor is `SHA256(channel_id || pubkey || amount || "blinding" || index)`,
+The corresponding blinding factor is `SHA256(channel_id || context || amount || index || "blinding")`,
 and so the deterministic output (BlindedMessage) is contructed by applying that
 blinding factor to that secret in the usual way.
 
-That describes how Charlie's balance is paid in the commitment transaction.
-The same process is applied to send the remainder to Alice.
+We use determinism as it minimizes the communication that is required,
+in particular it allows Alice to send the initial payment with zero
+prior communication with Charlie and also minimizing the bandwidth.
+If Charlie sees a payment from a new `channel_id`, he knows that the
+funding token is new, i.e. it hasn't been used in a previous channel.
 
 # Commitment transaction, and balance update, in detail
 
 The commitment transaction can now be specified more clearly.
 It is a _swap_ which takes the _funding proof_ as input.
-The outputs start with the payments to Charlie, ordered
-by decreasing amount and then by increasing index, followed by Alice's outputs similarly ordered.
+
+As recommended in NUT-03, the outputs are in ascending order of amount.
+
+The outputs includes all the commitment outputs for Charlie and also
+those for Alice.
+They are ordered for by amount (increasing). For any given amount,
+we have Charlie's deterministic outputs first, ordered by _index_ (increasing),
+and then Alice's similarly ordered
+
+> [!NOTE]
+> If you have a vector of Charlie's outputs, ordered by amount and index, and then you append
+> Alice's similarly ordered,
+> then you can apply a _stable sort_, such as Rust's `all_outputs.sort_by_key(|(output, _)| output.amount)` or Python's `sorted(all_outputs, key = lambma o: o.amount` to get this ordering.
 
 Alice then signs this (SIG_ALL). Alice can then send three pieces of data to Charlie: the `channel_id`, the balance for Charlie, and her signature.
 
-As already mentioned, Alice must send the full set of channel parameters to Charlie in the first payment -
-if she hasn't already sent them beforehard - but after this it is sufficient for her to send those
-three pieces of data.
+As already mentioned, Alice must send the full set of channel parameters to Charlie in the first payment - if she hasn't already sent them beforehard -
+but after this it is sufficient for her to send those three pieces of data.
 
 Charlie can reconstruct the transaction and verify the signature.
-
-Charlie should maintain a dictionary mapping the `channel_id` to the current balance of that channel,
-in order to ensure that Alice doesn't decrease the balance and to allow him to identify
-the magnitude of the increase in each payment.
-This map doesn't need to store any channels that have expired.
 
 # Closing the channel
 
 Most of the commitment transactions are never sent to the mint.
 
-When Charlie exits, he adds his signature to Alice's on the most recent transaction and sends the complete
-swap to the mint. This swap spends the _funding token_ and returns
+When Charlie exits, he adds his signature to Alice's on the most recent transaction and
+sends the complete swap to the mint.
+This swap spends the _funding token_ and returns
 blind signatures (the deterministic outputs, signed by the mint) for both parties.
 
 As the swap spends the entire funding token, Alice can detect Charlie's spend
@@ -309,7 +367,8 @@ Charlie should return Alice's blind signatures to her, but if he doesn't then Al
 can use NUT-09 to restore the signatures.
 While we assume that Charlie will usually take the most recent commitment, as it's
 the most valuable, it is not guaranteed that he will do that.
-Alice can iterate over the amounts available in this keyset, and - for each amount - loop over the indices
+
+To restore, Alice can iterate over the amounts available in this keyset, and - for each amount - loop over the indices - restarting the index at `0` for each amount -
 in order to reconstruct the deterministic output and restore the signature.
 When a given restoration fails, she can stop increasing the _index_ and
 move on to the next amount instead.
@@ -337,7 +396,7 @@ To ensure that Charlie can trust that a given payment is valid without needing t
 with the mint, Charlie should be careful to check everything.
 
 Charlie should maintain a mapping from the channel_id to the balance, to ensure that
-Alice doesn't attempt to decrease the balance in his favour.
+Alice doesn't attempt to decrease the balance or otherwise attempt to reuse an older channel.
 This map should also store the channel parameters.
 
 As the expiry time approach, Charlie should close the channel as he will lose the balance if the
@@ -345,19 +404,17 @@ expiry time is reached.
 When Charlie closes the channel, he should keep a set of all the closed channels to avoid
 Alice reusing a closed channel.
 
-The record of a closed channel should not be deleted until after it has expired.
+The record of a closed channel should not be deleted until after it has expired,
+in order to avoid channel reuse.
 
 If Alice pays using a channel that is not in either of the two datasets mentioned above,
-then Alice appears to be opening a new channel, and Charlie should check:
+then Alice is opening a new channel, and Charlie should check:
  - that the expiry time is reasonably far in the future
  - that the mint is a mint that he trusts, and the keyset is active
  - that the channel_id is computed correctly
  - the DLEQ proofs in the funding token are correct
- - The proofs in the funding token have the correct P2PK setup, with the keys and expiry and so on
+ - The secrets in the funding token have the correct P2PK setup, with the keys and expiry and so on
 
 # proof-of-concept
 
-_This PoC is now (2025-11-23) quite out of date. It has deterministic outputs and so on, and makes use of NUT-09 and NUT-07, but it doesn't follow the above closely_
-
-There is a proof of concept based on the CDK, showing how both parties can do the verification at each step, also including
-the latest SIG_ALL message update. _TODO: link to it. As of 2025-11-02, it's implemented and working with this new deterministic output setup, but the latest code isn't on github yet_
+_As of 2025-11-27, the PoC is up-to-date with the description above, but not released yet. The funding and commitment outputs are deterministic. Fees are taken into account fully. The token-state-check and toekn-restore endpoints are used. I'm gradually adding more unit tests_
