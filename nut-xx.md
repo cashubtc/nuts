@@ -38,6 +38,17 @@ Before deriving an index, the input label **MUST** be transformed as follows:
 2. Apply Unicode Normalization Form C (NFC).
 3. Convert the normalized string to lowercase using Unicode-aware semantics.
 
+| Input unit   | Canonical form | Index        |
+| ------------ | -------------- | ------------ |
+| `sat`        | `sat`          | `866057899`  |
+| `SAT`        | `sat`          | `866057899`  |
+| `nuts`       | `nuts`         | `278131387`  |
+| `USD`        | `usd`          | `1443872135` |
+| `usD`        | `usd`          | `1443872135` |
+| `café`       | `café`         | `84901316`   |
+| `cafe\u0301` | `café`         | `84901316`   |
+| `eurc`       | `eurc`         | `2107638150` |
+
 NOTE: Mints **MUST** make sure that the unit_reference integer has not been repeated before.
 
 ## Generating keys for the signer.
@@ -46,14 +57,13 @@ For compatibility reasons all signers SHOULD implement the following BIP32 deriv
 
 - m = master key
 - 129372' (UTF-8 for 🥜)
-- unit_reference = Big endian encoded integer of the first 4 bytes of the sha256 hash of the unit string modulo by 2^31. We modulo because we want to stay inside the `2^31 - 1` range.
+- unit_reference = Big endian encoded integer of the first 4 bytes of the sha256 hash of the canonical unit string reference modulo by 2^31. We modulo because we want to stay inside the `2^31 - 1` range.
   ex: sha256sum('auth')[:4] = bdf49c3c = 3186924604
   3186924604 % 2^31 = 1039440956.
 - version: uint32
 - index_of_amount = index of and the amounts of the keyset as if the where laid in an array. ex: [1, 2, 4, 8, 16, ...]
 
 `m / 129372' / unit_reference' / version' / index_of_amount'`
-
 
 ## Configuration
 
