@@ -21,6 +21,25 @@ The signer MUST NOT accept any request if authentication has not occurred.
 
 The Mint and the Signer MUST authenticate with each other using mTLS.
 
+## Seedphrase usage
+
+[BIP-39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki) mnemonic seedphrase must be used for generation
+of the keysets.
+
+Example: `legal winner thank year wave sausage worth useful legal winner thank yellow`
+
+### Canonical unit reference parsing
+
+Implementations **MUST** accept currency unit labels case-insensitively and ignore leading or trailing ASCII whitespace. When serializing a unit into JSON (e.g., as part of a keyset description in NUT-01 responses), implementations **SHOULD** emit the uppercase representation of the unit so that mints and wallets display consistent labels.
+
+Before deriving an index, the input label **MUST** be transformed as follows:
+
+1. Remove leading and trailing ASCII whitespace characters (space, tab, carriage return, line feed).
+2. Apply Unicode Normalization Form C (NFC).
+3. Convert the normalized string to lowercase using Unicode-aware semantics.
+
+NOTE: Mints **MUST** make sure that the unit_reference integer has not been repeated before.
+
 ## Generating keys for the signer.
 
 For compatibility reasons all signers SHOULD implement the following BIP32 derivation path.
@@ -34,6 +53,7 @@ For compatibility reasons all signers SHOULD implement the following BIP32 deriv
 - index_of_amount = index of and the amounts of the keyset as if the where laid in an array. ex: [1, 2, 4, 8, 16, ...]
 
 `m / 129372' / unit_reference' / version' / index_of_amount'`
+
 
 ## Configuration
 

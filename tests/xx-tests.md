@@ -94,5 +94,7 @@ This are the expected integer for unit strings:
  "auth" = 1039440956
  "eur" = 975082952
  "usd" = 1443872135
+ "SAT" = 866057899
+ "cafe\u0301" = 84901316
 }
 ```
