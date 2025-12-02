@@ -49,7 +49,8 @@ Before deriving an index, the input label **MUST** be transformed as follows:
 | `cafe\u0301` | `CAFÉ`         | `642348965`  |
 | `eurc`       | `EURC`         | `1321886550` |
 
-NOTE: Mints **MUST** make sure that the unit_reference integer has not been repeated before.
+NOTE: Mints **MUST** make sure that the unit_reference integer has not been repeated before for a different normalized
+unit string.
 
 ## Generating keys for the signer.
 
