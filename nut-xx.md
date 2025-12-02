@@ -36,18 +36,18 @@ Before deriving an index, the input label **MUST** be transformed as follows:
 
 1. Remove leading and trailing ASCII whitespace characters (space, tab, carriage return, line feed).
 2. Apply Unicode Normalization Form C (NFC).
-3. Convert the normalized string to lowercase using Unicode-aware semantics.
+3. Convert the normalized string to uppercase using Unicode-aware semantics.
 
 | Input unit   | Canonical form | Index        |
 | ------------ | -------------- | ------------ |
-| `sat`        | `sat`          | `866057899`  |
-| `SAT`        | `sat`          | `866057899`  |
-| `nuts`       | `nuts`         | `278131387`  |
-| `USD`        | `usd`          | `1443872135` |
-| `usD`        | `usd`          | `1443872135` |
-| `café`       | `café`         | `84901316`   |
-| `cafe\u0301` | `café`         | `84901316`   |
-| `eurc`       | `eurc`         | `2107638150` |
+| `sat`        | `SAT`          | `1967237907` |
+| `SAT`        | `SAT`          | `1967237907` |
+| `nuts`       | `NUTS`         | `1502388627` |
+| `USD`        | `USD`          | `577560378`  |
+| `usD`        | `USD`          | `577560378`  |
+| `café`       | `CAFÉ`         | `642348965`  |
+| `cafe\u0301` | `CAFÉ`         | `642348965`  |
+| `eurc`       | `EURC`         | `1321886550` |
 
 NOTE: Mints **MUST** make sure that the unit_reference integer has not been repeated before.
 
