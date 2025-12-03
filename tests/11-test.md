@@ -1,5 +1,46 @@
 # NUT-11 Test Vectors
 
+### Multisig Test Vectors
+
+The following `Proof`, with locktime in the past, is spendable via either **Locktime Multisig** or **Refund Multisig**.
+
+```json
+{
+  "amount": 64,
+  "C": "02d7cd858d866fca404b5cb1ffd813946e6d19efa1af00d654080fd20266bdc0b1",
+  "id": "001b6c716bf42c7e",
+  "secret": "[\"P2PK\",{\"nonce\":\"395162bf2d0add3c66aea9f22c45251dbee6e04bd9282addbb366a94cd4fb482\",\"data\":\"03ab50a667926fac858bac540766254c14b2b0334d10e8ec766455310224bbecf4\",\"tags\":[[\"locktime\",\"21\"],[\"pubkeys\",\"0229a91adec8dd9badb228c628a07fc1bf707a9b7d95dd505c490b1766fa7dc541\",\"033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e\"],[\"n_sigs\",\"2\"],[\"refund\",\"03ab50a667926fac858bac540766254c14b2b0334d10e8ec766455310224bbecf4\",\"033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e\"]]}]"
+}
+```
+
+#### Valid Locktime Multisig
+
+Has **TWO** valid signatures (`n_sigs = 2`) from the set: `data` + `pubkeys`.
+
+```json
+{
+  "amount": 64,
+  "C": "02d7cd858d866fca404b5cb1ffd813946e6d19efa1af00d654080fd20266bdc0b1",
+  "id": "001b6c716bf42c7e",
+  "secret": "[\"P2PK\",{\"nonce\":\"395162bf2d0add3c66aea9f22c45251dbee6e04bd9282addbb366a94cd4fb482\",\"data\":\"03ab50a667926fac858bac540766254c14b2b0334d10e8ec766455310224bbecf4\",\"tags\":[[\"locktime\",\"21\"],[\"pubkeys\",\"0229a91adec8dd9badb228c628a07fc1bf707a9b7d95dd505c490b1766fa7dc541\",\"033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e\"],[\"n_sigs\",\"2\"],[\"refund\",\"03ab50a667926fac858bac540766254c14b2b0334d10e8ec766455310224bbecf4\",\"033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e\"]]}]",
+  "witness": "{\"signatures\":[\"6a4dd46f929b4747efe7380d655be5cfc0ea943c679a409ea16d4e40968ce89de885d995937d5b85f24fa33a25df10990c5e11d5397199d779d5cf87d42f6627\",\"0c266fffe2ea2358fb93b5d30dfbcefe52a5bb53d6c85f37d54723613224a256165d20dd095768f168ab2e97bc5a879f7c2a84eee8963c9bcedcd39552dbe093\"]}"
+}
+```
+
+#### Valid Refund Multisig
+
+Has **ONE** valid signature (`n_sigs_refund` is omitted, so equals `1`) from the `refund` tag.
+
+```json
+{
+  "amount": 64,
+  "C": "02d7cd858d866fca404b5cb1ffd813946e6d19efa1af00d654080fd20266bdc0b1",
+  "id": "001b6c716bf42c7e",
+  "secret": "[\"P2PK\",{\"nonce\":\"395162bf2d0add3c66aea9f22c45251dbee6e04bd9282addbb366a94cd4fb482\",\"data\":\"03ab50a667926fac858bac540766254c14b2b0334d10e8ec766455310224bbecf4\",\"tags\":[[\"locktime\",\"21\"],[\"pubkeys\",\"0229a91adec8dd9badb228c628a07fc1bf707a9b7d95dd505c490b1766fa7dc541\",\"033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e\"],[\"n_sigs\",\"2\"],[\"refund\",\"03ab50a667926fac858bac540766254c14b2b0334d10e8ec766455310224bbecf4\",\"033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e\"]]}]",
+  "witness": "{\"signatures\":[\"d39631363480adf30433ee25c7cec28237e02b4808d4143469d4f390d4eae6ec97d18ba3cc6494ab1d04372f0838426ea296f25cb4bd8bddb296adc292eeaa96\"]}"
+}
+```
+
 ### SIG_INPUTS Test Vectors
 
 The following is a `Proof` with a valid signature.
@@ -38,7 +79,7 @@ The following is a `Proof` with 2 signatures required to meet the multi-signatur
 }
 ```
 
-The following is a `Proof` with one one signature failing the multi-signature spend condition.
+The following is a `Proof` with one signature failing the multi-signature spend condition.
 
 ```json
 {
@@ -105,7 +146,7 @@ The following is the `msg_to_sign` on the above `SwapRequest`.
 ["P2PK",{"nonce":"c7f280eb55c1e8564e03db06973e94bc9b666d9e1ca42ad278408fe625950303","data":"030d8acedfe072c9fa449a1efe0817157403fbec460d8e79f957966056e5dd76c1","tags":[["sigflag","SIG_ALL"]]}]02c97ee3d1db41cf0a3ddb601724be8711a032950811bf326f8219c50c4808d3cd2038ec853d65ae1b79b5cdbc2774150b2cb288d6d26e12958a16fb33c32d9a86c39
 ```
 
-The hex representation of sha256sum(msg_to_sign) of the should look like this: `de7f9e3ca0fcc5ed3258fcf83dbf1be7fa78a5ed6da7bf2aa60d61e9dc6eb09a`
+The hex representation of sha256sum(msg_to_sign) should look like this: `de7f9e3ca0fcc5ed3258fcf83dbf1be7fa78a5ed6da7bf2aa60d61e9dc6eb09a`
 
 The following is a `SwapRequest` with a valid sig_all signature.
 
@@ -169,7 +210,7 @@ The following is a `SwapRequest` that is invalid as the spending conditions are 
 }
 ```
 
-The following is a `SwapRequest` multiple valid signatures are provided and required.
+The following is a `SwapRequest` where multiple valid signatures are required and provided.
 
 ```json
 {
@@ -192,7 +233,7 @@ The following is a `SwapRequest` multiple valid signatures are provided and requ
 }
 ```
 
-The following is a `SwapRequest` with locktime passed and refund keys signatures are valid
+The following is a `SwapRequest` where the locktime has passed and the refund key signatures are valid.
 
 ```json
 {
@@ -238,7 +279,7 @@ The following is a valid `SwapRequest` with an HTLC also locked to a public key
 }
 ```
 
-The following is an invalid `SwapRequest` with an HTLC also locked to a public key, locktime and refund key. Locktime is not expired but proof is signed with refund key.
+The following is an invalid `SwapRequest` with an HTLC also locked to a public key, a locktime and a refund key. The locktime has not expired, but the proof is signed with the refund key.
 
 ```json
 {
@@ -319,7 +360,7 @@ The following is the valid `msg_to_sign` on the above `MeltRequest`.
 ["P2PK",{"nonce":"bbf9edf441d17097e39f5095a3313ba24d3055ab8a32f758ff41c10d45c4f3de","data":"029116d32e7da635c8feeb9f1f4559eb3d9b42d400f9d22a64834d89cde0eb6835","tags":[["sigflag","SIG_ALL"]]}]02a9d461ff36448469dccf828fa143833ae71c689886ac51b62c8d61ddaa10028b0038ec853d65ae1b79b5cdbc2774150b2cb288d6d26e12958a16fb33c32d9a86c39cF8911fzT88aEi1d-6boZZkq5lYxbUSVs-HbJxK0
 ```
 
-The hex representation of sha256sum(msg_to_sign) of the should look like this: `9efa1067cc7dc870f4074f695115829c3cd817a6866c3b84e9814adf3c3cf262`
+The hex representation of sha256sum(msg_to_sign) should look like this: `9efa1067cc7dc870f4074f695115829c3cd817a6866c3b84e9814adf3c3cf262`
 
 The following is a valid `SIG_ALL` `MeltRequest`.
 
