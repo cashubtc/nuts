@@ -58,11 +58,7 @@ The following is a `Proof` with a signature from the refund key that is spendabl
   "C": "0257353051c02e2d650dede3159915c8be123ba4f47cf33183c7fedd20bd91a79b",
   "id": "001b6c716bf42c7e",
   "secret": "[\"P2PK\",{\"nonce\":\"4bc88ee09d1886c7461d45da205ca3274e1e3d9da2667c4865045cb18265a407\",\"data\":\"03d5edeb839be873df2348785506d36565f3b8f390fb931709a422b5a247ddefb1\",\"tags\":[[\"locktime\",\"21\"],[\"refund\",\"0234ad87e907e117db1590cc20a3942ffdfd5137aa563d36095d5cf5f96bada122\"]]}]",
-  "witness": {
-    "signatures": [
-      "b316c2ff9c15f0c5c3d230e99ad94bc76a11dfccbdc820366a3db7210288f22ef6cedcded1152904ec31056d1d5176d83a2d96df5cd4ff86afdde1c90c63af5e"
-    ]
-  }
+  "witness": "{\"signatures\":[\"b316c2ff9c15f0c5c3d230e99ad94bc76a11dfccbdc820366a3db7210288f22ef6cedcded1152904ec31056d1d5176d83a2d96df5cd4ff86afdde1c90c63af5e\"]}"
 }
 ```
 
@@ -74,11 +70,7 @@ The following is a `Proof` with a signature from the refund key that is **not** 
   "C": "0215865e3b30bdf6f5cdc1ee2c33379d5629bdf2eff2595603d939ff8c65d80586",
   "id": "001b6c716bf42c7e",
   "secret": "[\"P2PK\",{\"nonce\":\"0c3d085898f1abf2b5521035f4d0f4ecf68c6a5109f6bc836833a1188f06be65\",\"data\":\"03206e0d488387a816bbafd957be51b073432c6c7a403ec4c2a0b27647326c5150\",\"tags\":[[\"locktime\",\"99999999999\"],[\"refund\",\"026acbcd0fff3a424499c83ec892d3155c9d1984438659f448d9d0f1af3e92276a\"]]}]",
-  "witness": {
-    "signatures": [
-      "e5b10d7627ab39bd0cefa219c63752a0026aa5ae754b91a0c7ee2596222f87942c442aca2957166a6b468350c09c9968792784d2ae7c42fc91739b55689f4c7a"
-    ]
-  }
+  "witness": "{\"signatures\":[\"e5b10d7627ab39bd0cefa219c63752a0026aa5ae754b91a0c7ee2596222f87942c442aca2957166a6b468350c09c9968792784d2ae7c42fc91739b55689f4c7a\"]}"
 }
 ```
 
