@@ -10,7 +10,7 @@ _TODO: should this, or a separate NUT, talked about the transport for all of thi
 
 _TODO: the mint could notice that the 2x2 P2PK swap happens just before two separate 1x1 swaps that add to the same amount, and therefore reasonably conclude that this was a channel. Should Alice and Charlie delay stage 2 in order to have a little more privacy?_
 
-_TODO: For a little more privacy (for those not using P2BPK) Alice and Charlie could specify two public keys, one for the 2-of-2 multisig in the funding and another in the 1-of-1 multisig that pays to each specifically? Or maybe we ignore this issue and just make use of Blinded keys throughout the channel, in cases where the receiver's wallet support it_
+_TODO: P2BPK is mentioned briefly as an option below; in theory it could be used if Charlie advertizes that he supports receiving payment that way. For those not using P2BPK, Alice and Charlie could specify two public keys, one for the 2-of-2 multisig in the funding and another in the 1-of-1 multisig that pays to each specifically. This might increase the privacy of non-P2BPK slightly._
 
 ---
 
