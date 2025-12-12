@@ -2,9 +2,9 @@
 
 `optional`
 
-`depends on: NUT-04`
+`depends on: NUT-04, NUT-20 (for signature support)`
 
-This spec describes how a wallet can mint multiple proofs in one batch operation.
+This spec describes how a wallet can mint multiple proofs in one batch operation by requesting blind signatures for multiple quotes in a single atomic request. This is more efficient than individual mint requests.
 
 ---
 
@@ -67,10 +67,13 @@ Content-Type: application/json
 ```
 
 - **quote**: an array of **unique** quote IDs previously obtained via the [NUT-04 creation process][04-creation].
+  - **All quotes MUST be from the same payment method** (indicated by `{method}` in the URL path).
+  - **All quotes MUST use the same currency unit**.
 - **outputs**: an array of blinded messages (see [NUT-00][00]).
-  - The total value represented by these blinded messages must equal the sum of the quote amounts.
-- **signature**: The signature for a NUT-20 locked quote. See [NUT-20 Support][nut-20-support]
-  The mint responds with:
+  - The total value represented by all blinded messages must equal the sum of all quote amounts.
+- **signature**: array of signatures for NUT-20 locked quotes. See [NUT-20 Support][nut-20-support]
+
+The mint responds with:
 
 ```json
 {
@@ -78,27 +81,82 @@ Content-Type: application/json
 }
 ```
 
-- **signatures**: blind signatures corresponding to each provided blinded message.
+- **signatures**: an array of blind signatures, **one for each provided blinded message**, in the same order as the `outputs` array.
 
 ## NUT-20 support
 
-The `signature` field of the request can be used to add matching NUT-20 signatures to a batch mint. Signatures can be mapped to their quotes using both indexes in the request body. As long as there is a single NUT-20 quote in the request this field is mandatory, otherwise it can be fully omitted.
+Per [NUT-20][20], quotes can require authentication via signatures. When using batch minting with NUT-20 locked quotes:
 
-- Signatures for NUT-20 quotes can be added to the `signature` key of the request.
-- Signatures need to be in the same index as the matching quote_id in the `quote` key.
-- If a request contains both signed and unsigned quotes, all unsigned quotes need to map to `null` in the `signature` array.
-- As soon as there is a single signed quote in the request: `quote.length === signature.length`
+### Signature Structure
 
-Example:
+- The `signature` field is an **array with length equal to `quote.length`** (one entry per quote).
+- `signature[i]` corresponds to `quote[i]`.
+- For **locked quotes** (those with a `pubkey`): `signature[i]` contains the signature string.
+- For **unlocked quotes**: `signature[i]` is `null`.
+- The `signature` field is **required** if ANY quote is locked, otherwise it **MAY be omitted entirely**.
+
+### Signature Message
+
+Following the [NUT-20 message aggregation][20-msg-agg] pattern, the signature for `quote[i]` is computed as:
+
+```
+msg_to_sign = quote_id[i] || B_0 || B_1 || ... || B_(n-1)
+```
+
+Where:
+- `quote_id[i]` is the UTF-8 encoded quote ID at index `i`
+- `B_0 ... B_(n-1)` are **all blinded messages** from the `outputs` array (regardless of amount splitting)
+- `||` denotes concatenation
+
+This signature protects against:
+1. Quote tampering (verification ties signature to specific quote ID)
+2. Output tampering (signature covers all outputs, preventing malicious replacement or reordering)
+
+The signature is a BIP340 Schnorr signature on the SHA-256 hash of `msg_to_sign`.
+
+### Signature Validation Failure
+
+If **any signature in the batch is invalid**, the mint MUST reject the **entire batch** and return an error. This maintains atomicity: all quotes must be successfully authenticated and minted together, or none at all.
+
+### Example
 
 ```json
 {
-  "quote":   [ "locked_quote_id_1", "quote_id_2", "locked_quote_id_3" ],
-  "outputs": [ BlindedMessage_1, BlindedMessage_2, ... ],
-  "signature": [signature_1, null, signature_3 ]
+  "quote":   [ "locked_quote_id_1", "unlocked_quote_id_2", "locked_quote_id_3" ],
+  "outputs": [
+    { "amount": 64, "id": "keyset_1", "B_": "..." },
+    { "amount": 64, "id": "keyset_1", "B_": "..." },
+    { "amount": 22, "id": "keyset_1", "B_": "..." }
+  ],
+  "signature": [
+    "d9be080b...",  // Signature for quote[0], covers ALL 3 outputs
+    null,           // Quote[1] is unlocked
+    "a1c5f7e2..."   // Signature for quote[2], covers ALL 3 outputs
+  ]
 }
 ```
 
+In this example:
+- Quote 0: 100 sats, locked, split across outputs[0:3]
+- Quote 1: 50 sats, unlocked
+- Quote 2: 75 sats, locked, split across outputs[0:3]
+- Total: 225 sats across 3 outputs
+- Both signatures cover all 3 outputs to prevent output tampering
+
+## Mint Responsibilities
+
+The mint MUST:
+1. Verify all quote IDs are valid and in PAID state
+2. Verify all quotes are from the same payment method as indicated by `{method}` in the URL path
+3. Verify all quotes use the same currency unit
+4. Verify the sum of output amounts equals the sum of quote amounts
+5. Verify all NUT-20 signatures (if present) per [NUT-20][20] rules
+6. Generate one blind signature per output
+7. Return signatures in the same order as the outputs array
+
 [00]: 00.md
 [04-creation]: 04.md#requesting-a-mint-quote
+[04]: 04.md
+[20]: 20.md
+[20-msg-agg]: 20.md#message-aggregation
 [nut-20-support]: #nut-20-support
