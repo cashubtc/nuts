@@ -78,6 +78,7 @@ Content-Type: application/json
 
 {
   "quote":   [ "quote_id_1", "quote_id_2", … ],
+  "quote_amounts": [ 50, 50 ],
   "outputs": [ BlindedMessage_1, BlindedMessage_2, … ],
   "signature": [signature_1, signature_2, ... ]
 }
@@ -88,6 +89,9 @@ Content-Type: application/json
   - All quote IDs MUST be unique (no duplicates)
   - **All quotes MUST be from the same payment method** (indicated by `{method}` in the URL path).
   - **All quotes MUST use the same currency unit**.
+- **quote_amounts**: array of expected mint amounts per quote, in the same order as `quote`.
+  - REQUIRED for bolt12 batches; OPTIONAL for bolt11.
+  - For bolt11, each entry MUST equal the quoted amount. For bolt12, each entry MUST NOT exceed the quote's remaining mintable amount. In all cases, the sum of `quote_amounts` MUST equal the sum of `outputs`.
 - **outputs**: an array of blinded messages (see [NUT-00][00]).
   - The total value represented by all blinded messages must equal the sum of all quote amounts.
 - **signature**: array of signatures for NUT-20 locked quotes. See [NUT-20 Support][nut-20-support]
