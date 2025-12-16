@@ -10,7 +10,7 @@ This spec describes how a wallet can mint multiple quotes in one batch operation
 
 ## 1. Checking Quote Status
 
-Before minting, the wallet must verify that each mint quote has been paid.
+Before minting, the wallet SHOULD verify that each mint quote has been paid.
 It does this by sending:
 
 ```http
@@ -110,8 +110,6 @@ The mint responds with:
 
 Implementations MAY provide a dedicated single-mint endpoint (e.g., `POST /v1/mint/bolt11` with a single quote string rather than an array) for convenience and backward compatibility.
 
-Clients MAY exclusively use the batch endpoint for all minting operations (including single quotes) to simplify their implementation.
-
 ## Request Validation
 
 The mint MUST validate the following before processing a batch mint request:
@@ -122,8 +120,8 @@ The mint MUST validate the following before processing a batch mint request:
 4. **Payment method consistency**: All quotes MUST have the same payment method, matching `{method}` in the URL path
 5. **Currency unit consistency**: All quotes MUST use the same currency unit
 6. **Quote state**: All quotes MUST be in PAID state (or have mintable amount for BOLT12)
-7. **Amount balance**: The sum of output amounts MUST equal (or not exceed for BOLT12) the sum of all quote amounts
-8. **Signature validation**: If present, the `signature` array length MUST match the `quote` array length
+7. **Amount balance**: The sum of output amounts MUST equal the sum of `quote_amounts` (bolt11) or MUST NOT exceed it (bolt12)
+8. **Signature validation (NUT-20)**: The `signature` array length MUST match the `quote` array length; locked quotes MUST include a valid signature; unlocked quotes MUST NOT include one
 
 Implementations MAY impose additional constraints such as maximum batch size based on their resource limitations. If any validation fails, the mint MUST reject the entire batch and return an appropriate error without minting any quotes.
 
@@ -131,21 +129,21 @@ Implementations MAY impose additional constraints such as maximum batch size bas
 
 Implementations SHOULD return specific error codes for batch validation failures:
 
-| Error Scenario | Suggested Error Code | HTTP Status |
-|----------------|---------------------|-------------|
-| Empty quote array | `BATCH_EMPTY` | 400 |
-| Batch size exceeds implementation limit | `BATCH_SIZE_EXCEEDED` | 400 |
-| Duplicate quote IDs | `DUPLICATE_QUOTE_IDS` | 400 |
-| Unknown or invalid quote ID | `UNKNOWN_QUOTE` | 400 |
-| Mixed payment methods | `PAYMENT_METHOD_MISMATCH` | 400 |
-| Mixed currency units | `UNIT_MISMATCH` | 400 |
-| Payment method doesn't match URL path | `ENDPOINT_METHOD_MISMATCH` | 400 |
-| Quote not in PAID state | `QUOTE_NOT_PAID` | 400 |
-| Unbalanced amounts | `TRANSACTION_UNBALANCED` | 400 |
-| Signature array length mismatch | `SIGNATURE_COUNT_MISMATCH` | 400 |
-| Invalid signature | `SIGNATURE_INVALID` | 400 |
-| Signature on unlocked quote | `UNEXPECTED_SIGNATURE` | 400 |
-| Missing required signature | `SIGNATURE_MISSING` | 400 |
+| Error Scenario | Suggested Error Code |
+|----------------|---------------------|
+| Empty quote array | `BATCH_EMPTY` |
+| Batch size exceeds implementation limit | `BATCH_SIZE_EXCEEDED` |
+| Duplicate quote IDs | `DUPLICATE_QUOTE_IDS` |
+| Unknown or invalid quote ID | `UNKNOWN_QUOTE` |
+| Mixed payment methods | `PAYMENT_METHOD_MISMATCH` |
+| Mixed currency units | `UNIT_MISMATCH` |
+| Payment method doesn't match URL path | `ENDPOINT_METHOD_MISMATCH` |
+| Quote not in PAID state | `QUOTE_NOT_PAID` |
+| Unbalanced amounts | `TRANSACTION_UNBALANCED` |
+| Signature array length mismatch | `SIGNATURE_COUNT_MISMATCH` |
+| Invalid signature | `SIGNATURE_INVALID` |
+| Signature on unlocked quote | `UNEXPECTED_SIGNATURE` |
+| Missing required signature | `SIGNATURE_MISSING` |
 
 ### Error Response Format
 
@@ -274,28 +272,18 @@ In this example:
 ## Mint Responsibilities
 
 The mint MUST:
-1. Validate the batch request per the [Request Validation][request-validation] section
-2. Verify all quote IDs are valid and in PAID state (or have mintable amount for BOLT12)
-3. Verify all quotes are from the same payment method as indicated by `{method}` in the URL path
-4. Verify all quotes use the same currency unit
-5. Verify the sum of output amounts equals (or does not exceed for BOLT12) the sum of quote amounts
-6. Verify all NUT-20 signatures (if present) per [NUT-20][20] rules
-7. Generate one blind signature per output
-8. Return signatures in the same order as the outputs array
-9. **Atomic processing**: The mint MUST process the batch as an atomic operation:
-   - **Success**: All validation passes and all quotes are minted together
-   - **Failure**: Any validation failure or minting error causes the entire batch to fail with no quotes minted
+1. Validate the batch per the [Request Validation][request-validation] section.
+2. Generate one blind signature per output and return signatures in the same order as `outputs`.
+3. **Atomic processing**:
+   - **Success**: all validations pass and all quotes are minted together
+   - **Failure**: any validation failure or minting error causes the entire batch to fail with no quotes minted
    - Partial minting (some quotes succeed, others fail) MUST NOT occur
 
 ## Implementation Notes
 
 ### Batch Size Limits
 
-Implementations MAY impose a maximum batch size. When a batch exceeds the implementation's limit, the mint SHOULD return a `BATCH_SIZE_EXCEEDED` error with information about the actual limit.
-
-**Discovery via mint info:**
-
-Implementations MAY advertise their maximum batch size through the mint info endpoint (NUT-06). The batch size limit is included in the `nuts` object under the `XX` key:
+Implementations MAY advertise a maximum batch size through the mint info endpoint (NUT-06). The batch size limit is included in the `nuts` object under the `XX` key:
 
 ```json
 {
@@ -320,8 +308,6 @@ Mints MAY support partial minting for BOLT12 quotes, where `amount_issued` can b
 - **Multiple batch operations**: Same BOLT12 quote can be used in multiple mint requests
 - **Incremental minting**: Each batch mint increments `amount_issued` by the minted amount
 - **State tracking**: Quote remains in PAID state until `amount_issued >= amount_paid`
-
-The mint tracks `amount_paid` and `amount_issued` separately for this purpose.
 
 ### Spending Conditions
 
