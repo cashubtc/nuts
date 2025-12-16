@@ -825,6 +825,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Well-known Secret">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tag-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tag format
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1266,6 +1283,17 @@
 <li><code>data</code> expresses the spending condition specific to each kind</li>
 <li><code>tags</code> hold additional data committed to and can be used for feature extensions</li>
 </ul>
+<h3 id="tag-format">Tag format<a class="headerlink" href="#tag-format" title="Permanent link">&para;</a></h3>
+<p>The optional <code>tags</code> field, is an array of arrays of non-empty strings.</p>
+<p>Each individual tag is an array of <strong>ONE or more strings</strong>. The first element of the tag array is known as the tag <em>name</em> or <em>key</em> and the subsequent string(s) are the <em>tag value(s)</em>.</p>
+<p><strong>Examples of valid tags:</strong></p>
+<p><code>["pubkeys"]</code> - a tag with the key, <code>"pubkeys"</code> and no tag values.\
+<code>["pubkeys", "021..."]</code> - a tag with the key, <code>"pubkeys"</code> and ONE tag value.\
+<code>["pubkeys", "021...", "022..."]</code> - a tag with the key, <code>"pubkeys"</code> and TWO tag values.</p>
+<p><strong>Examples of invalid tags:</strong></p>
+<p><code>[]</code> - a tag array must contain at least <strong>ONE</strong> or more strings\
+<code>["locktime", 1765300829]</code> - a tag must contain <strong>strings</strong> only\
+<code>["locktime", ""]</code> - a tag must contain <strong>non-empty strings</strong> only</p>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
 <p>Example use cases of this secret format are</p>
 <ul>
