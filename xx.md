@@ -4,7 +4,7 @@
 
 `depends on: NUT-04, NUT-20 (for signature support)`
 
-This spec describes how a wallet can mint multiple proofs in one batch operation by requesting blind signatures for multiple quotes in a single atomic request.
+This spec describes how a wallet can mint multiple quotes in one batch operation by requesting blind signatures for multiple quotes in a single atomic request.
 
 ---
 
@@ -18,11 +18,11 @@ POST https://mint.host:3338/v1/mint/{method}/check
 Content-Type: application/json
 
 {
-  "quote": [ "quote_id_1", "quote_id_2", … ]
+  "quotes": [ "quote_id_1", "quote_id_2", … ]
 }
 ```
 
-- **quote**: an array of **unique** quote IDs previously obtained via the [NUT-04 creation process][04-creation].
+- **quotes**: an array of **unique** quote IDs previously obtained via the [NUT-04 creation process][04-creation].
   - Array MUST NOT be empty
   - All quote IDs MUST be unique (no duplicates)
 
@@ -70,21 +70,21 @@ This partial-response behavior differs from the batch mint endpoint, which requi
 
 ## 2. Executing the Batched Mint
 
-Once all quoted payments are confirmed, the wallet mints the tokens by calling:
+Once all quoted payments are confirmed, the wallet mints the proofs by calling:
 
 ```http
 POST https://mint.host:3338/v1/mint/{method}/batch
 Content-Type: application/json
 
 {
-  "quote":   [ "quote_id_1", "quote_id_2", … ],
+  "quotes":   [ "quote_id_1", "quote_id_2", … ],
   "quote_amounts": [ 50, 50 ],
   "outputs": [ BlindedMessage_1, BlindedMessage_2, … ],
-  "signature": [signature_1, signature_2, ... ]
+  "signatures": [signature_1, signature_2, ... ]
 }
 ```
 
-- **quote**: an array of **unique** quote IDs previously obtained via the [NUT-04 creation process][04-creation].
+- **quotes**: an array of **unique** quote IDs previously obtained via the [NUT-04 creation process][04-creation].
   - Array MUST NOT be empty
   - All quote IDs MUST be unique (no duplicates)
   - **All quotes MUST be from the same payment method** (indicated by `{method}` in the URL path).
@@ -94,7 +94,7 @@ Content-Type: application/json
   - For bolt11, each entry MUST equal the quoted amount. For bolt12, each entry MUST NOT exceed the quote's remaining mintable amount. In all cases, the sum of `quote_amounts` MUST equal the sum of `outputs`.
 - **outputs**: an array of blinded messages (see [NUT-00][00]).
   - The total value represented by all blinded messages must equal the sum of all quote amounts.
-- **signature**: array of signatures for NUT-20 locked quotes. See [NUT-20 Support][nut-20-support]
+- **signatures**: array of signatures for NUT-20 locked quotes. See [NUT-20 Support][nut-20-support]
 
 The mint responds with:
 
