@@ -153,13 +153,10 @@ When a batch request fails validation, the mint SHOULD return a structured error
 - **Required fields:**
   - `code`: String error code from the Error Codes table above
   - `detail`: Human-readable error message describing what went wrong
-- **Optional fields:**
-  - `quote`: The quote ID that caused the error (when applicable)
 
 **Best practices:**
 - The `detail` message SHOULD include relevant context (such as quote IDs) for debugging
-- The `quote` field enables programmatic identification and handling of the failing quote
-- Including quote IDs in both places is RECOMMENDED for better developer experience
+- Including quote ID in the detail field is RECOMMENDED for better developer experience
 
 **Examples:**
 
@@ -167,8 +164,7 @@ Unknown quote:
 ```json
 {
   "code": "UNKNOWN_QUOTE",
-  "detail": "Quote 'abc-123' does not exist",
-  "quote": "abc-123"
+  "detail": "Quote 'abc-123' does not exist"
 }
 ```
 
@@ -176,8 +172,7 @@ Quote not paid:
 ```json
 {
   "code": "QUOTE_NOT_PAID",
-  "detail": "Quote 'xyz-789' is not in PAID state",
-  "quote": "xyz-789"
+  "detail": "Quote 'xyz-789' is not in PAID state"
 }
 ```
 
@@ -185,8 +180,7 @@ Payment method mismatch:
 ```json
 {
   "code": "PAYMENT_METHOD_MISMATCH",
-  "detail": "All quotes must use the same payment method. Quote 'def-456' uses bolt12, expected bolt11",
-  "quote": "def-456"
+  "detail": "All quotes must use the same payment method. Quote 'def-456' uses bolt12, expected bolt11"
 }
 ```
 
@@ -194,8 +188,7 @@ Duplicate quote IDs:
 ```json
 {
   "code": "DUPLICATE_QUOTE_IDS",
-  "detail": "Quote 'abc-123' appears multiple times in the batch",
-  "quote": "abc-123"
+  "detail": "Quote 'abc-123' appears multiple times in the batch"
 }
 ```
 
