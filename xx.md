@@ -272,6 +272,20 @@ The mint MUST:
    - **Failure**: any validation failure or minting error causes the entire batch to fail with no quotes minted
    - Partial minting (some quotes succeed, others fail) MUST NOT occur
 
+## Test Vectors
+
+Use these vectors to validate NUT-XX behavior:
+
+- Status partial response: `/v1/mint/bolt11/check` with `quotes:["known","bogus","unknown"]` → response contains only `known`.
+- Bolt11 amount mismatch: two paid quotes, `quote_amounts:[50,50]`, outputs total `120` → `TRANSACTION_UNBALANCED`.
+- Bolt11 `quote_amounts` length mismatch: two quotes, `quote_amounts:[100]` → `TRANSACTION_UNBALANCED`.
+- Locked quote missing signature: quote has `pubkey`, `signatures:[null]` → `SIGNATURE_MISSING`.
+- Output unit mismatch: quotes in `sat`, outputs keyed to `msat` → `UNIT_MISMATCH`.
+- Bolt12 `quote_amounts` omitted: paid BOLT12 quote, outputs provided, no `quote_amounts` → `TRANSACTION_UNBALANCED`.
+- Bolt12 over-request: `quote_amounts` entry exceeds `amount_paid - amount_issued` → `TRANSACTION_UNBALANCED`.
+- Bolt12 total mismatch: `quote_amounts` sum `150`, outputs total `140` → `TRANSACTION_UNBALANCED`.
+- Unparseable quote ID: `/batch` with an invalid/garbled quote string → `UNKNOWN_QUOTE`.
+
 ## Implementation Notes
 
 ### Batch Size Limits
