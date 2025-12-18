@@ -403,10 +403,19 @@ A payment request requiring HTLC-locked tokens with preimage tag.
     "k": "HTLC",
     "d": "a]a0bPdf5jLl)B",
     "t": [
-      ["preimage", "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"],
-      ["pubkeys", "02c3b5bb27e361457c92d93d78dd73d3d53732110b2cfe8b50fbc0abc615e9c331"],
+      [
+        "preimage",
+        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+      ],
+      [
+        "pubkeys",
+        "02c3b5bb27e361457c92d93d78dd73d3d53732110b2cfe8b50fbc0abc615e9c331"
+      ],
       ["locktime", "1750000000"],
-      ["refund", "03c3b5bb27e361457c92d93d78dd73d3d53732110b2cfe8b50fbc0abc615e9c331"]
+      [
+        "refund",
+        "03c3b5bb27e361457c92d93d78dd73d3d53732110b2cfe8b50fbc0abc615e9c331"
+      ]
     ]
   }
 }
@@ -446,19 +455,23 @@ CREQB1QYQQKCM4WD6X7M2LW4HXJAQZQQYQQQQQQQQQQQRYQVQQXCN5VVZSQXRGW368QUE69UHK66TWWS
 ### Encoding Details
 
 1. **TLV Format**: Each TLV entry consists of:
+
    - Type (1 byte)
    - Length (2 bytes, big-endian)
    - Value (variable length)
 
 2. **Unit Encoding**:
+
    - `0x00` represents `sat` (satoshis)
    - Other units are UTF-8 encoded strings
 
 3. **Boolean Values**:
+
    - `0x00` = false
    - `0x01` = true
 
 4. **Transport Kind Values**:
+
    - `0x00` = in-band (not explicitly included if no transport specified)
    - `0x01` = nostr
    - `0x02` = http_post
