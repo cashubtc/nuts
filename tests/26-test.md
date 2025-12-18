@@ -455,23 +455,19 @@ CREQB1QYQQKCM4WD6X7M2LW4HXJAQZQQYQQQQQQQQQQQRYQVQQXCN5VVZSQXRGW368QUE69UHK66TWWS
 ### Encoding Details
 
 1. **TLV Format**: Each TLV entry consists of:
-
    - Type (1 byte)
    - Length (2 bytes, big-endian)
    - Value (variable length)
 
 2. **Unit Encoding**:
-
    - `0x00` represents `sat` (satoshis)
    - Other units are UTF-8 encoded strings
 
 3. **Boolean Values**:
-
    - `0x00` = false
    - `0x01` = true
 
 4. **Transport Kind Values**:
-
    - `0x00` = in-band (not explicitly included if no transport specified)
    - `0x01` = nostr
    - `0x02` = http_post
