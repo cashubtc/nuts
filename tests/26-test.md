@@ -45,7 +45,7 @@ A payment request using Nostr transport with multiple mints.
   "t": [
     {
       "t": "nostr",
-      "a": "npub1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzqujme",
+      "a": "nprofile1qqsqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq8uzqt",
       "g": [
         ["n", "17"],
         ["n", "9735"]
@@ -313,7 +313,7 @@ A payment request with multiple transport options (Nostr + HTTP POST), demonstra
   "t": [
     {
       "t": "nostr",
-      "a": "npub180cvv07tjdrrgpa0j7j7tmnyl2yr6yr7l8j4s3evf6u64th6gkwsyjh6w6",
+      "a": "nprofile1qqsrhuxx8l9ex335q7he0f09aej04zpazpl0ne2cgukyawd24mayt8g2lcy6q",
       "g": [["n", "17"]]
     },
     {
@@ -349,7 +349,7 @@ A minimal Nostr transport with just the pubkey (no relays, no tags).
   "t": [
     {
       "t": "nostr",
-      "a": "npub180cvv07tjdrrgpa0j7j7tmnyl2yr6yr7l8j4s3evf6u64th6gkwsyjh6w6"
+      "a": "nprofile1qqsrhuxx8l9ex335q7he0f09aej04zpazpl0ne2cgukyawd24mayt8g2lcy6q"
     }
   ]
 }
