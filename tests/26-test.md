@@ -410,7 +410,7 @@ A payment request using a custom currency unit (string encoding, not a known uni
 {
   "i": "custom_unit",
   "a": 100,
-  "u": "gold",
+  "u": "btc",
   "m": ["https://mint.example.com"]
 }
 ```
