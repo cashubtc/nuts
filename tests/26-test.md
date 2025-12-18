@@ -17,7 +17,7 @@ A basic payment request with required fields.
   "t": [
     {
       "t": "nostr",
-      "a": "nprofile1qy28wumn8ghj7un9d3shjtnyv9kh2uewd9hsz9mhwden5te0wfjkccte9curxven9eehqctrv5hszrthwden5te0dehhxtnvdakqqgydaqy7curk439ykptkysv7udhdhu68sucm295akqefdehkf0d495cwunl5",
+      "a": "nprofile1qqsgm6qfa3c8dtz2fvzhvfqeacmwm0e50pe3k5tfmvpjjmn0vj7m2tgpz3mhxue69uhhyetvv9ujuerpd46hxtnfduq3wamnwvaz7tmjv4kxz7fw8qenxvewwdcxzcm99uqs6amnwvaz7tmwdaejumr0ds4ljh7n",
       "g": [["n", "17"]]
     }
   ]
@@ -177,7 +177,7 @@ A payment request with relays embedded in the nprofile (demonstrates "r" tag tup
   "t": [
     {
       "t": "nostr",
-      "a": "nprofile1qqsrhuxx8l9ex335q7he0f09aej04zpazpl0ne2cgukyawd24mayt8gpz4mhxue69uhhyetvv9ujuerpd46hxtnfduhszrthwden5te0dehhxtnvdakqz9thwden5te0v9cxjv3wv4uxzmtsd3jjucm0d5q3vamnwvaz7tmjv4kxz7fw0ys"
+      "a": "nprofile1qqsrhuxx8l9ex335q7he0f09aej04zpazpl0ne2cgukyawd24mayt8gprpmhxue69uhhyetvv9unztn90psk6urvv5hxxmmdqyv8wumn8ghj7un9d3shjv3wv4uxzmtsd3jjucm0d5q3samnwvaz7tmjv4kxz7fn9ejhsctdwpkx2tnrdaksxzjpjp"
     }
   ]
 }
