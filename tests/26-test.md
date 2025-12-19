@@ -381,7 +381,7 @@ A payment request requiring HTLC-locked tokens with preimage tag.
       [
         "refund",
         "033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e"
-      ],
+      ]
     ]
   }
 }
