@@ -60,7 +60,7 @@ The corresponding derivation paths are
 
 ## Version 2: Secret derivation
 
-Using [NUT-13](13.md) derivation procedure for V2 with keyset ID `012e23479a0029432eaad0d2040c09be53bab592d5cbf1d55e0dd26c9495951b30`, we derive values starting from the following BIP39 mnemonic:
+Using [NUT-13](13.md) derivation procedure for V2 with keyset ID `0192e40e27cdb961670dfb011d920566d574a9e8b4cce8252247f0d812fbd6be37`, we derive values starting from the following BIP39 mnemonic:
 
 ```json
 {
@@ -72,11 +72,11 @@ The secrets derived for the first five counters from `counter=0` to `counter=4` 
 
 ```json
 {
-  "secret_0": "ba250bf927b1df5dd0a07c543be783a4349a7f99904acd3406548402d3484118",
-  "secret_1": "3a6423fe56abd5e74ec9d22a91ee110cd2ce45a7039901439d62e5534d3438c1",
-  "secret_2": "843484a75b78850096fac5b513e62854f11d57491cf775a6fd2edf4e583ae8c0",
-  "secret_3": "3600608d5cf8197374f060cfbcff134d2cd1fb57eea68cbcf2fa6917c58911b6",
-  "secret_4": "717fce9cc6f9ea060d20dd4e0230af4d63f3894cc49dd062fd99d033ea1ac1dd"
+  "secret_0": "244d2c0ea9735ef0a400a5b29a1467d6794d5349bb47b587442bb0f12af8bea7",
+  "secret_1": "de51fd389c2e3955fa4532de2eacea01376d86512c65ce16d8475e433962b218",
+  "secret_2": "cec18f3e333a0310c090024529802610c00b189d38c71f0d53606bd66e82fffd",
+  "secret_3": "82f233e1cd63d921eb2583f16914bb76d590cd8160f5fee4a4ec4ff72adb5dcd",
+  "secret_4": "253b5e0960fa63519e0666e87577a05dfe447f379952e36640116bb47f9a6c15"
 }
 ```
 
@@ -84,10 +84,10 @@ The corresponding blinding factors `r` are:
 
 ```json
 {
-  "r_0": "4f8b32a54aed811b692a665ed296b4c1fc2f37a8be4006379e95063a76693745",
-  "r_1": "c4b8412ee644067007423480c9e556385b71ffdff0f340bc16a95c0534fe0e01",
-  "r_2": "ceff40983441c40acaf77d2a8ddffd5c1c84391fb9fd0dc4607c186daab1c829",
-  "r_3": "41ad26b840fb62d29b2318a82f1d9cd40dc0f1e58183cc57562f360a32fdfad6",
-  "r_4": "fb986a9c76758593b0e2d1a5172ade977c858d87111a220e16c292a9347abf81"
+  "r_0": "88df4711b6444b3e8ed3e9dd629d50f7ee6db7c65644526700eb7bcfc89c8ea1",
+  "r_1": "b514140fa4396fcbff7c2b7fec48f113cfe6a3a595ee8c426d5c63299f40f6d0",
+  "r_2": "68ab0ee49f8fe59d99f7b9da452354dd61b24575f17d6e9a7ce13a31e073c67e",
+  "r_3": "f40e0f2dcc145d9c4fdc6a1758d387b1b6ee195ba919d52eada78ee8ff45d680",
+  "r_4": "490b2174f8e232e0a9eeabc128f7e1fcd71538b7d41335927205aaf6bcf3ccc8"
 }
 ```
