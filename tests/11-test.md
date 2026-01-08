@@ -1,5 +1,46 @@
 # NUT-11 Test Vectors
 
+### Multisig Test Vectors
+
+The following `Proof`, with locktime in the past, is spendable via either **Locktime Multisig** or **Refund Multisig**.
+
+```json
+{
+  "amount": 64,
+  "C": "02d7cd858d866fca404b5cb1ffd813946e6d19efa1af00d654080fd20266bdc0b1",
+  "id": "001b6c716bf42c7e",
+  "secret": "[\"P2PK\",{\"nonce\":\"395162bf2d0add3c66aea9f22c45251dbee6e04bd9282addbb366a94cd4fb482\",\"data\":\"03ab50a667926fac858bac540766254c14b2b0334d10e8ec766455310224bbecf4\",\"tags\":[[\"locktime\",\"21\"],[\"pubkeys\",\"0229a91adec8dd9badb228c628a07fc1bf707a9b7d95dd505c490b1766fa7dc541\",\"033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e\"],[\"n_sigs\",\"2\"],[\"refund\",\"03ab50a667926fac858bac540766254c14b2b0334d10e8ec766455310224bbecf4\",\"033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e\"]]}]"
+}
+```
+
+#### Valid Locktime Multisig
+
+Has **TWO** valid signatures (`n_sigs = 2`) from the set: `data` + `pubkeys`.
+
+```json
+{
+  "amount": 64,
+  "C": "02d7cd858d866fca404b5cb1ffd813946e6d19efa1af00d654080fd20266bdc0b1",
+  "id": "001b6c716bf42c7e",
+  "secret": "[\"P2PK\",{\"nonce\":\"395162bf2d0add3c66aea9f22c45251dbee6e04bd9282addbb366a94cd4fb482\",\"data\":\"03ab50a667926fac858bac540766254c14b2b0334d10e8ec766455310224bbecf4\",\"tags\":[[\"locktime\",\"21\"],[\"pubkeys\",\"0229a91adec8dd9badb228c628a07fc1bf707a9b7d95dd505c490b1766fa7dc541\",\"033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e\"],[\"n_sigs\",\"2\"],[\"refund\",\"03ab50a667926fac858bac540766254c14b2b0334d10e8ec766455310224bbecf4\",\"033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e\"]]}]",
+  "witness": "{\"signatures\":[\"6a4dd46f929b4747efe7380d655be5cfc0ea943c679a409ea16d4e40968ce89de885d995937d5b85f24fa33a25df10990c5e11d5397199d779d5cf87d42f6627\",\"0c266fffe2ea2358fb93b5d30dfbcefe52a5bb53d6c85f37d54723613224a256165d20dd095768f168ab2e97bc5a879f7c2a84eee8963c9bcedcd39552dbe093\"]}"
+}
+```
+
+#### Valid Refund Multisig
+
+Has **ONE** valid signature (`n_sigs_refund` is omitted, so equals `1`) from the `refund` tag.
+
+```json
+{
+  "amount": 64,
+  "C": "02d7cd858d866fca404b5cb1ffd813946e6d19efa1af00d654080fd20266bdc0b1",
+  "id": "001b6c716bf42c7e",
+  "secret": "[\"P2PK\",{\"nonce\":\"395162bf2d0add3c66aea9f22c45251dbee6e04bd9282addbb366a94cd4fb482\",\"data\":\"03ab50a667926fac858bac540766254c14b2b0334d10e8ec766455310224bbecf4\",\"tags\":[[\"locktime\",\"21\"],[\"pubkeys\",\"0229a91adec8dd9badb228c628a07fc1bf707a9b7d95dd505c490b1766fa7dc541\",\"033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e\"],[\"n_sigs\",\"2\"],[\"refund\",\"03ab50a667926fac858bac540766254c14b2b0334d10e8ec766455310224bbecf4\",\"033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e\"]]}]",
+  "witness": "{\"signatures\":[\"d39631363480adf30433ee25c7cec28237e02b4808d4143469d4f390d4eae6ec97d18ba3cc6494ab1d04372f0838426ea296f25cb4bd8bddb296adc292eeaa96\"]}"
+}
+```
+
 ### SIG_INPUTS Test Vectors
 
 The following is a `Proof` with a valid signature.
@@ -19,7 +60,7 @@ The following is a `Proof` with an invalid signature as it is on a different sec
 ```json
 {
   "amount": 1,
-  "secret": "[\"P2PK\",{\"nonce\":\"0ed3fcb22c649dd7bbbdcca36e0c52d4f0187dd3b6a19efcc2bfbebb5f85b2a1\",\"data\":\"0249098aa8b9d2fbec49ff8598feb17b592b986e62319a4fa488a3dc36387157a7\",\"tags\":[[\"pubkeys\",\"0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798\",\"02142715675faf8da1ecc4d51e0b9e539fa0d52fdd96ed60dbe99adb15d6b05ad9\"],[\"n_sigs\",\"2\"],[\"sigflag\",\"SIG_INPUTS\"]]}]",
+  "secret": "[\"P2PK\",{\"nonce\":\"859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f\",\"data\":\"0249098aa8b9d2fbec49ff8598feb17b592b986e62319a4fa488a3dc36387157a7\",\"tags\":[[\"sigflag\",\"SIG_INPUTS\"]]}]",
   "C": "02698c4e2b5f9534cd0687d87513c759790cf829aa5739184a3e3735471fbda904",
   "id": "009a1f293253e41e",
   "witness": "{\"signatures\":[\"83564aca48c668f50d022a426ce0ed19d3a9bdcffeeaee0dc1e7ea7e98e9eff1840fcc821724f623468c94f72a8b0a7280fa9ef5a54a1b130ef3055217f467b3\"]}"
@@ -38,7 +79,7 @@ The following is a `Proof` with 2 signatures required to meet the multi-signatur
 }
 ```
 
-The following is a `Proof` with one one signature failing the multi-signature spend condition.
+The following is a `Proof` with one signature failing the multi-signature spend condition.
 
 ```json
 {
@@ -54,11 +95,11 @@ The following is a `Proof` with a signature from the refund key that is spendabl
 
 ```json
 {
-  "amount": 1,
-  "id": "009a1f293253e41e",
-  "secret": "[\"P2PK\",{\"nonce\":\"902685f492ef3bb2ca35a47ddbba484a3365d143b9776d453947dcbf1ddf9689\",\"data\":\"026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a\",\"tags\":[[\"pubkeys\",\"0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798\",\"03142715675faf8da1ecc4d51e0b9e539fa0d52fdd96ed60dbe99adb15d6b05ad9\"],[\"locktime\",\"21\"],[\"n_sigs\",\"2\"],[\"refund\",\"026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a\"],[\"sigflag\",\"SIG_INPUTS\"]]}]",
-  "C": "02698c4e2b5f9534cd0687d87513c759790cf829aa5739184a3e3735471fbda904",
-  "witness": "{\"signatures\":[\"710507b4bc202355c91ea3c147c0d0189c75e179d995e566336afd759cb342bcad9a593345f559d9b9e108ac2c9b5bd9f0b4b6a295028a98606a0a2e95eb54f7\"]}"
+  "amount": 64,
+  "C": "0257353051c02e2d650dede3159915c8be123ba4f47cf33183c7fedd20bd91a79b",
+  "id": "001b6c716bf42c7e",
+  "secret": "[\"P2PK\",{\"nonce\":\"4bc88ee09d1886c7461d45da205ca3274e1e3d9da2667c4865045cb18265a407\",\"data\":\"03d5edeb839be873df2348785506d36565f3b8f390fb931709a422b5a247ddefb1\",\"tags\":[[\"locktime\",\"21\"],[\"refund\",\"0234ad87e907e117db1590cc20a3942ffdfd5137aa563d36095d5cf5f96bada122\"]]}]",
+  "witness": "{\"signatures\":[\"b316c2ff9c15f0c5c3d230e99ad94bc76a11dfccbdc820366a3db7210288f22ef6cedcded1152904ec31056d1d5176d83a2d96df5cd4ff86afdde1c90c63af5e\"]}"
 }
 ```
 
@@ -66,11 +107,11 @@ The following is a `Proof` with a signature from the refund key that is **not** 
 
 ```json
 {
-  "amount": 1,
-  "id": "009a1f293253e41e",
-  "secret": "[\"P2PK\",{\"nonce\":\"64c46e5d30df27286166814b71b5d69801704f23a7ad626b05688fbdb48dcc98\",\"data\":\"026f6a2b1d709dbca78124a9f30a742985f7eddd894e72f637f7085bf69b997b9a\",\"tags\":[[\"pubkeys\",\"0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798\",\"03142715675faf8da1ecc4d51e0b9e539fa0d52fdd96ed60dbe99adb15d6b05ad9\"],[\"locktime\",\"21\"],[\"n_sigs\",\"2\"],[\"refund\",\"0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798\"],[\"sigflag\",\"SIG_INPUTS\"]]}]",
-  "C": "02698c4e2b5f9534cd0687d87513c759790cf829aa5739184a3e3735471fbda904",
-  "witness": "{\"signatures\":[\"f661d3dc046d636d47cb3d06586da42c498f0300373d1c2a4f417a44252cdf3809bce207c8888f934dba0d2b1671f1b8622d526840f2d5883e571b462630c1ff\"]}"
+  "amount": 64,
+  "C": "0215865e3b30bdf6f5cdc1ee2c33379d5629bdf2eff2595603d939ff8c65d80586",
+  "id": "001b6c716bf42c7e",
+  "secret": "[\"P2PK\",{\"nonce\":\"0c3d085898f1abf2b5521035f4d0f4ecf68c6a5109f6bc836833a1188f06be65\",\"data\":\"03206e0d488387a816bbafd957be51b073432c6c7a403ec4c2a0b27647326c5150\",\"tags\":[[\"locktime\",\"99999999999\"],[\"refund\",\"026acbcd0fff3a424499c83ec892d3155c9d1984438659f448d9d0f1af3e92276a\"]]}]",
+  "witness": "{\"signatures\":[\"e5b10d7627ab39bd0cefa219c63752a0026aa5ae754b91a0c7ee2596222f87942c442aca2957166a6b468350c09c9968792784d2ae7c42fc91739b55689f4c7a\"]}"
 }
 ```
 
@@ -105,7 +146,7 @@ The following is the `msg_to_sign` on the above `SwapRequest`.
 ["P2PK",{"nonce":"c7f280eb55c1e8564e03db06973e94bc9b666d9e1ca42ad278408fe625950303","data":"030d8acedfe072c9fa449a1efe0817157403fbec460d8e79f957966056e5dd76c1","tags":[["sigflag","SIG_ALL"]]}]02c97ee3d1db41cf0a3ddb601724be8711a032950811bf326f8219c50c4808d3cd2038ec853d65ae1b79b5cdbc2774150b2cb288d6d26e12958a16fb33c32d9a86c39
 ```
 
-The hex representation of sha256sum(msg_to_sign) of the should look like this: `de7f9e3ca0fcc5ed3258fcf83dbf1be7fa78a5ed6da7bf2aa60d61e9dc6eb09a`
+The hex representation of sha256sum(msg_to_sign) should look like this: `de7f9e3ca0fcc5ed3258fcf83dbf1be7fa78a5ed6da7bf2aa60d61e9dc6eb09a`
 
 The following is a `SwapRequest` with a valid sig_all signature.
 
@@ -130,7 +171,7 @@ The following is a `SwapRequest` with a valid sig_all signature.
 }
 ```
 
-The following is a `SwapRequest` that is invalid as there are multiple secrets.
+The following is a `SwapRequest` that is invalid as the spending conditions are not identical across inputs (secret tags are different).
 
 ```json
 {
@@ -169,7 +210,7 @@ The following is a `SwapRequest` that is invalid as there are multiple secrets.
 }
 ```
 
-The following is a `SwapRequest` multiple valid signatures are provided and required.
+The following is a `SwapRequest` where multiple valid signatures are required and provided.
 
 ```json
 {
@@ -192,35 +233,7 @@ The following is a `SwapRequest` multiple valid signatures are provided and requ
 }
 ```
 
-The following is an invalid `SwapRequest` with pubkeys and refund mixed.
-
-```json
-{
-  "inputs": [
-    {
-      "amount": 2,
-      "id": "00bfa73302d12ffd",
-      "secret": "[\"P2PK\",{\"nonce\":\"3e9253419a11f0a541dd6baeddecf8356fc864b5d061f12f05632bc3aee6b5c4\",\"data\":\"0343cca0e48ce9e3fdcddba4637ff8cdbf6f5ed9cfdf1873e63827e760f0ed4db5\",\"tags\":[[\"pubkeys\",\"0235e0a719f8b046cee90f55a59b1cdd6ca75ce23e49cbcd82c9e5b7310e21ebcd\",\"020443f98b356e021bae82bdfc05ff433cab21e27fca9ab7b0995aedb2e7aabc43\"],[\"locktime\",\"100\"],[\"n_sigs\",\"2\"],[\"refund\",\"026b432e62b041bf9cdae534203739c73fa506c9a2d6aa58a52bc601a1dec421e1\",\"02e3494a2e07e7f6e7d4567e0da7a563592bff1e121df2383667f15b83e9168a9e\"],[\"n_sigs_refund\",\"2\"],[\"sigflag\",\"SIG_ALL\"]]}]",
-      "C": "026c12ee3bffa5c617debcf823bf1af6a9b47145b699f2737bba3394f0893eb869",
-      "witness": "{\"signatures\":[\"bfe884145ce6512331324321c3946dfd812428a53656b108b59d26559a186ba2ab45e5be9ce94e2dff0d09078e25ccb82d06a8b3a63cd3dc67065b8f77292776\",\"236e5cc9c30f85a893a29a4302e41e6f2015caef4229f28fa65e2f5c9d55515cc9a1852093a81a5095055d85fd55bf4da124e55354b56e0a39e83b58b0afc197\"]}"
-    }
-  ],
-  "outputs": [
-    {
-      "amount": 1,
-      "id": "00bfa73302d12ffd",
-      "B_": "038ec853d65ae1b79b5cdbc2774150b2cb288d6d26e12958a16fb33c32d9a86c39"
-    },
-    {
-      "amount": 1,
-      "id": "00bfa73302d12ffd",
-      "B_": "03afe7c87e32d436f0957f1d70a2bca025822a84a8623e3a33aed0a167016e0ca5"
-    }
-  ]
-}
-```
-
-The following is a `SwapRequest` with locktime passed and refund keys signatures are valid
+The following is a `SwapRequest` where the locktime has passed and the refund key signatures are valid.
 
 ```json
 {
@@ -266,8 +279,7 @@ The following is a valid `SwapRequest` with an HTLC also locked to a public key
 }
 ```
 
-The following is an invalid `SwapRequest` with an HTLC also locked to a public key, locktime and refund key. locktime is
-not expired but proof is signed with refund key.
+The following is an invalid `SwapRequest` with an HTLC also locked to a public key, a locktime and a refund key. The locktime has not expired, but the proof is signed with the refund key.
 
 ```json
 {
@@ -348,7 +360,7 @@ The following is the valid `msg_to_sign` on the above `MeltRequest`.
 ["P2PK",{"nonce":"bbf9edf441d17097e39f5095a3313ba24d3055ab8a32f758ff41c10d45c4f3de","data":"029116d32e7da635c8feeb9f1f4559eb3d9b42d400f9d22a64834d89cde0eb6835","tags":[["sigflag","SIG_ALL"]]}]02a9d461ff36448469dccf828fa143833ae71c689886ac51b62c8d61ddaa10028b0038ec853d65ae1b79b5cdbc2774150b2cb288d6d26e12958a16fb33c32d9a86c39cF8911fzT88aEi1d-6boZZkq5lYxbUSVs-HbJxK0
 ```
 
-The hex representation of sha256sum(msg_to_sign) of the should look like this: `9efa1067cc7dc870f4074f695115829c3cd817a6866c3b84e9814adf3c3cf262`
+The hex representation of sha256sum(msg_to_sign) should look like this: `9efa1067cc7dc870f4074f695115829c3cd817a6866c3b84e9814adf3c3cf262`
 
 The following is a valid `SIG_ALL` `MeltRequest`.
 
