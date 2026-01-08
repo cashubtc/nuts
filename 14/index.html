@@ -918,18 +918,67 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#htlc" class="md-nav__link">
+  <a href="#htlc-locked-proof" class="md-nav__link">
     <span class="md-ellipsis">
       
-        HTLC
+        HTLC Locked Proof
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="HTLC">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#spending-htlc-proofs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spending HTLC Proofs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Spending HTLC Proofs">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#receiver-pathway-hash-lock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Receiver Pathway (hash lock)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sender-pathway-timelocked-refund" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sender Pathway (timelocked refund)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hash-lock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hash lock
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#witness-format" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -939,9 +988,15 @@
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#complex-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complex Example
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1228,12 +1283,13 @@
 <p><code>optional</code></p>
 <p><code>depends on: NUT-10</code></p>
 <hr />
-<p>This NUT describes the use of Hashed Timelock Contracts (HTLCs) which defines a spending condition based on <a href="../10/">NUT-10</a>'s well-known <code>Secret</code> format. Using HTLCs, ecash tokens can be locked to the hash of a preimage or a timelock. This enables use cases such as atomic swaps of ecash between users, and atomic coupling of an ecash spending condition to a Lightning HTLC.</p>
-<p><code>HTLC</code> spending conditions can be thought of as an extension of <code>P2PK</code> locks <a href="../11/">NUT-11</a> but with a hash lock in <code>Secret.data</code> and a new <code>Proof.witness.preimage</code> witness in the locked inputs to be spent. The <code>preimage</code> that was used to spend a locked token can be retrieved using <a href="../07/">NUT-07</a>. Caution: applications that rely on being able to retrieve the witness independent from the spender must check via the mint's <a href="../06/">info</a> endpoint that NUT-07 is supported.</p>
-<p>Caution: If the mint does not support this type of spending condition, proofs may be treated as a regular anyone-can-spend tokens. Applications need to make sure to check whether the mint supports a specific kind of spending condition by checking the mint's <a href="../06/">info</a> endpoint.</p>
-<h2 id="htlc">HTLC<a class="headerlink" href="#htlc" title="Permanent link">&para;</a></h2>
+<p>This NUT describes the use of Hashed Timelock Contracts (HTLCs) which defines a spending condition based on <a href="../10/">NUT-10</a>'s well-known <code>Secret</code> format. Using HTLCs, ecash proofs can be locked to the hash of a preimage and a timelock. This enables use cases such as atomic swaps of ecash between users, and atomic coupling of an ecash spending condition to a Lightning HTLC.</p>
+<p><code>HTLC</code> spending conditions can be thought of as an extension of <code>P2PK</code> locks (see <a href="../11/">NUT-11</a>) but with a hash lock in <code>Secret.data</code> and a new <code>Proof.witness.preimage</code> witness in the locked inputs to be spent. The <code>preimage</code> used to spend a locked Proof can be retrieved using <a href="../07/">NUT-07</a>.</p>
+<p>Caution: applications that rely on being able to retrieve the witness independently of the spender must check, via the mint’s <a href="../06/">info</a> endpoint, that NUT-07 is supported.</p>
+<p>Caution: if the mint does not support this type of spending condition, proofs may be treated as regular anyone-can-spend proofs. Applications must ensure that the mint supports a specific kind of spending condition by checking the mint’s <a href="../06/">info</a> endpoint.</p>
+<h2 id="htlc-locked-proof">HTLC Locked Proof<a class="headerlink" href="#htlc-locked-proof" title="Permanent link">&para;</a></h2>
 <p><a href="../10/">NUT-10</a> Secret <code>kind: HTLC</code></p>
-<p>If for a <code>Proof</code>, <code>Proof.secret</code> is a <code>Secret</code> of kind <code>HTLC</code>, the hash of the lock is in <code>Proof.secret.data</code>. The preimage for unlocking the HTLC is in the witness <code>Proof.witness.preimage</code>. All additional tags from <code>P2PK</code> locks are used here as well, allowing us to add a locktime, signature flag, and use multisig (see <a href="../11/">NUT-11</a>).</p>
+<p>If for a <code>Proof</code>, <code>Proof.secret</code> is a <code>Secret</code> of kind <code>HTLC</code>, the hash of the lock is in <code>Proof.secret.data</code>. The preimage for unlocking the HTLC is in the witness <code>Proof.witness.preimage</code>. All additional tags from P2PK locks can also be used here, allowing a locktime, signature flag, and multisig (see <a href="../11/">NUT-11</a>).</p>
 <p>Here is a concrete example of a <code>Secret</code> of kind <code>HTLC</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">[</span>
 <span class="w">  </span><span class="s2">&quot;HTLC&quot;</span><span class="p">,</span>
@@ -1255,10 +1311,43 @@
 <span class="p">]</span>
 </code></pre></div>
 
-<p>A <code>Proof</code> with this <code>Secret</code> can be spent in two ways. To spend the hash lock, the witness in <code>Proof.witness</code> includes the preimage to <code>Secret.data</code> and a signature from the key in <code>Secret.tag.pubkeys</code>. Additionally, if the current system time is later than <code>Secret.tag.locktime</code>, the <code>Proof</code> can be spent if <code>Proof.witness</code> includes a signature from the key in <code>Secret.tags.refund</code>.</p>
-<p>The hash lock in <code>Secret.data</code> and the preimage in <code>Proof.witness.preimage</code> is treated as 32 byte data encoded as 64 character hex strings.</p>
-<p>See <a href="../11/">NUT-11</a> for a description of the signature scheme, the additional use of signature flags, and how to require signature from multiple public keys (multisig).</p>
-<h5 id="witness-format">Witness format<a class="headerlink" href="#witness-format" title="Permanent link">&para;</a></h5>
+<p>The hash lock in <code>Secret.data</code> and the preimage in <code>Proof.witness.preimage</code> are treated as 32-byte data, encoded as 64-character hexadecimal strings.</p>
+<p>See <a href="../11/">NUT-11</a> for a description of the signature scheme, the additional use of signature flags, and how to require signatures from multiple public keys (Multisig).</p>
+<h2 id="spending-htlc-proofs">Spending HTLC Proofs<a class="headerlink" href="#spending-htlc-proofs" title="Permanent link">&para;</a></h2>
+<p>A <code>Proof</code> with a <code>Secret</code> of kind <code>HTLC</code> can be spent in two ways.</p>
+<h3 id="receiver-pathway-hash-lock">Receiver Pathway (hash lock)<a class="headerlink" href="#receiver-pathway-hash-lock" title="Permanent link">&para;</a></h3>
+<p>The receiver(s) listed in the <code>pubkeys</code> tag can spend the proof by providing <strong>BOTH</strong> of the following:</p>
+<ul>
+<li>The preimage to <code>Secret.data</code> in the <code>Proof.witness</code></li>
+<li>Signature(s) as per the <a href="../11/">NUT-11</a> rules for <strong>Locktime MultiSig</strong>.</li>
+</ul>
+<p>This pathway is <strong>ALWAYS</strong> available to the receivers, as possession of the preimage confirms performance of the Sender's wishes.</p>
+<h3 id="sender-pathway-timelocked-refund">Sender Pathway (timelocked refund)<a class="headerlink" href="#sender-pathway-timelocked-refund" title="Permanent link">&para;</a></h3>
+<p>The sender(s) listed in the <code>refund</code> tag can spend the proof once the <code>locktime</code> lock has "expired" by providing signature(s) as per the <a href="../11/">NUT-11</a> rules for <strong>Refund MultiSig</strong>.</p>
+<p><strong>NOTE:</strong> As per the <a href="../11/">NUT-11</a> rules, if the <code>refund</code> tag is not present, the HTLC proof would become "anyone can spend" after the <code>locktime</code> lock has "expired". Likewise, if the <code>locktime</code> is not present, or is not a valid unix timestamp, the HTLC proof will be permanently locked and can only be spent using the Receiver (hash lock) pathway.</p>
+<h2 id="hash-lock">Hash lock<a class="headerlink" href="#hash-lock" title="Permanent link">&para;</a></h2>
+<p>Aligned with Bitcoin's HTLC construction, the hash lock in <code>Secret.data</code> represents the <strong>SHA-256 hash</strong> of a 32-byte preimage.</p>
+<p>When an HTLC-locked proof is created, the <code>Secret.data</code> field must contain:</p>
+<div class="codehilite"><pre><span></span><code>hash_hex = bytes_to_hex(SHA256(preimage_bytes))
+</code></pre></div>
+
+<p>where:</p>
+<ul>
+<li><code>preimage_bytes</code> is exactly 32 bytes of arbitrary data, commonly random and uniformly distributed</li>
+<li><code>hash_hex</code> is the 32-byte SHA-256 digest of preimage_bytes, encoded as a 64-character lowercase hexadecimal string</li>
+</ul>
+<p>To successfully spend a Proof via the <strong>Receiver Pathway</strong>, the spender must present the matching <code>preimage_bytes</code>, encoded as a 64-character lowercase hexadecimal string in the <code>Proof.witness.preimage</code>.</p>
+<p>Mints and wallets <strong>must verify</strong> this equality before accepting the spend as valid:</p>
+<div class="codehilite"><pre><span></span><code>SHA256(hex_to_bytes(Proof.witness.preimage)) == hex_to_bytes(Proof.secret.data)
+</code></pre></div>
+
+<p>Here is an example of a matching hash / preimage pair:</p>
+<div class="codehilite"><pre><span></span><code>Proof.secret.data = &#39;ec4916dd28fc4c10d78e287ca5d9cc51ee1ae73cbfde08c6b37324cbfaac8bc5&#39;
+Proof.witness.preimage = &#39;0000000000000000000000000000000000000000000000000000000000000001&#39;
+</code></pre></div>
+
+<p>This hash-lock mechanism ensures that the Proof can only be spent once the secret preimage is revealed, allowing interoperability with external HTLC systems (such as Bitcoin or Lightning Network contracts).</p>
+<h2 id="witness-format">Witness format<a class="headerlink" href="#witness-format" title="Permanent link">&para;</a></h2>
 <p><code>HTLCWitness</code> is a serialized JSON string of the form</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;preimage&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;hex_s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
@@ -1267,6 +1356,36 @@
 </code></pre></div>
 
 <p>The witness for a spent proof can be obtained with a <code>Proof</code> state check (see <a href="../07/">NUT-07</a>).</p>
+<h2 id="complex-example">Complex Example<a class="headerlink" href="#complex-example" title="Permanent link">&para;</a></h2>
+<p>This is an example <code>Secret</code> that locks a <code>Proof</code> with an HTLC condition that can be spent in either of the following ways:</p>
+<p><strong>Receiver Pathway</strong> - 2-of-3 signatures from the public keys in the <code>pubkeys</code> tag <strong>PLUS</strong> the preimage in <code>Proof.witness.preimage</code> of the hash in <code>Secret.data</code>.</p>
+<p><strong>Sender Pathway</strong> - One signature from the public keys in the <code>refund</code> tag, only available once the <code>locktime</code> has expired.</p>
+<p>The signature flag <code>sigflag</code> indicates that signatures are necessary on the <code>inputs</code> and the <code>outputs</code> of the transaction this <code>Proof</code> is spent by.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">[</span>
+<span class="w">  </span><span class="s2">&quot;HTLC&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;nonce&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;da62796403af76c80cd6ce9153ed3746&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;023192200a0cfd3867e48eb63b03ff599c7e46c8f4e41146b2d281173ca6c50c&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">[</span><span class="s2">&quot;sigflag&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;SIG_ALL&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="p">[</span><span class="s2">&quot;n_sigs&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;2&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="p">[</span><span class="s2">&quot;locktime&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;1689418329&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;refund&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;02e2aeb97f47690e3c418592a5bcda77282d1339a3017f5558928c2441b7731d50&quot;</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;pubkeys&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;02698c4e2b5f9534cd0687d87513c759790cf829aa5739184a3e3735471fbda904&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;0249098aa8b9d2fbec49ff8598feb17b592b986e62319a4fa488a3dc36387157a7&quot;</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+
 <h2 id="mint-info-setting">Mint info setting<a class="headerlink" href="#mint-info-setting" title="Permanent link">&para;</a></h2>
 <p>The <a href="../06/">NUT-06</a> <code>MintMethodSetting</code> indicates support for this feature:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>

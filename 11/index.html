@@ -834,18 +834,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#pay-to-pubkey" class="md-nav__link">
+  <a href="#basic-case" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pay-to-Pubkey
+        Basic Case
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Pay-to-Pubkey">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#signature-scheme" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -854,9 +853,26 @@
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Signature scheme">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#witness-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Witness format
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#tags" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -865,19 +881,19 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Tags">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#signature-flags" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-flag" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Signature flags
+        Signature flag
       
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Signature flag">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#signature-flag-sig_inputs" class="md-nav__link">
@@ -902,17 +918,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#witness-format" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Witness format
-      
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -927,7 +932,8 @@
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Signature flag SIG_ALL">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#message-aggregation-for-sig_all" class="md-nav__link">
@@ -973,7 +979,62 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#locktime-tag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Locktime Tag
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Locktime Tag">
+      <ul class="md-nav__list">
+        
           <li class="md-nav__item">
+  <a href="#permanent-lock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Permanent Lock
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#active-lock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Active Lock
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expired-lock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Expired Lock
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#multisig" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -990,17 +1051,6 @@
     <span class="md-ellipsis">
       
         Locktime MultiSig
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#locktime" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Locktime
       
     </span>
   </a>
@@ -1026,11 +1076,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -1417,13 +1462,13 @@
 <p><code>optional</code></p>
 <p><code>depends on: NUT-10, NUT-08</code></p>
 <hr />
-<p>This NUT describes Pay-to-Public-Key (P2PK) which is one kind of spending condition based on <a href="../10/">NUT-10</a>'s well-known <code>Secret</code>. Using P2PK, we can lock ecash tokens to a receiver's ECC public key and require a Schnorr signature with the corresponding private key to unlock the ecash. The spending condition is enforced by the mint.</p>
-<p>Caution: If the mint does not support this type of spending condition, proofs may be treated as a regular anyone-can-spend tokens. Applications need to make sure to check whether the mint supports a specific kind of spending condition by checking the mint's <a href="../06/">NUT-06</a> info endpoint.</p>
-<h2 id="pay-to-pubkey">Pay-to-Pubkey<a class="headerlink" href="#pay-to-pubkey" title="Permanent link">&para;</a></h2>
+<p>This NUT describes Pay-to-Public-Key (P2PK) which is one kind of spending condition based on <a href="../10/">NUT-10</a>'s well-known <code>Secret</code>. Using P2PK, we can lock ecash Proofs (see <a href="../00/">NUT-00</a>) to a receiver's ECC public key and require a Schnorr signature with the corresponding private key to unlock the ecash. The spending condition is enforced by the mint.</p>
+<p>Caution: If the mint does not support this type of spending condition, Proofs may be treated as regular anyone-can-spend Proofs. Applications need to make sure to check whether the mint supports a specific kind of spending condition by checking the mint's <a href="../06/">NUT-06</a> info endpoint.</p>
+<h2 id="basic-case">Basic Case<a class="headerlink" href="#basic-case" title="Permanent link">&para;</a></h2>
 <p><a href="../10/">NUT-10</a> Secret <code>kind: P2PK</code></p>
 <p>If for a <code>Proof</code>, <code>Proof.secret</code> is a <code>Secret</code> of kind <code>P2PK</code>, the proof must be unlocked by providing a witness <code>Proof.witness</code> and one or more valid signatures in the array <code>Proof.witness.signatures</code>.</p>
-<p>In the basic case, when spending a locked token, the mint requires one valid Schnorr signature in <code>Proof.witness.signatures</code> on <code>Proof.secret</code> by the public key in <code>Proof.Secret.data</code>.</p>
-<p>To give a concrete example of the basic case, to mint a locked token we first create a P2PK <code>Secret</code> that reads:</p>
+<p>In the basic case, when spending a locked Proof, the mint requires one valid Schnorr signature in <code>Proof.witness.signatures</code> on <code>Proof.secret</code> by the public key in <code>Proof.secret.data</code>.</p>
+<p>To give a concrete example of the basic case, to mint a locked Proof we first create a P2PK <code>Secret</code> that reads:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">[</span>
 <span class="w">  </span><span class="s2">&quot;P2PK&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="p">{</span>
@@ -1434,7 +1479,7 @@
 <span class="p">]</span>
 </code></pre></div>
 
-<p>Here, <code>Secret.data</code> is the public key of the recipient of the locked ecash. We serialize this <code>Secret</code> to a string in <code>Proof.secret</code> and get a blind signature by the mint that is stored in <code>Proof.C</code> (see <a href="../03/">NUT-03</a>]).</p>
+<p>Here, <code>Secret.data</code> is the public key of the recipient of the locked ecash. We serialize this <code>Secret</code> to a string in <code>Proof.secret</code> and get a blind signature by the mint that is stored in <code>Proof.C</code> (see <a href="../03/">NUT-03</a>).</p>
 <p>The recipient who owns the private key of the public key <code>Secret.data</code> can spend this proof by providing a signature on the serialized <code>Proof.secret</code> string that is then added to <code>Proof.witness.signatures</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
@@ -1445,25 +1490,37 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<h3 id="signature-scheme">Signature scheme<a class="headerlink" href="#signature-scheme" title="Permanent link">&para;</a></h3>
-<p>To spend a token locked with <code>P2PK</code>, the spender needs to include signatures in the spent proofs. We use <code>libsecp256k1</code>'s serialized 64 byte Schnorr signatures on the SHA256 hash of the message to sign. The message to sign is the field <code>Proof.secret</code> in the inputs. If indicated by <code>Secret.tags.sigflag</code> in the inputs, outputs might also require signatures on the message <code>BlindedMessage.B_</code>.</p>
+<h2 id="signature-scheme">Signature scheme<a class="headerlink" href="#signature-scheme" title="Permanent link">&para;</a></h2>
+<p>To spend Proofs locked with <code>P2PK</code>, the spender needs to include signatures in the Proofs used as "inputs" for the spending operation. We use <code>libsecp256k1</code>'s serialized 64 byte Schnorr signatures on the SHA256 hash of the message to sign. The message to sign is the field <code>Proof.secret</code> in the inputs, unless otherwise indicated by the <code>Secret.tags.sigflag</code> in the inputs, as detailed below.</p>
 <p>An ecash spending operation like <a href="../03/">swap</a> and <a href="../05/">melt</a> can have multiple inputs and outputs. If we have more than one locked input, we either provide signatures in each input individually (for <code>SIG_INPUTS</code>) or only in the first input for the entire transaction (for <code>SIG_ALL</code>). The inputs are the <code>Proofs</code> provided in the <code>inputs</code> field and the outputs are the <code>BlindedMessages</code> in the <code>outputs</code> field in the request body (see <code>PostMeltRequest</code> in <a href="../05/">NUT-05</a> and <code>PostSwapRequest</code> in <a href="../03/">NUT-03</a>).</p>
-<h3 id="tags">Tags<a class="headerlink" href="#tags" title="Permanent link">&para;</a></h3>
-<p>More complex spending conditions can be defined in the tags in <code>Secret.tags</code>. All tags are optional. Tags are arrays with two or more strings being <code>["key", "value1", "value2", ...]</code>. We denote a specific tag in a proof</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>The field <code>Proof.secret</code> contains escaped JSON for transport. The message to sign MUST be constructed using the <strong>unescaped</strong> secret string, eg: ["P2PK",{"nonce":"c7f280eb55c1e856...</p>
+</blockquote>
+<h3 id="witness-format">Witness format<a class="headerlink" href="#witness-format" title="Permanent link">&para;</a></h3>
+<p>Signatures are stored in <code>P2PKWitness</code> objects and are provided in either each <code>Proof.witness</code> of all inputs separately (for <code>SIG_INPUTS</code>) or only in the first input of the transaction (for <code>SIG_ALL</code>). <code>P2PKWitness</code> is a serialized JSON string of the form</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">&lt;hex_s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">]</span><span class="err">&gt;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The <code>signatures</code> are an array of signatures in hex and correspond to the signatures by one or more signing public keys.</p>
+<h2 id="tags">Tags<a class="headerlink" href="#tags" title="Permanent link">&para;</a></h2>
+<p>More complex spending conditions can be defined in the tags in <code>Secret.tags</code>. All tags are optional. Tags are arrays with two or more strings being <code>["key", "value1", "value2", ...]</code>. We denote a specific tag in a proof by its <code>key</code>.</p>
 <p>Supported tags are:</p>
 <ul>
-<li><code>sigflag: &lt;str_enum[SIG_FLAG]&gt;</code> sets the signature flag</li>
+<li><code>sigflag: &lt;str_enum[SIG_FLAG]&gt;</code> sets the <a href="#signature-flag">signature flag</a></li>
 <li><code>pubkeys: &lt;hex_str&gt;</code> are additional public keys (together with the one in the <code>data</code> field of the secret) that can provide signatures (<em>allows multiple entries</em>)</li>
-<li><code>n_sigs: &lt;int&gt;</code> specifies the minimum number of public keys providing valid signatures</li>
+<li><code>n_sigs: &lt;int&gt;</code> specifies the minimum number of <a href="#locktime-multisig">Locktime Multisig</a> public keys providing valid signatures</li>
 <li><code>locktime: &lt;int&gt;</code> is the Unix timestamp of when the lock expires</li>
-<li><code>refund: &lt;hex_str&gt;</code> are optional refund public keys that can exclusively spend after <code>locktime</code> (<em>allows multiple entries</em>)</li>
-<li><code>n_sigs_refund: &lt;int&gt;</code> specifies the minimum number of refund public keys providing valid signatures</li>
+<li><code>refund: &lt;hex_str&gt;</code> are additional public keys that can provide signatures after <code>locktime</code> (<em>allows multiple entries</em>)</li>
+<li><code>n_sigs_refund: &lt;int&gt;</code> specifies the minimum number of <a href="#refund-multisig">Refund Multisig</a> public keys providing valid signatures after <code>locktime</code> expires</li>
 </ul>
 <blockquote>
 <p>[!NOTE]</p>
 <p>The tag serialization type is <code>[&lt;str&gt;, &lt;str&gt;, ...]</code> but some tag values are <code>int</code>. Wallets and mints must cast types appropriately for de/serialization.</p>
 </blockquote>
-<h4 id="signature-flags">Signature flags<a class="headerlink" href="#signature-flags" title="Permanent link">&para;</a></h4>
+<h2 id="signature-flag">Signature flag<a class="headerlink" href="#signature-flag" title="Permanent link">&para;</a></h2>
 <p>Signature flags are defined in the tag <code>Secret.tags['sigflag']</code>. Currently, there are two signature flags.</p>
 <ul>
 <li><code>SIG_INPUTS</code> requires valid signatures on all inputs independently. It is the default signature flag and will be applied if the <code>sigflag</code> tag is absent.</li>
@@ -1471,9 +1528,9 @@
 </ul>
 <p>If any one input has the signature flag <code>SIG_ALL</code>, then all inputs are required to have the same kind, the flag <code>SIG_ALL</code> and the same <code>Secret.data</code> and <code>Secret.tags</code>, otherwise an error is returned.</p>
 <p><code>SIG_INPUTS</code> is only enforced if no input is <code>SIG_ALL</code>.</p>
-<h4 id="signature-flag-sig_inputs">Signature flag <code>SIG_INPUTS</code><a class="headerlink" href="#signature-flag-sig_inputs" title="Permanent link">&para;</a></h4>
-<p><code>SIG_INPUTS</code> means that each <code>Proof</code> (input) requires it's own signature. The signature is provided in the <code>Proof.witness</code> field of each input separately. The format of the <a href="#witness-format">witness</a> is defined later on.</p>
-<h5 id="signed-inputs">Signed inputs<a class="headerlink" href="#signed-inputs" title="Permanent link">&para;</a></h5>
+<h3 id="signature-flag-sig_inputs">Signature flag <code>SIG_INPUTS</code><a class="headerlink" href="#signature-flag-sig_inputs" title="Permanent link">&para;</a></h3>
+<p><code>SIG_INPUTS</code> means that each <code>Proof</code> (input) requires its own signature. The signature is provided in the <code>Proof.witness</code> field of each input separately. The format of the <a href="#witness-format">witness</a> was defined earlier on.</p>
+<h4 id="signed-inputs">Signed inputs<a class="headerlink" href="#signed-inputs" title="Permanent link">&para;</a></h4>
 <p>A <code>Proof</code> (an input) with a signature <code>P2PKWitness.signatures</code> on <code>secret</code> is the JSON (see <a href="../00/">NUT-00</a>):</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
@@ -1485,15 +1542,7 @@
 </code></pre></div>
 
 <p>The <code>secret</code> field is <strong>signed as a string</strong>.</p>
-<h5 id="witness-format">Witness format<a class="headerlink" href="#witness-format" title="Permanent link">&para;</a></h5>
-<p>Signatures are stored in <code>P2PKWitness</code> objects and are provided in either each <code>Proof.witness</code> of all inputs separately (for <code>SIG_INPUTS</code>) or only in the first input of the transaction (for <code>SIG_ALL</code>). <code>P2PKWitness</code> is a serialized JSON string of the form</p>
-<div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">&lt;hex_s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">]</span><span class="err">&gt;</span>
-<span class="p">}</span>
-</code></pre></div>
-
-<p>The <code>signatures</code> are an array of signatures in hex and correspond to the signatures by one or more signing public keys.</p>
-<h4 id="signature-flag-sig_all">Signature flag <code>SIG_ALL</code><a class="headerlink" href="#signature-flag-sig_all" title="Permanent link">&para;</a></h4>
+<h3 id="signature-flag-sig_all">Signature flag <code>SIG_ALL</code><a class="headerlink" href="#signature-flag-sig_all" title="Permanent link">&para;</a></h3>
 <p><code>SIG_ALL</code> is enforced only if the following conditions are met:</p>
 <ul>
 <li>If one input has the signature flag <code>SIG_ALL</code>, all other inputs MUST have the same <code>Secret.data</code> and <code>Secret.tags</code>, and by extension, also be <code>SIG_ALL</code>.</li>
@@ -1516,36 +1565,52 @@
 </code></pre></div>
 
 <p>Here, <code>||</code> denotes string concatenation. The <code>C</code> of each input and <code>B_</code> of each output are <strong>hex strings</strong> and <code>amount</code> is a UTF-encoded string.</p>
-<h3 id="multisig">Multisig<a class="headerlink" href="#multisig" title="Permanent link">&para;</a></h3>
-<p>Cashu offers two levels of multi-signature protection: <code>Locktime MultiSig</code> and <code>Refund MultiSig</code>, which are activated depending on the status of the proof's <code>locktime</code> tag.</p>
-<h4 id="locktime-multisig">Locktime MultiSig<a class="headerlink" href="#locktime-multisig" title="Permanent link">&para;</a></h4>
+<h2 id="locktime-tag">Locktime Tag<a class="headerlink" href="#locktime-tag" title="Permanent link">&para;</a></h2>
+<p>The <code>locktime</code> tag signals which set of locking rules the mint should apply. There are three possible states the <code>locktime</code> tag can represent:</p>
+<h3 id="permanent-lock">Permanent Lock<a class="headerlink" href="#permanent-lock" title="Permanent link">&para;</a></h3>
+<p>If the <code>locktime</code> tag is not present, or is not a valid unix time, the lock is considered "permanent".</p>
+<p><a href="#locktime-multisig">Locktime Multisig</a> conditions apply if the <code>pubkeys</code> tag is present, <a href="#basic-case">Basic Case</a> conditions if not.</p>
+<h3 id="active-lock">Active Lock<a class="headerlink" href="#active-lock" title="Permanent link">&para;</a></h3>
+<p>If the <code>locktime</code> tag is a valid unix time and the mint's local clock is less than <code>locktime</code>, the lock is "active".</p>
+<p><a href="#locktime-multisig">Locktime Multisig</a> conditions apply if the <code>pubkeys</code> tag is present, <a href="#basic-case">Basic Case</a> conditions if not.</p>
+<h3 id="expired-lock">Expired Lock<a class="headerlink" href="#expired-lock" title="Permanent link">&para;</a></h3>
+<p>If the <code>locktime</code> tag is a valid unix time and the mint's local clock is greater than <code>locktime</code>, the lock has "expired".</p>
+<p>Both <a href="#locktime-multisig">Locktime Multisig</a> and <a href="#refund-multisig">Refund Multisig</a> conditions apply if the <code>refund</code> tag is present, otherwise the proof is considered unlocked and spendable without a witness signature.</p>
 <blockquote>
 <p>[!NOTE]
-Locktime Multisig conditions only apply if the <code>locktime</code> tag is not present, or is a timestamp in the future.</p>
+A <code>Proof</code> is considered spendable by anyone if it only requires a <code>secret</code> and a valid unblinded signature <code>C</code> to be spent (which is the default case in <a href="../00/">NUT-00</a>).</p>
 </blockquote>
-<p>If the <code>pubkeys</code> tag is present, the <code>Proof</code> is spendable only if a valid signature is given by at least ONE of the public keys contained in the <code>Secret.data</code> field or the <code>pubkeys</code> tag.</p>
+<h2 id="multisig">Multisig<a class="headerlink" href="#multisig" title="Permanent link">&para;</a></h2>
+<p>Cashu offers two multi-signature pathways: <code>Locktime MultiSig</code> and <code>Refund MultiSig</code>, which are activated depending on the status of the proof's <code>locktime</code> tag.</p>
+<blockquote>
+<p>[!NOTE]
+Each pathway has a self-contained set of conditions which must be satisfied for that pathway to be valid. You cannot mix/blend conditions between pathways.</p>
+</blockquote>
+<h3 id="locktime-multisig">Locktime MultiSig<a class="headerlink" href="#locktime-multisig" title="Permanent link">&para;</a></h3>
+<p>Locktime Multisig extends the <a href="#basic-case">Basic Case</a> by allowing proofs to be locked to multiple public keys. The additional locking public keys are stored in the <code>pubkeys</code> tag.</p>
+<p>If the <code>pubkeys</code> tag is present, the <code>Proof</code> is spendable only if a valid signature is given by <strong>at least ONE</strong> of the public keys contained in the <code>Secret.data</code> field or the <code>pubkeys</code> tag.</p>
 <p>If the <code>n_sigs</code> tag is a positive integer, the mint will require at least <code>n_sigs</code> of those public keys to provide a valid signature.</p>
-<p>If the number of public keys with valid signatures is greater or equal to the number specified in <code>n_sigs</code>, the transaction is valid. The signatures are provided in an array of strings in the <code>P2PKWitness</code> object.</p>
-<p>Expressed as an "n-of-m" scheme, <code>n = n_sigs</code> is the number of required signatures and <code>m = 1 (data field) + len(pubkeys tag)</code> is the number of public keys that could sign.</p>
+<p>If the number of public keys with valid signatures is greater or equal to the number specified in <code>n_sigs</code> (or <code>1</code> if <code>n_sigs</code> is not present), the transaction is valid. The signatures are provided in an array of strings in the <code>P2PKWitness</code> object.</p>
+<p>Expressed as an "n-of-m" scheme, <code>n = n_sigs</code> is the number of required signatures and <code>m = 1 (data field) + count(pubkeys tag keys)</code> is the total number of public keys that <em>could</em> sign.</p>
 <blockquote>
 <p>[!CAUTION]</p>
-<p>Because Schnorr signatures are non-deterministic, we expect a minimum number of unique public keys with valid signatures instead of expecting a minimum number of signatures.</p>
+<p>Because Schnorr signatures are non-deterministic (due to auxiliary random data), we expect a minimum number of unique public keys with valid signatures instead of expecting a minimum number of signatures.</p>
 </blockquote>
-<h4 id="locktime">Locktime<a class="headerlink" href="#locktime" title="Permanent link">&para;</a></h4>
-<p>If the tag <code>locktime</code> is the unix time and the mint's local clock is greater than <code>locktime</code>, the <code>Proof</code> becomes spendable by anyone, except if the following condition is also true.</p>
-<blockquote>
-<p>[!NOTE]
-A <code>Proof</code> is considered spendable by anyone if it only requires a <code>secret</code> and a valid signature <code>C</code> to be spent (which is the default case).</p>
-</blockquote>
-<h4 id="refund-multisig">Refund MultiSig<a class="headerlink" href="#refund-multisig" title="Permanent link">&para;</a></h4>
-<p>If the <code>locktime</code> tag is in the past and the <code>refund</code> tag is present, the <code>Proof</code> is spendable only if a valid signature is given by at least ONE of the <code>refund</code> pubkeys.</p>
-<p>If the <code>n_sigs_refund</code> tag is present, the mint will require at least<code>n_sigs_refund</code> of the <code>refund</code> pubkeys to provide a valid signature.</p>
+<h3 id="refund-multisig">Refund MultiSig<a class="headerlink" href="#refund-multisig" title="Permanent link">&para;</a></h3>
+<p>Refund Multisig allows proofs to be <em>additionally spendable</em> by a separate set of public keys once the <code>locktime</code> has expired. These public keys are stored in the <code>refund</code> tag, and can include keys previously listed in <code>data</code> or <code>pubkeys</code>.</p>
+<p><a href="#locktime-multisig">Locktime Multisig</a> conditions continue to apply, and the proof can continue to be spent according to Locktime Multisig rules.</p>
+<p><strong>In addition</strong>, the <code>Proof</code> can be spent if a valid signature is given by <strong>at least ONE</strong> of the public keys contained in the <code>refund</code> tag.</p>
+<p>If the <code>n_sigs_refund</code> tag is a positive integer, the mint will require at least <code>n_sigs_refund</code> of those <code>refund</code> public keys to provide a valid signature.</p>
+<p>If the number of <code>refund</code> public keys with valid signatures is greater or equal to the number specified in <code>n_sigs_refund</code> (or <code>1</code> if <code>n_sigs_refund</code> is not present), the transaction is valid. The signatures are provided in an array of strings in the <code>P2PKWitness</code> object.</p>
+<p>Expressed as an "n-of-m" scheme, <code>n = n_sigs_refund</code> is the number of required signatures and <code>m = count(refund tag keys)</code> is the total number of <code>refund</code> keys that <em>could</em> sign.</p>
 <blockquote>
 <p>[!CAUTION]</p>
-<p>Because Schnorr signatures are non-deterministic, we expect a minimum number of unique public keys with valid signatures instead of expecting a minimum number of signatures.</p>
+<p>Because Schnorr signatures are non-deterministic (due to auxiliary random data), we expect a minimum number of unique public keys with valid signatures instead of expecting a minimum number of signatures.</p>
 </blockquote>
-<h4 id="complex-example">Complex Example<a class="headerlink" href="#complex-example" title="Permanent link">&para;</a></h4>
-<p>This is an example <code>Secret</code> that locks a <code>Proof</code> with a Pay-to-Pubkey (P2PK) condition that requires 2-of-3 signatures from the public keys in the <code>data</code> field and the <code>pubkeys</code> tag. If the <code>timelock</code> has passed, the <code>Proof</code> becomes spendable with a single signature from ONE of the two public keys in the <code>refund</code> tag. The signature flag <code>sigflag</code> indicates that signatures are necessary on the <code>inputs</code> and the <code>outputs</code> of the transaction this <code>Proof</code> is spent by.</p>
+<h3 id="complex-example">Complex Example<a class="headerlink" href="#complex-example" title="Permanent link">&para;</a></h3>
+<p>This is an example <code>Secret</code> that locks a <code>Proof</code> with a Pay-to-Pubkey (P2PK) condition that requires 2-of-3 signatures from the public keys in the <code>data</code> field and the <code>pubkeys</code> tag.</p>
+<p>If the <code>locktime</code> has passed, the <code>Proof</code> continues to be spendable with 2-of-3 signatures from the public keys in the <code>data</code> field and the <code>pubkeys</code> tag. But now it <strong>ALSO</strong> becomes spendable with a single signature from any ONE of the public keys in the <code>refund</code> tag.</p>
+<p>The signature flag <code>sigflag</code> indicates that signatures are necessary on the <code>inputs</code> and the <code>outputs</code> of the transaction this <code>Proof</code> is spent by.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">[</span>
 <span class="w">  </span><span class="s2">&quot;P2PK&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="p">{</span>
