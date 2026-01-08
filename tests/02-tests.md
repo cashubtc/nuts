@@ -91,7 +91,7 @@ The following keysets and corresponding keyset IDs are correct.
 
 ### Vector 1
 
-- Keyset id: `0192e40e27cdb961670dfb011d920566d574a9e8b4cce8252247f0d812fbd6be37`
+- Keyset id: `015ba18a8adcd02e715a58358eb618da4a4b3791151a4bee5e968bb88406ccf76a`
 - Unit: `sat`
 - Input fee ppk: `100`
 - Final expiry: `2059210353`
@@ -109,7 +109,7 @@ Keys:
 
 ### Vector 2
 
-- Keyset id: `0170fd475d6590d4e91db7eb9fc5a01b38f93e6d6a78f4884729c9c6bf567be6f2`
+- Keyset id: `01ab6aa4ff30390da34986d84be5274b48ad7a74265d791095bfc39f4098d9764f`
 - Unit: `sat`
 - Input fee ppk: `0`
 - Final expiry: `2059210353`
@@ -187,7 +187,7 @@ Keys:
 
 ### Vector 3
 
-- Keyset id: `01fbd53bfc11229ce0f47e5edf4b0dfbfb9e94613d47539078c833ed71dcfa8803`
+- Keyset id: `012fbb01a4e200c76df911eeba3b8fe1831202914b24664f4bccbd25852a6708f8`
 - Unit: `sat`
 - Input fee ppk: `0`
 

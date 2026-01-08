@@ -60,7 +60,7 @@ The corresponding derivation paths are
 
 ## Version 2: Secret derivation
 
-Using [NUT-13](13.md) derivation procedure for V2 with keyset ID `0192e40e27cdb961670dfb011d920566d574a9e8b4cce8252247f0d812fbd6be37`, we derive values starting from the following BIP39 mnemonic:
+Using [NUT-13](13.md) derivation procedure for V2 with keyset ID `015ba18a8adcd02e715a58358eb618da4a4b3791151a4bee5e968bb88406ccf76a`, we derive values starting from the following BIP39 mnemonic:
 
 ```json
 {
@@ -72,11 +72,11 @@ The secrets derived for the first five counters from `counter=0` to `counter=4` 
 
 ```json
 {
-  "secret_0": "244d2c0ea9735ef0a400a5b29a1467d6794d5349bb47b587442bb0f12af8bea7",
-  "secret_1": "de51fd389c2e3955fa4532de2eacea01376d86512c65ce16d8475e433962b218",
-  "secret_2": "cec18f3e333a0310c090024529802610c00b189d38c71f0d53606bd66e82fffd",
-  "secret_3": "82f233e1cd63d921eb2583f16914bb76d590cd8160f5fee4a4ec4ff72adb5dcd",
-  "secret_4": "253b5e0960fa63519e0666e87577a05dfe447f379952e36640116bb47f9a6c15"
+  "secret_0": "db5561a07a6e6490f8dadeef5be4e92f7cebaecf2f245356b5b2a4ec40687298",
+  "secret_1": "b70e7b10683da3bf1cdf0411206f8180c463faa16014663f39f2529b2fda922e",
+  "secret_2": "78a7ac32ccecc6b83311c6081b89d84bb4128f5a0d0c5e1af081f301c7a513f5",
+  "secret_3": "094a2b6c63bfa7970bc09cda0e1cfc9cd3d7c619b8e98fabcfc60aea9e4963e5",
+  "secret_4": "5e89fc5d30d0bf307ddf0a3ac34aa7a8ee3702169dafa3d3fe1d0cae70ecd5ef"
 }
 ```
 
@@ -84,10 +84,10 @@ The corresponding blinding factors `r` are:
 
 ```json
 {
-  "r_0": "88df4711b6444b3e8ed3e9dd629d50f7ee6db7c65644526700eb7bcfc89c8ea1",
-  "r_1": "b514140fa4396fcbff7c2b7fec48f113cfe6a3a595ee8c426d5c63299f40f6d0",
-  "r_2": "68ab0ee49f8fe59d99f7b9da452354dd61b24575f17d6e9a7ce13a31e073c67e",
-  "r_3": "f40e0f2dcc145d9c4fdc6a1758d387b1b6ee195ba919d52eada78ee8ff45d680",
-  "r_4": "490b2174f8e232e0a9eeabc128f7e1fcd71538b7d41335927205aaf6bcf3ccc8"
+  "r_0": "6d26181a3695e32e9f88b80f039ba1ae2ab5a200ad4ce9dbc72c6d3769f2b035",
+  "r_1": "bde4354cee75545bea1a2eee035a34f2d524cee2bb01613823636e998386952e",
+  "r_2": "f40cc1218f085b395c8e1e5aaa25dccc851be3c6c7526a0f4e57108f12d6dac4",
+  "r_3": "099ed70fc2f7ac769bc20b2a75cb662e80779827b7cc358981318643030577d0",
+  "r_4": "5550337312d223ba62e3f75cfe2ab70477b046d98e3e71804eade3956c7b98cf"
 }
 ```
