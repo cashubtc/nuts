@@ -1,8 +1,8 @@
 # NUT-13 Test vectors
 
-## Keyset ID integer representation
+## Version 1: keyset ID integer representation
 
-The integer representation of a keyset with an ID `009a1f293253e41e` and its corresponding derivation path for a counter of value `{counter}` are
+The integer representation of a keyset with an ID `009a1f293253e41e` and its corresponding derivation path for a counter of value `{counter}` are:
 
 ```json
 {
@@ -12,9 +12,9 @@ The integer representation of a keyset with an ID `009a1f293253e41e` and its cor
 }
 ```
 
-## Secret derivatoin
+## Version 1: Secret derivation
 
-We derive values starting from the following BIP39 mnemonic.
+Using derivation `m/129372'/0'/864559728'/{counter}'`, we derive values starting from the following BIP39 mnemonic.
 
 ```json
 {
@@ -55,5 +55,39 @@ The corresponding derivation paths are
   "derivation_path_2": "m/129372'/0'/864559728'/2'",
   "derivation_path_3": "m/129372'/0'/864559728'/3'",
   "derivation_path_4": "m/129372'/0'/864559728'/4'"
+}
+```
+
+## Version 2: Secret derivation
+
+Using [NUT-13](13.md) derivation procedure for V2 with keyset ID `015ba18a8adcd02e715a58358eb618da4a4b3791151a4bee5e968bb88406ccf76a`, we derive values starting from the following BIP39 mnemonic:
+
+```json
+{
+  "mnemonic": "half depart obvious quality work element tank gorilla view sugar picture humble"
+}
+```
+
+The secrets derived for the first five counters from `counter=0` to `counter=4` are:
+
+```json
+{
+  "secret_0": "db5561a07a6e6490f8dadeef5be4e92f7cebaecf2f245356b5b2a4ec40687298",
+  "secret_1": "b70e7b10683da3bf1cdf0411206f8180c463faa16014663f39f2529b2fda922e",
+  "secret_2": "78a7ac32ccecc6b83311c6081b89d84bb4128f5a0d0c5e1af081f301c7a513f5",
+  "secret_3": "094a2b6c63bfa7970bc09cda0e1cfc9cd3d7c619b8e98fabcfc60aea9e4963e5",
+  "secret_4": "5e89fc5d30d0bf307ddf0a3ac34aa7a8ee3702169dafa3d3fe1d0cae70ecd5ef"
+}
+```
+
+The corresponding blinding factors `r` are:
+
+```json
+{
+  "r_0": "6d26181a3695e32e9f88b80f039ba1ae2ab5a200ad4ce9dbc72c6d3769f2b035",
+  "r_1": "bde4354cee75545bea1a2eee035a34f2d524cee2bb01613823636e998386952e",
+  "r_2": "f40cc1218f085b395c8e1e5aaa25dccc851be3c6c7526a0f4e57108f12d6dac4",
+  "r_3": "099ed70fc2f7ac769bc20b2a75cb662e80779827b7cc358981318643030577d0",
+  "r_4": "5550337312d223ba62e3f75cfe2ab70477b046d98e3e71804eade3956c7b98cf"
 }
 ```

@@ -2,11 +2,12 @@
 
 | Code  | Description                                     | Relevant nuts                            |
 | ----- | ----------------------------------------------- | ---------------------------------------- |
-| 10002 | Blinded message of output already signed        | [NUT-03][03], [NUT-04][04], [NUT-05][05] |
-| 10003 | Token could not be verified                     | [NUT-03][03], [NUT-05][05]               |
-| 11001 | Token is already spent                          | [NUT-03][03], [NUT-05][05]               |
-| 11002 | Transaction is not balanced (inputs != outputs) | [NUT-02][02], [NUT-03][03], [NUT-05][05] |
-| 11005 | Unit in request is not supported                | [NUT-04][04], [NUT-05][05]               |
+| 10001 | Proof verification failed                       | [NUT-03][03], [NUT-05][05]               |
+| 11001 | Proofs already spent                            | [NUT-03][03], [NUT-05][05]               |
+| 11002 | Proofs are pending                              | [NUT-03][03], [NUT-05][05]               |
+| 11003 | Outputs already signed                          | [NUT-03][03], [NUT-04][04], [NUT-05][05] |
+| 11004 | Outputs are pending                             | [NUT-03][03], [NUT-04][04], [NUT-05][05] |
+| 11005 | Transaction is not balanced (inputs != outputs) | [NUT-02][02], [NUT-03][03], [NUT-05][05] |
 | 11006 | Amount outside of limit range                   | [NUT-04][04], [NUT-05][05]               |
 | 11007 | Duplicate inputs provided                       | [NUT-03][03], [NUT-04][04], [NUT-05][05] |
 | 11008 | Duplicate outputs provided                      | [NUT-03][03], [NUT-04][04], [NUT-05][05] |
@@ -14,10 +15,11 @@
 | 11010 | Inputs and outputs not of same unit             | [NUT-03][03], [NUT-04][04], [NUT-05][05] |
 | 11011 | Amountless invoice is not supported             | [NUT-05][05]                             |
 | 11012 | Amount in request does not equal invoice        | [NUT-05][05]                             |
+| 11013 | Unit in request is not supported                | [NUT-04][04], [NUT-05][05]               |
 | 12001 | Keyset is not known                             | [NUT-02][02], [NUT-04][04]               |
 | 12002 | Keyset is inactive, cannot sign messages        | [NUT-02][02], [NUT-03][03], [NUT-04][04] |
 | 20001 | Quote request is not paid                       | [NUT-04][04]                             |
-| 20002 | Tokens have already been issued for quote       | [NUT-04][04]                             |
+| 20002 | Quote has already been issued                   | [NUT-04][04]                             |
 | 20003 | Minting is disabled                             | [NUT-04][04]                             |
 | 20004 | Lightning payment failed                        | [NUT-05][05]                             |
 | 20005 | Quote is pending                                | [NUT-04][04], [NUT-05][05]               |
