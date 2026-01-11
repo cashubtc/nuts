@@ -1309,7 +1309,7 @@
 </code></pre></div>
 
 <h3 id="v4-tokens">V4 tokens<a class="headerlink" href="#v4-tokens" title="Permanent link">&para;</a></h3>
-<p>V4 tokens are a space-efficient way of serializing tokens using the CBOR binary format. All field are single characters and hex strings are encoded in binary. V4 tokens can only hold proofs from a single mint.</p>
+<p>V4 tokens are a space-efficient way of serializing tokens using the CBOR binary format. All keys are single characters and hex strings are encoded in binary. V4 tokens can only hold proofs from a single mint.</p>
 <h5 id="version_1">Version<a class="headerlink" href="#version_1" title="Permanent link">&para;</a></h5>
 <p>This token format has the <code>[version]</code> value <code>B</code>.</p>
 <h5 id="format_1">Format<a class="headerlink" href="#format_1" title="Permanent link">&para;</a></h5>
@@ -1318,25 +1318,25 @@
 </code></pre></div>
 
 <h5 id="token-format_1">Token format<a class="headerlink" href="#token-format_1" title="Permanent link">&para;</a></h5>
-<p>The deserialized <code>base64_token_cbor</code> is a JSON of the same form as a TokenV4 but with shorter keys and data represented as binary data (<code>bytes</code>) instead of hex strings (<code>hex_str</code>). Note that we have expanded what is called <code>Proofs</code> in TokenV3 (called <code>p</code> here with TokenV4) showing that its values are also different from the TokenV3 serialization.</p>
+<p>For readability, the structure of a TokenV4 object is shown below in its equivalent JSON form.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="p">,</span><span class="w"> </span><span class="c1">// mint URL</span>
-<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="p">,</span><span class="w"> </span><span class="c1">// unit</span>
-<span class="w">  </span><span class="nt">&quot;d&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// memo</span>
+<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="p">,</span><span class="w"> </span><span class="c1">// currency unit</span>
+<span class="w">  </span><span class="nt">&quot;d&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// optional memo</span>
 <span class="w">  </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">by</span><span class="kc">tes</span><span class="p">,</span><span class="w"> </span><span class="c1">// keyset ID</span>
+<span class="w">      </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">by</span><span class="kc">tes</span><span class="p">,</span><span class="w"> </span><span class="c1">// keyset ID (short or long form)</span>
 <span class="w">      </span><span class="nt">&quot;p&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="c1">// proofs with this keyset ID</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">          </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">i</span><span class="kc">nt</span><span class="p">,</span><span class="w"> </span><span class="c1">// amount</span>
 <span class="w">          </span><span class="nt">&quot;s&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="p">,</span><span class="w"> </span><span class="c1">// secret</span>
 <span class="w">          </span><span class="nt">&quot;c&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">by</span><span class="kc">tes</span><span class="p">,</span><span class="w"> </span><span class="c1">// signature</span>
-<span class="w">          </span><span class="nt">&quot;d&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// DLEQ proof</span>
+<span class="w">          </span><span class="nt">&quot;d&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// optional DLEQ proof</span>
 <span class="w">            </span><span class="nt">&quot;e&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">by</span><span class="kc">tes</span><span class="p">,</span>
 <span class="w">            </span><span class="nt">&quot;s&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">by</span><span class="kc">tes</span><span class="p">,</span>
 <span class="w">            </span><span class="nt">&quot;r&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">by</span><span class="kc">tes</span>
 <span class="w">          </span><span class="p">},</span>
-<span class="w">          </span><span class="nt">&quot;w&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// witness</span>
+<span class="w">          </span><span class="nt">&quot;w&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// optional witness</span>
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="err">...</span>
 <span class="w">      </span><span class="p">]</span>
@@ -1346,9 +1346,20 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p><code>m</code> is the mint URL. The mint URL must be stripped of any trailing slashes (<code>/</code>). <code>u</code> is the currency unit of the token keysets (see <a href="../01/">Keysets</a> for supported units), and <code>d</code> is an optional text memo from the sender.</p>
-<p><code>i</code> is the keyset ID of the proofs in <code>p</code>, which is an array of <code>Proof</code> objects without the <code>id</code> field. We extracted the keyset ID <code>id</code> from each proof and grouped all proofs by their keyset ID <code>i</code> one level above (in <code>p</code>).</p>
-<p>Note that all fields of the <code>bytes</code> type encode hex strings in the original representation of <code>Proof</code>'s.</p>
+<p><code>m</code> is the mint URL. The mint URL <strong>MUST</strong> be normalized by stripping any trailing slashes (<code>/</code>). <code>u</code> is the currency unit of the token keysets. Supported units are defined in <a href="../01/">Keysets</a>. <code>d</code> is an optional, human-readable memo provided by the sender.</p>
+<p>Within the <code>t</code> (token) array, <code>i</code> denotes the keyset ID associated with the proofs contained in <code>p</code> which are grouped by <code>i</code>. <code>p</code> is an array of <code>Proof</code> objects with the original keyset ID field <code>id</code> omitted. All proofs in the corresponding <code>p</code> array MUST belong to the same keyset ID.</p>
+<p>Unless otherwise stated, fields of type <code>bytes</code> represent byte strings in the CBOR encoding. In the original JSON representation of <code>Proof</code> objects, these values are encoded as hexadecimal strings. Implementations MUST convert between hex strings and raw byte arrays when translating between JSON and CBOR representations.</p>
+<p>Optional fields MAY be omitted if not present. Receivers MUST ignore unknown fields to preserve forward compatibility.</p>
+<h4 id="short-keyset-id">Short keyset ID<a class="headerlink" href="#short-keyset-id" title="Permanent link">&para;</a></h4>
+<p>To reduce the size of the <code>i</code> field and the overall Token encoding, wallets <strong>MAY</strong> use the short keyset ID representation (<code>s_id</code>).</p>
+<p>The short keyset ID is defined as the first 8 bytes of the full 33-byte keyset ID:</p>
+<ul>
+<li>Byte form: <code>s_id = id_bytes[:8]</code></li>
+<li>Hex form: <code>s_id = id_hex_str[:16]</code></li>
+</ul>
+<p>Wallets receiving a Token <strong>MUST</strong> support both short and full keyset ID representations. When a short keyset ID is encountered, the wallet <strong>MUST</strong> resolve it to the corresponding full keyset ID before processing the contained <code>Proof</code> objects.</p>
+<p>If a short keyset ID resolves to more than one known full keyset ID, the identifier is considered ambiguous. In this case, the wallet <strong>MUST</strong> fail token parsing and return an error.</p>
+<p>The mint is unaware of the <code>s_id</code>. All API endpoints exposed by the mint use the full keyset ID.</p>
 <h5 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h5>
 <p>Below is a TokenV4 JSON before CBOR and <code>base64_urlsafe</code> serialization.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>

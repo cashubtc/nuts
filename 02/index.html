@@ -597,10 +597,22 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#keyset-id-version" class="md-nav__link">
+  <a href="#keyset-id-v2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Keyset ID version
+        Keyset ID V2
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Keyset ID V2">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#v1-keysets-deprecated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        V1 Keysets (deprecated)
       
     </span>
   </a>
@@ -609,6 +621,22 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keyset-final-expiry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keyset Final Expiry
+      
+    </span>
+  </a>
   
 </li>
         
@@ -1355,8 +1383,8 @@
 <p>A mint can have multiple keysets at the same time. For example, it could have one keyset for each currency <code>unit</code> that it supports. Wallets should support multiple keysets. They must respect the <code>active</code> and the <code>input_fee_ppk</code> properties of the keysets they use.</p>
 <h2 id="keyset-properties">Keyset properties<a class="headerlink" href="#keyset-properties" title="Permanent link">&para;</a></h2>
 <h3 id="keyset-id">Keyset ID<a class="headerlink" href="#keyset-id" title="Permanent link">&para;</a></h3>
-<p>A keyset <code>id</code> is an identifier for a specific keyset. It can be derived by anyone who knows the set of public keys of a mint. Wallets <strong>CAN</strong> compute the keyset <code>id</code> for a given keyset by themselves to confirm that the mint is supplying the correct keyset ID (see below).</p>
-<p>The keyset <code>id</code> is in each <code>Proof</code> so it can be used by wallets to identify which mint and keyset it was generated from. The keyset field <code>id</code> is also present in the <code>BlindedMessages</code> sent to the mint and <code>BlindSignatures</code> returned from the mint (see <a href="../00/">NUT-00</a>).</p>
+<p>The keyset <code>id</code> is the identifier for a specific keyset and can be derived from the public keys and the metadata of a keyset. Wallets <strong>SHOULD</strong> compute the keyset <code>id</code> for a given keyset themselves to verify that the mint is using the correct keyset in its responses.</p>
+<p>The keyset <code>id</code> is part of each <code>Proof</code> object which allows wallets to identify which mint and keyset it was generated from. The keyset field <code>id</code> is also contained in the <code>BlindedMessages</code> sent to the mint and in the <code>BlindSignatures</code> returned from it. It is also included in a serialized Cashu <code>Token</code> (see <a href="../00/">NUT-00</a>).</p>
 <h3 id="active-keysets">Active keysets<a class="headerlink" href="#active-keysets" title="Permanent link">&para;</a></h3>
 <p>Mints can have multiple keysets at the same time but <strong>MUST</strong> have at least one <code>active</code> keyset (see <a href="../01/">NUT-01</a>). The <code>active</code> property determines whether the mint allows generating new ecash from this keyset. <code>Proofs</code> from inactive keysets with <code>active=false</code> are still accepted as inputs but new outputs (<code>BlindedMessages</code> and <code>BlindSignatures</code>) <strong>MUST</strong> be from <code>active</code> keysets only.</p>
 <p>To rotate keysets, a mint can generate a new active keyset and inactive an old one. If the <code>active</code> flag of an old keyset is set to <code>false</code>, no new ecash from this keyset can be generated and the outstanding ecash supply of that keyset can be taken out of circulation as wallets rotate their ecash to active keysets.</p>
@@ -1380,9 +1408,34 @@
 <p>Here, the <code>//</code> operator in <code>(sum_fees + 999) // 1000</code> denotes an integer division operator (aka floor division operator) that rounds down <code>sum_fees + 999</code> to the next lower integer. Alternatively, we could round up the sum using a floating point division with <code>ceil(sum_fees / 1000)</code> although it is not recommended to do so due to the non-deterministic behavior of floating point division.</p>
 <p>Notice that since transactions can spend inputs from different keysets, the sum considers the fee for each <code>Proof</code> indexed by the keyset ID individually.</p>
 <h3 id="deriving-the-keyset-id">Deriving the keyset ID<a class="headerlink" href="#deriving-the-keyset-id" title="Permanent link">&para;</a></h3>
-<h4 id="keyset-id-version">Keyset ID version<a class="headerlink" href="#keyset-id-version" title="Permanent link">&para;</a></h4>
-<p>Keyset IDs have a version byte (two hexadecimal characters). The currently used version byte is <code>00</code>.</p>
-<p>The mint and the wallets of its users can derive a keyset ID from the keyset of the mint. The keyset ID is a lower-case hex string. To derive the keyset ID of a keyset, execute the following steps:</p>
+<h4 id="keyset-id-v2">Keyset ID V2<a class="headerlink" href="#keyset-id-v2" title="Permanent link">&para;</a></h4>
+<p>Keyset IDs are 33 byte hex strings with a version byte (two hexadecimal characters). The currently used version byte is <code>01</code>.</p>
+<p>Keyset IDs are derived from public data. To derive the keyset ID of a keyset, execute the following steps:</p>
+<div class="codehilite"><pre><span></span><code><span class="mf">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">sort</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="n">keys</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">their</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="nb">asc</span><span class="kr">end</span><span class="n">ing</span><span class="w"> </span><span class="n">numerical</span><span class="w"> </span><span class="ow">or</span><span class="n">der</span>
+<span class="mf">2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">concatenate</span><span class="w"> </span><span class="n">each</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">its</span><span class="w"> </span><span class="n">corresponding</span><span class="w"> </span><span class="n">lowercase</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="n">hex</span><span class="w"> </span><span class="n">string</span><span class="w"> </span><span class="p">(</span><span class="n">as</span><span class="w"> </span><span class="s">&quot;amount:publickey_hex&quot;</span><span class="p">)</span><span class="w"> </span><span class="kr">to</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="nb">sin</span><span class="n">gle</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">array</span><span class="p">,</span><span class="w"> </span><span class="n">separating</span><span class="w"> </span><span class="n">each</span><span class="w"> </span><span class="n">pair</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">comma</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">)</span>
+<span class="mf">3</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">lowercase</span><span class="w"> </span><span class="n">UTF8</span><span class="o">-</span><span class="n">encoded</span><span class="w"> </span><span class="n">unit</span><span class="w"> </span><span class="n">string</span><span class="w"> </span><span class="n">prefixed</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="s">&quot;|unit:&quot;</span><span class="w"> </span><span class="kr">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="p">(</span><span class="n">e</span><span class="mf">.</span><span class="n">g</span><span class="mf">.</span><span class="w"> </span><span class="s">&quot;|unit:sat&quot;</span><span class="p">)</span>
+<span class="mf">4</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="kr">If</span><span class="w"> </span><span class="kr">input</span><span class="n">_fee_ppk</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">specified</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">non</span><span class="o">-</span><span class="n">zero</span><span class="p">,</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">UTF8</span><span class="o">-</span><span class="n">encoded</span><span class="w"> </span><span class="n">string</span><span class="w"> </span><span class="n">prefixed</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="s">&quot;|input_fee_ppk:&quot;</span><span class="w"> </span><span class="p">(</span><span class="n">e</span><span class="mf">.</span><span class="n">g</span><span class="mf">.</span><span class="w"> </span><span class="s">&quot;|input_fee_ppk:100&quot;</span><span class="p">)</span><span class="mf">.</span><span class="w"> </span><span class="kr">If</span><span class="w"> </span><span class="kr">input</span><span class="n">_fee_ppk</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">omitted</span><span class="p">,</span><span class="w"> </span><span class="n">null</span><span class="p">,</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">MUST</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">omitted</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">preimage</span><span class="mf">.</span>
+<span class="mf">5</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="kr">If</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">final</span><span class="w"> </span><span class="nb">exp</span><span class="n">iration</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">specified</span><span class="p">,</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">UTF8</span><span class="o">-</span><span class="n">encoded</span><span class="w"> </span><span class="n">string</span><span class="w"> </span><span class="n">prefixed</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="s">&quot;|final_expiry:&quot;</span><span class="w"> </span><span class="p">(</span><span class="n">e</span><span class="mf">.</span><span class="n">g</span><span class="mf">.</span><span class="w"> </span><span class="s">&quot;|final_expiry:1896187313&quot;</span><span class="p">)</span>
+<span class="mf">6</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">HASH_SHA256</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">concatenated</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">array</span>
+<span class="mf">7</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">prefix</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">keyset</span><span class="w"> </span><span class="n">ID</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="s">&quot;01&quot;</span>
+</code></pre></div>
+
+<p>An example implementation in Python:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">derive_keyset_id_v2</span><span class="p">(</span><span class="n">keys</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">PublicKey</span><span class="p">],</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">input_fee_ppk</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">final_expiry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">sorted_keys</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">keys</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+    <span class="n">keyset_id_bytes</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sorted_keys</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+    <span class="p">)</span>
+    <span class="n">keyset_id_bytes</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;|unit:</span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">input_fee_ppk</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">input_fee_ppk</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">keyset_id_bytes</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;|input_fee_ppk:</span><span class="si">{</span><span class="n">input_fee_ppk</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">final_expiry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">final_expiry</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">keyset_id_bytes</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;|final_expiry:</span><span class="si">{</span><span class="n">final_expiry</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">&quot;01&quot;</span> <span class="o">+</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">keyset_id_bytes</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+</code></pre></div>
+
+<h5 id="v1-keysets-deprecated">V1 Keysets (deprecated)<a class="headerlink" href="#v1-keysets-deprecated" title="Permanent link">&para;</a></h5>
+<p>V1 keysets are 8 bytes long, including a version byte prefix <code>00</code>.</p>
 <div class="codehilite"><pre><span></span><code><span class="mf">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">sort</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="n">keys</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">their</span><span class="w"> </span><span class="n">amount</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="nb">asc</span><span class="kr">end</span><span class="n">ing</span><span class="w"> </span><span class="ow">or</span><span class="n">der</span>
 <span class="mf">2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">concatenate</span><span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="n">keys</span><span class="w"> </span><span class="kr">to</span><span class="w"> </span><span class="kr">on</span><span class="n">e</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">array</span>
 <span class="mf">3</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">HASH_SHA256</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">concatenated</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="n">keys</span>
@@ -1391,12 +1444,21 @@
 </code></pre></div>
 
 <p>An example implementation in Python:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">derive_keyset_id</span><span class="p">(</span><span class="n">keys</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">PublicKey</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">derive_keyset_id_v1</span><span class="p">(</span><span class="n">keys</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">PublicKey</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="n">sorted_keys</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">keys</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
     <span class="n">pubkeys_concat</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">sorted_keys</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
     <span class="k">return</span> <span class="s2">&quot;00&quot;</span> <span class="o">+</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">pubkeys_concat</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()[:</span><span class="mi">14</span><span class="p">]</span>
 </code></pre></div>
 
+<blockquote>
+<p>[!CRITICAL]
+Wallet implementations should reject any attempt at importing new keysets which IDs
+collide with any of the previously added keysets.</p>
+</blockquote>
+<h3 id="keyset-final-expiry">Keyset Final Expiry<a class="headerlink" href="#keyset-final-expiry" title="Permanent link">&para;</a></h3>
+<p>A unix epoch number for a future point in time that represents the final expiry of the keyset. After the keyset's final expiry, the Mint is no longer obliged to fulfill promises signed with the keys from that keyset.</p>
+<p>This effectively implies that the Mint can irrevocably remove all of the nullifiers (<code>Y</code> values/spent ecash) associated with the expired keyset.</p>
+<p>The final expiry is optional and <strong>MAY</strong> be omitted or <code>null</code> if the keyset has no final-expiry.</p>
 <h2 id="example-get-mint-keysets">Example: Get mint keysets<a class="headerlink" href="#example-get-mint-keysets" title="Permanent link">&para;</a></h2>
 <p>A wallet can ask the mint for a list of all keysets via the <code>GET /v1/keysets</code> endpoint.</p>
 <p>Request of <code>Alice</code>:</p>
@@ -1415,6 +1477,7 @@
 <span class="w">      </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;bool&gt;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;input_fee_ppk&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;final_expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="err">...</span>
 <span class="w">  </span><span class="p">]</span>
@@ -1426,22 +1489,18 @@
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;keysets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;015ba18a8adcd02e715a58358eb618da4a4b3791151a4bee5e968bb88406ccf76a&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">True</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;input_fee_ppk&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span>
+<span class="w">      </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;input_fee_ppk&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;final_expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2059210353</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0042ade98b2a370a&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;012fbb01a4e200c76df911eeba3b8fe1831202914b24664f4bccbd25852a6708f8&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">False</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;input_fee_ppk&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;00c074b96c7e2b0e&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;usd&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">True</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;input_fee_ppk&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span>
+<span class="w">      </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;input_fee_ppk&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;final_expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
@@ -1451,27 +1510,27 @@
 <p>To receive the public keys of a specific keyset, a wallet can call the <code>GET /v1/keys/{keyset_id}</code> endpoint where <code>keyset_id</code> is the keyset ID.</p>
 <h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
 <p>Request of <code>Alice</code>:</p>
-<p>We request the keys for the keyset <code>009a1f293253e41e</code>.</p>
-<div class="codehilite"><pre><span></span><code><span class="err">GET https://mint.host:3338/v1/keys/009a1f293253e41e</span>
+<p>We request the keys for the keyset <code>015ba18a8adcd02e715a58358eb618da4a4b3791151a4bee5e968bb88406ccf76a</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="err">GET https://mint.host:3338/v1/keys/015ba18a8adcd02e715a58358eb618da4a4b3791151a4bee5e968bb88406ccf76a</span>
 </code></pre></div>
 
 <p>With curl:</p>
-<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>https://mint.host:3338/v1/keys/009a1f293253e41e
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>https://mint.host:3338/v1/keys/015ba18a8adcd02e715a58358eb618da4a4b3791151a4bee5e968bb88406ccf76a
 </code></pre></div>
 
 <p>Response of <code>Bob</code> (same as <a href="../01/">NUT-01</a>):</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;keysets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span>
-<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;keys&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02194603ffa36356f4a56b7df9371fc3192472351453ec7398b8da8117e7c3e104&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03b0f36d6d47ce14df8a7be9137712c42bcdd960b19dd02f1d4a9703b1f31d7513&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0366be6e026e42852498efb82014ca91e89da2e7a5bd3761bdad699fa2aec9fe09&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;8&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0253de5237f189606f29d8a690ea719f74d65f617bb1cb6fbea34f2bc4f930016d&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="err">...</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="err">...</span>
+<span class="w">  </span><span class="nt">&quot;keysets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;015ba18a8adcd02e715a58358eb618da4a4b3791151a4bee5e968bb88406ccf76a&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;keys&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03a40f20667ed53513075dc51e715ff2046cad64eb68960632269ba7f0210e38bc&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03fd4ce5a16b65576145949e6f99f445f8249fee17c606b688b504a849cdc452de&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02648eccfa4c026960966276fa5a4cae46ce0fd432211a4f449bf84f13aa5f8303&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;8&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02fdfd6796bfeac490cbee12f778f867f0a2c68f6508d17c649759ea0dc3547528&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>

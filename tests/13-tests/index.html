@@ -1135,8 +1135,8 @@
 
 
 <h1 id="nut-13-test-vectors">NUT-13 Test vectors<a class="headerlink" href="#nut-13-test-vectors" title="Permanent link">&para;</a></h1>
-<h2 id="keyset-id-integer-representation">Keyset ID integer representation<a class="headerlink" href="#keyset-id-integer-representation" title="Permanent link">&para;</a></h2>
-<p>The integer representation of a keyset with an ID <code>009a1f293253e41e</code> and its corresponding derivation path for a counter of value <code>{counter}</code> are</p>
+<h2 id="version-1-keyset-id-integer-representation">Version 1: keyset ID integer representation<a class="headerlink" href="#version-1-keyset-id-integer-representation" title="Permanent link">&para;</a></h2>
+<p>The integer representation of a keyset with an ID <code>009a1f293253e41e</code> and its corresponding derivation path for a counter of value <code>{counter}</code> are:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;keyset_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;keyest_id_int&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">864559728</span><span class="p">,</span>
@@ -1144,8 +1144,8 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<h2 id="secret-derivatoin">Secret derivatoin<a class="headerlink" href="#secret-derivatoin" title="Permanent link">&para;</a></h2>
-<p>We derive values starting from the following BIP39 mnemonic.</p>
+<h2 id="version-1-secret-derivation">Version 1: Secret derivation<a class="headerlink" href="#version-1-secret-derivation" title="Permanent link">&para;</a></h2>
+<p>Using derivation <code>m/129372'/0'/864559728'/{counter}'</code>, we derive values starting from the following BIP39 mnemonic.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;mnemonic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;half depart obvious quality work element tank gorilla view sugar picture humble&quot;</span>
 <span class="p">}</span>
@@ -1178,6 +1178,33 @@
 <span class="w">  </span><span class="nt">&quot;derivation_path_2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;m/129372&#39;/0&#39;/864559728&#39;/2&#39;&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;derivation_path_3&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;m/129372&#39;/0&#39;/864559728&#39;/3&#39;&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;derivation_path_4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;m/129372&#39;/0&#39;/864559728&#39;/4&#39;&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="version-2-secret-derivation">Version 2: Secret derivation<a class="headerlink" href="#version-2-secret-derivation" title="Permanent link">&para;</a></h2>
+<p>Using <a href="13.md">NUT-13</a> derivation procedure for V2 with keyset ID <code>015ba18a8adcd02e715a58358eb618da4a4b3791151a4bee5e968bb88406ccf76a</code>, we derive values starting from the following BIP39 mnemonic:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mnemonic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;half depart obvious quality work element tank gorilla view sugar picture humble&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The secrets derived for the first five counters from <code>counter=0</code> to <code>counter=4</code> are:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;secret_0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;db5561a07a6e6490f8dadeef5be4e92f7cebaecf2f245356b5b2a4ec40687298&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;secret_1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;b70e7b10683da3bf1cdf0411206f8180c463faa16014663f39f2529b2fda922e&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;secret_2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;78a7ac32ccecc6b83311c6081b89d84bb4128f5a0d0c5e1af081f301c7a513f5&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;secret_3&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;094a2b6c63bfa7970bc09cda0e1cfc9cd3d7c619b8e98fabcfc60aea9e4963e5&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;secret_4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5e89fc5d30d0bf307ddf0a3ac34aa7a8ee3702169dafa3d3fe1d0cae70ecd5ef&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The corresponding blinding factors <code>r</code> are:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;r_0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;6d26181a3695e32e9f88b80f039ba1ae2ab5a200ad4ce9dbc72c6d3769f2b035&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;r_1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bde4354cee75545bea1a2eee035a34f2d524cee2bb01613823636e998386952e&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;r_2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;f40cc1218f085b395c8e1e5aaa25dccc851be3c6c7526a0f4e57108f12d6dac4&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;r_3&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;099ed70fc2f7ac769bc20b2a75cb662e80779827b7cc358981318643030577d0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;r_4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5550337312d223ba62e3f75cfe2ab70477b046d98e3e71804eade3956c7b98cf&quot;</span>
 <span class="p">}</span>
 </code></pre></div>
 
