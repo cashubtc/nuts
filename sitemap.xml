@@ -109,6 +109,10 @@
          <lastmod>2026-01-11</lastmod>
     </url>
     <url>
+         <loc>https://cashubtc.github.io/nuts/26/</loc>
+         <lastmod>2026-01-11</lastmod>
+    </url>
+    <url>
          <loc>https://cashubtc.github.io/nuts/SECURITY/</loc>
          <lastmod>2026-01-11</lastmod>
     </url>
@@ -158,6 +162,10 @@
     </url>
     <url>
          <loc>https://cashubtc.github.io/nuts/tests/20-test/</loc>
+         <lastmod>2026-01-11</lastmod>
+    </url>
+    <url>
+         <loc>https://cashubtc.github.io/nuts/tests/26-test/</loc>
          <lastmod>2026-01-11</lastmod>
     </url>
 </urlset>

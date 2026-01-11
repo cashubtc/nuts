@@ -8,29 +8,27 @@
       
       
       
-        <link rel="canonical" href="https://cashubtc.github.io/nuts/">
+        <link rel="canonical" href="https://cashubtc.github.io/nuts/26/">
       
       
-      
-        <link rel="next" href="00/">
       
       
         
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
     
     
       
-        <title>Cashu NUTs Specifications</title>
+        <title>NUT-26: Payment Request Bech32m Encoding - Cashu NUTs Specifications</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -49,7 +47,7 @@
       
     
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cashu-nuts-notation-usage-and-terminology" class="md-skip">
+        <a href="#nut-26-payment-request-bech32m-encoding" class="md-skip">
           Skip to content
         </a>
       
@@ -90,7 +88,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Cashu NUTs Specifications" class="md-header__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+    <a href=".." title="Cashu NUTs Specifications" class="md-header__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
@@ -110,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              NUT-26: Payment Request Bech32m Encoding
             
           </span>
         </div>
@@ -243,7 +241,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Cashu NUTs Specifications" class="md-nav__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+    <a href=".." title="Cashu NUTs Specifications" class="md-nav__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
@@ -270,37 +268,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Home
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -316,93 +287,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#specifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Specifications
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Specifications">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#mandatory" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Mandatory
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#optional" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Optional
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Optional">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#wallets" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Wallets:
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mints" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Mints:
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -519,7 +403,7 @@
   
   
     <li class="md-nav__item">
-      <a href="00/" class="md-nav__link">
+      <a href="../00/" class="md-nav__link">
         
   
   
@@ -547,7 +431,7 @@
   
   
     <li class="md-nav__item">
-      <a href="01/" class="md-nav__link">
+      <a href="../01/" class="md-nav__link">
         
   
   
@@ -575,7 +459,7 @@
   
   
     <li class="md-nav__item">
-      <a href="02/" class="md-nav__link">
+      <a href="../02/" class="md-nav__link">
         
   
   
@@ -603,7 +487,7 @@
   
   
     <li class="md-nav__item">
-      <a href="03/" class="md-nav__link">
+      <a href="../03/" class="md-nav__link">
         
   
   
@@ -631,7 +515,7 @@
   
   
     <li class="md-nav__item">
-      <a href="04/" class="md-nav__link">
+      <a href="../04/" class="md-nav__link">
         
   
   
@@ -659,7 +543,7 @@
   
   
     <li class="md-nav__item">
-      <a href="05/" class="md-nav__link">
+      <a href="../05/" class="md-nav__link">
         
   
   
@@ -687,7 +571,7 @@
   
   
     <li class="md-nav__item">
-      <a href="06/" class="md-nav__link">
+      <a href="../06/" class="md-nav__link">
         
   
   
@@ -774,7 +658,7 @@
   
   
     <li class="md-nav__item">
-      <a href="07/" class="md-nav__link">
+      <a href="../07/" class="md-nav__link">
         
   
   
@@ -802,7 +686,7 @@
   
   
     <li class="md-nav__item">
-      <a href="08/" class="md-nav__link">
+      <a href="../08/" class="md-nav__link">
         
   
   
@@ -830,7 +714,7 @@
   
   
     <li class="md-nav__item">
-      <a href="09/" class="md-nav__link">
+      <a href="../09/" class="md-nav__link">
         
   
   
@@ -858,7 +742,7 @@
   
   
     <li class="md-nav__item">
-      <a href="10/" class="md-nav__link">
+      <a href="../10/" class="md-nav__link">
         
   
   
@@ -886,7 +770,7 @@
   
   
     <li class="md-nav__item">
-      <a href="11/" class="md-nav__link">
+      <a href="../11/" class="md-nav__link">
         
   
   
@@ -914,7 +798,7 @@
   
   
     <li class="md-nav__item">
-      <a href="12/" class="md-nav__link">
+      <a href="../12/" class="md-nav__link">
         
   
   
@@ -942,7 +826,7 @@
   
   
     <li class="md-nav__item">
-      <a href="13/" class="md-nav__link">
+      <a href="../13/" class="md-nav__link">
         
   
   
@@ -970,7 +854,7 @@
   
   
     <li class="md-nav__item">
-      <a href="14/" class="md-nav__link">
+      <a href="../14/" class="md-nav__link">
         
   
   
@@ -998,7 +882,7 @@
   
   
     <li class="md-nav__item">
-      <a href="15/" class="md-nav__link">
+      <a href="../15/" class="md-nav__link">
         
   
   
@@ -1026,7 +910,7 @@
   
   
     <li class="md-nav__item">
-      <a href="16/" class="md-nav__link">
+      <a href="../16/" class="md-nav__link">
         
   
   
@@ -1054,7 +938,7 @@
   
   
     <li class="md-nav__item">
-      <a href="17/" class="md-nav__link">
+      <a href="../17/" class="md-nav__link">
         
   
   
@@ -1082,7 +966,7 @@
   
   
     <li class="md-nav__item">
-      <a href="18/" class="md-nav__link">
+      <a href="../18/" class="md-nav__link">
         
   
   
@@ -1110,7 +994,7 @@
   
   
     <li class="md-nav__item">
-      <a href="19/" class="md-nav__link">
+      <a href="../19/" class="md-nav__link">
         
   
   
@@ -1138,7 +1022,7 @@
   
   
     <li class="md-nav__item">
-      <a href="20/" class="md-nav__link">
+      <a href="../20/" class="md-nav__link">
         
   
   
@@ -1166,7 +1050,7 @@
   
   
     <li class="md-nav__item">
-      <a href="21/" class="md-nav__link">
+      <a href="../21/" class="md-nav__link">
         
   
   
@@ -1194,7 +1078,7 @@
   
   
     <li class="md-nav__item">
-      <a href="22/" class="md-nav__link">
+      <a href="../22/" class="md-nav__link">
         
   
   
@@ -1250,199 +1134,273 @@
   
 
 
-<h1 id="cashu-nuts-notation-usage-and-terminology">Cashu NUTs (Notation, Usage, and Terminology)<a class="headerlink" href="#cashu-nuts-notation-usage-and-terminology" title="Permanent link">&para;</a></h1>
-<p>These documents each specify parts of the Cashu protocol. Read the specifications for the legacy API <a href="https://github.com/cashubtc/nuts/tree/74f26b81b6617db710fa1081eebc0c7203711213">here</a>.</p>
-<h2 id="specifications">Specifications<a class="headerlink" href="#specifications" title="Permanent link">&para;</a></h2>
-<p>Wallets and mints <code>MUST</code> implement all mandatory specs and <code>CAN</code> implement optional specs.</p>
-<h3 id="mandatory">Mandatory<a class="headerlink" href="#mandatory" title="Permanent link">&para;</a></h3>
+<h1 id="nut-26-payment-request-bech32m-encoding">NUT-26: Payment Request Bech32m Encoding<a class="headerlink" href="#nut-26-payment-request-bech32m-encoding" title="Permanent link">&para;</a></h1>
+<p><code>optional</code> <code>depends on: NUT-18</code></p>
+<hr />
+<p>This specification defines an alternative encoding format for Payment Requests using Bech32m encoding with TLV (Tag-Length-Value) serialization. This format provides better QR code compatibility and typically 30-60% size reduction compared to the CBOR+base64 encoding defined in NUT-18.</p>
+<h2 id="encoded-request-format">Encoded Request Format<a class="headerlink" href="#encoded-request-format" title="Permanent link">&para;</a></h2>
+<p>Payment requests are serialized using TLV encoding, then encoded with Bech32m:</p>
+<p><code>"creqb" + "1" + bech32m(TLV(PaymentRequest))</code></p>
+<p>The human-readable part (HRP) is <code>"creqb"</code> and the version separator is <code>"1"</code>. The data payload is TLV-encoded as described below, then encoded with Bech32m (not standard Bech32).</p>
+<blockquote>
+<p>[!NOTE]
+Implementations SHOULD output uppercase Bech32m strings for optimal QR code compatibility. Uppercase alphanumeric characters use QR "alphanumeric mode" which is more space-efficient than "byte mode" required for mixed-case. Decoders MUST accept both uppercase and lowercase input.</p>
+</blockquote>
+<p>When parsing a <code>creq</code> parameter, implementations SHOULD support both formats:</p>
+<ol>
+<li>If the parameter starts with <code>creqA</code> (case-insensitive), parse as NUT-18 CBOR+base64 format</li>
+<li>If the parameter is valid Bech32m with HRP <code>creqb</code>, parse as NUT-26 format</li>
+<li>Otherwise, return an error</li>
+</ol>
+<h2 id="tlv-structure">TLV Structure<a class="headerlink" href="#tlv-structure" title="Permanent link">&para;</a></h2>
+<p>The payment request is encoded as a sequence of TLV fields. Each TLV entry consists of:</p>
+<ul>
+<li><strong>Type</strong> (1 byte): Field identifier</li>
+<li><strong>Length</strong> (2 bytes, big-endian): Length of value in bytes</li>
+<li><strong>Value</strong> (variable): Field data</li>
+</ul>
+<h3 id="top-level-tlv-tags">Top-Level TLV Tags<a class="headerlink" href="#top-level-tlv-tags" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th>NUT #</th>
+<th>Tag</th>
+<th>Field</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="00/">00</a></td>
-<td>Cryptography and Models</td>
+<td>0x01</td>
+<td>id</td>
+<td>string</td>
+<td>Payment identifier (corresponds to <code>i</code> in JSON)</td>
 </tr>
 <tr>
-<td><a href="01/">01</a></td>
-<td>Mint public keys</td>
+<td>0x02</td>
+<td>amount</td>
+<td>u64</td>
+<td>Amount in base units (corresponds to <code>a</code> in JSON)</td>
 </tr>
 <tr>
-<td><a href="02/">02</a></td>
-<td>Keysets and fees</td>
+<td>0x03</td>
+<td>unit</td>
+<td>u8/string</td>
+<td>Currency unit (corresponds to <code>u</code> in JSON)</td>
 </tr>
 <tr>
-<td><a href="03/">03</a></td>
-<td>Swapping tokens</td>
+<td>0x04</td>
+<td>single_use</td>
+<td>u8</td>
+<td>Single-use flag: 0=false, 1=true (corresponds to <code>s</code> in JSON)</td>
 </tr>
 <tr>
-<td><a href="04/">04</a></td>
-<td>Minting tokens</td>
+<td>0x05</td>
+<td>mint</td>
+<td>string</td>
+<td>Mint URL (repeatable for multiple mints, corresponds to <code>m</code> in JSON)</td>
 </tr>
 <tr>
-<td><a href="05/">05</a></td>
-<td>Melting tokens</td>
+<td>0x06</td>
+<td>description</td>
+<td>string</td>
+<td>Human-readable description (corresponds to <code>d</code> in JSON)</td>
 </tr>
 <tr>
-<td><a href="06/">06</a></td>
-<td>Mint info</td>
+<td>0x07</td>
+<td>transport</td>
+<td>sub-TLV</td>
+<td>Transport configuration (repeatable, corresponds to <code>t</code> in JSON)</td>
+</tr>
+<tr>
+<td>0x08</td>
+<td>nut10</td>
+<td>sub-TLV</td>
+<td>NUT-10 spending conditions (corresponds to <code>nut10</code> in JSON)</td>
 </tr>
 </tbody>
 </table>
-<h3 id="optional">Optional<a class="headerlink" href="#optional" title="Permanent link">&para;</a></h3>
+<p>All fields are optional. Unknown tags MUST be ignored to maintain forward compatibility.</p>
+<h3 id="unit-encoding-tag-0x03">Unit Encoding (Tag 0x03)<a class="headerlink" href="#unit-encoding-tag-0x03" title="Permanent link">&para;</a></h3>
+<p>The unit field uses a compact encoding:</p>
+<ul>
+<li><strong>Value 0x00</strong>: Represents <code>sat</code> (Bitcoin satoshis)</li>
+<li><strong>String value</strong>: Any other unit is encoded as a UTF-8 string (e.g., <code>"msat"</code>, <code>"usd"</code>, <code>"eur"</code>)</li>
+</ul>
+<h3 id="transport-sub-tlv-tag-0x07">Transport Sub-TLV (Tag 0x07)<a class="headerlink" href="#transport-sub-tlv-tag-0x07" title="Permanent link">&para;</a></h3>
+<p>Transport configurations are encoded as nested TLV structures. Each transport has the following sub-tags:</p>
 <table>
 <thead>
 <tr>
-<th>#</th>
+<th>Sub-Tag</th>
+<th>Field</th>
+<th>Type</th>
 <th>Description</th>
-<th>Wallets</th>
-<th>Mints</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="07/">07</a></td>
-<td>Token state check</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://nutstash.app/">Nutstash</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
+<td>0x01</td>
+<td>kind</td>
+<td>u8</td>
+<td>Transport type: 0=nostr, 1=http_post</td>
 </tr>
 <tr>
-<td><a href="08/">08</a></td>
-<td>Overpaid Lightning fees</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://nutstash.app/">Nutstash</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
+<td>0x02</td>
+<td>target</td>
+<td>bytes</td>
+<td>Transport target (interpretation depends on kind)</td>
 </tr>
 <tr>
-<td><a href="09/">09</a></td>
-<td>Signature restore</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a></td>
-</tr>
-<tr>
-<td><a href="10/">10</a></td>
-<td>Spending conditions</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="11/">11</a></td>
-<td>Pay-To-Pubkey (P2PK)</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="12/">12</a></td>
-<td>DLEQ proofs</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="13/">13</a></td>
-<td>Deterministic secrets</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="14/">14</a></td>
-<td>Hashed Timelock Contracts (HTLCs)</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="15/">15</a></td>
-<td>Partial multi-path payments (MPP)</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="16/">16</a></td>
-<td>Animated QR codes</td>
-<td><a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="17/">17</a></td>
-<td>WebSocket subscriptions</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="18/">18</a></td>
-<td>Payment requests</td>
-<td><a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/MakePrisms/boardwalkcash">Boardwalk</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="19/">19</a></td>
-<td>Cached Responses</td>
-<td>-</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a></td>
-</tr>
-<tr>
-<td><a href="20/">20</a></td>
-<td>Signature on Mint Quote</td>
-<td><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/cashubtc/nutshell">Nutshell</a></td>
-<td><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/cashubtc/nutshell">Nutshell</a></td>
-</tr>
-<tr>
-<td><a href="21/">21</a></td>
-<td>Clear authentication</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="22/">22</a></td>
-<td>Blind authentication</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="23/">23</a></td>
-<td>Payment Method: BOLT11</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="24/">24</a></td>
-<td>HTTP 402 Payment Required</td>
-<td>-</td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="25/">25</a></td>
-<td>Payment Method: BOLT12</td>
-<td><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a></td>
-<td><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a></td>
-</tr>
-<tr>
-<td><a href="26/">26</a></td>
-<td>Payment Request Bech32m Encoding</td>
-<td>-</td>
-<td>-</td>
+<td>0x03</td>
+<td>tag_tuple</td>
+<td>sub-sub-TLV</td>
+<td>Generic tag tuple (repeatable)</td>
 </tr>
 </tbody>
 </table>
-<h4 id="wallets">Wallets:<a class="headerlink" href="#wallets" title="Permanent link">&para;</a></h4>
+<h4 id="transport-type-mapping">Transport Type Mapping<a class="headerlink" href="#transport-type-mapping" title="Permanent link">&para;</a></h4>
+<p>The kind field (sub-tag 0x01) identifies the transport method. The following transport types are defined:</p>
+<table>
+<thead>
+<tr>
+<th>Kind Value</th>
+<th>Transport Type</th>
+<th>Description</th>
+<th>Target Format</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x00</td>
+<td>nostr</td>
+<td>Nostr-based transport using NIP-04 DMs</td>
+<td>32-byte X-only public key (raw bytes)</td>
+</tr>
+<tr>
+<td>0x01</td>
+<td>http_post</td>
+<td>HTTP POST to specified URL</td>
+<td>UTF-8 encoded URL string</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>[!NOTE]
+If no transport is specified (tag 0x07 is absent), the payment is assumed to be in-band, consistent with NUT-18 semantics.</p>
+</blockquote>
+<p><strong>JSON Representation:</strong></p>
+<p>In the NUT-18 JSON format, transports are represented with a <code>type</code> field:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nostr&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;target&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;npub1...&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;17&quot;</span><span class="p">]]</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;post&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;target&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://callback.example.com/pay&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>When encoding to TLV, the <code>type</code> string is converted to the corresponding numeric kind value.</p>
+<h4 id="transport-target-encoding-sub-tag-0x02">Transport Target Encoding (Sub-Tag 0x02)<a class="headerlink" href="#transport-target-encoding-sub-tag-0x02" title="Permanent link">&para;</a></h4>
+<p>The target field is interpreted based on the transport kind:</p>
 <ul>
-<li><a href="https://github.com/cashubtc/nutshell">Nutshell</a></li>
-<li><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">CDK-cli</a></li>
-<li><a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a></li>
-<li><a href="https://github.com/zeugmaster/macadamia">Macadamia</a></li>
-<li><a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></li>
-<li><a href="https://nutstash.app/">Nutstash</a></li>
-<li><a href="https://cashu.me">Cashu.me</a></li>
-<li><a href="https://github.com/MakePrisms/boardwalkcash">Boardwalk</a></li>
+<li><strong>kind=0 (nostr)</strong>: 32-byte X-only public key (raw bytes, not bech32-encoded)</li>
+<li><strong>kind=1 (http_post)</strong>: UTF-8 encoded URL string</li>
 </ul>
-<h4 id="mints">Mints:<a class="headerlink" href="#mints" title="Permanent link">&para;</a></h4>
+<h4 id="nostr-transport-details">Nostr Transport Details<a class="headerlink" href="#nostr-transport-details" title="Permanent link">&para;</a></h4>
+<p>For Nostr transports (<code>kind=0</code>), the target field contains the raw 32-byte X-only public key (not bech32-encoded). NIPs and relay URLs are encoded using generic tag tuples (sub-tag 0x03), consistent with NUT-18's tags array.</p>
+<p><strong>Encoding (JSON to TLV):</strong></p>
+<ol>
+<li>Parse the <code>nprofile</code> or <code>npub</code> from the JSON target field using NIP-19</li>
+<li>Store the raw 32-byte X-only public key in target (sub-tag 0x02)</li>
+<li>Store any relay URLs from the nprofile as tag tuples with key <code>"r"</code></li>
+<li>Store NIPs from the tags array as tag tuples with key <code>"n"</code></li>
+</ol>
+<p><strong>Decoding (TLV to JSON):</strong></p>
 <ul>
-<li><a href="https://github.com/cashubtc/nutshell">Nutshell</a></li>
-<li><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a></li>
-<li><a href="https://github.com/lescuer97/nutmix">Nutmix</a></li>
+<li>If no <code>"r"</code> tag tuples are present: encode public key as <code>npub</code></li>
+<li>If <code>"r"</code> tag tuples are present: encode as <code>nprofile</code> using NIP-19 format</li>
 </ul>
+<h4 id="tag-tuple-encoding-sub-tag-0x03">Tag Tuple Encoding (Sub-Tag 0x03)<a class="headerlink" href="#tag-tuple-encoding-sub-tag-0x03" title="Permanent link">&para;</a></h4>
+<p>Generic tag tuples are encoded as:</p>
+<ol>
+<li>Key length (1 byte)</li>
+<li>Key string (UTF-8)</li>
+<li>For each value:</li>
+<li>Value length (1 byte)</li>
+<li>Value string (UTF-8)</li>
+</ol>
+<p>This allows encoding arbitrary key-value pairs for extensibility.</p>
+<h3 id="nut-10-sub-tlv-tag-0x08">NUT-10 Sub-TLV (Tag 0x08)<a class="headerlink" href="#nut-10-sub-tlv-tag-0x08" title="Permanent link">&para;</a></h3>
+<p>NUT-10 spending conditions are encoded as nested TLV structures:</p>
+<table>
+<thead>
+<tr>
+<th>Sub-Tag</th>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x01</td>
+<td>kind</td>
+<td>u8</td>
+<td>Secret kind (0=P2PK, 1=HTLC, etc.)</td>
+</tr>
+<tr>
+<td>0x02</td>
+<td>data</td>
+<td>bytes</td>
+<td>Kind-specific data (UTF-8 encoded)</td>
+</tr>
+<tr>
+<td>0x03</td>
+<td>tag_tuple</td>
+<td>sub-sub-TLV</td>
+<td>Tag tuple (repeatable, uses same encoding as transport tags)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="nut-10-kind-enumeration">NUT-10 Kind Enumeration<a class="headerlink" href="#nut-10-kind-enumeration" title="Permanent link">&para;</a></h4>
+<p>The following kind values are defined for NUT-10 spending conditions:</p>
+<table>
+<thead>
+<tr>
+<th>Kind Value</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x00</td>
+<td>P2PK</td>
+<td>Pay to Public Key - requires signature from specified public key</td>
+</tr>
+<tr>
+<td>0x01</td>
+<td>HTLC</td>
+<td>Hash Time Locked Contract - requires preimage of hash</td>
+</tr>
+</tbody>
+</table>
+<p>Additional kind values may be defined in future NUT specifications. Unknown kind values SHOULD be preserved when re-encoding but MAY be ignored during validation.</p>
+<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
+<p>This is an example payment request expressed as JSON:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;demo123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;s&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint.example.com&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;d&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Coffee payment&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>This payment request encodes to the NUT-26 format as:</p>
+<div class="codehilite"><pre><span></span><code>CREQB1QYQQWER9D4HNZV3NQGQQSQQQQQQQQQQRAQPSQQGQQSQQZQG9QQVXSAR5WPEN5TE0D45KUAPWV4UXZMTSD3JJUCM0D5RQQRJRDANXVET9YPCXZ7TDV4H8GXHR3TQ
+</code></pre></div>
 
 
 
@@ -1516,10 +1474,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.highlight", "search.share", "toc.integrate", "content.code.copy", "content.tabs.link", "announce.dismiss"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.highlight", "search.share", "toc.integrate", "content.code.copy", "content.tabs.link", "announce.dismiss"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
