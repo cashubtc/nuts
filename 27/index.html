@@ -8,29 +8,27 @@
       
       
       
-        <link rel="canonical" href="https://cashubtc.github.io/nuts/">
+        <link rel="canonical" href="https://cashubtc.github.io/nuts/27/">
       
       
-      
-        <link rel="next" href="00/">
       
       
         
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
     
     
       
-        <title>Cashu NUTs Specifications</title>
+        <title>NUT-27: Nostr Mint Backup - Cashu NUTs Specifications</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -49,7 +47,7 @@
       
     
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cashu-nuts-notation-usage-and-terminology" class="md-skip">
+        <a href="#nut-27-nostr-mint-backup" class="md-skip">
           Skip to content
         </a>
       
@@ -90,7 +88,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Cashu NUTs Specifications" class="md-header__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+    <a href=".." title="Cashu NUTs Specifications" class="md-header__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
@@ -110,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              NUT-27: Nostr Mint Backup
             
           </span>
         </div>
@@ -243,7 +241,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Cashu NUTs Specifications" class="md-nav__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+    <a href=".." title="Cashu NUTs Specifications" class="md-nav__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
@@ -270,37 +268,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Home
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -316,93 +287,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#specifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Specifications
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Specifications">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#mandatory" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Mandatory
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#optional" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Optional
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Optional">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#wallets" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Wallets:
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mints" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Mints:
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -519,7 +403,7 @@
   
   
     <li class="md-nav__item">
-      <a href="00/" class="md-nav__link">
+      <a href="../00/" class="md-nav__link">
         
   
   
@@ -547,7 +431,7 @@
   
   
     <li class="md-nav__item">
-      <a href="01/" class="md-nav__link">
+      <a href="../01/" class="md-nav__link">
         
   
   
@@ -575,7 +459,7 @@
   
   
     <li class="md-nav__item">
-      <a href="02/" class="md-nav__link">
+      <a href="../02/" class="md-nav__link">
         
   
   
@@ -603,7 +487,7 @@
   
   
     <li class="md-nav__item">
-      <a href="03/" class="md-nav__link">
+      <a href="../03/" class="md-nav__link">
         
   
   
@@ -631,7 +515,7 @@
   
   
     <li class="md-nav__item">
-      <a href="04/" class="md-nav__link">
+      <a href="../04/" class="md-nav__link">
         
   
   
@@ -659,7 +543,7 @@
   
   
     <li class="md-nav__item">
-      <a href="05/" class="md-nav__link">
+      <a href="../05/" class="md-nav__link">
         
   
   
@@ -687,7 +571,7 @@
   
   
     <li class="md-nav__item">
-      <a href="06/" class="md-nav__link">
+      <a href="../06/" class="md-nav__link">
         
   
   
@@ -774,7 +658,7 @@
   
   
     <li class="md-nav__item">
-      <a href="07/" class="md-nav__link">
+      <a href="../07/" class="md-nav__link">
         
   
   
@@ -802,7 +686,7 @@
   
   
     <li class="md-nav__item">
-      <a href="08/" class="md-nav__link">
+      <a href="../08/" class="md-nav__link">
         
   
   
@@ -830,7 +714,7 @@
   
   
     <li class="md-nav__item">
-      <a href="09/" class="md-nav__link">
+      <a href="../09/" class="md-nav__link">
         
   
   
@@ -858,7 +742,7 @@
   
   
     <li class="md-nav__item">
-      <a href="10/" class="md-nav__link">
+      <a href="../10/" class="md-nav__link">
         
   
   
@@ -886,7 +770,7 @@
   
   
     <li class="md-nav__item">
-      <a href="11/" class="md-nav__link">
+      <a href="../11/" class="md-nav__link">
         
   
   
@@ -914,7 +798,7 @@
   
   
     <li class="md-nav__item">
-      <a href="12/" class="md-nav__link">
+      <a href="../12/" class="md-nav__link">
         
   
   
@@ -942,7 +826,7 @@
   
   
     <li class="md-nav__item">
-      <a href="13/" class="md-nav__link">
+      <a href="../13/" class="md-nav__link">
         
   
   
@@ -970,7 +854,7 @@
   
   
     <li class="md-nav__item">
-      <a href="14/" class="md-nav__link">
+      <a href="../14/" class="md-nav__link">
         
   
   
@@ -998,7 +882,7 @@
   
   
     <li class="md-nav__item">
-      <a href="15/" class="md-nav__link">
+      <a href="../15/" class="md-nav__link">
         
   
   
@@ -1026,7 +910,7 @@
   
   
     <li class="md-nav__item">
-      <a href="16/" class="md-nav__link">
+      <a href="../16/" class="md-nav__link">
         
   
   
@@ -1054,7 +938,7 @@
   
   
     <li class="md-nav__item">
-      <a href="17/" class="md-nav__link">
+      <a href="../17/" class="md-nav__link">
         
   
   
@@ -1082,7 +966,7 @@
   
   
     <li class="md-nav__item">
-      <a href="18/" class="md-nav__link">
+      <a href="../18/" class="md-nav__link">
         
   
   
@@ -1110,7 +994,7 @@
   
   
     <li class="md-nav__item">
-      <a href="19/" class="md-nav__link">
+      <a href="../19/" class="md-nav__link">
         
   
   
@@ -1138,7 +1022,7 @@
   
   
     <li class="md-nav__item">
-      <a href="20/" class="md-nav__link">
+      <a href="../20/" class="md-nav__link">
         
   
   
@@ -1166,7 +1050,7 @@
   
   
     <li class="md-nav__item">
-      <a href="21/" class="md-nav__link">
+      <a href="../21/" class="md-nav__link">
         
   
   
@@ -1194,7 +1078,7 @@
   
   
     <li class="md-nav__item">
-      <a href="22/" class="md-nav__link">
+      <a href="../22/" class="md-nav__link">
         
   
   
@@ -1250,205 +1134,127 @@
   
 
 
-<h1 id="cashu-nuts-notation-usage-and-terminology">Cashu NUTs (Notation, Usage, and Terminology)<a class="headerlink" href="#cashu-nuts-notation-usage-and-terminology" title="Permanent link">&para;</a></h1>
-<p>These documents each specify parts of the Cashu protocol. Read the specifications for the legacy API <a href="https://github.com/cashubtc/nuts/tree/74f26b81b6617db710fa1081eebc0c7203711213">here</a>.</p>
-<h2 id="specifications">Specifications<a class="headerlink" href="#specifications" title="Permanent link">&para;</a></h2>
-<p>Wallets and mints <code>MUST</code> implement all mandatory specs and <code>CAN</code> implement optional specs.</p>
-<h3 id="mandatory">Mandatory<a class="headerlink" href="#mandatory" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>NUT #</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="00/">00</a></td>
-<td>Cryptography and Models</td>
-</tr>
-<tr>
-<td><a href="01/">01</a></td>
-<td>Mint public keys</td>
-</tr>
-<tr>
-<td><a href="02/">02</a></td>
-<td>Keysets and fees</td>
-</tr>
-<tr>
-<td><a href="03/">03</a></td>
-<td>Swapping tokens</td>
-</tr>
-<tr>
-<td><a href="04/">04</a></td>
-<td>Minting tokens</td>
-</tr>
-<tr>
-<td><a href="05/">05</a></td>
-<td>Melting tokens</td>
-</tr>
-<tr>
-<td><a href="06/">06</a></td>
-<td>Mint info</td>
-</tr>
-</tbody>
-</table>
-<h3 id="optional">Optional<a class="headerlink" href="#optional" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>#</th>
-<th>Description</th>
-<th>Wallets</th>
-<th>Mints</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="07/">07</a></td>
-<td>Token state check</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://nutstash.app/">Nutstash</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="08/">08</a></td>
-<td>Overpaid Lightning fees</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://nutstash.app/">Nutstash</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="09/">09</a></td>
-<td>Signature restore</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a></td>
-</tr>
-<tr>
-<td><a href="10/">10</a></td>
-<td>Spending conditions</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="11/">11</a></td>
-<td>Pay-To-Pubkey (P2PK)</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="12/">12</a></td>
-<td>DLEQ proofs</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="13/">13</a></td>
-<td>Deterministic secrets</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="14/">14</a></td>
-<td>Hashed Timelock Contracts (HTLCs)</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="15/">15</a></td>
-<td>Partial multi-path payments (MPP)</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="16/">16</a></td>
-<td>Animated QR codes</td>
-<td><a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="17/">17</a></td>
-<td>WebSocket subscriptions</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="18/">18</a></td>
-<td>Payment requests</td>
-<td><a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/MakePrisms/boardwalkcash">Boardwalk</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="19/">19</a></td>
-<td>Cached Responses</td>
-<td>-</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a></td>
-</tr>
-<tr>
-<td><a href="20/">20</a></td>
-<td>Signature on Mint Quote</td>
-<td><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/cashubtc/nutshell">Nutshell</a></td>
-<td><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/cashubtc/nutshell">Nutshell</a></td>
-</tr>
-<tr>
-<td><a href="21/">21</a></td>
-<td>Clear authentication</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="22/">22</a></td>
-<td>Blind authentication</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="23/">23</a></td>
-<td>Payment Method: BOLT11</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="24/">24</a></td>
-<td>HTTP 402 Payment Required</td>
-<td>-</td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="25/">25</a></td>
-<td>Payment Method: BOLT12</td>
-<td><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">cdk-cli</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a></td>
-<td><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a></td>
-</tr>
-<tr>
-<td><a href="26/">26</a></td>
-<td>Payment Request Bech32m Encoding</td>
-<td>-</td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="27/">27</a></td>
-<td>Nostr Mint Backup</td>
-<td><a href="https://cashu.me">Cashu.me</a></td>
-<td>-</td>
-</tr>
-</tbody>
-</table>
-<h4 id="wallets">Wallets:<a class="headerlink" href="#wallets" title="Permanent link">&para;</a></h4>
+<h1 id="nut-27-nostr-mint-backup">NUT-27: Nostr Mint Backup<a class="headerlink" href="#nut-27-nostr-mint-backup" title="Permanent link">&para;</a></h1>
+<p><code>optional</code></p>
+<hr />
+<p>This document describes a method for wallets to backup their mint list as Nostr events on one or more relays. This allows users to restore their mint configuration across different devices or wallet instances using their mnemonic seed phrase.</p>
+<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
+<p>Wallet users can optionally enable backup of their mint list to Nostr relays. The mint list is encrypted using NIP-44 encryption and published as addressable (parameterized replaceable) Nostr events. The backup keys are deterministically derived from the wallet's mnemonic seed phrase, ensuring that the same seed can restore the mint list on any compatible wallet.</p>
+<h2 id="key-derivation">Key Derivation<a class="headerlink" href="#key-derivation" title="Permanent link">&para;</a></h2>
+<p>The private key for Nostr mint backup is derived from the wallet's mnemonic seed phrase using the following method:</p>
+<ol>
+<li>Generate a 64-byte seed from the mnemonic using BIP39 <code>mnemonicToSeedSync(mnemonic)</code></li>
+<li>Create a domain separator: <code>UTF-8("cashu-mint-backup")</code></li>
+<li>Concatenate the seed and domain separator: <code>combined_data = seed || domain_separator</code></li>
+<li>Hash the combined data: <code>private_key = SHA256(combined_data)</code></li>
+<li>Derive the public key: <code>public_key = secp256k1_generator * private_key</code></li>
+</ol>
+<h3 id="example-implementation">Example Implementation<a class="headerlink" href="#example-implementation" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">mnemonicToSeedSync</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@scure/bip39&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">sha256</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@noble/hashes/sha256&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">bytesToHex</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@noble/hashes/utils&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">getPublicKey</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;nostr-tools&quot;</span><span class="p">;</span>
+
+<span class="kd">function</span><span class="w"> </span><span class="nx">deriveMintBackupKeys</span><span class="p">(</span><span class="nx">mnemonic</span><span class="o">:</span><span class="w"> </span><span class="nx">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">privateKeyHex</span><span class="o">:</span><span class="w"> </span><span class="nx">string</span><span class="p">;</span><span class="w"> </span><span class="nx">publicKeyHex</span><span class="o">:</span><span class="w"> </span><span class="nx">string</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Derive seed from mnemonic</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">seed</span><span class="o">:</span><span class="w"> </span><span class="nb">Uint8Array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">mnemonicToSeedSync</span><span class="p">(</span><span class="nx">mnemonic</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">domainSeparator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">TextEncoder</span><span class="p">().</span><span class="nx">encode</span><span class="p">(</span><span class="s2">&quot;cashu-mint-backup&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">combinedData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Uint8Array</span><span class="p">(</span><span class="nx">seed</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">domainSeparator</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">combinedData</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">seed</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">combinedData</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">domainSeparator</span><span class="p">,</span><span class="w"> </span><span class="nx">seed</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// Use SHA256 of combined data as private key</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">privateKeyBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">sha256</span><span class="p">(</span><span class="nx">combinedData</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">privateKeyHex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">bytesToHex</span><span class="p">(</span><span class="nx">privateKeyBytes</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">publicKeyHex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">getPublicKey</span><span class="p">(</span><span class="nx">privateKeyBytes</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">privateKeyHex</span><span class="p">,</span><span class="w"> </span><span class="nx">publicKeyHex</span><span class="w"> </span><span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="nostr-event-specification">Nostr Event Specification<a class="headerlink" href="#nostr-event-specification" title="Permanent link">&para;</a></h2>
+<h3 id="event-kind">Event Kind<a class="headerlink" href="#event-kind" title="Permanent link">&para;</a></h3>
+<p>The mint backup uses Nostr event kind <code>30078</code> (addressable event) as specified in <a href="https://github.com/nostr-protocol/nips/blob/master/78.md">NIP-78</a>.</p>
+<h3 id="event-structure">Event Structure<a class="headerlink" href="#event-structure" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30078</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;encrypted_backup_data&gt;&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;mint-list&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="s2">&quot;client&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;cashu.me&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;</span><span class="kc">t</span><span class="err">imes</span><span class="kc">ta</span><span class="err">mp&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pubkey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;mint_backup_public_key&gt;&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="event-fields">Event Fields<a class="headerlink" href="#event-fields" title="Permanent link">&para;</a></h3>
 <ul>
-<li><a href="https://github.com/cashubtc/nutshell">Nutshell</a></li>
-<li><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-cli">CDK-cli</a></li>
-<li><a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a></li>
-<li><a href="https://github.com/zeugmaster/macadamia">Macadamia</a></li>
-<li><a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></li>
-<li><a href="https://nutstash.app/">Nutstash</a></li>
-<li><a href="https://cashu.me">Cashu.me</a></li>
-<li><a href="https://github.com/MakePrisms/boardwalkcash">Boardwalk</a></li>
+<li><code>kind</code>: <strong>MUST</strong> be <code>30078</code> (addressable event)</li>
+<li><code>content</code>: Encrypted mint backup data using NIP-44 encryption</li>
+<li><code>tags</code>:</li>
+<li><code>d</code> tag with value <code>"mint-list"</code> (addressable event identifier)</li>
+<li><code>client</code> tag with the client name (optional but recommended)</li>
+<li><code>created_at</code>: Unix timestamp of the backup creation</li>
+<li><code>pubkey</code>: The derived public key for mint backup</li>
 </ul>
-<h4 id="mints">Mints:<a class="headerlink" href="#mints" title="Permanent link">&para;</a></h4>
-<ul>
-<li><a href="https://github.com/cashubtc/nutshell">Nutshell</a></li>
-<li><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a></li>
-<li><a href="https://github.com/lescuer97/nutmix">Nutmix</a></li>
-</ul>
+<h3 id="backup-data-format">Backup Data Format<a class="headerlink" href="#backup-data-format" title="Permanent link">&para;</a></h3>
+<p>The plaintext data that gets encrypted in the <code>content</code> field has the following JSON structure:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;&lt;mint_url_1&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&lt;mint_url_2&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;u</span><span class="kc">n</span><span class="err">ix_</span><span class="kc">t</span><span class="err">imes</span><span class="kc">ta</span><span class="err">mp&gt;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="encryption">Encryption<a class="headerlink" href="#encryption" title="Permanent link">&para;</a></h3>
+<p>The backup data is encrypted using NIP-44 v2 encryption:</p>
+<ol>
+<li>Generate a conversation key using NIP-44: <code>conversation_key = nip44.v2.utils.getConversationKey(private_key, public_key)</code></li>
+<li>Encrypt the JSON string: <code>encrypted_content = nip44.v2.encrypt(JSON.stringify(backup_data), conversation_key)</code></li>
+<li>Use the encrypted content as the event's <code>content</code> field</li>
+</ol>
+<p>Note: The same private and public key pair is used for both sides of the conversation key generation, creating a self-encrypted message.</p>
+<h2 id="wallet-implementation">Wallet Implementation<a class="headerlink" href="#wallet-implementation" title="Permanent link">&para;</a></h2>
+<h3 id="backup-flow">Backup Flow<a class="headerlink" href="#backup-flow" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Enable Backup</strong>: User enables Nostr mint backup in wallet settings</li>
+<li><strong>Key Derivation</strong>: Wallet derives backup keys from the mnemonic seed</li>
+<li><strong>Data Preparation</strong>: Wallet collects current mint URLs and creates backup data structure</li>
+<li><strong>Encryption</strong>: Backup data is encrypted using NIP-44 v2</li>
+<li><strong>Event Creation</strong>: Create Nostr event with encrypted content and appropriate tags</li>
+<li><strong>Publishing</strong>: Sign and publish the event to configured Nostr relays</li>
+</ol>
+<h3 id="restore-flow">Restore Flow<a class="headerlink" href="#restore-flow" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Key Derivation</strong>: Derive backup keys from the provided mnemonic seed</li>
+<li><strong>Event Discovery</strong>: Search for events with:</li>
+<li><code>kind</code>: <code>30078</code></li>
+<li><code>authors</code>: <code>[&lt;derived_public_key&gt;]</code></li>
+<li><code>#d</code>: <code>["mint-list"]</code></li>
+<li><strong>Decryption</strong>: Decrypt event content using NIP-44 v2</li>
+<li><strong>Mint Addition</strong>: Present discovered mints to user for selective restoration</li>
+</ol>
+<h3 id="example-backup-event">Example Backup Event<a class="headerlink" href="#example-backup-event" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30078</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;AgAQJBIqWKEEBjGHfoozgDBgVQAAAAC5lQJtJQV_psHckN2KxWsUq7Q-B_twv4M2P3_vJrPMWg&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;mint-list&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="s2">&quot;client&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;cashu.me&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1703721600</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pubkey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02bc9097997d81afb2cc7346b5e4345a9346bd2a506eb7958598a72f0cf85163ea&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;sig&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>When decrypted, the content would reveal:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint.example.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;https://another-mint.org&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1703721600</span>
+<span class="p">}</span>
+</code></pre></div>
 
 
 
@@ -1522,10 +1328,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.highlight", "search.share", "toc.integrate", "content.code.copy", "content.tabs.link", "announce.dismiss"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.highlight", "search.share", "toc.integrate", "content.code.copy", "content.tabs.link", "announce.dismiss"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
