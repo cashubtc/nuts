@@ -101,6 +101,14 @@ that Alice's payments are valid, and that she hasn't reused an older
 channel or an older funding token, and he doesn't need to contact the mint
 until he decides to close the channel.
 
+> [!NOTE]
+> _Blinding_ The term 'blinding' is used in two different contexts here.
+> One context is the _blinding factor_ which is applied to every every secret in Cashu,
+> creating the `BlindedMessage` (aka _output_) which is then signed by the mint.
+> This blinding factor is computed deterministically as described below.
+> Also, we blind the public keys that are used as the pubkeys to which the tokens
+> are locked, in accordance with NUT-?28?, as described below.
+
 # Fees
 
 Closing the channel ('exiting') involves two _stages_, a first stage where
@@ -150,9 +158,6 @@ complexity to ensure that the payments cover fees for both stages.
 
 ```
 
-Now we can define the precise details
-
-
 > [!NOTE]
 > _Keyset malleability:_ The keyset for the _funding outputs_ is defined in the _channel parameters_.
 > When Charlie executes the commitment transaction, he can choose which keyset to use as the commitment outputs. He should choose the same keyset, but he is not required to do so.
@@ -193,98 +198,6 @@ for a third party, especially the mint, to predict what the `channel_id` might b
 If a user publicly shares an error message that contains a `channel_id`, we don't
 want any third party, especially the mint, to be able to tie that id to the public keys.
 
-# P2BK (Pay-to-Blinded-Key) Privacy
-
-All P2PK outputs in the channel use **blinded pubkeys** rather than raw pubkeys. This prevents the mint from correlating channels to real identities, even if the mint knows the public keys of Alice and Charlie.
-
-## Why P2BK?
-
-Without P2BK, the mint could observe:
-- A 2-of-2 P2PK swap using Alice and Charlie's known pubkeys (the funding token spend)
-- Two subsequent 1-of-1 P2PK swaps locked to those same pubkeys (the stage 2 exits)
-
-With P2BK, all pubkeys in the channel are deterministically blinded. The mint sees only random-looking pubkeys that it cannot link to Alice or Charlie's real identities.
-
-## Blinding Contexts
-
-There are two categories of context strings used in derivation:
-
-**`output_context`** - used for derivation of `Secret.nonce`, and
-also of the blinding factor which is used for unblinding the `BlindSignature`s:
-- `"funding"` - for funding token outputs
-- `"receiver"` - for Charlie's commitment outputs
-- `"sender"` - for Alice's commitment outputs
-
-**`p2bk_context`** - used for blinding of the public keys to which the various outputs are locked.
-- `"sender_stage1"` - Alice's blinded pubkey for funding token `data` field
-- `"receiver_stage1"` - Charlie's blinded pubkey for funding token `pubkeys` tag
-- `"sender_stage1_refund"` - Alice's blinded pubkey for funding token `refund` tag (different tweak for unlinkability)
-- `"sender_stage2"` - Alice's per-proof blinded pubkeys in commitment outputs. Different for each proof, as stage 2 is `SIG_INPUTS`
-- `"receiver_stage2"` - Charlie's per-proof blinded pubkeys in commitment outputs. Different for each proof, as stage 2 is `SIG_INPUTS`
-
-## Blinding Scalar Derivation
-
-_TODO: tidy up this section, sync it with NUT-28, and implement it exactly_
-
-For stage 1 contexts (shared per-channel):
-
-```
-r = SHA256("Cashu_Spilman_P2BK_v1" || channel_id || shared_secret || p2bk_context || retry_counter)
-```
-
-For stage 2 contexts (per-proof, includes amount and index):
-
-```
-r = SHA256("Cashu_Spilman_P2BK_v1" || channel_id || shared_secret || p2bk_context || amount || index || retry_counter)
-```
-
-Where:
-- `channel_id` is the 32-byte channel ID
-- `shared_secret` is the 32-byte ECDH shared secret
-- `p2bk_context` is one of the context strings above (as UTF-8 bytes)
-- `amount` is the amount _TODO: clarify this, including delimiters?_.
-- `index` is the index _TODO: clarify this, including delimiters?_.
-- `retry_counter` is a single byte, starting at 0
-
-The retry mechanism handles the rare case where the hash produces an invalid scalar (>= curve order or zero). Increment `retry_counter` until a valid scalar is found.
-
-## Blinded Pubkey Derivation
-
-_TODO: tidy up this section, sync it with NUT-28, and implement it exactly_
-
-Given a raw pubkey `P` and blinding scalar `r`, the blinded pubkey `P'` is computed with BIP-340 parity handling:
-
-```
-If P has even Y coordinate:  P' = P + r*G
-If P has odd Y coordinate:   P' = -P + r*G
-```
-
-This ensures compatibility with BIP-340 Schnorr signatures.
-
-## Blinded Secret Key Derivation
-
-_TODO: tidy up this section, sync it with NUT-28, and implement it exactly_
-
-
-Given a raw secret key `p` (where `p*G = P`) and blinding scalar `r`, the blinded secret key `k` is:
-
-```
-If P has even Y coordinate:  k = p + r
-If P has odd Y coordinate:   k = -p + r
-```
-
-This ensures that `k*G = P'`, so signatures made with `k` verify against `P'`.
-
-## Refund Key Unlinkability
-
-_TODO: this doesn't need a whole section, just one well-place sentence above_
-
-Alice's refund key uses a separate `p2bk_context` (`"sender_stage1_refund"`) from her 2-of-2 key (`"sender_stage1"`). This means:
-
-- If Alice reclaims via the locktime refund path, the signature uses a different blinded key
-- The mint cannot correlate the refund spend to the normal 2-of-2 channel operation
-- This provides privacy for Alice even in the refund case
-
 # Deterministic selection of amounts
 
 To construct the deterministic outputs in the funding token and also
@@ -293,6 +206,8 @@ wish to reach and the set
 of amounts that are available in the keyset of the `active_keyset_id`.
 We ignore any amounts greater than `params.maximum_amount_for_one_output`,
 they are not considered as available to this amount-selection algorithm.
+If `params.maximum_amount_for_one_output` is zero, then no filtering is
+applied and all the keyset's amounts are available.
 
 The algorithm greedily takes the largest amount,
 smaller than that maximum amount,
@@ -353,6 +268,8 @@ amount | index
 if the `maximum_amount_for_one_output` was defined as 99 in this channel, then the algorithm
 would select fifty-four 10-sat outputs and three 1-sat outputs.
 
+_TODO: clarify the order of the outputs when Alice is creating the funding transaction. Make sure it fits the code and follows best practices_
+
 # Alice pays the fees
 
 That algorithm gives us a set of amounts that reach a given target
@@ -379,7 +296,7 @@ Notice the `>=`, not `=`, in that previous paragraph.
 Sometimes, due to fees, there is no value `x` for which equality can be attained.
 
 For example, if `input_fee_ppk=400` and `x=6`, then 
-`x=7` is too small as that would require three outputs (7= 4 + 2 +1)
+`x=7` is too small as that would require three outputs (7 = 4 + 2 +1)
 and as there are three outputs, the fees would cost 1200 ppk and leave
 only 5 sats after paying the fees.
 Therefore, we need `x=8`. That requires just a single 8-sat output
@@ -439,19 +356,24 @@ _... TODO: maybe we should recommend that the first payment be for zero sats, to
 
 # Deterministic outputs: secrets, nonces, and blinding factors
 
-_TODO: this is kinda redundant. I should move the earlier stuff down here now_
+When Alice is creating the funding token, and when either party is creating
+the outputs to be signed in the swap, they must create them using the algorithm
+descibed in 'Deterministic selection of amounts' described above.
+In doing so, they will have the _amount_ and _index_ for each output.
+Everything about these outputs is deterministic, including the `Secret.nonce`,
+and also the _blinding factor_.
 
-The deterministic outputs are created in one of three `output_context` values:
- - `output_context = "funding"` for creating the funding token, where each secret is 2-of-2 P2PK with blinded pubkeys
- - `output_context = "receiver"` for creating the commitment outputs for Charlie, which are P2PK-locked to his per-proof blinded pubkey
- - `output_context = "sender"` for creating the commitment outputs for Alice, which are P2PK-locked to her per-proof blinded pubkey
+The deterministic outputs are created in one of three `context` values:
+ - `context = "funding"` for creating the funding token, where each secret is 2-of-2 P2PK with blinded pubkeys
+ - `context = "receiver"` for creating the commitment outputs for Charlie, which are P2PK-locked to his per-proof blinded pubkey
+ - `context = "sender"` for creating the commitment outputs for Alice, which are P2PK-locked to her per-proof blinded pubkey
 
 The deterministic process is a function of five things:
 
- - the `channel_id`
- - the `output_context`
- - the `amount`
- - the `index`
+ - the `channel_id`, the hex representation of the channel_id.
+ - the `context` as a string
+ - the `amount` in decimal representation, e.g. "32" for 32 satoshis
+ - the `index` in decimal representation. (As this is rarely be greater than, an probably never greater than 255, then maybe this should just be represented as one byte?)
  - the `shared_secret` mentioned earlier. Using this ensures that the mint cannot compute the outputs even if they know the channel_id.
 
 As these are all deterministic and based on information known to both parties,
@@ -465,14 +387,25 @@ deterministic_nonce(...)
    SHA256(shared_secret || channel_id || output_context || amount || "nonce" || index)
 ```
 
-Where `amount` is encoded as 8-byte little-endian and `index` is encoded as 8-byte little-endian.
-
 ## Funding Token Secret (2-of-2 with Blinded Pubkeys)
 
+The keys are blinded following NUT-?28?, where an ephemeral public key (called `p2pk_e` in that NUT)
+is generated deterministically and that key is then used to derive a
+tweak that can be applied to each pubkey.
+While Alice and Charlie know the tweaks that are applied, the mint (Bob) does not.
+
 The funding token uses a 2-of-2 P2PK secret with three blinded pubkeys:
-- `data` field: Alice's blinded pubkey (derived with `p2bk_context = "sender_stage1"`)
-- `pubkeys` tag: Charlie's blinded pubkey (derived with `p2bk_context = "receiver_stage1"`)
-- `refund` tag: Alice's refund blinded pubkey (derived with `p2bk_context = "sender_stage1_refund"`)
+- `data` field: Alice's blinded pubkey
+- `pubkeys` tag: Charlie's blinded pubkey
+- `refund` tag: Alice's refund blinded pubkey
+
+_(Needs more clarity: ...)_ For the 2-of-2 P2PK secret in the funding token, an ephemeral _private_ key is computed as `SHA256("ChannelFundingP2BK" || shared_secret || channel_id)`. That gives us the corresponding
+ephemeral public key `p2pk_e`. Following that NUT, there is a process which takes that p2pk_e and the recipient's key (params.sender_pubkey or params.receiver_pubkey), and the position of that key in the secret, and tweaks it.
+
+While Alice is the intended recipient of both the `data` and `refund` key, NUT-28 blinds them differently due to their position in the P2PK Secret, and therefore the mint cannot see that `data == refund`.
+
+As the swap that spends this funding token use SIG_ALL, the same blinding is used for every output
+in the funding token.
 
 Example funding token secret (JSON):
 
@@ -494,15 +427,20 @@ Example funding token secret (JSON):
 ```
 
 Where:
-- `"data"` contains Alice's blinded pubkey derived with `p2bk_context = "sender_stage1"`
-- The `"pubkeys"` tag contains Charlie's blinded pubkey derived with `p2bk_context = "receiver_stage1"`
-- The `"refund"` tag contains Alice's blinded pubkey derived with `p2bk_context = "sender_stage1_refund"` (different from `"data"`)
+- `"data"` contains Alice's blinded pubkey.
+- The `"pubkeys"` tag contains Charlie's blinded pubkey.
+- The `"refund"` tag contains Alice's blinded pubkey.
 - `"n_sigs": "2"` requires both Alice and Charlie's signatures before locktime
 - After locktime, Alice can spend alone using her refund blinded secret key
 
 ## Commitment Output Secrets (1-of-1 with Per-Proof Blinded Pubkeys)
 
 Each commitment output is locked to a **unique** blinded pubkey derived from the specific `(amount, index)` of that output.
+
+_(Needs more clarity: ...)_ For the 1-of-1 P2PK secret in the commitment outputs, an ephemeral _private_ key is computed as `SHA256("ChannelClosingP2BK" || <"receiver" or "sender"> || shared_secret || channel_id || amount || index)`.
+That gives us the corresponding
+ephemeral public key `p2pk_e` for this particular output.
+Following that NUT, there is a process which takes that p2pk_e and the recipient's key (params.sender_pubkey or params.receiver_pubkey), and the position of that key in the secret, and tweaks it.
 
 Example commitment output secret for Charlie (JSON):
 
@@ -519,9 +457,7 @@ Example commitment output secret for Charlie (JSON):
 ]
 ```
 
-The `"data"` field contains Charlie's blinded pubkey derived with:
-- `p2bk_context = "receiver_stage2"`
-- The specific `amount` and `index` for this output
+The `"data"` field contains Charlie's blinded pubkey derived as described above.
 
 Example commitment output secret for Alice (JSON):
 
@@ -538,19 +474,25 @@ Example commitment output secret for Alice (JSON):
 ]
 ```
 
-The `"data"` field contains Alice's blinded pubkey derived with:
-- `p2bk_context = "sender_stage2"`
-- The specific `amount` and `index` for this output
+The `"data"` field contains Alice's blinded pubkey derived as described above.
 
 ## Blinding Factor for Blind Signatures
 
 The blinding factor (for the Cashu blind signature scheme) is computed separately from the P2BK blinding:
 
 ```
-blinding_factor = SHA256(shared_secret || channel_id || output_context || amount || "blinding" || index)
+blinding_factor = SHA256(shared_secret || channel_id || context || amount || "blinding" || index)
 ```
 
+where `context` is one of "funding", "sender" or "receiver".
+
 This is used to blind the secret before sending to the mint, and to unblind the mint's signature.
+
+Every output in this system, i.e. those in the funding token and also those which result when
+spending the funding, is fully deterministic and can be created by either party but not by the mint.
+The determinism covers the amounts, the `Secret.nonce`, the blinding of the pubkeys, and
+also the blinding factor that is applied to the Secret to generate the BlindedMessage which
+is sent to the mint as input to any swap.
 
 # Order of outputs in the commitment transaction
 
@@ -582,7 +524,7 @@ context    | amount | index
 > and then you append Alice's similarly ordered,
 > then you can apply a _stable sort_, such as Rust's `all_outputs.sort_by_key(|(output, _)| output.amount)` or Python's `sorted(all_outputs, key = lambma o: o.amount` to get the required ordering.
 
-Alice then signs this (SIG_ALL).
+Alice then signs this (`SIG_ALL`).
 Alice can then send three pieces of data to Charlie: the `channel_id`, the balance for Charlie, and her signature.
 
 As already mentioned, Alice must send the full set of channel parameters to Charlie in the first payment - if she hasn't already sent them beforehard -
@@ -605,16 +547,16 @@ and swapping.
 
 When closing the channel, both parties sign with their **blinded** secret keys:
 
-- **Charlie** signs with his blinded secret key derived from `p2bk_context = "receiver_stage1"`
-- **Alice** signs with her blinded secret key derived from `p2bk_context = "sender_stage1"`
+- **Charlie** signs with his blinded secret key derived as described above.
+- **Alice** signs with her blinded secret key derived as described above.
 
 These signatures verify against the blinded pubkeys in the funding token.
 
 For the **locktime refund path**, Alice signs with her **refund** blinded secret key derived from `p2bk_context = "sender_stage1_refund"`. This key corresponds to the blinded pubkey in the `refund` tag.
 
 When spending the commitment outputs in stage 2:
-- **Charlie** signs each of his proofs with the per-proof blinded secret key for that `(amount, index)`, derived from `p2bk_context = "receiver_stage2"`
-- **Alice** signs each of her proofs with the per-proof blinded secret key for that `(amount, index)`, derived from `p2bk_context = "sender_stage2"`
+- **Charlie** signs each of his proofs with the per-proof blinded secret key for that `(amount, index)`, as described above.
+- **Alice** signs each of her proofs with the per-proof blinded secret key for that `(amount, index)`, as described above.
 
 As the swap spends the entire funding token, Alice can detect Charlie's spend
 via NUT-07 (token state check). NUT-17, if supported by the mint, helps here too.
@@ -626,6 +568,7 @@ use NUT-09 to learn the keyset that he selected.
 
 While we assume that Charlie will usually take the most recent commitment, as it's
 the most valuable, it is not guaranteed that he will do that.
+There may be a cooperative closing mechanism to agree on any other balance.
 
 To restore the signatures, where she isn't sure which particular balance
 Charlie exited with, Alice can iterate over the amounts available, and - for each amount - loop over the indices - restarting the index at `0` for each amount -
@@ -635,7 +578,7 @@ move on to the next amount instead.
 
 ```
 for amount in amounts_in_this_keyset:
-    if amount > params.maximum_amount_for_one_output:
+    if params.maximum_amount_for_one_output > 0 and amount > params.maximum_amount_for_one_output:
         continue
 
     index = 0
@@ -651,7 +594,7 @@ for amount in amounts_in_this_keyset:
 This ensures she will get all the outputs and BlindedSignatures which Charlie
 created when he did the swap, even if she doesn't know which balance he exited with.
 
-_(Question: Does NUT-09 specify what should happen if the outputs are a mixture of unspent outputs and outputs that were never signed? i.e. Does Alice have to call restore once for each possible output, or can she do a batch call where some will fail and some will succeed?)_
+_(Question: Does NUT-09 specify what should happen if the outputs are a mixture of unspent outputs and outputs that were never spent? i.e. Does Alice have to call restore once for each possible output, or can she do a batch call where some will fail and some will succeed?)_
 
 # Charlie's verification
 
@@ -669,9 +612,9 @@ Charlie can then verify that the parameters are acceptable to him; he can check:
  - the DLEQ proofs in the funding token are correct
  - the secrets in the funding token have the correct deterministic P2PK setup, with the keys and expiry and so on
  - the blinded pubkeys in the funding token are correctly derived:
-   - `data` field matches Alice's blinded pubkey derived with `p2bk_context = "sender_stage1"`
-   - `pubkeys` tag matches Charlie's blinded pubkey derived with `p2bk_context = "receiver_stage1"`
-   - `refund` tag matches Alice's blinded pubkey derived with `p2bk_context = "sender_stage1_refund"`
+   - `data` field matches Alice's blinded pubkey
+   - `pubkeys` tag matches Charlie's blinded pubkey
+   - `refund` tag matches Alice's blinded pubkey
    - the `refund` pubkey differs from the `data` pubkey (they use different blinding tweaks)
 
 
@@ -680,7 +623,6 @@ transaction as he has the funding token and he can compute the outputs
 of the commitment transaction deterministically.
 With this, he can verify the signature that Alice included in the payment update.
 
-
 Charlie should remember to close channels as the expiry time approaches.
 He should also keep a record of channel_ids that he has closed, where
 the expiry time has not been reached, in order to ensure that
@@ -688,6 +630,10 @@ Alice does not attempt to reuse a pre-expiry channel that was already closed.
 
 Charlie should maintain a mapping from the channel_id to the balance, to ensure that
 Alice doesn't attempt to decrease the balance or otherwise attempt to reuse an older channel.
+Alternatively, Charlie could maintain a per-channel record of the amount of service that
+has been provided (image files server, LLM tokens used, kilobytes of data routed by a router ...)
+and ensure that each new balance is sufficient to cover the amount due to Charlie for
+the service.
 
 Charlie's record of a closed channel should not be deleted until after it has expired,
 in order to avoid channel reuse.
