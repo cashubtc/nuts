@@ -28,8 +28,6 @@
 | 20008 | Signature for mint request invalid              | [NUT-20][20]                             |
 | 20009 | Pubkey required for mint quote                  | [NUT-20][20]                             |
 | 20010 | Signature for quote lookup invalid              | [NUT-28][28]                             |
-| 20011 | Timestamp for quote lookup outside valid window | [NUT-28][28]                             |
-| 20012 | Duplicate request (replay detected)             | [NUT-28][28]                             |
 | 30001 | Endpoint requires clear auth                    | [NUT-21][21]                             |
 | 30002 | Clear authentication failed                     | [NUT-21][21]                             |
 | 31001 | Endpoint requires blind auth                    | [NUT-22][22]                             |
