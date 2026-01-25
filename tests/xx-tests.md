@@ -8,9 +8,7 @@ The following is a valid batch mint request combining two bolt11 quotes (`quote_
 {
   "quotes": ["quote_id_a", "quote_id_b"],
   "quote_amounts": [5, 3],
-  "outputs": [
-    { "amount": 8, "id": "keyset_1", "B_": "<blinded_message>" }
-  ]
+  "outputs": [{ "amount": 8, "id": "keyset_1", "B_": "<blinded_message>" }]
 }
 ```
 
@@ -18,9 +16,7 @@ The following is the corresponding response with a blind signature.
 
 ```json
 {
-  "signatures": [
-    { "amount": 8, "id": "keyset_1", "C_": "<blind_signature>" }
-  ]
+  "signatures": [{ "amount": 8, "id": "keyset_1", "C_": "<blind_signature>" }]
 }
 ```
 
@@ -74,9 +70,19 @@ signature[0]: 9408920d0b94cee5eb6df20f14d2a655e7ce2ce309dc1f1aeb69b219efe7671693
 {
   "quotes": ["locked-quote"],
   "outputs": [
-    {"amount":1,"id":"010000000000000000000000000000000000000000000000000000000000000000","B_":"036d6caac248af96f6afa7f904f550253a0f3ef3f5aa2fe6838a95b216691468e2"},
-    {"amount":1,"id":"010000000000000000000000000000000000000000000000000000000000000000","B_":"021f8a566c205633d029094747d2e18f44e05993dda7a5f88f496078205f656e59"}
+    {
+      "amount": 1,
+      "id": "010000000000000000000000000000000000000000000000000000000000000000",
+      "B_": "036d6caac248af96f6afa7f904f550253a0f3ef3f5aa2fe6838a95b216691468e2"
+    },
+    {
+      "amount": 1,
+      "id": "010000000000000000000000000000000000000000000000000000000000000000",
+      "B_": "021f8a566c205633d029094747d2e18f44e05993dda7a5f88f496078205f656e59"
+    }
   ],
-  "signatures": ["9408920d0b94cee5eb6df20f14d2a655e7ce2ce309dc1f1aeb69b219efe76716933b2206eba3a54f9a953c92edaa922ab3e6912e02383dda42a193409567a0dc"]
+  "signatures": [
+    "9408920d0b94cee5eb6df20f14d2a655e7ce2ce309dc1f1aeb69b219efe76716933b2206eba3a54f9a953c92edaa922ab3e6912e02383dda42a193409567a0dc"
+  ]
 }
 ```
