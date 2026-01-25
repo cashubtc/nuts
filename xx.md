@@ -1,38 +1,51 @@
-# NUT-XX: Batched Mint
+# NUT-XX: Batched Minting
 
 `optional`
 
-`depends on: NUT-04, NUT-20 (for signature support)`
+`depends on: NUT-04`
 
-This spec describes how a wallet can mint multiple quotes in one batch operation by requesting blind signatures for multiple quotes in a single atomic request.
+`uses: NUT-20`
+
+This spec describes how a wallet can mint multiple quotes in one batched operation by requesting blind signatures for multiple multiple quotes in a single atomic request.
 
 ---
 
-## 1. Checking Quote Status
+## 1. Batch Checking Quote State
 
-Before minting, the wallet SHOULD verify that each mint quote has been paid.
-It does this by sending:
+Before minting, the wallet SHOULD verify that each mint quote has been paid. It does this by sending:
 
 ```http
-POST https://mint.host:3338/v1/mint/{method}/check
-Content-Type: application/json
+POST https://mint.host:3338/v1/mint/quote/{method}/check
+```
 
+The wallet includes the following body in its request:
+
+```json
 {
-  "quotes": [ "quote_id_1", "quote_id_2", … ]
+  "quotes": <Array[str]>
 }
 ```
 
-- **quotes**: an array of **unique** mint quote IDs.
+where `quotes` is an array of _unique_ mint quote IDs.
 
-The mint returns a JSON array of quote status objects. Each object uses the quote response format defined by the payment method's NUT specification.
+The mint returns a JSON array of mint quotes objects as defined by the payment method's NUT specification.
 
-The response MUST include at minimum:
+#### Example
 
-- **quote**: The quote ID
-- **state**: Quote state (`UNPAID`, `PAID`, or `ISSUED`)
-- **unit**: The currency unit
+Below is an example for checking two bolt11 mint quotes.
 
-Example for bolt11:
+##### Request
+
+```http
+POST https://mint.host:3338/v1/mint/quote/bolt11/check
+Content-Type: application/json
+
+{
+  "quotes": [ "quote_id_1", "quote_id_2" ]
+}
+```
+
+##### Response
 
 ```json
 [
@@ -55,7 +68,7 @@ Example for bolt11:
 ]
 ```
 
-**Note on Error Handling:**
+#### Error Handling
 
 This is a query endpoint that returns available information without side effects:
 
@@ -69,60 +82,122 @@ This partial-response behavior differs from the batch mint endpoint, which requi
 
 ## 2. Executing the Batched Mint
 
+#### Request by wallet
+
 Once all quoted payments are confirmed, the wallet mints the proofs by calling:
 
 ```http
 POST https://mint.host:3338/v1/mint/{method}/batch
-Content-Type: application/json
+```
 
+The wallet includes the following body in its request:
+
+```json
 {
-  "quotes":   [ "quote_id_1", "quote_id_2", … ],
-  "quote_amounts": [ 50, 50 ],
-  "outputs": [ BlindedMessage_1, BlindedMessage_2, … ],
-  "signatures": [signature_1, signature_2, ... ]
+  "quotes": <Array[str]>,
+  "quote_amounts": <Array[int]|null>, // Optional
+  "outputs": <Array[BlindedMessage]>,
+  "signatures": <Array[BlindedMessage]|null> // Optional
 }
 ```
 
-- **quotes**: an array of **unique** quote IDs.
-  - **All quotes MUST be from the same payment method** (indicated by `{method}` in the URL path).
-  - **All quotes MUST use the same currency unit**.
-- **quote_amounts**: array of expected mint amounts per quote, in the same order as `quotes`.
-  - REQUIRED for bolt12 batches; OPTIONAL for bolt11.
-  - For bolt11, each entry MUST equal the quoted amount. For bolt12, each entry MUST NOT exceed the quote's remaining mintable amount. In all cases, the sum of `quote_amounts` MUST equal the sum of `outputs`.
-- **outputs**: an array of blinded messages (see [NUT-00][00]).
-  - The total value represented by all blinded messages must equal the sum of all quote amounts.
-- **signatures**: array of signatures for NUT-20 locked quotes. See [NUT-20 Support][nut-20-support]
+- `quotes`: array of _unique_ quote IDs.
+- `quote_amounts`: array of expected amounts to mint per quote, in the same order as `quotes`.
+  - Required for payment methods that demand an amount like bolt12; Optional for other methods like bolt11.
+- `outputs`: array of blinded messages (see [NUT-00][00]).
+- `signatures`: array of signatures for NUT-20 locked quotes. See [NUT-20 Support][nut-20-support]
+
+#### Response by mint
 
 The mint responds with:
 
 ```json
 {
-  "signatures": [ BlindSignature_1, BlindSignature_2, … ]
+  "signatures": <Array[BlindSignature]>
 }
 ```
 
-- **signatures**: an array of blind signatures, **one for each provided blinded message**, in the same order as the `outputs` array.
+- `signatures`: an array of blind signatures, one for each provided blinded message, in the same order as the `outputs` array.
 
-## Request Validation
+### Example
+
+Below is an example for minting two NUT-20 locked bolt11 mint quotes.
+
+##### Request
+
+```http
+POST https://mint.host:3338/v1/mint/bolt12/batch
+Content-Type: application/json
+
+{
+  "quotes": [
+    "quote_id_1",
+    "quote_id_2"
+  ],
+  "quote_amounts": [
+    100,
+    50
+  ],
+  "signatures": [
+    "d9be080b33179387e504bb6991ea41ae0dd715e28b01ce9f63d57198a095bccc776874914288e6989e97ac9d255ac667c205fa8d90a211184b417b4ffdd24092",
+    "f2d97118390195cf5bef21d84c94e505dcdc2760154519536f74ba5e27f886f313b82296610df14db1d91d346e988ed384070bad084aaf06d14ccd7686157f24"
+  ],
+  "outputs": [
+    {
+      "amount": 128,
+      "id": "009a1f293253e41e",
+      "B_": "035015e6d7ade60ba8426cefaf1832bbd27257636e44a76b922d78e79b47cb689d"
+    },
+    {
+      "amount": 16,
+      "id": "009a1f293253e41e",
+      "B_": "0288d7649652d0a83fc9c966c969fb217f15904431e61a44b14999fabc1b5d9ac6"
+    },
+    {
+      "amount": 4,
+      "id": "009a1f293253e41e",
+      "B_": "03b85be0c0a9f51056375b632a2f2c8149831b9827fad677be9807455e7d84b584"
+    },
+    {
+      "amount": 2,
+      "id": "009a1f293253e41e",
+      "B_": "0276bbcf69e1b1238e6d39fc14c84e7cdfd519fee07f3369d2b2b23045390e2efc"
+    }
+  ]
+}
+```
+
+##### Response
+
+```json
+{
+  "signatures": [
+    "0208657b2917f469f275226cc931e5389451f6eed515d586ad16fa7a700eed4fb6",
+    "037dc0b5e712a39ef22f5bba1d49bc65a323ab9e0b771f7281d8c33280e2e58dbc"
+  ]
+}
+```
+
+### Request Validation
 
 The mint MUST validate the following before processing a batch mint request:
 
 1. **Non-empty batch**: The `quotes` array MUST NOT be empty
 2. **Unique quotes**: All quote IDs in the `quotes` array MUST be unique (no duplicates)
-3. **Valid quote IDs**: All quote IDs MUST be parseable and exist in the mint's database
+3. **Valid quote IDs**: All quote IDs MUST exist in the mint's database
 4. **Payment method consistency**: All quotes MUST have the same payment method, matching `{method}` in the URL path
 5. **Currency unit consistency**: All quotes MUST use the same currency unit
-6. **Quote state**: All quotes MUST be in PAID state (or have mintable amount for BOLT12)
-7. **Amount balance**: The sum of output amounts MUST equal the sum of `quote_amounts` (bolt11) or MUST NOT exceed it (bolt12)
+6. **Quote state**: All quotes MUST be in PAID state (or have a mintable amount for payment methods that allow multiple mint operations like bolt12)
+7. **Amount balance**: The sum of amounts contained in the `outputs` MUST equal the sum of `quote_amounts` (bolt11) or MUST NOT exceed it (bolt12)
 8. **Signature validation (NUT-20)**: The `signature` array length MUST match the `quotes` array length; locked quotes MUST include a valid signature; unlocked quotes MUST NOT include one
 
 Implementations MAY impose additional constraints such as maximum batch size based on their resource limitations. If any validation fails, the mint MUST reject the entire batch and return an appropriate error without minting any quotes.
 
-## NUT-20 support
+### NUT-20 support
 
 Per [NUT-20][20], quotes can require authentication via signatures. When using batch minting with NUT-20 locked quotes:
 
-### Signature Structure
+#### Signature Array Structure
 
 **Array structure:**
 
@@ -139,7 +214,7 @@ Per [NUT-20][20], quotes can require authentication via signatures. When using b
 - **Required**: If ANY quote is locked
 - **Optional**: May be omitted entirely if all quotes are unlocked
 
-### Signature Message
+#### Signature Message
 
 Following the [NUT-20 message aggregation][20-msg-agg] pattern, the signature for `quotes[i]` is computed as:
 
@@ -181,7 +256,7 @@ If **any signature in the batch is invalid**, the mint MUST reject the **entire 
 
 ### Batch Size Limits
 
-Implementations MAY advertise a maximum batch size through the mint info endpoint (NUT-06). The batch size limit is included in the `nuts` object under the `XX` key:
+Mints MAY advertise a maximum batch size through the [NUT-06][06] mint info endpoint. The batch size limit is included in the `nuts` object under the `XX` key:
 
 ```json
 {
@@ -200,6 +275,7 @@ Fields:
 - `methods` (optional): Array of payment methods supported for batch minting. If omitted, all methods supported by the mint (per NUT-04) are available for batching.
 
 [00]: 00.md
+[06]: 06.md
 [20]: 20.md
 [20-msg-agg]: 20.md#message-aggregation
 [nut-20-support]: #nut-20-support
