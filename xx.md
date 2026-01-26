@@ -97,7 +97,7 @@ The wallet includes the following body in its request:
   "quotes": <Array[str]>,
   "quote_amounts": <Array[int]|null>, // Optional
   "outputs": <Array[BlindedMessage]>,
-  "signatures": <Array[BlindedMessage]|null> // Optional
+  "signatures": <Array[string]|null> // Optional
 }
 ```
 
