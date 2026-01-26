@@ -43,8 +43,9 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [25][25] | Payment Method: BOLT12            | [cdk], [cashu-ts][ts]                                                          | [cdk-mintd]                                      |
 | [26][26] | Payment Request Bech32m Encoding  | [cdk]                                                                          | -                                                |
 | [27][27] | Nostr Mint Backup                 | [Cashu.me][cashume], [cdk]                                                     | -                                                |
+| [XX][xx] | Batched Mint                      | -                                                                              | -                                                |
 
-#### Wallets:
+#### Wallets
 
 - [Nutshell][py]
 - [cdk]
@@ -55,21 +56,18 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 - [Cashu.me][cashume]
 - [Boardwalk][bwc]
 
-#### Mints:
+#### Mints
 
 - [Nutshell][py]
 - [cdk-mintd][cdk-mintd]
 - [Nutmix][nutmix]
 
 [py]: https://github.com/cashubtc/nutshell
-[lnbits]: https://github.com/lnbits/cashu
 [cashume]: https://cashu.me
 [ns]: https://nutstash.app/
 [ts]: https://github.com/cashubtc/cashu-ts
-[enuts]: https://github.com/cashubtc/eNuts
 [macadamia]: https://github.com/zeugmaster/macadamia
 [minibits]: https://github.com/minibits-cash/minibits_wallet
-[moksha]: https://github.com/ngutech21/moksha
 [cdk]: https://github.com/cashubtc/cdk
 [cdk-mintd]: https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd
 [nutmix]: https://github.com/lescuer97/nutmix
@@ -102,3 +100,4 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [25]: 25.md
 [26]: 26.md
 [27]: 27.md
+[XX]: xx.md
