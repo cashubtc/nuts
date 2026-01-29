@@ -22,7 +22,7 @@
 | 20002 | Quote has already been issued                   | [NUT-04][04]                             |
 | 20003 | Minting is disabled                             | [NUT-04][04]                             |
 | 20004 | Lightning payment failed                        | [NUT-05][05]                             |
-| 20005 | Quote is pending                                | [NUT-04][04], [NUT-05][05]               |
+| 20005 | Quote is pending                                | [NUT-04][04], [NUT-05][05], [NUT-XX][xx] |
 | 20006 | Invoice already paid                            | [NUT-05][05]                             |
 | 20007 | Quote is expired                                | [NUT-04][04], [NUT-05][05]               |
 | 20008 | Signature for mint request invalid              | [NUT-20][20]                             |
@@ -50,3 +50,4 @@
 [20]: 20.md
 [21]: 21.md
 [22]: 22.md
+[XX]: xx.md
