@@ -28,7 +28,7 @@ The wallet includes the following body in its request:
 
 where `quotes` is an array of _unique_ mint quote IDs.
 
-The mint returns a JSON array of mint quotes objects as defined by the payment method's NUT specification.
+The mint returns a JSON array of mint quotes objects as defined by the payment method's NUT specification. The quotes in this array MUST be in the same order as in the request.
 
 #### Example
 
@@ -70,13 +70,10 @@ Content-Type: application/json
 
 #### Error Handling
 
-This is a query endpoint that returns available information without side effects:
+This is a query endpoint that uses all-or-nothing error handling, matching the behavior of the batch mint endpoint:
 
-- If a `quote_id` is not known by the mint, it SHOULD be omitted from the response
-- If a `quote_id` cannot be parsed (invalid format), it SHOULD be omitted from the response
-- The response array MAY be shorter than the request array if some quotes are unknown or invalid
-
-This partial-response behavior differs from the batch mint endpoint, which requires all quotes to be valid and uses atomic all-or-nothing processing.
+- If any `quote_id` is not known by the mint, the mint MUST reject the entire request and return an appropriate error
+- If any `quote_id` cannot be parsed (invalid format), the mint MUST reject the entire request and return an appropriate error
 
 ---
 
