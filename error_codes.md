@@ -33,6 +33,17 @@
 | 31002 | Blind authentication failed                     | [NUT-22][22]                             |
 | 31003 | Maximum BAT mint amount exceeded                | [NUT-22][22]                             |
 | 31004 | BAT mint rate limit exceeded                    | [NUT-22][22]                             |
+| 13010 | Invalid oracle signature                        | [NUT-28][28]                             |
+| 13011 | Oracle announcement verification failed         | [NUT-28][28]                             |
+| 13012 | Invalid event descriptor                        | [NUT-28][28]                             |
+| 13013 | Outcome not in event descriptor                 | [NUT-28][28]                             |
+| 13014 | Event not yet matured                           | [NUT-28][28]                             |
+| 13015 | Locktime not yet expired                        | [NUT-28][28]                             |
+| 13020 | Invalid market ID                               | [NUT-29][29]                             |
+| 13021 | Market not found                                | [NUT-29][29]                             |
+| 13022 | Split amount mismatch                           | [NUT-29][29]                             |
+| 13023 | Missing outcome in outputs                      | [NUT-29][29]                             |
+| 13024 | Market not active                               | [NUT-29][29]                             |
 
 [00]: 00.md
 [01]: 01.md
@@ -50,3 +61,5 @@
 [20]: 20.md
 [21]: 21.md
 [22]: 22.md
+[28]: 28.md
+[29]: 29.md
