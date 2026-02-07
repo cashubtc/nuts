@@ -38,7 +38,6 @@
 | 13012 | Invalid event descriptor                        | [NUT-28][28]                             |
 | 13013 | Outcome not in event descriptor                 | [NUT-28][28]                             |
 | 13014 | Event not yet matured                           | [NUT-28][28]                             |
-| 13015 | Locktime not yet expired                        | [NUT-28][28]                             |
 | 13020 | Invalid market ID                               | [NUT-29][29]                             |
 | 13021 | Market not found                                | [NUT-29][29]                             |
 | 13022 | Split amount mismatch                           | [NUT-29][29]                             |
@@ -46,14 +45,14 @@
 | 13024 | Market not active                               | [NUT-29][29]                             |
 | 13025 | Merge amount mismatch                           | [NUT-29][29]                             |
 | 13026 | Missing outcome in merge inputs                 | [NUT-29][29]                             |
-| 13027 | Oracle threshold not met                        | [NUT-29][29]                             |
-| 13030 | Invalid oracle announcement format              | [NUT-30][30]                             |
-| 13031 | Announcement signature invalid                  | [NUT-30][30]                             |
-| 13032 | Event descriptor mismatch                       | [NUT-30][30]                             |
-| 13033 | Event ID mismatch                               | [NUT-30][30]                             |
-| 13034 | Announcement already registered                 | [NUT-30][30]                             |
-| 13035 | Adaptor point computation failed                | [NUT-30][30]                             |
-| 13036 | Missing oracle announcement                     | [NUT-30][30]                             |
+| 13027 | Oracle threshold not met                        | [NUT-28][28], [NUT-29][29]               |
+| 13030 | Invalid oracle announcement format              | [NUT-28][28]                             |
+| 13031 | Announcement signature invalid                  | [NUT-28][28]                             |
+| 13032 | Event descriptor mismatch                       | [NUT-28][28]                             |
+| 13033 | Event ID mismatch                               | [NUT-28][28]                             |
+| 13034 | Announcement already registered                 | [NUT-28][28]                             |
+| 13035 | Adaptor point computation failed                | [NUT-28][28]                             |
+| 13036 | Missing oracle announcement                     | [NUT-28][28]                             |
 
 [00]: 00.md
 [01]: 01.md
@@ -73,4 +72,3 @@
 [22]: 22.md
 [28]: 28.md
 [29]: 29.md
-[30]: 30.md

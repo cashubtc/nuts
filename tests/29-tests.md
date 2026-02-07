@@ -127,13 +127,14 @@ oracle_pubkey:      9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f
 event:              "btc_price_100k_2025"
 outcomes:           ["YES", "NO"]
 outcome:            "YES"
-maturity:           "1751328000"
-locktime:           "1754006400"
-refund_pubkey:      033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e
+maturity:           1751328000
 
-# Resulting secret (NUT-28 ORACLE format)
+# Announcement (TLV-encoded) contains oracle pubkey, event_id, outcomes, maturity
+announcement_hex:   d834<tlv_encoded_announcement>
+
+# Resulting secret (NUT-28 ORACLE format - simplified)
 nonce:              a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1
-secret_json:        ["ORACLE",{"nonce":"a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1","data":"","tags":[["oracle","9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0"],["event","btc_price_100k_2025"],["outcomes","YES","NO"],["outcome","YES"],["maturity","1751328000"],["locktime","1754006400"],["refund","033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e"]]}]
+secret_json:        ["ORACLE",{"nonce":"a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1","data":"","tags":[["announcement","d834..."],["outcome","YES"]]}]
 ```
 
 ### Test 7: NO outcome token after split
@@ -141,7 +142,7 @@ secret_json:        ["ORACLE",{"nonce":"a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1","data"
 ```shell
 # Same market, different outcome
 nonce:              b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2
-secret_json:        ["ORACLE",{"nonce":"b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2","data":"","tags":[["oracle","9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0"],["event","btc_price_100k_2025"],["outcomes","YES","NO"],["outcome","NO"],["maturity","1751328000"],["locktime","1754006400"],["refund","033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e"]]}]
+secret_json:        ["ORACLE",{"nonce":"b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2","data":"","tags":[["announcement","d834..."],["outcome","NO"]]}]
 ```
 
 ## Market Info
@@ -152,14 +153,15 @@ secret_json:        ["ORACLE",{"nonce":"b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2","data"
 # Market info structure
 market_info_json:   {
   "market_id": "3a7f8d2e1b4c5a6f9e0d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f",
-  "oracle_pubkey": "9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0",
+  "oracle_pubkeys": ["9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0"],
+  "threshold": 1,
   "question_id": "btc_price_100k_2025",
   "outcomes": ["YES", "NO"],
   "maturity": 1751328000,
-  "locktime": 1754006400,
-  "refund_pubkey": "033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e",
   "unit": "sat",
-  "description": "Will BTC reach $100k by June 2025?"
+  "description": "Will BTC reach $100k by June 2025?",
+  "announcements": ["d834..."],
+  "announcements_verified": true
 }
 ```
 
@@ -376,12 +378,12 @@ outcome_count:      4  # 2 x 2 = 4 combinatorial outcomes
 # Oracle attests "YES" won
 oracle_sig:         a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890
 
-# YES holder swaps their ORACLE proofs
+# YES holder swaps their ORACLE proofs (simplified format)
 swap_inputs:        [
   {
     "amount": 64,
     "id": "009a1f293253e41e",
-    "secret": "[\"ORACLE\",{\"nonce\":\"a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1\",\"data\":\"\",\"tags\":[[\"oracle\",\"9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0\"],[\"event\",\"btc_price_100k_2025\"],[\"outcomes\",\"YES\",\"NO\"],[\"outcome\",\"YES\"],[\"maturity\",\"1751328000\"],[\"locktime\",\"1754006400\"],[\"refund\",\"033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e\"]]}]",
+    "secret": "[\"ORACLE\",{\"nonce\":\"a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1\",\"data\":\"\",\"tags\":[[\"announcement\",\"d834...\"], [\"outcome\",\"YES\"]]}]",
     "C": "02...",
     "witness": "{\"oracle_sig\":\"a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890\",\"signatures\":[]}"
   }

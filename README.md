@@ -45,7 +45,6 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [27][27] | Nostr Mint Backup                 | [Cashu.me][cashume], [cdk]                                                     | -                                                |
 | [28][28] | Oracle Spending Condition         | -                                                                              | -                                                |
 | [29][29] | Conditional Token Framework       | -                                                                              | -                                                |
-| [30][30] | Oracle Announcement Protocol      | -                                                                              | -                                                |
 
 #### Wallets:
 
@@ -107,4 +106,3 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [27]: 27.md
 [28]: 28.md
 [29]: 29.md
-[30]: 30.md

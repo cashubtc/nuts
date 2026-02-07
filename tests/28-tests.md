@@ -81,7 +81,7 @@ message_hash:       1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f
 oracle_sig:         <implementation_specific_64_byte_signature>
 ```
 
-## Complete ORACLE Secret Examples
+## Complete ORACLE Secret Examples (New Format)
 
 ### Test 5: YES outcome token secret
 
@@ -89,16 +89,20 @@ oracle_sig:         <implementation_specific_64_byte_signature>
 # Secret components
 kind:               "ORACLE"
 nonce:              da62796403af76c80cd6ce9153ed3746
-oracle_pubkey:      9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0
-event:              "btc_price_100k_2025"
-outcomes:           ["YES", "NO"]
-outcome:            "YES"
-maturity:           "1751328000"
-locktime:           "1754006400"
-refund_pubkey:      033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e
 
-# Serialized secret (JSON)
-secret_json:        ["ORACLE",{"nonce":"da62796403af76c80cd6ce9153ed3746","data":"","tags":[["oracle","9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0"],["event","btc_price_100k_2025"],["outcomes","YES","NO"],["outcome","YES"],["maturity","1751328000"],["locktime","1754006400"],["refund","033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e"]]}]
+# Announcement contains:
+# - oracle_pubkey: 9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0
+# - event_id: "btc_price_100k_2025"
+# - outcomes: ["YES", "NO"]
+# - maturity_epoch: 1751328000
+# - oracle_nonce: a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890
+
+announcement_hex:   d834<tlv_encoded_announcement>
+
+outcome:            "YES"
+
+# Serialized secret (JSON) - simplified format
+secret_json:        ["ORACLE",{"nonce":"da62796403af76c80cd6ce9153ed3746","data":"","tags":[["announcement","d834..."],["outcome","YES"]]}]
 ```
 
 ### Test 6: NO outcome token secret
@@ -107,16 +111,14 @@ secret_json:        ["ORACLE",{"nonce":"da62796403af76c80cd6ce9153ed3746","data"
 # Secret components
 kind:               "ORACLE"
 nonce:              8f3e2c1d4a5b6789abcdef0123456789
-oracle_pubkey:      9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0
-event:              "btc_price_100k_2025"
-outcomes:           ["YES", "NO"]
-outcome:            "NO"
-maturity:           "1751328000"
-locktime:           "1754006400"
-refund_pubkey:      033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e
 
-# Serialized secret (JSON)
-secret_json:        ["ORACLE",{"nonce":"8f3e2c1d4a5b6789abcdef0123456789","data":"","tags":[["oracle","9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0"],["event","btc_price_100k_2025"],["outcomes","YES","NO"],["outcome","NO"],["maturity","1751328000"],["locktime","1754006400"],["refund","033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e"]]}]
+# Same announcement as Test 5
+announcement_hex:   d834<tlv_encoded_announcement>
+
+outcome:            "NO"
+
+# Serialized secret (JSON) - simplified format
+secret_json:        ["ORACLE",{"nonce":"8f3e2c1d4a5b6789abcdef0123456789","data":"","tags":[["announcement","d834..."],["outcome","NO"]]}]
 ```
 
 ## Witness Validation
@@ -131,7 +133,7 @@ signatures:         []
 # Witness JSON
 witness_json:       {"oracle_sig":"a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890","signatures":[]}
 
-# Validation (current_time >= maturity)
+# Validation (current_time >= maturity from announcement)
 current_time:       1751328000
 maturity:           1751328000
 time_check:         PASS
@@ -174,44 +176,9 @@ time_check:         FAIL
 error_code:         13014
 ```
 
-### Test 10: Valid refund claim
-
-```shell
-# Refund claim after locktime
-oracle_sig:         null
-refund_privkey:     5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f
-refund_pubkey:      033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e
-refund_signature:   9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba
-
-# Witness JSON (P2PK refund witness)
-witness_json:       {"signatures":["9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba"]}
-
-# Validation
-current_time:       1754006401
-locktime:           1754006400
-time_check:         PASS
-
-# Refund signature verification (NUT-11 rules)
-signature_check:    PASS
-```
-
-### Test 11: Invalid refund before locktime
-
-```shell
-# Attempt to refund before locktime
-oracle_sig:         null
-refund_signature:   9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba
-
-# Validation
-current_time:       1754006399
-locktime:           1754006400
-time_check:         FAIL
-error_code:         13015
-```
-
 ## Time Boundary Tests
 
-### Test 12: Maturity time boundary (exact match)
+### Test 10: Maturity time boundary (exact match)
 
 ```shell
 # Claim at exact maturity
@@ -220,50 +187,34 @@ maturity:           1751328000
 time_check:         PASS (>= allows exact match)
 ```
 
-### Test 13: Locktime boundary (exact match)
-
-```shell
-# Refund at exact locktime
-current_time:       1754006400
-locktime:           1754006400
-time_check:         FAIL (> requires strictly after)
-```
-
-### Test 14: Locktime boundary (one second after)
-
-```shell
-# Refund one second after locktime
-current_time:       1754006401
-locktime:           1754006400
-time_check:         PASS
-```
-
 ## Multi-Outcome Market Test
 
-### Test 15: Three-outcome market
+### Test 11: Three-outcome market
 
 ```shell
 # Market with three outcomes
 oracle_pubkey:      9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0
 event:              "election_2024_winner"
 outcomes:           ["CANDIDATE_A", "CANDIDATE_B", "CANDIDATE_C"]
-maturity:           "1730764800"
-locktime:           "1733443200"
+maturity:           1730764800
+
+# Announcement contains all outcomes
+announcement_hex:   d834<tlv_encoded_with_3_outcomes>
 
 # Outcome A secret
 outcome_a:          "CANDIDATE_A"
 nonce_a:            a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1
-secret_a_json:      ["ORACLE",{"nonce":"a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1","data":"","tags":[["oracle","9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0"],["event","election_2024_winner"],["outcomes","CANDIDATE_A","CANDIDATE_B","CANDIDATE_C"],["outcome","CANDIDATE_A"],["maturity","1730764800"],["locktime","1733443200"]]}]
+secret_a_json:      ["ORACLE",{"nonce":"a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1","data":"","tags":[["announcement","d834..."],["outcome","CANDIDATE_A"]]}]
 
 # Outcome B secret
 outcome_b:          "CANDIDATE_B"
 nonce_b:            b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2
-secret_b_json:      ["ORACLE",{"nonce":"b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2","data":"","tags":[["oracle","9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0"],["event","election_2024_winner"],["outcomes","CANDIDATE_A","CANDIDATE_B","CANDIDATE_C"],["outcome","CANDIDATE_B"],["maturity","1730764800"],["locktime","1733443200"]]}]
+secret_b_json:      ["ORACLE",{"nonce":"b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2","data":"","tags":[["announcement","d834..."],["outcome","CANDIDATE_B"]]}]
 
 # Outcome C secret
 outcome_c:          "CANDIDATE_C"
 nonce_c:            c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3
-secret_c_json:      ["ORACLE",{"nonce":"c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3","data":"","tags":[["oracle","9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0"],["event","election_2024_winner"],["outcomes","CANDIDATE_A","CANDIDATE_B","CANDIDATE_C"],["outcome","CANDIDATE_C"],["maturity","1730764800"],["locktime","1733443200"]]}]
+secret_c_json:      ["ORACLE",{"nonce":"c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3","data":"","tags":[["announcement","d834..."],["outcome","CANDIDATE_C"]]}]
 
 # Oracle signs CANDIDATE_B
 signed_outcome:     "CANDIDATE_B"
@@ -272,9 +223,134 @@ oracle_sig:         <implementation_specific_signature>
 # Only CANDIDATE_B holders can claim with valid oracle signature
 ```
 
+## Multi-Oracle Tests
+
+### Test 12: Two-of-three oracle threshold
+
+```shell
+# Three oracle announcements
+oracle_1_pubkey:    79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+oracle_2_pubkey:    9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0
+oracle_3_pubkey:    a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890
+
+threshold:          2
+event_id:           "btc_price_100k_2025"
+outcomes:           ["YES", "NO"]
+
+# Each oracle has their own announcement with their nonce
+announcement_1:     d834<oracle_1_announcement>
+announcement_2:     d834<oracle_2_announcement>
+announcement_3:     d834<oracle_3_announcement>
+
+# Market ID computation (sorted pubkeys)
+sorted_pubkeys:     [oracle_1_pubkey, oracle_2_pubkey, oracle_3_pubkey]  # lexicographic
+market_id:          SHA256(sorted_pubkeys || event_id || outcome_count)
+
+# Attestations from oracles 1 and 2 (meets threshold)
+oracle_1_sig_YES:   <64_byte_signature_from_oracle_1>
+oracle_2_sig_YES:   <64_byte_signature_from_oracle_2>
+
+# Verification with 2 signatures
+verification:       PASS (threshold met: 2 >= 2)
+```
+
+### Test 13: Multi-oracle threshold not met
+
+```shell
+# Same setup as Test 12
+threshold:          2
+
+# Only 1 attestation provided
+oracle_1_sig_YES:   <64_byte_signature_from_oracle_1>
+
+# Verification fails
+verification:       FAIL
+error_code:         13027  # Oracle threshold not met
+```
+
+## Announcement Verification Tests
+
+### Test 14: Valid announcement signature
+
+```shell
+# Oracle keys
+oracle_privkey:     0000000000000000000000000000000000000000000000000000000000000001
+oracle_pubkey:      79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+
+# Tag hash computation for announcement
+tag:                "DLC/oracle/announcement/v0"
+tag_hash:           f0e1d2c3b4a59687706152433425160798a9bacbdcedfe0f10213243546576a7
+
+# Oracle event parameters
+nb_nonces:          1
+oracle_nonce:       a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890
+event_maturity:     1751328000
+event_id:           "btc_price_100k_2025"
+outcomes:           ["YES", "NO"]
+
+# Announcement signature (64 bytes)
+announcement_sig:   <implementation_specific_64_byte_signature>
+
+# Verification
+signature_valid:    true
+```
+
+### Test 15: Invalid announcement signature
+
+```shell
+# Attempt to verify with wrong oracle pubkey
+oracle_pubkey:      9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0
+announcement_sig:   <signature_made_with_different_key>
+
+signature_valid:    false
+error_code:         13031
+error_message:      "Announcement signature invalid"
+```
+
+## Adaptor Point Computation
+
+### Test 16: Single nonce adaptor point for YES outcome
+
+```shell
+# Oracle nonce (R)
+oracle_nonce:       a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890
+
+# Oracle public key (P)
+oracle_pubkey:      79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+
+# Outcome
+outcome:            "YES"
+outcome_utf8_hex:   594553
+
+# Outcome hash H(outcome) using attestation tag
+tag:                "DLC/oracle/attestation/v0"
+outcome_hash:       8da6f8d38c3e4e8c9a2b1c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f
+
+# Adaptor point = R + H(outcome) * P
+adaptor_point:      <32_byte_x_only_point>
+```
+
+### Test 17: Single nonce adaptor point for NO outcome
+
+```shell
+# Same oracle nonce and pubkey
+oracle_nonce:       a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890
+oracle_pubkey:      79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+
+# Outcome
+outcome:            "NO"
+outcome_utf8_hex:   4e4f
+
+# Outcome hash
+outcome_hash:       1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b
+
+# Adaptor point = R + H(outcome) * P
+adaptor_point:      <32_byte_x_only_point>
+```
+
 ## UTF-8 NFC Normalization Tests
 
-### Test 16: ASCII outcome
+### Test 18: ASCII outcome
 
 ```shell
 # Simple ASCII
@@ -283,7 +359,7 @@ outcome_utf8_hex:   594553
 outcome_normalized: "YES"
 ```
 
-### Test 17: Unicode outcome (precomposed)
+### Test 19: Unicode outcome (precomposed)
 
 ```shell
 # Precomposed Unicode (single codepoint)
@@ -292,7 +368,7 @@ outcome_utf8_hex:   636166c3a9
 outcome_normalized: "café"  # NFC: é as single codepoint U+00E9
 ```
 
-### Test 18: Unicode outcome (decomposed)
+### Test 20: Unicode outcome (decomposed)
 
 ```shell
 # Decomposed Unicode (base + combining)
@@ -304,7 +380,7 @@ normalized_hex:     636166c3a9
 
 ## Error Validation Tests
 
-### Test 19: Outcome not in outcomes list
+### Test 21: Outcome not in event descriptor
 
 ```shell
 # Attempt to claim with outcome not in descriptor
@@ -313,7 +389,7 @@ outcome:            "MAYBE"
 error_code:         13013
 ```
 
-### Test 20: Invalid oracle public key format
+### Test 22: Invalid oracle public key format
 
 ```shell
 # 33-byte compressed key instead of 32-byte x-only
@@ -322,12 +398,53 @@ error:              Invalid oracle public key format
 error_code:         13010
 ```
 
-### Test 21: Invalid event descriptor
+### Test 23: Invalid event descriptor
 
 ```shell
 # Empty outcomes list
 outcomes:           []
 error_code:         13012
+```
+
+### Test 24: Invalid announcement format
+
+```shell
+# Malformed TLV
+announcement:       "invalid_hex_data"
+
+error_code:         13030
+error_message:      "Invalid oracle announcement format"
+```
+
+### Test 25: Event descriptor mismatch
+
+```shell
+# Announcement has different outcomes than expected
+announcement_outcomes: ["WIN", "LOSE"]
+expected_outcomes:     ["YES", "NO"]
+
+error_code:         13032
+error_message:      "Event descriptor mismatch"
+```
+
+## Nonce Reuse Detection
+
+### Test 26: Nonce reuse across markets (WARNING)
+
+```shell
+# Same oracle uses same nonce for different events (DANGEROUS)
+oracle_pubkey:      9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0
+
+market_1_event_id:  "btc_price_100k_2025"
+market_1_nonce:     a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890
+
+market_2_event_id:  "eth_price_10k_2025"
+market_2_nonce:     a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890
+
+# Same nonce! Wallet should warn user
+nonce_reuse_detected: true
+
+# If oracle signs different outcomes on both markets, private key can be extracted
 ```
 
 [NUT-28]: ../28.md
