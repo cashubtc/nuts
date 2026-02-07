@@ -45,6 +45,7 @@
 | 13025 | Merge amount mismatch                           | [NUT-29][29]                                                         |
 | 13026 | Missing outcome in merge inputs                 | [NUT-29][29]                                                         |
 | 13027 | Oracle threshold not met                        | [NUT-28][28], [NUT-29][29]                                           |
+| 13028 | Market already exists                           | [NUT-29][29]                                                         |
 | 13030 | Invalid oracle announcement format              | [NUT-28][28]                                                         |
 | 13031 | Announcement signature invalid                  | [NUT-28][28]                                                         |
 | 13032 | Event descriptor mismatch                       | [NUT-28][28]                                                         |
