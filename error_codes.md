@@ -1,58 +1,57 @@
 # NUT Errors
 
-| Code  | Description                                     | Relevant nuts                            |
-| ----- | ----------------------------------------------- | ---------------------------------------- |
-| 10001 | Proof verification failed                       | [NUT-03][03], [NUT-05][05]               |
-| 11001 | Proofs already spent                            | [NUT-03][03], [NUT-05][05]               |
-| 11002 | Proofs are pending                              | [NUT-03][03], [NUT-05][05]               |
-| 11003 | Outputs already signed                          | [NUT-03][03], [NUT-04][04], [NUT-05][05] |
-| 11004 | Outputs are pending                             | [NUT-03][03], [NUT-04][04], [NUT-05][05] |
-| 11005 | Transaction is not balanced (inputs != outputs) | [NUT-02][02], [NUT-03][03], [NUT-05][05] |
-| 11006 | Amount outside of limit range                   | [NUT-04][04], [NUT-05][05]               |
-| 11007 | Duplicate inputs provided                       | [NUT-03][03], [NUT-04][04], [NUT-05][05] |
-| 11008 | Duplicate outputs provided                      | [NUT-03][03], [NUT-04][04], [NUT-05][05] |
-| 11009 | Inputs/Outputs of multiple units                | [NUT-03][03], [NUT-04][04], [NUT-05][05] |
-| 11010 | Inputs and outputs not of same unit             | [NUT-03][03], [NUT-04][04], [NUT-05][05] |
-| 11011 | Amountless invoice is not supported             | [NUT-05][05]                             |
-| 11012 | Amount in request does not equal invoice        | [NUT-05][05]                             |
-| 11013 | Unit in request is not supported                | [NUT-04][04], [NUT-05][05]               |
-| 12001 | Keyset is not known                             | [NUT-02][02], [NUT-04][04]               |
-| 12002 | Keyset is inactive, cannot sign messages        | [NUT-02][02], [NUT-03][03], [NUT-04][04] |
-| 20001 | Quote request is not paid                       | [NUT-04][04]                             |
-| 20002 | Quote has already been issued                   | [NUT-04][04]                             |
-| 20003 | Minting is disabled                             | [NUT-04][04]                             |
-| 20004 | Lightning payment failed                        | [NUT-05][05]                             |
-| 20005 | Quote is pending                                | [NUT-04][04], [NUT-05][05]               |
-| 20006 | Invoice already paid                            | [NUT-05][05]                             |
-| 20007 | Quote is expired                                | [NUT-04][04], [NUT-05][05]               |
-| 20008 | Signature for mint request invalid              | [NUT-20][20]                             |
-| 20009 | Pubkey required for mint quote                  | [NUT-20][20]                             |
-| 30001 | Endpoint requires clear auth                    | [NUT-21][21]                             |
-| 30002 | Clear authentication failed                     | [NUT-21][21]                             |
-| 31001 | Endpoint requires blind auth                    | [NUT-22][22]                             |
-| 31002 | Blind authentication failed                     | [NUT-22][22]                             |
-| 31003 | Maximum BAT mint amount exceeded                | [NUT-22][22]                             |
-| 31004 | BAT mint rate limit exceeded                    | [NUT-22][22]                             |
-| 13010 | Invalid oracle signature                        | [NUT-28][28]                             |
-| 13011 | Oracle announcement verification failed         | [NUT-28][28]                             |
-| 13012 | Invalid event descriptor                        | [NUT-28][28]                             |
-| 13013 | Outcome not in event descriptor                 | [NUT-28][28]                             |
-| 13014 | Event not yet matured                           | [NUT-28][28]                             |
-| 13020 | Invalid market ID                               | [NUT-29][29]                             |
-| 13021 | Market not found                                | [NUT-29][29]                             |
-| 13022 | Split amount mismatch                           | [NUT-29][29]                             |
-| 13023 | Missing outcome in outputs                      | [NUT-29][29]                             |
-| 13024 | Market not active                               | [NUT-29][29]                             |
-| 13025 | Merge amount mismatch                           | [NUT-29][29]                             |
-| 13026 | Missing outcome in merge inputs                 | [NUT-29][29]                             |
-| 13027 | Oracle threshold not met                        | [NUT-28][28], [NUT-29][29]               |
-| 13030 | Invalid oracle announcement format              | [NUT-28][28]                             |
-| 13031 | Announcement signature invalid                  | [NUT-28][28]                             |
-| 13032 | Event descriptor mismatch                       | [NUT-28][28]                             |
-| 13033 | Event ID mismatch                               | [NUT-28][28]                             |
-| 13034 | Announcement already registered                 | [NUT-28][28]                             |
-| 13035 | Adaptor point computation failed                | [NUT-28][28]                             |
-| 13036 | Missing oracle announcement                     | [NUT-28][28]                             |
+| Code  | Description                                     | Relevant nuts                                                        |
+| ----- | ----------------------------------------------- | -------------------------------------------------------------------- |
+| 10001 | Proof verification failed                       | [NUT-03][03], [NUT-05][05], [NUT-28][28], [NUT-29][29]               |
+| 11001 | Proofs already spent                            | [NUT-03][03], [NUT-05][05], [NUT-28][28], [NUT-29][29]               |
+| 11002 | Proofs are pending                              | [NUT-03][03], [NUT-05][05], [NUT-28][28], [NUT-29][29]               |
+| 11003 | Outputs already signed                          | [NUT-03][03], [NUT-04][04], [NUT-05][05]                             |
+| 11004 | Outputs are pending                             | [NUT-03][03], [NUT-04][04], [NUT-05][05]                             |
+| 11005 | Transaction is not balanced (inputs != outputs) | [NUT-02][02], [NUT-03][03], [NUT-05][05], [NUT-29][29]               |
+| 11006 | Amount outside of limit range                   | [NUT-04][04], [NUT-05][05]                                           |
+| 11007 | Duplicate inputs provided                       | [NUT-03][03], [NUT-04][04], [NUT-05][05], [NUT-28][28], [NUT-29][29] |
+| 11008 | Duplicate outputs provided                      | [NUT-03][03], [NUT-04][04], [NUT-05][05], [NUT-29][29]               |
+| 11009 | Inputs/Outputs of multiple units                | [NUT-03][03], [NUT-04][04], [NUT-05][05]                             |
+| 11010 | Inputs and outputs not of same unit             | [NUT-03][03], [NUT-04][04], [NUT-05][05]                             |
+| 11011 | Amountless invoice is not supported             | [NUT-05][05]                                                         |
+| 11012 | Amount in request does not equal invoice        | [NUT-05][05]                                                         |
+| 11013 | Unit in request is not supported                | [NUT-04][04], [NUT-05][05]                                           |
+| 12001 | Keyset is not known                             | [NUT-02][02], [NUT-04][04], [NUT-29][29]                             |
+| 12002 | Keyset is inactive, cannot sign messages        | [NUT-02][02], [NUT-03][03], [NUT-04][04], [NUT-29][29]               |
+| 20001 | Quote request is not paid                       | [NUT-04][04]                                                         |
+| 20002 | Quote has already been issued                   | [NUT-04][04]                                                         |
+| 20003 | Minting is disabled                             | [NUT-04][04]                                                         |
+| 20004 | Lightning payment failed                        | [NUT-05][05]                                                         |
+| 20005 | Quote is pending                                | [NUT-04][04], [NUT-05][05]                                           |
+| 20006 | Invoice already paid                            | [NUT-05][05]                                                         |
+| 20007 | Quote is expired                                | [NUT-04][04], [NUT-05][05]                                           |
+| 20008 | Signature for mint request invalid              | [NUT-20][20]                                                         |
+| 20009 | Pubkey required for mint quote                  | [NUT-20][20]                                                         |
+| 30001 | Endpoint requires clear auth                    | [NUT-21][21]                                                         |
+| 30002 | Clear authentication failed                     | [NUT-21][21]                                                         |
+| 31001 | Endpoint requires blind auth                    | [NUT-22][22]                                                         |
+| 31002 | Blind authentication failed                     | [NUT-22][22]                                                         |
+| 31003 | Maximum BAT mint amount exceeded                | [NUT-22][22]                                                         |
+| 31004 | BAT mint rate limit exceeded                    | [NUT-22][22]                                                         |
+| 13010 | Invalid oracle signature                        | [NUT-28][28]                                                         |
+| 13011 | Oracle announcement verification failed         | [NUT-28][28]                                                         |
+| 13012 | Invalid event descriptor                        | [NUT-28][28]                                                         |
+| 13013 | Outcome not in event descriptor                 | [NUT-28][28]                                                         |
+| 13020 | Invalid market ID                               | [NUT-29][29]                                                         |
+| 13021 | Market not found                                | [NUT-29][29]                                                         |
+| 13022 | Split amount mismatch                           | [NUT-29][29]                                                         |
+| 13023 | Missing outcome in outputs                      | [NUT-29][29]                                                         |
+| 13024 | Market not active                               | [NUT-29][29]                                                         |
+| 13025 | Merge amount mismatch                           | [NUT-29][29]                                                         |
+| 13026 | Missing outcome in merge inputs                 | [NUT-29][29]                                                         |
+| 13027 | Oracle threshold not met                        | [NUT-28][28], [NUT-29][29]                                           |
+| 13030 | Invalid oracle announcement format              | [NUT-28][28]                                                         |
+| 13031 | Announcement signature invalid                  | [NUT-28][28]                                                         |
+| 13032 | Event descriptor mismatch                       | [NUT-28][28]                                                         |
+| 13033 | Event ID mismatch                               | [NUT-28][28]                                                         |
+| 13034 | Announcement already registered                 | [NUT-28][28]                                                         |
+| 13035 | Adaptor point computation failed                | [NUT-28][28]                                                         |
+| 13036 | Missing oracle announcement                     | [NUT-28][28]                                                         |
 
 [00]: 00.md
 [01]: 01.md
