@@ -53,6 +53,7 @@ A `Proof` with a `Secret` of kind `BTCFEE` can be spent in two ways:
 The receiver(s) can spend the proof by providing:
 - The blockhash from mined block
 - A valid preimage for hash inside `scriptSig` field in the mined block with containing the transaction
+- The merkle proof that transaction is on block merkle tree
 
 ### Sender Pathway (timelocked refund)
 
@@ -65,7 +66,8 @@ The sender(s) listed in the `refund` can spend the proof once the `locktime` loc
 ```json
 {
   "blockhash": <hex_str>,
-  "preimage": <hex_str>
+  "preimage": <hex_str>,
+  "merkle_proof": [<hex_str>, <hex_str>, ...]
 }
 ```
 
