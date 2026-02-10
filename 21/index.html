@@ -1317,10 +1317,26 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p><code>openid_discovery</code> is the OpenID Connect Discovery endpoint which has all the information necessary for a client to authenticate with the service. <code>client_id</code> is the OpenID Connect Client ID that the wallet needs to use to authenticate.</p>
-<p><code>protected_endpoints</code> is an array of objects that specify each endpoint that requires a CAT in the request headers. <code>method</code> is the HTTP method and <code>path</code> the path for the endpoint that is protected.</p>
-<p>The <code>path</code> can either be a string (exact match), such as <code>"/v1/auth/blind/mint"</code> or a regex pattern such as <code>"^/v1/mint/quote/bolt11/.*"</code>.</p>
-<p>In this example, the entry in <code>protected_endpoints</code> is the <a href="../22/">NUT-22</a> endpoint for obtaining blind authentication tokens (BATs).</p>
+<p><code>openid_discovery</code> is the OpenID Connect Discovery endpoint which has all the information necessary for a client to authenticate with the service.</p>
+<p><code>client_id</code> is the OpenID Connect Client ID that the wallet needs to use to authenticate.</p>
+<p><code>protected_endpoints</code> is an array of objects that specify each endpoint that requires a CAT in the request headers. <code>method</code> is the HTTP method, and <code>path</code> is either:</p>
+<ol>
+<li><strong>Exact match</strong>: no trailing <code>*</code> → request path MUST equal <code>path</code></li>
+<li><strong>Prefix match</strong>: ends with <code>*</code> → request path MUST start with the prefix (<code>*</code> removed)</li>
+</ol>
+<p>The <code>*</code> wildcard, if present, MUST be the final character only.</p>
+<p>For example:</p>
+<ul>
+<li><code>/v1/*</code> matches any path starting <code>/v1/</code> (all endpoints)</li>
+<li><code>/v1/auth/*</code> matches any path that starts with <code>/v1/auth/</code> (all auth endpoints)</li>
+<li><code>/v1/mint/*</code> matches any path that starts with <code>/v1/mint/</code> (all minting endpoints)</li>
+<li><code>/v1/mint/bolt*</code> matches any path starting <code>/v1/mint/bolt</code> (bolt11/12 minting endpoints)</li>
+</ul>
+<p>In the example above, the <code>/v1/auth/blind/mint</code> path is the <strong>exact match</strong> <a href="../22/">NUT-22</a> endpoint for obtaining blind authentication tokens (BATs).</p>
+<blockquote>
+<p>[!CAUTION]
+Wallets <strong>MUST</strong> treat mint provided <code>path</code> values as untrusted input and use exact or prefix matching only. Never use regex matching on untrusted input.</p>
+</blockquote>
 <h3 id="clear-authentication-token-verification">Clear authentication token verification<a class="headerlink" href="#clear-authentication-token-verification" title="Permanent link">&para;</a></h3>
 <p>When receiving a request to a protected endpoint, the mint checks the included CAT (which is a JWT) in the HTTP request header (see below in section <a href="#cat-in-request-header">Wallet</a>) and verifies the JWT. To verify the JWT, the mint checks the signature of the OIDC and the expiry of the JWT.</p>
 <p>The JWT includes a <code>sub</code> field which identifies a specific user. The <code>sub</code> identifier can, for example, be used to rate limit the user.</p>
@@ -1333,7 +1349,7 @@
 <p>It is recommended to use language-specific libraries that can handle OpenID Connect authentication on behalf of the user. The wallet should be able to handle and store access tokens and refresh tokens for each mint that it authenticates with. If the wallet connects to a mint for the first time, or if the refresh token is about to expire, the wallet should allow the user to log in again to obtain a new access token (<code>access_token</code>) and a new refresh token (<code>refresh_token</code>).</p>
 <p>The <code>access_token</code> is what is referred to as a clear authentication token (CAT) throughout this document.</p>
 <h3 id="cat-in-request-header">CAT in request header<a class="headerlink" href="#cat-in-request-header" title="Permanent link">&para;</a></h3>
-<p>When making a request to the mint's endpoint, the wallet matches the requested URL with the <code>protected_endpoints</code> from the <code>MintClearAuthSetting</code> (either exact match or regex pattern match). If the match is positive, the mint requires the wallet to provide a CAT with the request.</p>
+<p>When making a request to the mint's endpoint, the wallet matches the requested URL with the <code>protected_endpoints</code> from the <code>MintClearAuthSetting</code> (either exact match or prefix pattern match). If the match is positive, the mint requires the wallet to provide a CAT with the request.</p>
 <p>After obtaining a CAT from the OIDC service, the wallet includes a valid CAT in the HTTP request header when it makes requests to one of the mint's <code>protected_endpoints</code>:</p>
 <div class="codehilite"><pre><span></span><code>Clear-auth: &lt;CAT&gt;
 </code></pre></div>

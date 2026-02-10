@@ -1485,18 +1485,33 @@
 <span class="w">  </span><span class="nt">&quot;protected_endpoints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;GET&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^/v1/mint/.*&quot;</span>
+<span class="w">      </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/v1/mint/*&quot;</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^/v1/mint/.*&quot;</span>
+<span class="w">      </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/v1/mint/*&quot;</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <p><code>bat_max_mint</code> is the number of blind authentication tokens (BATs) that can be minted in a single request using the <code>POST /v1/auth/blind/mint</code> endpoint.</p>
-<p><code>protected_endpoints</code> contains the endpoints that are protected by blind authentication. <code>method</code> denotes the HTTP method of the endpoint, and <code>path</code> is a regex pattern that must match the path of the URL. In this example, all <code>/v1/mint/*</code> endpoints are protected and require blind authentication. <code>path</code> entries without regex pattern are required to match exactly.</p>
+<p><code>protected_endpoints</code> contains the endpoints that are protected by blind authentication. <code>method</code> denotes the HTTP method of the endpoint, and <code>path</code> is either:</p>
+<ol>
+<li><strong>Exact match</strong>: no trailing <code>*</code> → request path MUST equal <code>path</code></li>
+<li><strong>Prefix match</strong>: ends with <code>*</code> → request path MUST start with the prefix (<code>*</code> removed)</li>
+</ol>
+<p>The <code>*</code> wildcard, if present, MUST be the final character only.</p>
+<p>For example:</p>
+<ul>
+<li><code>/v1/*</code> matches any path starting <code>/v1/</code> (all endpoints)</li>
+<li><code>/v1/mint/*</code> matches any path that starts with <code>/v1/mint/</code> (all minting endpoints)</li>
+<li><code>/v1/mint/bolt*</code> matches any path starting <code>/v1/mint/bolt</code> (bolt11/12 minting endpoints)</li>
+</ul>
+<blockquote>
+<p>[!CAUTION]
+Wallets <strong>MUST</strong> treat mint provided <code>path</code> values as untrusted input and use exact or prefix matching only. Never use regex matching on untrusted input.</p>
+</blockquote>
 <h2 id="error-codes">Error codes<a class="headerlink" href="#error-codes" title="Permanent link">&para;</a></h2>
 <p>See <a href="../error_codes/">Error Codes</a>:</p>
 <ul>
