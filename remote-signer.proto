@@ -1,0 +1,145 @@
+syntax = "proto3";
+
+package signatory;
+
+service Signatory {
+  rpc BlindSign(BlindedMessages) returns (BlindSignResponse);
+  rpc VerifyProofs(Proofs) returns (BooleanResponse);
+  // returns all the keysets for the mint
+  rpc Keysets(EmptyRequest) returns (KeysResponse);
+  // rotates the keysets
+  rpc RotateKeyset(RotationRequest) returns (KeyRotationResponse);
+}
+
+enum Operation {
+  OPERATION_UNSPECIFIED = 0;
+  OPERATION_MINT = 1;
+  OPERATION_MELT = 2;
+  OPERATION_SWAP = 3;
+}
+
+message BlindSignResponse {
+  Error error = 1;
+  BlindSignatures sigs = 2;
+}
+
+message BlindedMessages {
+  repeated BlindedMessage blinded_messages = 1;
+  Operation operation = 2;
+  string correlation_id = 3;
+}
+
+// Represents a blinded message
+message BlindedMessage {
+  uint64 amount = 1;
+  bytes keyset_id = 2;
+  bytes blinded_secret = 3;
+}
+
+message BooleanResponse {
+  Error error = 1;
+  bool success = 2;
+}
+
+message KeyRotationResponse {
+  Error error = 1;
+  KeySet keyset = 2;
+}
+
+message KeysResponse {
+  Error error = 1;
+  SignatoryKeysets keysets = 2;
+}
+
+message SignatoryKeysets {
+  bytes pubkey = 1;
+  repeated KeySet keysets = 2;
+}
+
+message KeySet {
+  bytes id = 1;
+  CurrencyUnit unit = 2;
+  bool active = 3;
+  uint64 input_fee_ppk = 4;
+  Keys keys = 5;
+  uint32 version  = 6;
+  optional uint64 final_expiry  = 7;
+}
+
+message Keys {
+  map<uint64, bytes> keys = 1;
+}
+
+message RotationRequest {
+  CurrencyUnit unit = 1;
+  uint64 input_fee_ppk = 2;
+  repeated uint64 amounts = 3;
+  // unix timestamp for expiration
+  optional uint64 final_expiry = 4;
+}
+
+enum CurrencyUnitType {
+  CURRENCY_UNIT_TYPE_UNSPECIFIED = 0;
+  CURRENCY_UNIT_TYPE_SAT = 1;
+  CURRENCY_UNIT_TYPE_MSAT = 2;
+  CURRENCY_UNIT_TYPE_USD = 3;
+  CURRENCY_UNIT_TYPE_EUR = 4;
+  CURRENCY_UNIT_TYPE_AUTH = 5;
+}
+
+message CurrencyUnit {
+  oneof currency_unit {
+    CurrencyUnitType unit = 1;
+    string custom_unit = 2;
+  }
+}
+
+message Proofs {
+  repeated Proof proof = 1;
+  Operation operation = 3;
+  string correlation_id = 4;
+}
+
+message Proof {
+  uint64 amount = 1;
+  bytes keyset_id = 2;
+  bytes secret = 3;
+  bytes c = 4;
+}
+
+message BlindSignatures {
+  repeated BlindSignature blind_signatures = 1;
+}
+
+message BlindSignature {
+  uint64 amount = 1;
+  bytes keyset_id = 2;
+  bytes blinded_secret = 3;
+  optional BlindSignatureDLEQ dleq = 4;
+}
+
+message BlindSignatureDLEQ {
+  bytes e = 1;
+  bytes s = 2;
+}
+
+enum ErrorCode {
+  ERROR_CODE_UNSPECIFIED = 0;
+  ERROR_CODE_AMOUNT_OUTSIDE_LIMIT = 1;
+  ERROR_CODE_DUPLICATE_INPUTS_PROVIDED = 2;
+  ERROR_CODE_DUPLICATE_OUTPUTS_PROVIDED = 3;
+  ERROR_CODE_KEYSET_NOT_KNOWN = 4;
+  ERROR_CODE_KEYSET_INACTIVE = 5;
+  ERROR_CODE_MINTING_DISABLED = 6;
+  ERROR_CODE_COULD_NOT_ROTATE_KEYSET = 7;
+  ERROR_CODE_INVALID_PROOF = 8;
+  ERROR_CODE_INVALID_BLIND_MESSAGE = 9;
+  ERROR_CODE_UNIT_NOT_SUPPORTED = 10;
+}
+
+message Error {
+  ErrorCode code = 1;
+  string detail = 2;
+}
+
+message EmptyRequest {}
