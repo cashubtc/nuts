@@ -43,6 +43,9 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [25][25] | Payment Method: BOLT12            | [cdk], [cashu-ts][ts]                                                          | [cdk-mintd]                                      |
 | [26][26] | Payment Request Bech32m Encoding  | [cdk]                                                                          | -                                                |
 | [27][27] | Nostr Mint Backup                 | [Cashu.me][cashume], [cdk]                                                     | -                                                |
+| [28][28] | Conditional Token                 | -                                                                              | -                                                |
+| [29][29] | Conditional Token Framework       | -                                                                              | -                                                |
+| [30][30] | Numeric Outcome Markets           | -                                                                              | -                                                |
 
 #### Wallets:
 
@@ -102,3 +105,6 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [25]: 25.md
 [26]: 26.md
 [27]: 27.md
+[28]: 28.md
+[29]: 29.md
+[30]: 30.md
