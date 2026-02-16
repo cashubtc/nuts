@@ -8,29 +8,27 @@
       
       
       
-        <link rel="canonical" href="https://cashubtc.github.io/nuts/">
+        <link rel="canonical" href="https://cashubtc.github.io/nuts/28/">
       
       
-      
-        <link rel="next" href="00/">
       
       
         
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
     
     
       
-        <title>Cashu NUTs Specifications</title>
+        <title>NUT-28: Pay-to-Blinded-Key (P2BK) - Cashu NUTs Specifications</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -49,7 +47,7 @@
       
     
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cashu-nuts-notation-usage-and-terminology" class="md-skip">
+        <a href="#nut-28-pay-to-blinded-key-p2bk" class="md-skip">
           Skip to content
         </a>
       
@@ -90,7 +88,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Cashu NUTs Specifications" class="md-header__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+    <a href=".." title="Cashu NUTs Specifications" class="md-header__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
@@ -110,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              NUT-28: Pay-to-Blinded-Key (P2BK)
             
           </span>
         </div>
@@ -243,7 +241,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Cashu NUTs Specifications" class="md-nav__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+    <a href=".." title="Cashu NUTs Specifications" class="md-nav__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
@@ -270,37 +268,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Home
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -316,93 +287,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#specifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Specifications
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Specifications">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#mandatory" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Mandatory
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#optional" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Optional
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Optional">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#wallets" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Wallets:
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mints" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Mints:
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -519,7 +403,7 @@
   
   
     <li class="md-nav__item">
-      <a href="00/" class="md-nav__link">
+      <a href="../00/" class="md-nav__link">
         
   
   
@@ -547,7 +431,7 @@
   
   
     <li class="md-nav__item">
-      <a href="01/" class="md-nav__link">
+      <a href="../01/" class="md-nav__link">
         
   
   
@@ -575,7 +459,7 @@
   
   
     <li class="md-nav__item">
-      <a href="02/" class="md-nav__link">
+      <a href="../02/" class="md-nav__link">
         
   
   
@@ -603,7 +487,7 @@
   
   
     <li class="md-nav__item">
-      <a href="03/" class="md-nav__link">
+      <a href="../03/" class="md-nav__link">
         
   
   
@@ -631,7 +515,7 @@
   
   
     <li class="md-nav__item">
-      <a href="04/" class="md-nav__link">
+      <a href="../04/" class="md-nav__link">
         
   
   
@@ -659,7 +543,7 @@
   
   
     <li class="md-nav__item">
-      <a href="05/" class="md-nav__link">
+      <a href="../05/" class="md-nav__link">
         
   
   
@@ -687,7 +571,7 @@
   
   
     <li class="md-nav__item">
-      <a href="06/" class="md-nav__link">
+      <a href="../06/" class="md-nav__link">
         
   
   
@@ -774,7 +658,7 @@
   
   
     <li class="md-nav__item">
-      <a href="07/" class="md-nav__link">
+      <a href="../07/" class="md-nav__link">
         
   
   
@@ -802,7 +686,7 @@
   
   
     <li class="md-nav__item">
-      <a href="08/" class="md-nav__link">
+      <a href="../08/" class="md-nav__link">
         
   
   
@@ -830,7 +714,7 @@
   
   
     <li class="md-nav__item">
-      <a href="09/" class="md-nav__link">
+      <a href="../09/" class="md-nav__link">
         
   
   
@@ -858,7 +742,7 @@
   
   
     <li class="md-nav__item">
-      <a href="10/" class="md-nav__link">
+      <a href="../10/" class="md-nav__link">
         
   
   
@@ -886,7 +770,7 @@
   
   
     <li class="md-nav__item">
-      <a href="11/" class="md-nav__link">
+      <a href="../11/" class="md-nav__link">
         
   
   
@@ -914,7 +798,7 @@
   
   
     <li class="md-nav__item">
-      <a href="12/" class="md-nav__link">
+      <a href="../12/" class="md-nav__link">
         
   
   
@@ -942,7 +826,7 @@
   
   
     <li class="md-nav__item">
-      <a href="13/" class="md-nav__link">
+      <a href="../13/" class="md-nav__link">
         
   
   
@@ -970,7 +854,7 @@
   
   
     <li class="md-nav__item">
-      <a href="14/" class="md-nav__link">
+      <a href="../14/" class="md-nav__link">
         
   
   
@@ -998,7 +882,7 @@
   
   
     <li class="md-nav__item">
-      <a href="15/" class="md-nav__link">
+      <a href="../15/" class="md-nav__link">
         
   
   
@@ -1026,7 +910,7 @@
   
   
     <li class="md-nav__item">
-      <a href="16/" class="md-nav__link">
+      <a href="../16/" class="md-nav__link">
         
   
   
@@ -1054,7 +938,7 @@
   
   
     <li class="md-nav__item">
-      <a href="17/" class="md-nav__link">
+      <a href="../17/" class="md-nav__link">
         
   
   
@@ -1082,7 +966,7 @@
   
   
     <li class="md-nav__item">
-      <a href="18/" class="md-nav__link">
+      <a href="../18/" class="md-nav__link">
         
   
   
@@ -1110,7 +994,7 @@
   
   
     <li class="md-nav__item">
-      <a href="19/" class="md-nav__link">
+      <a href="../19/" class="md-nav__link">
         
   
   
@@ -1138,7 +1022,7 @@
   
   
     <li class="md-nav__item">
-      <a href="20/" class="md-nav__link">
+      <a href="../20/" class="md-nav__link">
         
   
   
@@ -1166,7 +1050,7 @@
   
   
     <li class="md-nav__item">
-      <a href="21/" class="md-nav__link">
+      <a href="../21/" class="md-nav__link">
         
   
   
@@ -1194,7 +1078,7 @@
   
   
     <li class="md-nav__item">
-      <a href="22/" class="md-nav__link">
+      <a href="../22/" class="md-nav__link">
         
   
   
@@ -1250,211 +1134,145 @@
   
 
 
-<h1 id="cashu-nuts-notation-usage-and-terminology">Cashu NUTs (Notation, Usage, and Terminology)<a class="headerlink" href="#cashu-nuts-notation-usage-and-terminology" title="Permanent link">&para;</a></h1>
-<p>These documents each specify parts of the Cashu protocol. Read the specifications for the legacy API <a href="https://github.com/cashubtc/nuts/tree/74f26b81b6617db710fa1081eebc0c7203711213">here</a>.</p>
-<h2 id="specifications">Specifications<a class="headerlink" href="#specifications" title="Permanent link">&para;</a></h2>
-<p>Wallets and mints <code>MUST</code> implement all mandatory specs and <code>CAN</code> implement optional specs.</p>
-<h3 id="mandatory">Mandatory<a class="headerlink" href="#mandatory" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>NUT #</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="00/">00</a></td>
-<td>Cryptography and Models</td>
-</tr>
-<tr>
-<td><a href="01/">01</a></td>
-<td>Mint public keys</td>
-</tr>
-<tr>
-<td><a href="02/">02</a></td>
-<td>Keysets and fees</td>
-</tr>
-<tr>
-<td><a href="03/">03</a></td>
-<td>Swapping tokens</td>
-</tr>
-<tr>
-<td><a href="04/">04</a></td>
-<td>Minting tokens</td>
-</tr>
-<tr>
-<td><a href="05/">05</a></td>
-<td>Melting tokens</td>
-</tr>
-<tr>
-<td><a href="06/">06</a></td>
-<td>Mint info</td>
-</tr>
-</tbody>
-</table>
-<h3 id="optional">Optional<a class="headerlink" href="#optional" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>#</th>
-<th>Description</th>
-<th>Wallets</th>
-<th>Mints</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="07/">07</a></td>
-<td>Token state check</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://nutstash.app/">Nutstash</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/cashubtc/cdk">cdk</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="08/">08</a></td>
-<td>Overpaid Lightning fees</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://nutstash.app/">Nutstash</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/cashubtc/cdk">cdk</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="09/">09</a></td>
-<td>Signature restore</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk">cdk</a>, <a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a></td>
-</tr>
-<tr>
-<td><a href="10/">10</a></td>
-<td>Spending conditions</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk">cdk</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="11/">11</a></td>
-<td>Pay-To-Pubkey (P2PK)</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk">cdk</a>, <a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="12/">12</a></td>
-<td>DLEQ proofs</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk">cdk</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="13/">13</a></td>
-<td>Deterministic secrets</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a>, <a href="https://github.com/cashubtc/cdk">cdk</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="14/">14</a></td>
-<td>Hashed Timelock Contracts (HTLCs)</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk">cdk</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="15/">15</a></td>
-<td>Partial multi-path payments (MPP)</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk">cdk</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="16/">16</a></td>
-<td>Animated QR codes</td>
-<td><a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/zeugmaster/macadamia">macadamia</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="17/">17</a></td>
-<td>WebSocket subscriptions</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk">cdk</a>, <a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="18/">18</a></td>
-<td>Payment requests</td>
-<td><a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/MakePrisms/boardwalkcash">Boardwalk</a>, <a href="https://github.com/cashubtc/cdk">cdk</a>, <a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="19/">19</a></td>
-<td>Cached Responses</td>
-<td>-</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a></td>
-</tr>
-<tr>
-<td><a href="20/">20</a></td>
-<td>Signature on Mint Quote</td>
-<td><a href="https://github.com/cashubtc/cdk">cdk</a>, <a href="https://github.com/cashubtc/nutshell">Nutshell</a></td>
-<td><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/cashubtc/nutshell">Nutshell</a></td>
-</tr>
-<tr>
-<td><a href="21/">21</a></td>
-<td>Clear authentication</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk">cdk</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="22/">22</a></td>
-<td>Blind authentication</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk">cdk</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="23/">23</a></td>
-<td>Payment Method: BOLT11</td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk">cdk</a></td>
-<td><a href="https://github.com/cashubtc/nutshell">Nutshell</a>, <a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a>, <a href="https://github.com/lescuer97/nutmix">nutmix</a></td>
-</tr>
-<tr>
-<td><a href="24/">24</a></td>
-<td>HTTP 402 Payment Required</td>
-<td>-</td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="25/">25</a></td>
-<td>Payment Method: BOLT12</td>
-<td><a href="https://github.com/cashubtc/cdk">cdk</a>, <a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a></td>
-<td><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a></td>
-</tr>
-<tr>
-<td><a href="26/">26</a></td>
-<td>Payment Request Bech32m Encoding</td>
-<td><a href="https://github.com/cashubtc/cdk">cdk</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="27/">27</a></td>
-<td>Nostr Mint Backup</td>
-<td><a href="https://cashu.me">Cashu.me</a>, <a href="https://github.com/cashubtc/cdk">cdk</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="28/">28</a></td>
-<td>Pay to Blinded Key (P2BK)</td>
-<td>-</td>
-<td>-</td>
-</tr>
-</tbody>
-</table>
-<h4 id="wallets">Wallets:<a class="headerlink" href="#wallets" title="Permanent link">&para;</a></h4>
+<h1 id="nut-28-pay-to-blinded-key-p2bk">NUT-28: Pay-to-Blinded-Key (P2BK)<a class="headerlink" href="#nut-28-pay-to-blinded-key-p2bk" title="Permanent link">&para;</a></h1>
+<p><code>optional</code></p>
+<p><code>depends on: NUT-11</code></p>
+<hr />
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<p>This NUT describes Pay-to-Blinded-Key (P2BK), which extends the <a href="../11/">NUT-11</a> (P2PK) spending conditions. By implication, it also extends <a href="../14/">NUT-14</a> (HTLC).</p>
+<p>P2BK preserves privacy by blinding each NUT-11 receiver pubkey <code>P</code> with an ECDH-derived scalar <code>rᵢ</code>. Both sides can deterministically derive the same <code>rᵢ</code> from their own keys, but a third party cannot. This improves user privacy by preventing the mint from linking multiple P2PK spends by the same party.</p>
+<h2 id="ecdh-shared-secret-zx">ECDH Shared Secret (Zx)<a class="headerlink" href="#ecdh-shared-secret-zx" title="Permanent link">&para;</a></h2>
+<p>Elliptic-curve Diffie–Hellman (ECDH) allows two parties to create an x-coordinate shared secret (<code>Zx</code>) by combining their private key with the public key of the other party: <code>Zx = x(epG) = x(eP) = x(pE)</code>.</p>
+<p>For P2BK, the sender creates an ephemeral keypair (private key: <code>e</code>, public key: <code>E</code>), which protects the privacy of their usual long-lived public key. They then calculate the shared secret by combining the ephemeral private key (<code>e</code>) and the receiver's long-lived public key (<code>P</code>).</p>
+<p>The receiver calculates the same shared secret <code>Zx</code> using their private key (<code>p</code>) and the ephemeral public key (<code>E</code>), which is supplied by the sender in the <a href="#proof-object-extension">proof metadata</a>.</p>
+<p>The shared secret <code>Zx</code> is then used to derive the blinded public keys.</p>
+<h2 id="deriving-blinded-public-keys">Deriving Blinded Public Keys<a class="headerlink" href="#deriving-blinded-public-keys" title="Permanent link">&para;</a></h2>
+<p>Per NUT-11, there are up to 11 locking 'slots' in the order: <code>[data, ...pubkeys, ...refund]</code>.</p>
+<p>Slot 0 is the <code>data</code> tag. Slots 1-10 can be any combination of <code>pubkeys</code> and <code>refund</code> keys.</p>
+<p>Each public key in the NUT-11 proof is permanently blinded using a deterministic blinding scalar (<code>rᵢ</code>), where <code>i</code> is the <em>slot index</em>.</p>
+<p>The blinding scalar for each slot is calculated as:</p>
+<div class="codehilite"><pre><span></span><code>rᵢ = SHA-256( DOMAIN_SEPARATOR || Zx || i_byte)
+</code></pre></div>
+
+<p>Where:</p>
 <ul>
-<li><a href="https://github.com/cashubtc/nutshell">Nutshell</a></li>
-<li><a href="https://github.com/cashubtc/cdk">cdk</a></li>
-<li><a href="https://github.com/cashubtc/cashu-ts">cashu-ts</a></li>
-<li><a href="https://github.com/zeugmaster/macadamia">Macadamia</a></li>
-<li><a href="https://github.com/minibits-cash/minibits_wallet">Minibits</a></li>
-<li><a href="https://nutstash.app/">Nutstash</a></li>
-<li><a href="https://cashu.me">Cashu.me</a></li>
-<li><a href="https://github.com/MakePrisms/boardwalkcash">Boardwalk</a></li>
+<li><code>DOMAIN_SEPARATOR</code> constant byte string <code>b"Cashu_P2BK_v1"</code></li>
+<li><code>Zx</code> is the ECDH shared secret (<code>eP</code> for sender, <code>pE</code> for receiver).</li>
+<li><code>i_byte</code> is the single unsigned byte representation of <code>i</code>: (<code>0x00</code> to <code>0x0A</code>)</li>
+<li><code>||</code> denotes concatenation</li>
 </ul>
-<h4 id="mints">Mints:<a class="headerlink" href="#mints" title="Permanent link">&para;</a></h4>
+<p>If <code>rᵢ</code> is not in the range <code>1 ≤ rᵢ ≤ n−1</code>, retry once with an extra <code>0xff</code> byte appended to the hash input as follows:</p>
+<div class="codehilite"><pre><span></span><code>rᵢ = SHA-256( b&quot;Cashu_P2BK_v1&quot; || Zx || i_byte || 0xff )
+</code></pre></div>
+
+<p>If <code>rᵢ</code> is still not in the range <code>1 ≤ rᵢ ≤ n−1</code>, abort and discard the ephemeral keypair.</p>
+<p>Finally, the public key (<code>P</code>) for slot <code>i</code> is blinded (<code>P'</code>) as follows:</p>
+<div class="codehilite"><pre><span></span><code>P&#39; = P + rᵢG
+</code></pre></div>
+
+<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
+<p>Below is an example implementation in TypeScript.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">deriveP2BKBlindingTweakFromECDH</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">point</span><span class="o">:</span><span class="w"> </span><span class="kt">WeierstrassPoint</span><span class="o">&lt;</span><span class="nx">bigint</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// E or P</span>
+<span class="w">  </span><span class="nx">scalar</span><span class="o">:</span><span class="w"> </span><span class="kt">bigint</span><span class="p">,</span><span class="w"> </span><span class="c1">// p or e</span>
+<span class="w">  </span><span class="nx">slotIndex</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span><span class="w"> </span><span class="c1">// i</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">bigint</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Calculate x-only ECDH shared point (Zx)</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">Zx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">point</span><span class="p">.</span><span class="nx">multiply</span><span class="p">(</span><span class="nx">scalar</span><span class="p">).</span><span class="nx">toBytes</span><span class="p">(</span><span class="kc">true</span><span class="p">).</span><span class="nx">slice</span><span class="p">(</span><span class="mf">1</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">iByte</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Uint8Array</span><span class="p">([</span><span class="nx">slotIndex</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xff</span><span class="p">]);</span>
+<span class="w">  </span><span class="c1">// Derive deterministic blinding factor (r):</span>
+<span class="w">  </span><span class="c1">// Note: bytesToNumber does NOT reduce modulo n</span>
+<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">r</span><span class="o">:</span><span class="w"> </span><span class="kt">bigint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">bytesToNumber</span><span class="p">(</span><span class="nx">sha256</span><span class="p">(</span><span class="nx">Bytes</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span><span class="nx">P2BK_DST</span><span class="p">,</span><span class="w"> </span><span class="nx">Zx</span><span class="p">,</span><span class="w"> </span><span class="nx">iByte</span><span class="p">)));</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mi">0n</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nx">secp256k1</span><span class="p">.</span><span class="nx">Point</span><span class="p">.</span><span class="nx">CURVE</span><span class="p">().</span><span class="nx">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Very unlikely to get here!</span>
+<span class="w">    </span><span class="nx">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">bytesToNumber</span><span class="p">(</span>
+<span class="w">      </span><span class="nx">sha256</span><span class="p">(</span><span class="nx">Bytes</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span><span class="nx">P2BK_DST</span><span class="p">,</span><span class="w"> </span><span class="nx">Zx</span><span class="p">,</span><span class="w"> </span><span class="nx">iByte</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Uint8Array</span><span class="p">([</span><span class="mh">0xff</span><span class="p">]))),</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mi">0n</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nx">secp256k1</span><span class="p">.</span><span class="nx">Point</span><span class="p">.</span><span class="nx">CURVE</span><span class="p">().</span><span class="nx">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// Astronomically unlikely to get here!</span>
+<span class="w">      </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">&quot;P2BK: tweak derivation failed&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">r</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>For detailed examples of slot blinding, see the <a href="../tests/28-tests/">test vectors</a>.</p>
+<blockquote>
+<p>[!IMPORTANT]
+All receiver keys <strong>MUST</strong> be in compressed SEC1 format (33 bytes) before ECDH and blinding. \
+The sender <strong>MUST add an '02' prefix</strong> to BIP-340 x-only pubkeys (eg Nostr).</p>
+</blockquote>
+<h2 id="proof-object-extension">Proof Object Extension<a class="headerlink" href="#proof-object-extension" title="Permanent link">&para;</a></h2>
+<p>Each proof adds a single new metadata field:</p>
+<div class="codehilite"><pre><span></span><code>{
+  &quot;amount&quot;: int,
+  &quot;id&quot;: hex_str,
+  &quot;secret&quot;: str,          // still [&quot;P2PK&quot;, {...}]
+  &quot;C&quot;: hex_str,
+  &quot;p2pk_e&quot;: hex_str       // NEW: 33-byte SEC1 compressed ephemeral public key E
+}
+</code></pre></div>
+
 <ul>
-<li><a href="https://github.com/cashubtc/nutshell">Nutshell</a></li>
-<li><a href="https://github.com/cashubtc/cdk/tree/main/crates/cdk-mintd">cdk-mintd</a></li>
-<li><a href="https://github.com/lescuer97/nutmix">Nutmix</a></li>
+<li><code>p2pk_e</code> contains the sender's ephemeral pubkey (<code>E</code>) used for blinding</li>
+<li>All pubkeys inside the <code>"P2PK"</code> secret are the blinded forms <code>P'</code></li>
+<li>The mint sees standard P2PK data and remains unaware of the blinding</li>
+<li>For Token V4 encoding, the <code>p2pk_e</code> field is named <code>pe</code>, and <code>E</code> is encoded as a 33 byte CBOR bstr</li>
 </ul>
+<h2 id="deriving-private-keys">Deriving Private Keys<a class="headerlink" href="#deriving-private-keys" title="Permanent link">&para;</a></h2>
+<p>With P2BK, the NUT-11 public locking keys are permanently blinded. The mint sees only the blinded public keys, and expects signatures from the corresponding private key.</p>
+<p>The receiver must therefore derive the correct blinded private key (<code>k</code>). Because BIP-340 lifts public keys to even-Y parity, there are two possible derivation paths:</p>
+<ul>
+<li>Standard derivation: <code>k = (p + rᵢ) mod n</code></li>
+<li>Negated derivation: <code>k = (-p + rᵢ) mod n</code></li>
+</ul>
+<p>Where <code>p</code> is the receiver's long lived private key.</p>
+<p>To decide which derivation to use, the receiver calculates their natural pubkey (<code>pG</code>) and compares the parity to their actual pubkey (<code>P</code>).</p>
+<p>If the parity matches, use standard derivation, otherwise use negated derivation.</p>
+<p>The fastest way to do this in a wallet is to unblind, verify the key is a match, then select derivation by parity:</p>
+<p>a. compute <code>Rᵢ = rᵢG</code> \
+b. unblind <code>P = P' − Rᵢ</code> \
+c. verify <code>x(P) == x(pG)</code> \
+d. use standard derivation if <code>parity(P) == parity(pG)</code>, otherwise use negated derivation</p>
+<h2 id="sender-workflow">Sender Workflow<a class="headerlink" href="#sender-workflow" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Generate a fresh random scalar <code>e</code> and compute <code>E = eG</code></li>
+<li>For <strong>each receiver key</strong> <code>P</code>, compute: \
+   a. Unique shared secret for this key: <code>Zx = x(eP)</code> \
+   b. Slot index <code>i</code> in <code>[data, ...pubkeys, ...refund]</code> \
+   c. Blinding scalar: <code>rᵢ = SHA-256(b"Cashu_P2BK_v1" || Zx || i_byte)</code> \
+   d. Blinded Public Key: <code>P' = P + rᵢG</code></li>
+<li>Build the canonical P2PK secret with the blinded <code>P'</code> keys in their slots.</li>
+<li>Interact with the mint normally; the mint never learns <code>P</code> or <code>rᵢ</code></li>
+<li>Include <code>p2pk_e = E</code> in the final proof</li>
+</ol>
+<blockquote>
+<p>[!IMPORTANT]
+Use a fresh ephemeral keypair (<code>e</code> / <code>E</code>) for each new output, so that every proof has
+unique blinded keys and a unique <code>E</code> in the <code>Proof.p2pk_e</code> field.</p>
+<p>In the case of <code>SIG_ALL</code>, the <strong>SAME</strong> ephemeral keypair <strong>MUST</strong> be used for all
+outputs, as all <code>SIG_ALL</code> proof secrets must have IDENTICAL <code>data</code> and <code>tags</code> fields.</p>
+</blockquote>
+<h2 id="receiver-workflow">Receiver Workflow<a class="headerlink" href="#receiver-workflow" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Read <code>E</code> from <code>proof.p2pk_e</code> and the key slot order index <code>i</code> from <code>[data, ...pubkeys, ...refund]</code></li>
+<li>Calculate your unique shared secret: <code>Zx = x(pE)</code></li>
+<li>For each slot <code>i</code>, compute: \
+   a. Blinding scalar: <code>rᵢ = SHA-256(b"Cashu_P2BK_v1" || Zx || i_byte)</code> \
+   b. Compute <code>Rᵢ = rᵢG</code> \
+   c. Unblind <code>P = P' − Rᵢ</code> \
+   d. Verify <code>x(P) == x(pG)</code>. If it does not match, this <code>P'</code> is not for this private key, skip it. \
+   e. Derive the secret key using: \
+    • standard derivation if <code>parity(P) == parity(pG)</code> \
+    • negative derivation otherwise</li>
+<li>Remove the <code>p2pk_e</code> field from the proof</li>
+<li>Sign with the derived private keys and spend as an ordinary P2PK proof</li>
+</ol>
+<blockquote>
+<p>[!NOTE]
+Each receiver can only calculate their OWN shared secret (<code>pE</code>), because a shared secret requires either the receiver's private key (<code>pE</code>) or the sender's ephemeral private key (<code>eP</code>).</p>
+</blockquote>
 
 
 
@@ -1528,10 +1346,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.highlight", "search.share", "toc.integrate", "content.code.copy", "content.tabs.link", "announce.dismiss"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.highlight", "search.share", "toc.integrate", "content.code.copy", "content.tabs.link", "announce.dismiss"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>

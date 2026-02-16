@@ -1281,7 +1281,8 @@
 
 <h1 id="nut-14-hashed-timelock-contracts-htlcs">NUT-14: Hashed Timelock Contracts (HTLCs)<a class="headerlink" href="#nut-14-hashed-timelock-contracts-htlcs" title="Permanent link">&para;</a></h1>
 <p><code>optional</code></p>
-<p><code>depends on: NUT-10</code></p>
+<p><code>depends on: NUT-10, NUT-11</code></p>
+<p><code>extended by: NUT-28</code></p>
 <hr />
 <p>This NUT describes the use of Hashed Timelock Contracts (HTLCs) which defines a spending condition based on <a href="../10/">NUT-10</a>'s well-known <code>Secret</code> format. Using HTLCs, ecash proofs can be locked to the hash of a preimage and a timelock. This enables use cases such as atomic swaps of ecash between users, and atomic coupling of an ecash spending condition to a Lightning HTLC.</p>
 <p><code>HTLC</code> spending conditions can be thought of as an extension of <code>P2PK</code> locks (see <a href="../11/">NUT-11</a>) but with a hash lock in <code>Secret.data</code> and a new <code>Proof.witness.preimage</code> witness in the locked inputs to be spent. The <code>preimage</code> used to spend a locked Proof can be retrieved using <a href="../07/">NUT-07</a>.</p>
