@@ -11,11 +11,10 @@ service Signatory {
   rpc RotateKeyset(RotationRequest) returns (KeyRotationResponse);
 }
 
-enum Operation {
-  OPERATION_UNSPECIFIED = 0;
-  OPERATION_MINT = 1;
-  OPERATION_MELT = 2;
-  OPERATION_SWAP = 3;
+enum Constants {
+  CONSTANTS_UNSPECIFIED = 0;
+  // this constant should be sent on the header of the grpc code for verification
+  CONSTANTS_SCHEMA_VERSION = 1;
 }
 
 message BlindSignResponse {
@@ -25,8 +24,6 @@ message BlindSignResponse {
 
 message BlindedMessages {
   repeated BlindedMessage blinded_messages = 1;
-  Operation operation = 2;
-  string correlation_id = 3;
 }
 
 // Represents a blinded message
@@ -62,20 +59,26 @@ message KeySet {
   bool active = 3;
   uint64 input_fee_ppk = 4;
   Keys keys = 5;
-  uint32 version  = 6;
-  optional uint64 final_expiry  = 7;
+  optional uint64 final_expiry = 6;
+  uint32 version = 7;
+  optional string issuer_version = 8;
 }
 
 message Keys {
   map<uint64, bytes> keys = 1;
 }
 
+enum KeysetVersion {
+  KEYSET_VERSION_UNSPECIFIED = 0;
+  KEYSET_VERSION_V1 = 1;
+  KEYSET_VERSION_V2 = 2;
+}
 message RotationRequest {
   CurrencyUnit unit = 1;
   uint64 input_fee_ppk = 2;
   repeated uint64 amounts = 3;
-  // unix timestamp for expiration
   optional uint64 final_expiry = 4;
+  KeysetVersion keyset_id_type = 5;
 }
 
 enum CurrencyUnitType {
@@ -96,8 +99,6 @@ message CurrencyUnit {
 
 message Proofs {
   repeated Proof proof = 1;
-  Operation operation = 3;
-  string correlation_id = 4;
 }
 
 message Proof {

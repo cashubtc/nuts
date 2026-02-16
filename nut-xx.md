@@ -12,6 +12,13 @@ Mints will connect to the signer and ask for validation of proofs as well signin
 
 The signer MUST speak the same language using the GRPC protobuf defined in `remote-signer.proto` inside the repository.
 
+
+## Versioning
+
+The proto files include an enum value `CONSTANTS_SCHEMA_VERSION`. The signers clients MUST send a header called `x-signatory-schema-version` containing the integer value of `CONSTANTS_SCHEMA_VERSION`. 
+
+The signers can then decide if they accept the request depending on the version received.
+
 ### Authentication
 
 The signer and the mint can communicate with each other over different transports.
