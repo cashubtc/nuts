@@ -1171,9 +1171,9 @@
 <h3 id="alice-user">Alice (user)<a class="headerlink" href="#alice-user" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>x</code> UTF-8-encoded random string (secret message), corresponds to point <code>Y = hash_to_curve(x)</code> on curve</li>
-<li><code>r</code> blinding factor</li>
-<li><code>B_</code> blinded message</li>
-<li><code>C</code> unblinded signature</li>
+<li><code>r</code> blinding factor (scalar)</li>
+<li><code>B_</code> blinded message (curve point)</li>
+<li><code>C</code> unblinded signature (curve point)</li>
 </ul>
 <h3 id="hash_to_curvex-bytes-curve-point-y"><code>hash_to_curve(x: bytes) -&gt; curve point Y</code><a class="headerlink" href="#hash_to_curvex-bytes-curve-point-y" title="Permanent link">&para;</a></h3>
 <p>Deterministically maps a message to a public key point on the secp256k1 curve, utilizing a domain separator to ensure uniqueness.</p>
@@ -1193,6 +1193,27 @@
 <li><code>Alice</code> can calculate the unblinded key as <code>C_ - rK = kY + krG - krG = kY = C</code> (<strong>unblinding</strong>)</li>
 <li>Alice can take the pair <code>(x, C)</code> as a token and can send it to <code>Carol</code>.</li>
 <li><code>Carol</code> can send <code>(x, C)</code> to <code>Bob</code> who then checks that <code>k*hash_to_curve(x) == C</code> (<strong>verification</strong>), and if so treats it as a valid spend of a token, adding <code>x</code> to the list of spent secrets.</li>
+</ul>
+<h2 id="notation-and-conventions">Notation And Conventions<a class="headerlink" href="#notation-and-conventions" title="Permanent link">&para;</a></h2>
+<p>These specifications use elliptic curve public key cryptography over the field and curve parameters defined by <a href="http://www.secg.org/sec2-v2.pdf">secp256k1</a>.</p>
+<h3 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h3>
+<p>Values in these specification are one of:</p>
+<ul>
+<li>Scalars: integers modulo the curve order <code>n</code></li>
+<li>Curve points: elements of the elliptic curve group (including the identity point at infinity)</li>
+<li>Byte sequences</li>
+</ul>
+<h3 id="byte-operations-and-encodings">Byte Operations And Encodings<a class="headerlink" href="#byte-operations-and-encodings" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Concatenation <code>||</code> appends one byte sequence to another.</li>
+<li>All operations such as point addition, scalar multiplication, hashing, are performed on the underlying mathematical values, not on their serialised byte encodings.</li>
+<li>When a curve point is serialised as <code>hex_str</code>, it is the hex encoding of the SEC1 compressed public key bytes, unless a NUT specifies a different encoding.</li>
+<li>Integer byte order and fixed widths are defined by each NUT where relevant, if a NUT is silent, it must not be assumed.</li>
+</ul>
+<h3 id="hashing">Hashing<a class="headerlink" href="#hashing" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>SHA256(m)</code> denotes the SHA 256 hash of byte sequence <code>m</code>.</li>
+<li>Any hash to curve function must specify its domain separator and exact procedure, including how counters are encoded and incremented.</li>
 </ul>
 <h2 id="01-models">0.1 - Models<a class="headerlink" href="#01-models" title="Permanent link">&para;</a></h2>
 <h3 id="blindedmessage"><code>BlindedMessage</code><a class="headerlink" href="#blindedmessage" title="Permanent link">&para;</a></h3>
