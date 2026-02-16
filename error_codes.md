@@ -16,6 +16,8 @@
 | 11011 | Amountless invoice is not supported             | [NUT-05][05]                             |
 | 11012 | Amount in request does not equal invoice        | [NUT-05][05]                             |
 | 11013 | Unit in request is not supported                | [NUT-04][04], [NUT-05][05]               |
+| 11014 | Max inputs exceeded                             | [NUT-03][03], [NUT-05][05]               |
+| 11015 | Max outputs exceeded                            | [NUT-03][03], [NUT-04][04], [NUT-05][05] |
 | 12001 | Keyset is not known                             | [NUT-02][02], [NUT-04][04]               |
 | 12002 | Keyset is inactive, cannot sign messages        | [NUT-02][02], [NUT-03][03], [NUT-04][04] |
 | 20001 | Quote request is not paid                       | [NUT-04][04]                             |
@@ -27,7 +29,6 @@
 | 20007 | Quote is expired                                | [NUT-04][04], [NUT-05][05]               |
 | 20008 | Signature for mint request invalid              | [NUT-20][20]                             |
 | 20009 | Pubkey required for mint quote                  | [NUT-20][20]                             |
-| 20010 | Signature for quote lookup invalid              | [NUT-28][28]                             |
 | 30001 | Endpoint requires clear auth                    | [NUT-21][21]                             |
 | 30002 | Clear authentication failed                     | [NUT-21][21]                             |
 | 31001 | Endpoint requires blind auth                    | [NUT-22][22]                             |
@@ -51,4 +52,3 @@
 [20]: 20.md
 [21]: 21.md
 [22]: 22.md
-[28]: 28.md
