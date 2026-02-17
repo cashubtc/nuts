@@ -4,9 +4,9 @@ These test vectors provide reference data for implementing the Conditional Token
 
 ## Condition ID Calculation
 
-The condition ID is computed as `tagged_hash("Cashu_condition_id", sorted_oracle_pubkeys || sorted_event_id || outcome_count || sorted_partition_keys)` where `tagged_hash(tag, msg) = SHA256(SHA256(tag) || SHA256(tag) || msg)`.
+The condition ID is computed as `tagged_hash("Cashu_condition_id", sorted_oracle_pubkeys || event_id || outcome_count)` where `tagged_hash(tag, msg) = SHA256(SHA256(tag) || SHA256(tag) || msg)`. The condition ID is partition-independent.
 
-### Test 1: Binary condition ID (default partition)
+### Test 1: Binary condition ID
 
 ```shell
 # Condition parameters
@@ -16,22 +16,18 @@ event_id_utf8:      6274635f70726963655f3130306b5f32303235
 outcome_count:      2
 outcome_count_byte: 02
 
-# Default partition (individual outcomes, sorted)
-partition_keys:     ["NO", "YES"]  # sorted lexicographically
-partition_utf8:     4e4f00594553  # "NO" + 0x00 + "YES"
-
 # Tagged hash computation
 tag:                "Cashu_condition_id"
 tag_utf8:           43617368755f636f6e646974696f6e5f6964
 tag_hash:           SHA256(tag_utf8)
 
-# Preimage (message for tagged hash)
-msg_hex:            9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce06274635f70726963655f3130306b5f32303235024e4f00594553
+# Preimage (message for tagged hash) — no partition keys
+msg_hex:            9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce06274635f70726963655f3130306b5f3230323502
 
 # Condition ID = SHA256(tag_hash || tag_hash || msg)
 ```
 
-### Test 2: Three-outcome condition ID (default partition)
+### Test 2: Three-outcome condition ID
 
 ```shell
 # Condition parameters
@@ -41,12 +37,8 @@ event_id_utf8:      656c656374696f6e5f323032345f77696e6e6572
 outcome_count:      3
 outcome_count_byte: 03
 
-# Default partition (individual outcomes, sorted)
-partition_keys:     ["CANDIDATE_A", "CANDIDATE_B", "CANDIDATE_C"]  # sorted
-partition_utf8:     43414e4449444154455f410043414e4449444154455f420043414e4449444154455f43
-#                   "CANDIDATE_A" + 0x00 + "CANDIDATE_B" + 0x00 + "CANDIDATE_C"
-
-# Condition ID = tagged_hash("Cashu_condition_id", oracle_pubkey || event_id || outcome_count || partition)
+# Condition ID = tagged_hash("Cashu_condition_id", oracle_pubkey || event_id || outcome_count)
+# No partition keys — condition_id is partition-independent
 ```
 
 ### Test 3: Condition ID with special characters in question
@@ -59,29 +51,33 @@ event_id_utf8:      57696c6c204554482f555344203e2024353030303f
 outcome_count:      2
 outcome_count_byte: 02
 
-# Default partition (individual outcomes, sorted)
-partition_keys:     ["NO", "YES"]
-partition_utf8:     4e4f00594553  # "NO" + 0x00 + "YES"
-
 # Condition ID uses tagged_hash (includes space, /, >, $ characters in event_id)
+# No partition keys in condition_id
 ```
 
-## Condition Preparation
+## Condition and Partition Registration
 
-### Test 4: Prepare condition response with keysets
+### Test 4: Register condition and partition (binary)
 
 ```shell
-# Prepare condition request (POST /v1/conditions)
-# Response includes per-outcome collection keyset IDs
-request_json:       {
-  "collateral": "sat",
+# Step 1: Register condition (POST /v1/conditions)
+register_request:   {
   "threshold": 1,
   "description": "Will BTC reach $100k?",
   "announcements": ["<hex_encoded_tlv>"]
 }
 
-response_json:      {
-  "condition_id": "<tagged_hash_result>",
+register_response:  {
+  "condition_id": "<tagged_hash_result>"
+}
+
+# Step 2: Register partition (POST /v1/conditions/{condition_id}/partitions)
+partition_request:  {
+  "collateral": "sat",
+  "partition": ["YES", "NO"]
+}
+
+partition_response: {
   "keysets": {
     "YES": "00abc123def456",
     "NO": "00def789abc012"
@@ -91,20 +87,27 @@ response_json:      {
 # These keyset IDs are used in all subsequent split/merge/trade operations
 ```
 
-### Test 5: Three-outcome condition preparation
+### Test 5: Three-outcome condition with partition registration
 
 ```shell
-# Condition with 3 outcomes
-request_json:       {
-  "collateral": "sat",
+# Step 1: Register condition
+register_request:   {
   "threshold": 1,
   "description": "Election winner",
-  "announcements": ["<hex_encoded_tlv>"],
+  "announcements": ["<hex_encoded_tlv>"]
+}
+
+register_response:  {
+  "condition_id": "<tagged_hash_result>"
+}
+
+# Step 2: Register partition
+partition_request:  {
+  "collateral": "sat",
   "partition": ["CANDIDATE_A", "CANDIDATE_B", "CANDIDATE_C"]
 }
 
-response_json:      {
-  "condition_id": "<tagged_hash_result>",
+partition_response: {
   "keysets": {
     "CANDIDATE_A": "00aa11bb22cc33dd",
     "CANDIDATE_B": "00bb22cc33dd44ee",
@@ -420,11 +423,8 @@ sorted_pubkeys:     [
 event_id:           "btc_price_100k_2025"
 outcome_count:      2
 
-# Default partition (individual outcomes, sorted)
-partition_keys:     ["NO", "YES"]
-partition_utf8:     4e4f00594553  # "NO" + 0x00 + "YES"
-
-# condition_id = tagged_hash("Cashu_condition_id", sorted_pubkeys || event_id || outcome_count || sorted_partition_keys)
+# condition_id = tagged_hash("Cashu_condition_id", sorted_pubkeys || event_id || outcome_count)
+# No partition keys — condition_id is partition-independent
 ```
 
 ## Outcome Collections
@@ -432,10 +432,10 @@ partition_utf8:     4e4f00594553  # "NO" + 0x00 + "YES"
 ### Test 22: Split with outcome collections (3-outcome condition)
 
 ```shell
-# Condition with 3 outcomes, prepared with outcome collection partition
+# Condition with 3 outcomes, partition registered with outcome collections
 outcomes:           ["ALICE", "BOB", "CAROL"]
 
-# Condition preparation returned keysets for this partition
+# Partition registration returned keysets for this partition
 keysets:
   "ALICE|BOB":      00aabb11cc22dd33
   "CAROL":          00ccdd44ee55ff66
@@ -559,12 +559,12 @@ parsed_outcome:     ["A|B"]  # Single outcome with literal pipe
 
 ## Combinatorial Condition Tests
 
-### Test 29: Collection ID computation
+### Test 29: Outcome collection ID computation
 
 ```shell
-# Collection ID computation
-# collection_id(parent, condition_id, outcome_collection_string):
-#   h = tagged_hash("Cashu_collection_id", condition_id || outcome_collection_string_bytes)
+# Outcome collection ID computation (NUT-28 algorithm)
+# outcome_collection_id(parent, condition_id, outcome_collection_string):
+#   h = tagged_hash("Cashu_outcome_collection_id", condition_id || outcome_collection_string_bytes)
 #   P = hash_to_curve(h)
 #   If parent is identity: return x_only(P)
 #   Else: return x_only(EC_add(lift_x(parent), P))
@@ -575,9 +575,9 @@ condition_id_A:        a1b2c3d4e5f6789012345678901234567890123456789012345678901
 outcome_A:        "YES"
 outcome_A_utf8:   594553
 
-# Step 1: h = tagged_hash("Cashu_collection_id", condition_id_A || "YES")
+# Step 1: h = tagged_hash("Cashu_outcome_collection_id", condition_id_A || "YES")
 # Step 2: P_A = hash_to_curve(h)
-# Step 3: collection_id_A = x_only(P_A)  (parent is identity)
+# Step 3: outcome_collection_id_A = x_only(P_A)  (parent is identity)
 ```
 
 ### Test 30: Combinatorial condition commutativity
@@ -588,53 +588,66 @@ election_condition_id:  a1b2c3d4e5f678901234567890123456789012345678901234567890
 btc_price_condition_id:  b2c3d4e5f67890123456789012345678901234567890123456789012345678ef
 
 # Path 1: Election first, then BTC price
-# Step 1a: coll_A = collection_id(0, election_condition_id, "PARTY_A")
-# Step 1b: coll_AB = collection_id(coll_A, btc_price_condition_id, "UP")
+# Step 1a: oc_A = outcome_collection_id(0, election_condition_id, "PARTY_A")
+# Step 1b: oc_AB = outcome_collection_id(oc_A, btc_price_condition_id, "UP")
 
 # Path 2: BTC price first, then election
-# Step 2a: coll_B = collection_id(0, btc_price_condition_id, "UP")
-# Step 2b: coll_BA = collection_id(coll_B, election_condition_id, "PARTY_A")
+# Step 2a: oc_B = outcome_collection_id(0, btc_price_condition_id, "UP")
+# Step 2b: oc_BA = outcome_collection_id(oc_B, election_condition_id, "PARTY_A")
 
-# Commutativity: coll_AB == coll_BA
+# Commutativity: oc_AB == oc_BA
 # This holds because EC point addition is commutative:
 #   P_election_A + P_btc_UP = P_btc_UP + P_election_A
 ```
 
-### Test 31: Nested condition preparation
+### Test 31: Nested condition and partition registration
 
 ```shell
-# Step 1: Prepare root election condition
-root_request:       {
-  "collateral": "sat",
+# Step 1a: Register root election condition (POST /v1/conditions)
+root_condition_request: {
   "threshold": 1,
   "description": "Election winner",
-  "announcements": ["<hex_encoded_tlv>"],
+  "announcements": ["<hex_encoded_tlv>"]
+}
+
+root_condition_response: {
+  "condition_id": "<election_condition_id>"
+}
+
+# Step 1b: Register root partition (POST /v1/conditions/{election_condition_id}/partitions)
+root_partition_request: {
+  "collateral": "sat",
   "partition": ["PARTY_A", "PARTY_B"]
 }
 
-root_response:      {
-  "condition_id": "<election_condition_id>",
+root_partition_response: {
   "keysets": {
     "PARTY_A": "00aa11bb22cc33dd",
     "PARTY_B": "00bb22cc33dd44ee"
   }
 }
 
-# Step 2: Prepare nested BTC price condition under PARTY_A
-# parent_collection_id = collection_id(0, election_condition_id, "PARTY_A")
-# collateral = outcome_collection_id of PARTY_A in election condition
-
-nested_request:     {
-  "collateral": "<outcome_collection_id_of_PARTY_A>",
+# Step 2a: Register nested BTC price condition (POST /v1/conditions)
+nested_condition_request: {
   "threshold": 1,
   "description": "BTC price conditional on Party A win",
-  "announcements": ["<hex_encoded_btc_price_tlv>"],
-  "partition": ["UP", "DOWN"],
-  "parent_collection_id": "<outcome_collection_id_of_PARTY_A>"
+  "announcements": ["<hex_encoded_btc_price_tlv>"]
 }
 
-nested_response:    {
-  "condition_id": "<btc_price_condition_id>",
+nested_condition_response: {
+  "condition_id": "<btc_price_condition_id>"
+}
+
+# Step 2b: Register nested partition (POST /v1/conditions/{btc_price_condition_id}/partitions)
+# parent_collection_id = outcome_collection_id(0, election_condition_id, "PARTY_A")
+# collateral = outcome_collection_id of PARTY_A in election condition
+nested_partition_request: {
+  "collateral": "<outcome_collection_id_of_PARTY_A>",
+  "partition": ["UP", "DOWN"],
+  "parent_collection_id": "<x_only_pubkey_of_PARTY_A>"
+}
+
+nested_partition_response: {
   "keysets": {
     "UP": "00cc33dd44ee55ff",
     "DOWN": "00dd44ee55ff6600"
@@ -712,9 +725,10 @@ error_message:      "Maximum condition depth exceeded"
 ### Test 35: End-to-end condition lifecycle
 
 ```shell
-# Step 1: Prepare condition (POST /v1/conditions)
-# Response:
+# Step 1a: Register condition (POST /v1/conditions)
 condition_id:          <tagged_hash_result>
+
+# Step 1b: Register partition (POST /v1/conditions/{condition_id}/partitions)
 keysets:
   YES:              00abc123def456
   NO:               00def789abc012

@@ -36,11 +36,14 @@ C:                  02<compressed_point>
 
 ## Outcome Collection ID Computation
 
-### Test 3: Outcome Collection ID using tagged hash
+### Test 3: Outcome Collection ID (root condition)
 
 ```shell
-# outcome_collection_id = tagged_hash("Cashu_outcome_collection_id", outcome_collection_string || condition_id)
-# tagged_hash(tag, msg) = SHA256(SHA256(tag) || SHA256(tag) || msg)
+# outcome_collection_id(parent_collection_id, condition_id, outcome_collection_string):
+#   1. h = tagged_hash("Cashu_outcome_collection_id", condition_id || outcome_collection_string_bytes)
+#   2. P = hash_to_curve(h)
+#   3. If parent_collection_id is identity (32 zero bytes): return x_only(P)
+#      Else: return x_only(EC_add(lift_x(parent_collection_id), P))
 
 # Tag preimage
 tag:                "Cashu_outcome_collection_id"
@@ -54,11 +57,19 @@ outcome_collection_utf8: 594553
 # Condition ID (32 bytes)
 condition_id:          3a7f8d2e1b4c5a6f9e0d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f
 
-# Preimage for tagged hash
-msg:                594553 || 3a7f8d2e1b4c5a6f9e0d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f
+# Parent collection ID (root condition = identity)
+parent_collection_id:  0000000000000000000000000000000000000000000000000000000000000000
 
-# outcome_collection_id = SHA256(tag_hash || tag_hash || msg)
-# Result is a 32-byte (64 hex char) value
+# Step 1: h = tagged_hash("Cashu_outcome_collection_id", condition_id || outcome_collection_utf8)
+# msg = condition_id || outcome_collection_utf8
+msg:                3a7f8d2e1b4c5a6f9e0d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f || 594553
+# h = SHA256(tag_hash || tag_hash || msg)
+
+# Step 2: P = hash_to_curve(h)
+# hash_to_curve as defined in NUT-00
+
+# Step 3: parent is identity, so outcome_collection_id = x_only(P)
+# Result is a 32-byte x-only public key (64 hex chars)
 ```
 
 ### Test 4: Outcome Collection ID for outcome collection
@@ -71,7 +82,16 @@ outcome_collection_utf8: 414c4943457c424f42
 # Condition ID (32 bytes)
 condition_id:          7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d
 
-# outcome_collection_id = tagged_hash("Cashu_outcome_collection_id", "ALICE|BOB" || condition_id)
+# Parent collection ID (root condition = identity)
+parent_collection_id:  0000000000000000000000000000000000000000000000000000000000000000
+
+# Step 1: h = tagged_hash("Cashu_outcome_collection_id", condition_id || outcome_collection_utf8)
+# msg = condition_id || outcome_collection_utf8
+msg:                7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d || 414c4943457c424f42
+
+# Step 2: P = hash_to_curve(h)
+# Step 3: parent is identity, so outcome_collection_id = x_only(P)
+
 # Different outcome collection strings produce different outcome_collection_ids
 # Different condition_ids produce different outcome_collection_ids
 ```
@@ -187,7 +207,7 @@ announcement_3:     d834<oracle_3_announcement>
 
 # Condition ID computation (sorted pubkeys, tagged hash)
 sorted_pubkeys:     [oracle_1_pubkey, oracle_2_pubkey, oracle_3_pubkey]  # lexicographic
-condition_id:          tagged_hash("Cashu_condition_id", sorted_pubkeys || event_id || outcome_count || sorted_partition_keys)
+condition_id:          tagged_hash("Cashu_condition_id", sorted_pubkeys || event_id || outcome_count)
 
 # Attestations from oracles 1 and 2 (meets threshold)
 oracle_1_sig_YES:   <64_byte_signature_from_oracle_1>
