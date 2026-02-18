@@ -1,18 +1,18 @@
-# NUT-29: Conditional Token Split and Merge
+# NUT-CTF-split-merge: Conditional Token Split and Merge
 
 `optional`
 
-`depends on: NUT-28`
+`depends on: NUT-CTF`
 
 ---
 
-This NUT defines split and merge operations for conditional tokens ([NUT-28][28]). Inspired by the [Gnosis Conditional Token Framework](https://docs.gnosis.io/conditionaltokens/), these operations allow users to deposit collateral and receive complete sets of conditional tokens for a condition, or merge complete sets back into collateral. For conditional token definitions, keysets, conditions, and redemption, see [NUT-28][28].
+This NUT defines split and merge operations for conditional tokens ([NUT-CTF][CTF]). Inspired by the [Gnosis Conditional Token Framework](https://docs.gnosis.io/conditionaltokens/), these operations allow users to deposit collateral and receive complete sets of conditional tokens for a condition, or merge complete sets back into collateral. For conditional token definitions, keysets, conditions, and redemption, see [NUT-CTF][CTF].
 
-Caution: This specification relies on [NUT-28][28] for oracle attestation. Applications must verify that the mint supports both NUT-28 and NUT-29 by checking the mint's [info][06] endpoint.
+Caution: This specification relies on [NUT-CTF][CTF] for oracle attestation. Applications must verify that the mint supports both NUT-CTF and NUT-CTF-split-merge by checking the mint's [info][06] endpoint.
 
 ## Terminology
 
-This NUT uses the terminology defined in [NUT-28][28], including **condition**, **outcome collection**, **partition**, **condition ID**, **outcome collection ID**, **conditional keyset**, and **conditional token**.
+This NUT uses the terminology defined in [NUT-CTF][CTF], including **condition**, **outcome collection**, **partition**, **condition ID**, **outcome collection ID**, **conditional keyset**, and **conditional token**.
 
 No additional terms are introduced by this NUT.
 
@@ -33,11 +33,11 @@ By following the Gnosis CTF model, this specification provides a proven approach
 
 The CTF lifecycle consists of:
 
-1. **Register**: Condition is registered via [NUT-28][28], then partition is registered to create conditional keysets
+1. **Register**: Condition is registered via [NUT-CTF][CTF], then partition is registered to create conditional keysets
 2. **Split**: User deposits collateral -> receives complete set of conditional tokens (conditional keysets)
 3. **Trade**: Users trade conditional tokens (standard NUT-03 swaps within same conditional keyset)
 4. **Oracle Attests**: Oracle signs the winning outcome
-5. **Redeem**: Winners redeem conditional keyset tokens for regular keyset tokens (`POST /v1/redeem_outcome` + oracle witness, [NUT-28][28])
+5. **Redeem**: Winners redeem conditional keyset tokens for regular keyset tokens (`POST /v1/redeem_outcome` + oracle witness, [NUT-CTF][CTF])
 
 ```
            Register            Split                    Trade                 Attest              Redeem
@@ -51,7 +51,7 @@ Wallet ────────────► Mint   User ───────
 
 The split operation allows users to deposit collateral and receive a complete set of conditional tokens. For every unit of collateral deposited, the user receives one token for each possible outcome collection.
 
-Conditions must be registered via `POST /v1/conditions` and partitions via `POST /v1/conditions/{condition_id}/partitions` ([NUT-28][28]) before splitting. The wallet needs the keyset IDs returned by partition registration to construct `BlindedMessage`s.
+Conditions must be registered via `POST /v1/conditions` and partitions via `POST /v1/conditions/{condition_id}/partitions` ([NUT-CTF][CTF]) before splitting. The wallet needs the keyset IDs returned by partition registration to construct `BlindedMessage`s.
 
 ### Endpoint
 
@@ -73,15 +73,15 @@ POST /v1/ctf/split
 }
 ```
 
-- `condition_id`: The 32-byte condition identifier (64 hex characters). Must reference a registered condition ([NUT-28][28]). Returns error 13021 (Condition not found) if unknown.
+- `condition_id`: The 32-byte condition identifier (64 hex characters). Must reference a registered condition ([NUT-CTF][CTF]). Returns error 13021 (Condition not found) if unknown.
 - `inputs`: Array of `Proof` objects used as collateral (see [NUT-00][00]). For root conditions, these use a **regular keyset**. For nested conditions, these use the **conditional keyset** identified by the parent collection's outcome collection (see [Combinatorial Markets](#combinatorial-markets)).
 - `outputs`: Object mapping each outcome collection to an array of `BlindedMessage` objects. Each `BlindedMessage` MUST use the **outcome-collection-specific keyset ID** returned during condition registration. Keys use pipe-separated notation for outcome collections (e.g., `"ALICE|BOB"`).
 
-If the mint returns error 13021 (Condition not found), the wallet SHOULD register the condition and partition using the [NUT-28][28] registration endpoints and retry the split.
+If the mint returns error 13021 (Condition not found), the wallet SHOULD register the condition and partition using the [NUT-CTF][CTF] registration endpoints and retry the split.
 
 ### Output Requirements
 
-1. The output keys MUST form a previously registered partition (keysets must exist for all outcome collections). If keysets do not exist, the wallet should register the partition first via `POST /v1/conditions/{condition_id}/partitions` ([NUT-28][28]).
+1. The output keys MUST form a previously registered partition (keysets must exist for all outcome collections). If keysets do not exist, the wallet should register the partition first via `POST /v1/conditions/{condition_id}/partitions` ([NUT-CTF][CTF]).
 2. Each output key's total amount MUST be identical
 3. Each `BlindedMessage` MUST use the keyset ID corresponding to its outcome collection
 4. Fees are deducted from collateral inputs before splitting: `sum(each_outcome_collection_outputs) = sum(inputs) - fees(inputs)`, where `fees(inputs)` is calculated per [NUT-02][02] from each input proof's keyset `input_fee_ppk`
@@ -130,7 +130,7 @@ Each `BlindSignature` corresponds to a `BlindedMessage` in the request, creating
 
 The merge operation allows users to combine a complete set of conditional tokens back into collateral. This is the inverse of split: for every unit of each conditional token surrendered, the user receives one unit of collateral.
 
-The condition and partition must have been registered via [NUT-28][28]. Use the `condition_id` from condition registration.
+The condition and partition must have been registered via [NUT-CTF][CTF]. Use the `condition_id` from condition registration.
 
 ### Endpoint
 
@@ -158,7 +158,7 @@ POST /v1/ctf/merge
 
 ### Input Requirements
 
-1. The input keys MUST form a valid partition of all outcomes (see [Partition Rules][28])
+1. The input keys MUST form a valid partition of all outcomes (see [Partition Rules][CTF])
 2. Each input key's amount MUST be identical
 3. Each `Proof` MUST use the keyset ID corresponding to its outcome collection
 4. Fees are deducted from conditional inputs before producing collateral: `sum(outputs) = per_outcome_collection_amount - fees(all_inputs)`, where `fees(all_inputs)` is calculated per [NUT-02][02] from all input proofs across all outcome collections
@@ -197,7 +197,7 @@ The mint MUST verify:
 
 ## Trading and Redemption
 
-See [NUT-28][28] for trading (NUT-03 swap within the same conditional keyset) and redemption (`POST /v1/redeem_outcome` with oracle witness). Wallets SHOULD remove conditional tokens for non-winning outcome collections from the user's balance after oracle attestation.
+See [NUT-CTF][CTF] for trading (NUT-03 swap within the same conditional keyset) and redemption (`POST /v1/redeem_outcome` with oracle witness). Wallets SHOULD remove conditional tokens for non-winning outcome collections from the user's balance after oracle attestation.
 
 ## Combinatorial Markets
 
@@ -205,7 +205,7 @@ Combinatorial markets allow conditions to be nested hierarchically. For example,
 
 Following the [Gnosis CTF](https://docs.gnosis.io/conditionaltokens/) design, combinatorial markets use **outcome collection IDs** — points on the secp256k1 elliptic curve — to ensure order-independent nesting (commutativity). The key insight: `(A|B) & (LO)` must produce the same token regardless of whether you split Choice→Score or Score→Choice.
 
-Outcome collection IDs are computed using the algorithm defined in [NUT-28][28]. Because EC point addition is commutative, nesting order does not matter — see [NUT-28 Outcome Collection ID][28] for details.
+Outcome collection IDs are computed using the algorithm defined in [NUT-CTF][CTF]. Because EC point addition is commutative, nesting order does not matter — see [NUT-CTF Outcome Collection ID][CTF] for details.
 
 ### Split/Merge for Nested Markets
 
@@ -256,7 +256,7 @@ The order of Steps 4a and 4b can be reversed because of outcome collection ID co
 
 ### Step 1a: Register Condition
 
-First, register the condition via `POST /v1/conditions` ([NUT-28][28]):
+First, register the condition via `POST /v1/conditions` ([NUT-CTF][CTF]):
 
 **Request:**
 
@@ -280,7 +280,7 @@ The mint parses the announcement TLV, verifies the announcement signature, and s
 
 ### Step 1b: Register Partition
 
-Then, register the partition via `POST /v1/conditions/{condition_id}/partitions` ([NUT-28][28]):
+Then, register the partition via `POST /v1/conditions/{condition_id}/partitions` ([NUT-CTF][CTF]):
 
 **Request:**
 
@@ -454,11 +454,11 @@ Alice redeems her YES tokens via `POST /v1/redeem_outcome`:
 }
 ```
 
-This request is sent to `POST /v1/redeem_outcome`. Inputs use the YES conditional keyset (`00abc123def456`) with `oracle_sigs` witness. Outputs use the regular keyset (`009a1f293253e41e`). The mint verifies the oracle signatures per [NUT-28][28] and returns regular proofs.
+This request is sent to `POST /v1/redeem_outcome`. Inputs use the YES conditional keyset (`00abc123def456`) with `oracle_sigs` witness. Outputs use the regular keyset (`009a1f293253e41e`). The mint verifies the oracle signatures per [NUT-CTF][CTF] and returns regular proofs.
 
 ## Security Considerations
 
-This NUT inherits the trust model and collateral safety properties described in [NUT-28][28]. The following considerations are specific to split/merge operations:
+This NUT inherits the trust model and collateral safety properties described in [NUT-CTF][CTF]. The following considerations are specific to split/merge operations:
 
 ### Atomicity
 
@@ -495,14 +495,14 @@ The [NUT-06][06] `MintMethodSetting` indicates support for this feature:
 
 ```json
 {
-  "29": {
+  "CTF-split-merge": {
     "supported": true,
     "max_depth": <int>
   }
 }
 ```
 
-- `supported`: Boolean indicating NUT-29 support
+- `supported`: Boolean indicating NUT-CTF-split-merge support
 - `max_depth` (optional): Maximum nesting depth for combinatorial markets. If not specified, only root conditions (depth 1) are supported.
 
 [00]: 00.md
@@ -521,5 +521,5 @@ The [NUT-06][06] `MintMethodSetting` indicates support for this feature:
 [14]: 14.md
 [21]: 21.md
 [22]: 22.md
-[28]: 28.md
-[30]: 30.md
+[CTF]: CTF.md
+[CTF-numeric]: CTF-numeric.md

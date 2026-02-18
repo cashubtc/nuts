@@ -1,8 +1,8 @@
-# NUT-30: Numeric Outcome Conditions
+# NUT-CTF-numeric: Numeric Outcome Conditions
 
 `optional`
 
-`depends on: NUT-28, NUT-29`
+`depends on: NUT-CTF, NUT-CTF-split-merge`
 
 ---
 
@@ -55,7 +55,7 @@ For 100 sats face value:
 
 ## Condition Registration
 
-Numeric conditions are registered via the same `POST /v1/conditions` endpoint ([NUT-28][28]) with additional fields:
+Numeric conditions are registered via the same `POST /v1/conditions` endpoint ([NUT-CTF][CTF]) with additional fields:
 
 ### Request Body
 
@@ -73,7 +73,7 @@ Numeric conditions are registered via the same `POST /v1/conditions` endpoint ([
 }
 ```
 
-- `condition_type`: `"numeric"` (vs default `"enum"` for existing [NUT-28][28] conditions). When omitted, defaults to `"enum"`.
+- `condition_type`: `"numeric"` (vs default `"enum"` for existing [NUT-CTF][CTF] conditions). When omitted, defaults to `"enum"`.
 - `lo_bound`: Lower bound of the range (integer)
 - `hi_bound`: Upper bound of the range (integer, MUST be > `lo_bound`)
 - `precision`: Base-10 exponent for the oracle's digit decomposition (from the DLC event descriptor). A precision of `n` means the oracle's attested digits represent a value multiplied by `10^n`. For example, precision `0` means the digits represent the value directly, precision `-2` means the digits represent cents (divide by 100).
@@ -86,11 +86,11 @@ Numeric conditions are registered via the same `POST /v1/conditions` endpoint ([
 }
 ```
 
-After condition registration, the wallet registers the partition via `POST /v1/conditions/{condition_id}/partitions` ([NUT-28][28]) with `"partition": ["HI", "LO"]` and the desired `collateral` to create the conditional keysets.
+After condition registration, the wallet registers the partition via `POST /v1/conditions/{condition_id}/partitions` ([NUT-CTF][CTF]) with `"partition": ["HI", "LO"]` and the desired `collateral` to create the conditional keysets.
 
 ## Condition ID for Numeric Conditions
 
-Numeric conditions extend the [NUT-28][28] condition ID formula by appending market-specific parameters:
+Numeric conditions extend the [NUT-CTF][CTF] condition ID formula by appending market-specific parameters:
 
 ```
 condition_id = tagged_hash("Cashu_condition_id",
@@ -100,17 +100,17 @@ condition_id = tagged_hash("Cashu_condition_id",
 
 Where:
 
-- The first three components are identical to [NUT-28][28]
-- `0x01`: 1-byte market type indicator (`0x01` = numeric). Enum markets ([NUT-28][28]) do NOT append this byte, preserving backward compatibility.
+- The first three components are identical to [NUT-CTF][CTF]
+- `0x01`: 1-byte market type indicator (`0x01` = numeric). Enum markets ([NUT-CTF][CTF]) do NOT append this byte, preserving backward compatibility.
 - `lo_bound_i64be`: `lo_bound` encoded as 8-byte big-endian signed integer
 - `hi_bound_i64be`: `hi_bound` encoded as 8-byte big-endian signed integer
 - `precision_i32be`: `precision` encoded as 4-byte big-endian signed integer
 
-`outcome_count` = 2 (always). The partition is always `["HI", "LO"]` and is registered separately via `POST /v1/conditions/{condition_id}/partitions` ([NUT-28][28]).
+`outcome_count` = 2 (always). The partition is always `["HI", "LO"]` and is registered separately via `POST /v1/conditions/{condition_id}/partitions` ([NUT-CTF][CTF]).
 
 ## Oracle Witness for Digit Decomposition
 
-The oracle signs individual digits per the [DLC specification](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Oracle.md). The witness format extends [NUT-28][28]:
+The oracle signs individual digits per the [DLC specification](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Oracle.md). The witness format extends [NUT-CTF][CTF]:
 
 ```json
 {
@@ -130,7 +130,7 @@ The oracle signs individual digits per the [DLC specification](https://github.co
 - `digit_sigs`: Array of 64-byte Schnorr signatures (128-char hex strings), one per digit, in left-to-right order (most significant digit first). Each signature is on the digit's UTF-8 string representation (e.g., `"2"` for digit value 2) using the corresponding R-value (nonce point) from the oracle announcement.
 - For signed numbers: the first element is a signature on `"+"` or `"-"`
 
-The witness uses `digit_sigs` (array of per-digit signatures) instead of `oracle_sig` (single signature) used in [NUT-28][28] enum conditions. The mint identifies which format to expect based on the `condition_type` of the condition referenced by the input keyset.
+The witness uses `digit_sigs` (array of per-digit signatures) instead of `oracle_sig` (single signature) used in [NUT-CTF][CTF] enum conditions. The mint identifies which format to expect based on the `condition_type` of the condition referenced by the input keyset.
 
 ### Verification
 
@@ -143,7 +143,7 @@ The mint:
 
 ## Redemption
 
-Both HI and LO holders can redeem at `POST /v1/redeem_outcome` ([NUT-28][28]). Unlike enum conditions where only the winning outcome collection can redeem, in numeric conditions **both outcomes can redeem** with proportional amounts.
+Both HI and LO holders can redeem at `POST /v1/redeem_outcome` ([NUT-CTF][CTF]). Unlike enum conditions where only the winning outcome collection can redeem, in numeric conditions **both outcomes can redeem** with proportional amounts.
 
 ### HI Holder Redemption
 
@@ -168,7 +168,7 @@ The mint MUST ensure that for a given face `amount`, total HI redemption + total
 
 ## Split and Merge
 
-Split and merge operations work identically to [NUT-29][29] enum conditions:
+Split and merge operations work identically to [NUT-CTF-split-merge][CTF-split-merge] enum conditions:
 
 - **Split**: Deposit collateral, receive equal amounts of HI and LO tokens
 - **Merge**: Surrender equal amounts of HI and LO tokens, receive collateral back
@@ -177,7 +177,7 @@ No special handling is needed — numeric conditions always have exactly 2 outco
 
 ## Combinatorial Markets
 
-Numeric conditions can participate in [NUT-29][29] combinatorial markets. The `parent_collection_id` and `collateral` fields work the same way as for enum conditions. For example, a user could split election tokens into numeric BTC price sub-conditions.
+Numeric conditions can participate in [NUT-CTF-split-merge][CTF-split-merge] combinatorial markets. The `parent_collection_id` and `collateral` fields work the same way as for enum conditions. For example, a user could split election tokens into numeric BTC price sub-conditions.
 
 ## Error Codes
 
@@ -194,14 +194,14 @@ The [NUT-06][06] `MintMethodSetting` indicates support for this feature:
 
 ```json
 {
-  "30": {
+  "CTF-numeric": {
     "supported": true,
     "max_digits": <int>
   }
 }
 ```
 
-- `supported`: Boolean indicating NUT-30 support
+- `supported`: Boolean indicating NUT-CTF-numeric support
 - `max_digits`: Maximum number of oracle digits the mint supports (e.g., 20). Mints SHOULD reject condition registrations where the oracle announcement specifies more digits than `max_digits`.
 
 [00]: 00.md
@@ -218,5 +218,5 @@ The [NUT-06][06] `MintMethodSetting` indicates support for this feature:
 [11]: 11.md
 [12]: 12.md
 [14]: 14.md
-[28]: 28.md
-[29]: 29.md
+[CTF]: CTF.md
+[CTF-split-merge]: CTF-split-merge.md

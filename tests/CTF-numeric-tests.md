@@ -1,4 +1,4 @@
-# NUT-30 Test Vectors
+# NUT-CTF-numeric Test Vectors
 
 These test vectors provide reference data for implementing numeric outcome markets. All values are hex-encoded for reproducibility.
 
@@ -331,7 +331,7 @@ request_json:       {
   ]
 }
 
-# Standard NUT-29 merge - no oracle witness needed
+# Standard NUT-CTF-split-merge merge - no oracle witness needed
 result:             PASS
 ```
 
@@ -349,6 +349,6 @@ error_code:         13033
 error_message:      "Payout calculation overflow"
 ```
 
-[NUT-30]: ../30.md
-[NUT-28]: ../28.md
-[NUT-29]: ../29.md
+[NUT-CTF-numeric]: ../CTF-numeric.md
+[NUT-CTF]: ../CTF.md
+[NUT-CTF-split-merge]: ../CTF-split-merge.md

@@ -1,4 +1,4 @@
-# NUT-29 Test Vectors
+# NUT-CTF-split-merge Test Vectors
 
 These test vectors provide reference data for implementing the Conditional Token Framework (CTF) with per-outcome collection keysets. All values are hex-encoded for reproducibility.
 
@@ -281,7 +281,7 @@ redeem_json:        {
 
 # Input: YES conditional keyset (00abc123def456) with oracle witness
 # Output: regular keyset (009a1f293253e41e)
-# Mint verifies oracle signature per NUT-28
+# Mint verifies oracle signature per NUT-CTF
 result:             PASS
 ```
 
@@ -562,7 +562,7 @@ parsed_outcome:     ["A|B"]  # Single outcome with literal pipe
 ### Test 29: Outcome collection ID computation
 
 ```shell
-# Outcome collection ID computation (NUT-28 algorithm)
+# Outcome collection ID computation (NUT-CTF algorithm)
 # outcome_collection_id(parent, condition_id, outcome_collection_string):
 #   h = tagged_hash("Cashu_outcome_collection_id", condition_id || outcome_collection_string_bytes)
 #   P = hash_to_curve(h)
@@ -760,5 +760,5 @@ bob_result:         FAIL (oracle signed YES, not NO)
 # - Bob: paid 40 sats for worthless NO tokens = -40 sats
 ```
 
-[NUT-29]: ../29.md
-[NUT-28]: ../28.md
+[NUT-CTF-split-merge]: ../CTF-split-merge.md
+[NUT-CTF]: ../CTF.md

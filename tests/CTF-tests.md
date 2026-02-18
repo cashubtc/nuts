@@ -1,4 +1,4 @@
-# NUT-28 Test Vectors
+# NUT-CTF Test Vectors
 
 These test vectors provide reference data for implementing conditional keysets. All values are hex-encoded for reproducibility.
 
@@ -252,4 +252,4 @@ error:              Invalid oracle public key format
 error_code:         13010
 ```
 
-[NUT-28]: ../28.md
+[NUT-CTF]: ../CTF.md

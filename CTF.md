@@ -1,4 +1,4 @@
-# NUT-28: Conditional Token Framework
+# NUT-CTF: Conditional Token Framework
 
 `optional`
 
@@ -14,9 +14,9 @@ A **conditional keyset** is a per-outcome-collection signing keyset ([NUT-02][02
 
 The oracle signature scheme is compatible with the [DLC (Discreet Log Contracts) specification](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Oracle.md), allowing Cashu mints to leverage existing DLC oracle infrastructure. See [Oracle Communication](#oracle-communication) for details.
 
-Caution: Applications that rely on oracle resolution must verify that the oracle is trustworthy and check via the mint's [info][06] endpoint that NUT-28 is supported.
+Caution: Applications that rely on oracle resolution must verify that the oracle is trustworthy and check via the mint's [info][06] endpoint that NUT-CTF is supported.
 
-**Related specifications:** [NUT-29][29] defines split/merge operations for creating and dissolving complete sets of conditional tokens. [NUT-30][30] extends this framework with numeric outcome conditions. Both are optional but highly recommended for prediction market use cases.
+**Related specifications:** [NUT-CTF-split-merge][CTF-split-merge] defines split/merge operations for creating and dissolving complete sets of conditional tokens. [NUT-CTF-numeric][CTF-numeric] extends this framework with numeric outcome conditions. Both are optional but highly recommended for prediction market use cases.
 
 ## Terminology
 
@@ -119,11 +119,11 @@ Trading:    Conditional keyset -> same/rotated conditional keyset (NUT-03 swap, 
 Redemption: Conditional keyset -> regular keyset                  (POST /v1/redeem_outcome + oracle witness)
 ```
 
-- **Issuance**: The mint creates conditional keysets during [partition registration](#register-partition). Users obtain conditional tokens through mechanisms such as the [NUT-29][29] split operation, AMM-based issuance, or any other minting mechanism the mint supports.
+- **Issuance**: The mint creates conditional keysets during [partition registration](#register-partition). Users obtain conditional tokens through mechanisms such as the [NUT-CTF-split-merge][CTF-split-merge] split operation, AMM-based issuance, or any other minting mechanism the mint supports.
 - **Trading**: Conditional tokens are transferred and swapped using standard [NUT-03][03] swap. All conditional keysets involved in a swap (inputs and outputs) MUST share the same `outcome_collection_id`. This permits both same-keyset swaps (normal trading) and cross-keyset swaps where the outcome collection is unchanged (key rotation from an old inactive conditional keyset to a new active one). No oracle witness is required.
 - **Redemption**: After oracle attestation, winners submit conditional keyset tokens to `POST /v1/redeem_outcome` with oracle signatures in `Proof.witness`, receiving regular keyset tokens in return.
 
-> **Note:** [NUT-29][29] defines structured split/merge operations for the CTF pattern, allowing users to atomically split collateral into complete sets of conditional tokens and merge them back.
+> **Note:** [NUT-CTF-split-merge][CTF-split-merge] defines structured split/merge operations for the CTF pattern, allowing users to atomically split collateral into complete sets of conditional tokens and merge them back.
 
 ## Condition ID
 
@@ -138,7 +138,7 @@ condition_id = tagged_hash("Cashu_condition_id", sorted_oracle_pubkeys || event_
 Where:
 
 - `tagged_hash(tag, msg) = SHA256(SHA256(tag) || SHA256(tag) || msg)` — [BIP-340 tagged hash](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki) convention
-- `sorted_oracle_pubkeys`: One or more 32-byte x-only public keys of the oracles (same format as NUT-28), sorted lexicographically (byte-wise) and concatenated. For multi-oracle conditions with threshold `t` of `n` oracles, all `n` oracle pubkeys are included. Derived from `announcements[].oracle_public_key`.
+- `sorted_oracle_pubkeys`: One or more 32-byte x-only public keys of the oracles (same format as NUT-CTF), sorted lexicographically (byte-wise) and concatenated. For multi-oracle conditions with threshold `t` of `n` oracles, all `n` oracle pubkeys are included. Derived from `announcements[].oracle_public_key`.
 - `event_id`: UTF-8 encoded event identifier string. Derived from `announcements[0].oracle_event.event_id`. All announcements in a multi-oracle condition MUST share the same `event_id`.
 - `outcome_count`: 1-byte unsigned integer representing the number of outcomes. Derived from `len(announcements[0].oracle_event.event_descriptor.outcomes)`. This prevents collisions between events with the same oracle and event_id but different outcome counts.
 
@@ -146,7 +146,7 @@ The `condition_id` is a 32-byte value encoded as a 64-character hexadecimal stri
 
 **Rationale for sorting oracle pubkeys:** Sorting ensures that two equivalent conditions always produce the same `condition_id` regardless of the order oracles are listed.
 
-> **Note:** [NUT-30][30] extends this formula with additional market-specific parameters for numeric conditions. Enum conditions (this NUT) use only the base formula above.
+> **Note:** [NUT-CTF-numeric][CTF-numeric] extends this formula with additional market-specific parameters for numeric conditions. Enum conditions (this NUT) use only the base formula above.
 
 ## Oracle Announcement Format
 
@@ -205,10 +205,10 @@ Conditions are registered via `POST /v1/conditions` before any operations on con
 - `partitions`: Array of registered partitions for this condition. Each entry contains:
   - `partition`: Array of partition keys (e.g., `["YES", "NO"]` or `["ALICE|BOB", "CAROL"]`)
   - `collateral`: For root conditions: a [NUT-00][00] unit string (e.g., `"sat"`, `"usd"`). For nested conditions: an `outcome_collection_id` (hex string) identifying the parent outcome collection whose tokens serve as collateral.
-  - `parent_collection_id`: 32-byte x-only public key (64 hex chars) representing the parent outcome collection. `"0000000000000000000000000000000000000000000000000000000000000000"` for root conditions. Used in combinatorial markets (see [NUT-29][29] for split/merge operations on nested markets).
+  - `parent_collection_id`: 32-byte x-only public key (64 hex chars) representing the parent outcome collection. `"0000000000000000000000000000000000000000000000000000000000000000"` for root conditions. Used in combinatorial markets (see [NUT-CTF-split-merge][CTF-split-merge] for split/merge operations on nested markets).
 - `attestation` (optional): Attestation state for this condition. Omitted if the mint does not yet have an attestation.
   - `status`: One of `"pending"` (no attestation yet), `"attested"` (oracle has attested, redemption active), `"expired"` (vesting period ended), `"violation"` (observed more than 1 attestation for this condition)
-  - `winning_outcome`: The attested outcome string. `null` if `status` is `"pending"`. For numeric conditions ([NUT-30][30]), this is the reconstructed numeric value as a string.
+  - `winning_outcome`: The attested outcome string. `null` if `status` is `"pending"`. For numeric conditions ([NUT-CTF-numeric][CTF-numeric]), this is the reconstructed numeric value as a string.
   - `attested_at`: Unix timestamp of when the attestation was recorded. `null` if `status` is `"pending"`.
 
 The `oracle_pubkeys`, `event_id`, `outcomes`, and `maturity` fields can be derived by parsing the announcement TLV and are not included separately in the Condition Info.
@@ -312,7 +312,7 @@ Registers a partition for a condition and creates conditional keysets. Wallets m
 
 - `collateral`: For root conditions: a [NUT-00][00] unit string (e.g., `"sat"`, `"usd"`). For nested conditions: an `outcome_collection_id` (hex string) identifying the parent outcome collection whose tokens serve as collateral.
 - `partition`: Array of partition keys defining the outcome collection grouping. Each key is a single outcome name or a pipe-separated outcome collection (e.g., `["ALICE|BOB", "CAROL"]`). The partition MUST satisfy the [Partition Rules](#partition-rules).
-- `parent_collection_id` (optional): A 32-byte x-only public key (64 hex chars) representing the parent outcome collection. Defaults to 32 zero bytes (`"0000000000000000000000000000000000000000000000000000000000000000"`) for root conditions. Used in combinatorial markets (see [NUT-29][29] for split/merge operations on nested markets).
+- `parent_collection_id` (optional): A 32-byte x-only public key (64 hex chars) representing the parent outcome collection. Defaults to 32 zero bytes (`"0000000000000000000000000000000000000000000000000000000000000000"`) for root conditions. Used in combinatorial markets (see [NUT-CTF-split-merge][CTF-split-merge] for split/merge operations on nested markets).
 
 #### Response Body
 
@@ -394,7 +394,7 @@ This means that in combinatorial markets, nesting order does not matter — `(Pa
 
 ## Conditional Keyset Discovery
 
-Conditional keysets are served on a dedicated endpoint, separate from the standard `GET /v1/keysets` endpoint ([NUT-02][02]). This separation ensures backward compatibility — wallets that do not support NUT-28 will not see conditional keysets in the regular keyset list, avoiding confusion with unknown fields or keyset types. It also prevents conditional keysets from inflating the regular keyset listing.
+Conditional keysets are served on a dedicated endpoint, separate from the standard `GET /v1/keysets` endpoint ([NUT-02][02]). This separation ensures backward compatibility — wallets that do not support NUT-CTF will not see conditional keysets in the regular keyset list, avoiding confusion with unknown fields or keyset types. It also prevents conditional keysets from inflating the regular keyset listing.
 
 ### Endpoint
 
@@ -520,13 +520,13 @@ Multi-oracle (threshold=2):
 
 The Redemption Witness extends the established Cashu pattern where `Proof.witness` carries condition-specific unlock data:
 
-| NUT                      | Witness Type       | Format                                     | Trigger                             |
-| ------------------------ | ------------------ | ------------------------------------------ | ----------------------------------- |
-| [NUT-11][11] (P2PK)      | Signature          | `{"signatures": [...]}`                    | Secret is P2PK kind ([NUT-10][10])  |
-| [NUT-14][14] (HTLC)      | Preimage + sig     | `{"preimage": "...", "signatures": [...]}` | Secret is HTLC kind ([NUT-10][10])  |
-| **NUT-28** (Conditional) | Oracle attestation | `{"oracle_sigs": [...]}`                   | Dedicated `redeem_outcome` endpoint |
+| NUT                       | Witness Type       | Format                                     | Trigger                             |
+| ------------------------- | ------------------ | ------------------------------------------ | ----------------------------------- |
+| [NUT-11][11] (P2PK)       | Signature          | `{"signatures": [...]}`                    | Secret is P2PK kind ([NUT-10][10])  |
+| [NUT-14][14] (HTLC)       | Preimage + sig     | `{"preimage": "...", "signatures": [...]}` | Secret is HTLC kind ([NUT-10][10])  |
+| **NUT-CTF** (Conditional) | Oracle attestation | `{"oracle_sigs": [...]}`                   | Dedicated `redeem_outcome` endpoint |
 
-Key difference: [NUT-11][11] and [NUT-14][14] witnesses are triggered by the **secret structure** ([NUT-10][10] well-known format). NUT-28 witnesses are triggered by the **endpoint** — the dedicated `POST /v1/redeem_outcome` endpoint requires oracle attestation. Proof secrets remain plain random strings.
+Key difference: [NUT-11][11] and [NUT-14][14] witnesses are triggered by the **secret structure** ([NUT-10][10] well-known format). NUT-CTF witnesses are triggered by the **endpoint** — the dedicated `POST /v1/redeem_outcome` endpoint requires oracle attestation. Proof secrets remain plain random strings.
 
 ## Redemption Endpoint
 
@@ -564,7 +564,7 @@ Each `BlindSignature` corresponds to a `BlindedMessage` in the request, creating
 
 ### Consequence for NUT-03
 
-Mints implementing NUT-28 **MUST** enforce the following rules on [NUT-03][03] swap requests involving conditional keysets. These rules prevent redemption of conditional tokens without oracle attestation while still allowing key rotation.
+Mints implementing NUT-CTF **MUST** enforce the following rules on [NUT-03][03] swap requests involving conditional keysets. These rules prevent redemption of conditional tokens without oracle attestation while still allowing key rotation.
 
 Within [NUT-03][03]:
 
@@ -584,7 +584,7 @@ When the mint receives a `POST /v1/redeem_outcome` request, it MUST perform the 
 2. All outputs MUST use a regular keyset (same unit as the input conditional keyset)
 3. If the mint has already recorded a valid attestation for this outcome collection, it MAY skip steps 4-5 and proceed directly to step 6
 4. Each input MUST include a valid `witness` with `oracle_sigs`
-5. Verify `oracle_sigs` contains at least `threshold` entries from distinct oracles (identified by `oracle_pubkey`). For each entry, verify `oracle_sig` against the `oracle_pubkey` using the [DLC signing algorithm](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Oracle.md#signing-algorithm) with tagged hash `"DLC/oracle/attestation/v0"` and the UTF-8 NFC-normalized outcome string. For numeric conditions ([NUT-30][30]), see the extended digit-decomposition witness verification.
+5. Verify `oracle_sigs` contains at least `threshold` entries from distinct oracles (identified by `oracle_pubkey`). For each entry, verify `oracle_sig` against the `oracle_pubkey` using the [DLC signing algorithm](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Oracle.md#signing-algorithm) with tagged hash `"DLC/oracle/attestation/v0"` and the UTF-8 NFC-normalized outcome string. For numeric conditions ([NUT-CTF-numeric][CTF-numeric]), see the extended digit-decomposition witness verification.
 6. The mint MUST verify that this outcome collection is the attested winner (see [Attestation Handling](#attestation-handling))
 
 ### Attestation Handling
@@ -593,7 +593,7 @@ When an oracle attests to a winning outcome, the mint **MUST** persistently reco
 
 The mint **MUST NOT** process redemptions for non-winning conditional keysets, even if a valid signature for those outcomes were somehow produced (e.g., through oracle key compromise).
 
-Mints **MUST** reject redemption attempts for non-winning conditional keysets after the first valid attestation is processed. For numeric conditions ([NUT-30][30]), both HI and LO keysets can redeem proportionally — see [NUT-30][30] for the extended redemption rules.
+Mints **MUST** reject redemption attempts for non-winning conditional keysets after the first valid attestation is processed. For numeric conditions ([NUT-CTF-numeric][CTF-numeric]), both HI and LO keysets can redeem proportionally — see [NUT-CTF-numeric][CTF-numeric] for the extended redemption rules.
 
 If the mint receives a valid oracle signature for a different outcome of the same condition (a DLC protocol violation), the mint **MUST** reject it and **MUST** log the conflict. Mints SHOULD expose detected DLC violations to users via the condition info endpoint.
 
@@ -639,7 +639,7 @@ The [NUT-06][06] `MintMethodSetting` indicates support for this feature:
 
 ```json
 {
-  "28": {
+  "CTF": {
     "supported": true,
     "dlc_version": <string>,
     "vesting_period": <int>
@@ -647,7 +647,7 @@ The [NUT-06][06] `MintMethodSetting` indicates support for this feature:
 }
 ```
 
-- `supported`: Boolean indicating NUT-28 support
+- `supported`: Boolean indicating NUT-CTF support
 - `vesting_period`: (optional) Number of seconds after `event_maturity_epoch` during which the mint will honor redemptions. If not specified, implementations SHOULD assume a minimum of 30 days (2592000 seconds). A value of `0` indicates no expiry.
 - `dlc_version` ... The latest version of the DLC protocol that it supports. As the time of writing `"0"` is the only DLC protocol version.
 
@@ -667,5 +667,5 @@ The [NUT-06][06] `MintMethodSetting` indicates support for this feature:
 [14]: 14.md
 [21]: 21.md
 [22]: 22.md
-[29]: 29.md
-[30]: 30.md
+[CTF-split-merge]: CTF-split-merge.md
+[CTF-numeric]: CTF-numeric.md
