@@ -178,6 +178,7 @@ Conditions are registered via `POST /v1/conditions` before any operations on con
   "threshold": <int>,
   "description": <str>,
   "announcements": <Array[hex_str]>,
+  "registered_at": <int>,
   "keysets": {
     "<outcome_collection>": <str>,
     ...
@@ -186,7 +187,8 @@ Conditions are registered via `POST /v1/conditions` before any operations on con
     {
       "partition": <Array[str]>,
       "collateral": <str>,
-      "parent_collection_id": <hex_str>
+      "parent_collection_id": <hex_str>,
+      "registered_at": <int>
     }
   ],
   "attestation": {
@@ -201,11 +203,13 @@ Conditions are registered via `POST /v1/conditions` before any operations on con
 - `threshold`: Minimum number of oracles required for attestation (default: 1)
 - `description`: Human-readable condition description
 - `announcements`: Array of hex-encoded oracle announcement TLV bytes (see [Oracle Announcement Format](#oracle-announcement-format))
+- `registered_at`: Unix timestamp of when this condition was registered at the mint
 - `keysets`: Object mapping each outcome collection to its keyset ID. This is a flat map of ALL registered outcome collections across all partitions at the root level (`parent_collection_id` = 0). If two partitions share an outcome collection (e.g., both include `"CAROL"`), it appears once with the same keyset. For combinatorial markets, keysets with non-zero `parent_collection_id` are not included here — use `GET /v1/conditional_keysets` to discover nested keysets.
 - `partitions`: Array of registered partitions for this condition. Each entry contains:
   - `partition`: Array of partition keys (e.g., `["YES", "NO"]` or `["ALICE|BOB", "CAROL"]`)
   - `collateral`: For root conditions: a [NUT-00][00] unit string (e.g., `"sat"`, `"usd"`). For nested conditions: an `outcome_collection_id` (hex string) identifying the parent outcome collection whose tokens serve as collateral.
   - `parent_collection_id`: 32-byte x-only public key (64 hex chars) representing the parent outcome collection. `"0000000000000000000000000000000000000000000000000000000000000000"` for root conditions. Used in combinatorial markets (see [NUT-CTF-split-merge][CTF-split-merge] for split/merge operations on nested markets).
+  - `registered_at`: Unix timestamp of when this partition was registered at the mint
 - `attestation` (optional): Attestation state for this condition. Omitted if the mint does not yet have an attestation.
   - `status`: One of `"pending"` (no attestation yet), `"attested"` (oracle has attested, redemption active), `"expired"` (vesting period ended), `"violation"` (observed more than 1 attestation for this condition)
   - `winning_outcome`: The attested outcome string. `null` if `status` is `"pending"`. For numeric conditions ([NUT-CTF-numeric][CTF-numeric]), this is the reconstructed numeric value as a string.
@@ -218,6 +222,10 @@ The `oracle_pubkeys`, `event_id`, `outcomes`, and `maturity` fields can be deriv
 ```
 GET /v1/conditions
 ```
+
+**Query parameters:**
+
+- `since` (optional): Unix timestamp. If provided, returns only conditions with `registered_at >= since`. Useful for incremental synchronization — wallets can store the last-seen timestamp and fetch only new conditions on reconnect.
 
 Returns an array of available conditions:
 
