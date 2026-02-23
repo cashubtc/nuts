@@ -409,3 +409,42 @@ The following is a valid multi-sig `SIG_ALL` `MeltRequest`.
   ]
 }
 ```
+
+### SigAllSigningPackage Test Vectors
+
+The following is an example of a `SigAllSigningPackage`, derived from a `swap` transaction.
+
+Input transaction data:
+
+```json
+{
+  "inputs": [
+    {
+      "amount": 2,
+      "id": "00bfa73302d12ffd",
+      "secret": "[\"P2PK\",{\"nonce\":\"c7f280eb55c1e8564e03db06973e94bc9b666d9e1ca42ad278408fe625950303\",\"data\":\"030d8acedfe072c9fa449a1efe0817157403fbec460d8e79f957966056e5dd76c1\",\"tags\":[[\"sigflag\",\"SIG_ALL\"]]}]",
+      "C": "02c97ee3d1db41cf0a3ddb601724be8711a032950811bf326f8219c50c4808d3cd",
+      "witness": "{\"signatures\":[\"ce017ca25b1b97df2f72e4b49f69ac26a240ce14b3690a8fe619d41ccc42d3c1282e073f85acd36dc50011638906f35b56615f24e4d03e8effe8257f6a808538\"]}"
+    }
+  ],
+  "outputs": [
+    {
+      "amount": 2,
+      "id": "00bfa73302d12ffd",
+      "B_": "038ec853d65ae1b79b5cdbc2774150b2cb288d6d26e12958a16fb33c32d9a86c39"
+    }
+  ]
+}
+```
+
+Derived `SigAllSigningPackage` JSON:
+
+```json
+{"version":"sigallA","type":"swap","inputs":[{"secret":"[\"P2PK\",{\"nonce\":\"c7f280eb55c1e8564e03db06973e94bc9b666d9e1ca42ad278408fe625950303\",\"data\":\"030d8acedfe072c9fa449a1efe0817157403fbec460d8e79f957966056e5dd76c1\",\"tags\":[[\"sigflag\",\"SIG_ALL\"]]}]","C":"02c97ee3d1db41cf0a3ddb601724be8711a032950811bf326f8219c50c4808d3cd"}],"outputs":[{"amount":2,"id":"00bfa73302d12ffd","B_":"038ec853d65ae1b79b5cdbc2774150b2cb288d6d26e12958a16fb33c32d9a86c39"}],"digests":{"legacy":"de7f9e3ca0fcc5ed3258fcf83dbf1be7fa78a5ed6da7bf2aa60d61e9dc6eb09a","current":"de7f9e3ca0fcc5ed3258fcf83dbf1be7fa78a5ed6da7bf2aa60d61e9dc6eb09a"},"witness":{"signatures":["ce017ca25b1b97df2f72e4b49f69ac26a240ce14b3690a8fe619d41ccc42d3c1282e073f85acd36dc50011638906f35b56615f24e4d03e8effe8257f6a808538"]}}
+```
+
+Serialized string:
+
+```
+sigallAeyJ2ZXJzaW9uIjoic2lnYWxsQSIsInR5cGUiOiJzd2FwIiwiaW5wdXRzIjpbeyJzZWNyZXQiOiJbXCJQMlBLXCIse1wibm9uY2VcIjpcImM3ZjI4MGViNTVjMWU4NTY0ZTAzZGIwNjk3M2U5NGJjOWI2NjZkOWUxY2E0MmFkMjc4NDA4ZmU2MjU5NTAzMDNcIixcImRhdGFcIjpcIjAzMGQ4YWNlZGZlMDcyYzlmYTQ0OWExZWZlMDgxNzE1NzQwM2ZiZWM0NjBkOGU3OWY5NTc5NjYwNTZlNWRkNzZjMVwiLFwidGFnc1wiOltbXCJzaWdmbGFnXCIsXCJTSUdfQUxMXCJdXX1dIiwiQyI6IjAyYzk3ZWUzZDFkYjQxY2YwYTNkZGI2MDE3MjRiZTg3MTFhMDMyOTUwODExYmYzMjZmODIxOWM1MGM0ODA4ZDNjZCJ9XSwib3V0cHV0cyI6W3siYW1vdW50IjoyLCJpZCI6IjAwYmZhNzMzMDJkMTJmZmQiLCJCXyI6IjAzOGVjODUzZDY1YWUxYjc5YjVjZGJjMjc3NDE1MGIyY2IyODhkNmQyNmUxMjk1OGExNmZiMzNjMzJkOWE4NmMzOSJ9XSwiZGlnZXN0cyI6eyJsZWdhY3kiOiJkZTdmOWUzY2EwZmNjNWVkMzI1OGZjZjgzZGJmMWJlN2ZhNzhhNWVkNmRhN2JmMmFhNjBkNjFlOWRjNmViMDlhIiwiY3VycmVudCI6ImRlN2Y5ZTNjYTBmY2M1ZWQzMjU4ZmNmODNkYmYxYmU3ZmE3OGE1ZWQ2ZGE3YmYyYWE2MGQ2MWU5ZGM2ZWIwOWEifSwid2l0bmVzcyI6eyJzaWduYXR1cmVzIjpbImNlMDE3Y2EyNWIxYjk3ZGYyZjcyZTRiNDlmNjlhYzI2YTI0MGNlMTRiMzY5MGE4ZmU2MTlkNDFjY2M0MmQzYzEyODJlMDczZjg1YWNkMzZkYzUwMDExNjM4OTA2ZjM1YjU2NjE1ZjI0ZTRkMDNlOGVmZmU4MjU3ZjZhODA4NTM4Il19fQ
+```
