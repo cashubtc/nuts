@@ -44,6 +44,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [26][26] | Payment Request Bech32m Encoding  | [cdk]                                                                          | -                                                |
 | [27][27] | Nostr Mint Backup                 | [Cashu.me][cashume], [cdk]                                                     | -                                                |
 | [28][28] | Pay to Blinded Key (P2BK)         | -                                                                              | -                                                |
+| [XX][XX] | Get Locked Mint Quotes By Pubkey  | -                                                                              | -                                                |
 
 #### Wallets:
 
@@ -104,3 +105,4 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [26]: 26.md
 [27]: 27.md
 [28]: 28.md
+[XX]: xx.md
