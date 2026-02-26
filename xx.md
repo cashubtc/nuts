@@ -1,4 +1,4 @@
-# NUT-28: Mint Quote Lookup by Public Key
+# NUT-29: Mint Quote Lookup by Public Key
 
 `optional`
 
