@@ -48,7 +48,7 @@ The settings for this NUT are part of the mint info response ([NUT-06][06]):
 
 ```json
 {
-  "28": {
+  "29": {
     "supported": <bool>
   }
 }
