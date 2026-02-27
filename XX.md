@@ -6,14 +6,7 @@
 
 ---
 
-This NUT defines an improved recovery algorithm for [NUT-13][13] wallets. It is motivated by the privacy and efficiency limitations of the current linear scan approach described in [nuts#301](https://github.com/cashubtc/nuts/issues/301).
-
-The recovery procedure defined in [NUT-13][13] reveals the wallet's entire transaction history to the mint. During recovery, the wallet sends every `BlindedMessage` it has ever generated — including nonces for tokens that were never issued — to the mint in sequential batches. This has two consequences:
-
-1. **Privacy**: The mint can correlate all of the user's past ecash activity retroactively, defeating the unlinkability guarantees of ecash.
-2. **Efficiency**: Recovery requires O(T/b) network requests, where T is the total number of issued notes and b is the batch size.
-
-This NUT reduces leakage to O(log N + g + d) `BlindedMessages`, where N is the nonce space (2^32), g is a gap-tolerance window, and d is a configurable depth parameter that bounds the unspent token region. This is achieved by combining a binary search to locate the last issued nonce index T, and maintaining a **Depth Invariant** that confines all unspent tokens to the last `d` nonce indices.
+This NUT defines an improved recovery algorithm for [NUT-13][13] wallets that reduces the number of `BlindedMessages` revealed to the mint from O(T) to a constant (~182), improving both privacy and efficiency. It combines a binary search to locate the last issued nonce index T with a **Depth Invariant** that confines all unspent tokens to the last `d` nonce indices.
 
 ## Depth Invariant
 
