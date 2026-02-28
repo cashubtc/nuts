@@ -225,7 +225,11 @@ GET /v1/conditions
 
 **Query parameters:**
 
-- `since` (optional): Unix timestamp. If provided, returns only conditions with `registered_at >= since`. Useful for incremental synchronization — wallets can store the last-seen timestamp and fetch only new conditions on reconnect.
+- `since` (optional): Unix timestamp. If provided, returns only conditions with `registered_at >= since`. Wallets SHOULD first fetch all conditions (omitting `since`) to build a complete local cache, then use `since` for incremental synchronization on subsequent requests — store the highest `registered_at` seen and pass it as `since` next time.
+- `limit` (optional): Maximum number of conditions to return per request.
+- `status` (optional, repeatable): Filter by `attestation.status` value. Supports multiple values, e.g. `?status=pending&status=attested`. Valid values: `pending`, `attested`, `expired`, `violation`. When omitted, returns all conditions regardless of attestation status. Conditions without an `attestation` field are treated as `pending`.
+
+Mints MUST return results ordered by `registered_at` ascending (oldest first).
 
 Returns an array of available conditions:
 
@@ -235,7 +239,7 @@ Returns an array of available conditions:
 }
 ```
 
-> **Note:** Mints with many registered conditions MAY implement pagination for this endpoint (e.g., `offset` and `limit` query parameters). The pagination scheme is left to implementers.
+> **Pagination:** Clients paginate by setting `since` to the `registered_at` of the last item received. Because `since` uses `>=` semantics, items sharing the same timestamp as the cursor will re-appear; clients MUST deduplicate by `condition_id`. See [Q&A: Design Decisions](#qa-design-decisions) for rationale.
 
 ### Get Condition
 
@@ -410,9 +414,19 @@ Conditional keysets are served on a dedicated endpoint, separate from the standa
 GET /v1/conditional_keysets
 ```
 
+### Query Parameters
+
+- `since` (optional): Unix timestamp. If provided, returns only keysets with `registered_at >= since`. Same sync pattern as `GET /v1/conditions` — wallets SHOULD first fetch all keysets (omitting `since`), then use `since` for incremental sync.
+- `limit` (optional): Maximum number of keysets to return per request.
+- `active` (optional): Boolean filter on the keyset's `active` flag. E.g. `?active=true` returns only active keysets. When omitted, returns all keysets regardless of active status.
+
+Mints MUST return results ordered by `registered_at` ascending (oldest first).
+
+> **Pagination:** Same cursor-based approach as `GET /v1/conditions` — set `since` to the `registered_at` of the last item received and deduplicate by keyset `id`. See [Q&A: Design Decisions](#qa-design-decisions) for rationale.
+
 ### Response
 
-The response is structurally identical to the `GET /v1/keysets` response ([NUT-02][02]), with three additional fields that are always present on every entry:
+The response is structurally identical to the `GET /v1/keysets` response ([NUT-02][02]), with four additional fields that are always present on every entry:
 
 ```json
 {
@@ -425,7 +439,8 @@ The response is structurally identical to the `GET /v1/keysets` response ([NUT-0
       "final_expiry": <int|null>,
       "condition_id": <hex_str>,
       "outcome_collection": <str>,
-      "outcome_collection_id": <hex_str>
+      "outcome_collection_id": <hex_str>,
+      "registered_at": <int>
     },
     ...
   ]
@@ -435,12 +450,11 @@ The response is structurally identical to the `GET /v1/keysets` response ([NUT-0
 - `condition_id`: 32-byte condition identifier (64-character hex string). Corresponds to the `condition_id` from [condition registration](#condition-registry).
 - `outcome_collection`: The outcome collection string this keyset represents (e.g., `"YES"`, `"ALICE|BOB"` for outcome collections).
 - `outcome_collection_id`: 32-byte outcome collection identifier (64-character hex string). Computed using the algorithm in [Outcome Collection ID](#outcome-collection-id).
+- `registered_at`: Unix timestamp of when this keyset was created during partition registration. Used as the cursor for `since`-based pagination.
 
-All three fields (`condition_id`, `outcome_collection`, `outcome_collection_id`) MUST be present for every keyset entry in this response.
+All four fields (`condition_id`, `outcome_collection`, `outcome_collection_id`, `registered_at`) MUST be present for every keyset entry in this response.
 
 > **Note:** The standard `GET /v1/keys/{keyset_id}` endpoint ([NUT-02][02]) still works for fetching the public keys of a specific conditional keyset by its ID.
-
-> **Note:** Mints with many conditional keysets MAY implement pagination for this endpoint (e.g., `offset` and `limit` query parameters). The pagination scheme is left to implementers.
 
 ### Example
 
@@ -455,7 +469,8 @@ All three fields (`condition_id`, `outcome_collection`, `outcome_collection_id`)
       "final_expiry": 1753920000,
       "condition_id": "a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd",
       "outcome_collection": "YES",
-      "outcome_collection_id": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      "outcome_collection_id": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "registered_at": 1700000000
     },
     {
       "id": "00def789abc012",
@@ -465,7 +480,8 @@ All three fields (`condition_id`, `outcome_collection`, `outcome_collection_id`)
       "final_expiry": 1753920000,
       "condition_id": "a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd",
       "outcome_collection": "NO",
-      "outcome_collection_id": "f4a1b55298fc2c259bfcf5d9aa7fc8a3538bf52f575ac045ba5a6a02c8963c966"
+      "outcome_collection_id": "f4a1b55298fc2c259bfcf5d9aa7fc8a3538bf52f575ac045ba5a6a02c8963c966",
+      "registered_at": 1700000000
     }
   ]
 }
@@ -658,6 +674,16 @@ The [NUT-06][06] `MintMethodSetting` indicates support for this feature:
 - `supported`: Boolean indicating NUT-CTF support
 - `vesting_period`: (optional) Number of seconds after `event_maturity_epoch` during which the mint will honor redemptions. If not specified, implementations SHOULD assume a minimum of 30 days (2592000 seconds). A value of `0` indicates no expiry.
 - `dlc_version` ... The latest version of the DLC protocol that it supports. As the time of writing `"0"` is the only DLC protocol version.
+
+## Q&A: Design Decisions
+
+**Why "download all, then sync" instead of server-side filtering?**
+
+Supporting complex query combinations (filter by oracle, by unit, by date range, etc.) increases server complexity and creates a DoS vector — an attacker can craft expensive queries to burden the mint. More importantly, fine-grained server-side filtering leaks information about which conditions a wallet cares about, potentially revealing trading positions to the mint. The "download all, then sync with `since`" pattern keeps the server stateless and simple: every client gets the same data, preserving privacy. Since the total number of conditions on a single mint is expected to remain manageable, full downloads are practical.
+
+**Why `>=` instead of `>` for the `since` parameter?**
+
+Unix timestamps have second-level precision. If two conditions are registered within the same second and the client uses `>` (strict greater-than), it could silently skip items that share the boundary timestamp. Using `>=` (greater-than-or-equal) guarantees that no items are missed at the cost of re-delivering boundary items. Clients MUST deduplicate by `condition_id` (or keyset `id` for the keysets endpoint), which is trivial with a local set.
 
 [00]: 00.md
 [01]: 01.md
