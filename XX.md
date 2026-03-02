@@ -45,7 +45,7 @@ To maintain the invariant, wallets that implement this NUT **MUST**:
 
 ### Consolidation strategy
 
-Since recovery can be triggered at any time by data loss, the invariant **MUST** hold at all times — not just "before recovery". Wallets **MUST** consolidate violating proofs immediately after any operation that increases T.
+Since recovery can be triggered at any time by data loss, the invariant **MUST** hold at all times — not just "before recovery". Wallets **MUST** consolidate violating proofs immediately before any operation that increases T.
 
 In practice, a simple strategy is:
 
