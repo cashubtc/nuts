@@ -43,7 +43,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [25][25] | Payment Method: BOLT12            | [cdk], [cashu-ts][ts]                                                          | [cdk-mintd]                                      |
 | [26][26] | Payment Request Bech32m Encoding  | [cdk]                                                                          | -                                                |
 | [27][27] | Nostr Mint Backup                 | [Cashu.me][cashume], [cdk]                                                     | -                                                |
-| [28][28] | Pay to Blinded Key (P2BK)         | -                                                                              | -                                                |
+| [28][28] | Pay to Blinded Key (P2BK)         | [cdk], [cashu-ts][ts]                                                          | -                                                |
 
 #### Wallets:
 
