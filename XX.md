@@ -40,6 +40,8 @@ To maintain the invariant, wallets that implement this NUT **MUST**:
 
 3. **Coin selection**: Wallets **MAY** use arbitrary coin selection. After any operation that increases T, the wallet **MUST** check whether any unspent proof now has index `i ≤ T - d` and consolidate if so. This preserves free coin selection while enforcing the invariant.
 
+4. **Compaction**: If the wallet already holds `d` or more unspent proofs, any operation that creates new outputs would violate the invariant regardless of consolidation. In this case, the wallet **MUST** first compact its existing proofs by combining multiple proofs into fewer outputs via a [NUT-03][03] swap, reducing the number of unspent proofs before proceeding.
+
 > [!NOTE]
 > The consolidation swap is a standard [NUT-03][03] swap — it does not reveal any additional information about the wallet's history beyond what is already implicit in the swap operation itself.
 
@@ -186,21 +188,9 @@ Examples:
 | 5,000 | 5,050 | 182 | 202 | ~35 |
 | 100,000 | 100,050 | 182 | 4,002 | ~35 |
 
-### Breakeven points
+### Breakeven note
 
-This NUT reveals **more** nonces than [NUT-13][13] for small wallets:
-
-- **Privacy breakeven**: T ≈ 132. For wallets with T < 132, [NUT-13][13] reveals fewer nonces.
-- **Efficiency breakeven**: T ≈ 825 (with batched gap scan). For wallets with T < 825, [NUT-13][13] makes fewer requests.
-
-For wallets below these thresholds, the overhead of binary search (32 sequential round-trips) and the fixed recovery window (`d` nonces) exceeds the cost of a simple linear scan. Wallets **MAY** use a heuristic: if a previous recovery or local state suggests T < 200, fall back to the [NUT-13][13] linear scan.
-
-### Privacy properties
-
-The privacy gain for wallets above the breakeven comes from two properties:
-
-1. **Bounded leakage**: The number of revealed nonces is constant (182) regardless of wallet history size. A wallet with T = 1,000 reveals the same number of nonces as one with T = 100,000.
-2. **Non-sequential probes**: The 32 binary search probes are spread across the entire nonce space and are non-contiguous, making transaction history correlation significantly harder for the mint compared to the sequential batches of [NUT-13][13].
+This NUT reveals **more** nonces than [NUT-13][13] for small wallets (T < ~132), because the fixed cost of binary search (32 probes) plus the recovery window (`d` nonces) exceeds the cost of a linear scan. Since T is only discovered during recovery, wallets cannot decide in advance which strategy is cheaper.
 
 ## Backwards compatibility
 
