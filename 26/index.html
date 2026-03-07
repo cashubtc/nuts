@@ -17,7 +17,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
     
     
       
@@ -1400,6 +1400,31 @@ If no transport is specified (tag 0x07 is absent), the payment is assumed to be 
 
 <p>This payment request encodes to the NUT-26 format as:</p>
 <div class="codehilite"><pre><span></span><code>CREQB1QYQQWER9D4HNZV3NQGQQSQQQQQQQQQQRAQPSQQGQQSQQZQG9QQVXSAR5WPEN5TE0D45KUAPWV4UXZMTSD3JJUCM0D5RQQRJRDANXVET9YPCXZ7TDV4H8GXHR3TQ
+</code></pre></div>
+
+<h2 id="bip-321-integration">BIP-321 Integration<a class="headerlink" href="#bip-321-integration" title="Permanent link">&para;</a></h2>
+<p>NUT-26 payment requests can be included in <a href="https://bips.dev/321/">BIP-321</a> Bitcoin URIs using the <code>creq</code> query parameter. This enables unified QR codes that support multiple payment methods.</p>
+<p>The full Bech32m-encoded string (including the <code>creqb1</code> prefix) is used as the parameter value.</p>
+<blockquote>
+<p>[!NOTE]
+Implementations SHOULD use uppercase for optimal QR code compatibility. Decoders MUST accept both uppercase and lowercase input.</p>
+</blockquote>
+<h3 id="unified-qr-codes">Unified QR Codes<a class="headerlink" href="#unified-qr-codes" title="Permanent link">&para;</a></h3>
+<p>By including both Lightning payment data and Cashu payment requests in a single BIP-321 URI, a single QR code can serve as an entry point for multiple payment methods. Wallets that support a given payment method can use it, while others can fall back to supported methods.</p>
+<h3 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h3>
+<h4 id="cashu-only">Cashu Only<a class="headerlink" href="#cashu-only" title="Permanent link">&para;</a></h4>
+<p>A Bitcoin URI containing only a Cashu payment request:</p>
+<div class="codehilite"><pre><span></span><code>bitcoin:?creq=CREQB1QYQQWER9D4HNZV3NQGQQSQQQQQQQQQQRAQPSQQGQQSQQZQG9QQVXSAR5WPEN5TE0D45KUAPWV4UXZMTSD3JJUCM0D5RQQRJRDANXVET9YPCXZ7TDV4H8GXHR3TQ
+</code></pre></div>
+
+<h4 id="bolt11-cashu">BOLT11 + Cashu<a class="headerlink" href="#bolt11-cashu" title="Permanent link">&para;</a></h4>
+<p>A unified QR code supporting both Lightning (BOLT11) and Cashu:</p>
+<div class="codehilite"><pre><span></span><code>bitcoin:?lightning=lnbc1p0psl7ppsh7jun9d3shjtnyv9kh2uewd9hsz9mhwden5te0wfjkccte9curxven9eehqctrv5hszrthwden5te0dehhxtnvdakqqgydaqy7curk439ykptkysv7udhdhu68sucm295akqefdehkf0d495cwunl5&amp;creq=CREQB1QYQQWER9D4HNZV3NQGQQSQQQQQQQQQQRAQPSQQGQQSQQZQG9QQVXSAR5WPEN5TE0D45KUAPWV4UXZMTSD3JJUCM0D5RQQRJRDANXVET9YPCXZ7TDV4H8GXHR3TQ
+</code></pre></div>
+
+<h4 id="bolt12-cashu">BOLT12 + Cashu<a class="headerlink" href="#bolt12-cashu" title="Permanent link">&para;</a></h4>
+<p>A unified QR code supporting both LightningOffers (BOLT12) and Cashu:</p>
+<div class="codehilite"><pre><span></span><code>bitcoin:?lno=lno1p0psl7ppsh7jun9d3shjtnyv9kh2uewd9hsz9mhwden5te0wfjkccte9curxven9eehqctrv5hszrthwden5te0dehhxtnvdakqqgydaqy7curk439ykptkysv7udhdhu68sucm295akqefdehkf0d495cwunl5&amp;creq=CREQB1QYQQWER9D4HNZV3NQGQQSQQQQQQQQQQRAQPSQQGQQSQQZQG9QQVXSAR5WPEN5TE0D45KUAPWV4UXZMTSD3JJUCM0D5RQQRJRDANXVET9YPCXZ7TDV4H8GXHR3TQ
 </code></pre></div>
 
 
