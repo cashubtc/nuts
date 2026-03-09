@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://cashubtc.github.io/nuts/error_codes/">
+        <link rel="canonical" href="https://cashubtc.github.io/nuts/29/">
       
       
       
@@ -21,7 +21,7 @@
     
     
       
-        <title>NUT Errors - Cashu NUTs Specifications</title>
+        <title>NUT-29: Batched Minting - Cashu NUTs Specifications</title>
       
     
     
@@ -72,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#nut-errors" class="md-skip">
+        <a href="#nut-29-batched-minting" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              NUT Errors
+              NUT-29: Batched Minting
             
           </span>
         </div>
@@ -1134,183 +1134,228 @@
   
 
 
-<h1 id="nut-errors">NUT Errors<a class="headerlink" href="#nut-errors" title="Permanent link">&para;</a></h1>
-<table>
-<thead>
-<tr>
-<th>Code</th>
-<th>Description</th>
-<th>Relevant nuts</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>10001</td>
-<td>Proof verification failed</td>
-<td><a href="../03/">NUT-03</a>, <a href="../05/">NUT-05</a></td>
-</tr>
-<tr>
-<td>11001</td>
-<td>Proofs already spent</td>
-<td><a href="../03/">NUT-03</a>, <a href="../05/">NUT-05</a></td>
-</tr>
-<tr>
-<td>11002</td>
-<td>Proofs are pending</td>
-<td><a href="../03/">NUT-03</a>, <a href="../05/">NUT-05</a></td>
-</tr>
-<tr>
-<td>11003</td>
-<td>Outputs already signed</td>
-<td><a href="../03/">NUT-03</a>, <a href="../04/">NUT-04</a>, <a href="../05/">NUT-05</a></td>
-</tr>
-<tr>
-<td>11004</td>
-<td>Outputs are pending</td>
-<td><a href="../03/">NUT-03</a>, <a href="../04/">NUT-04</a>, <a href="../05/">NUT-05</a></td>
-</tr>
-<tr>
-<td>11005</td>
-<td>Transaction is not balanced (inputs != outputs)</td>
-<td><a href="../02/">NUT-02</a>, <a href="../03/">NUT-03</a>, <a href="../05/">NUT-05</a></td>
-</tr>
-<tr>
-<td>11006</td>
-<td>Amount outside of limit range</td>
-<td><a href="../04/">NUT-04</a>, <a href="../05/">NUT-05</a></td>
-</tr>
-<tr>
-<td>11007</td>
-<td>Duplicate inputs provided</td>
-<td><a href="../03/">NUT-03</a>, <a href="../04/">NUT-04</a>, <a href="../05/">NUT-05</a></td>
-</tr>
-<tr>
-<td>11008</td>
-<td>Duplicate outputs provided</td>
-<td><a href="../03/">NUT-03</a>, <a href="../04/">NUT-04</a>, <a href="../05/">NUT-05</a></td>
-</tr>
-<tr>
-<td>11009</td>
-<td>Inputs/Outputs of multiple units</td>
-<td><a href="../03/">NUT-03</a>, <a href="../04/">NUT-04</a>, <a href="../05/">NUT-05</a></td>
-</tr>
-<tr>
-<td>11010</td>
-<td>Inputs and outputs not of same unit</td>
-<td><a href="../03/">NUT-03</a>, <a href="../04/">NUT-04</a>, <a href="../05/">NUT-05</a></td>
-</tr>
-<tr>
-<td>11011</td>
-<td>Amountless invoice is not supported</td>
-<td><a href="../05/">NUT-05</a></td>
-</tr>
-<tr>
-<td>11012</td>
-<td>Amount in request does not equal invoice</td>
-<td><a href="../05/">NUT-05</a></td>
-</tr>
-<tr>
-<td>11013</td>
-<td>Unit in request is not supported</td>
-<td><a href="../04/">NUT-04</a>, <a href="../05/">NUT-05</a></td>
-</tr>
-<tr>
-<td>11014</td>
-<td>Max inputs exceeded</td>
-<td><a href="../03/">NUT-03</a>, <a href="../05/">NUT-05</a></td>
-</tr>
-<tr>
-<td>11015</td>
-<td>Max outputs exceeded</td>
-<td><a href="../03/">NUT-03</a>, <a href="../04/">NUT-04</a>, <a href="../05/">NUT-05</a></td>
-</tr>
-<tr>
-<td>12001</td>
-<td>Keyset is not known</td>
-<td><a href="../02/">NUT-02</a>, <a href="../04/">NUT-04</a></td>
-</tr>
-<tr>
-<td>12002</td>
-<td>Keyset is inactive, cannot sign messages</td>
-<td><a href="../02/">NUT-02</a>, <a href="../03/">NUT-03</a>, <a href="../04/">NUT-04</a></td>
-</tr>
-<tr>
-<td>20001</td>
-<td>Quote request is not paid</td>
-<td><a href="../04/">NUT-04</a></td>
-</tr>
-<tr>
-<td>20002</td>
-<td>Quote has already been issued</td>
-<td><a href="../04/">NUT-04</a></td>
-</tr>
-<tr>
-<td>20003</td>
-<td>Minting is disabled</td>
-<td><a href="../04/">NUT-04</a></td>
-</tr>
-<tr>
-<td>20004</td>
-<td>Lightning payment failed</td>
-<td><a href="../05/">NUT-05</a></td>
-</tr>
-<tr>
-<td>20005</td>
-<td>Quote is pending</td>
-<td><a href="../04/">NUT-04</a>, <a href="../05/">NUT-05</a>, <a href="../29/">NUT-29</a></td>
-</tr>
-<tr>
-<td>20006</td>
-<td>Invoice already paid</td>
-<td><a href="../05/">NUT-05</a></td>
-</tr>
-<tr>
-<td>20007</td>
-<td>Quote is expired</td>
-<td><a href="../04/">NUT-04</a>, <a href="../05/">NUT-05</a></td>
-</tr>
-<tr>
-<td>20008</td>
-<td>Signature for mint request invalid</td>
-<td><a href="../20/">NUT-20</a></td>
-</tr>
-<tr>
-<td>20009</td>
-<td>Pubkey required for mint quote</td>
-<td><a href="../20/">NUT-20</a></td>
-</tr>
-<tr>
-<td>30001</td>
-<td>Endpoint requires clear auth</td>
-<td><a href="../21/">NUT-21</a></td>
-</tr>
-<tr>
-<td>30002</td>
-<td>Clear authentication failed</td>
-<td><a href="../21/">NUT-21</a></td>
-</tr>
-<tr>
-<td>31001</td>
-<td>Endpoint requires blind auth</td>
-<td><a href="../22/">NUT-22</a></td>
-</tr>
-<tr>
-<td>31002</td>
-<td>Blind authentication failed</td>
-<td><a href="../22/">NUT-22</a></td>
-</tr>
-<tr>
-<td>31003</td>
-<td>Maximum BAT mint amount exceeded</td>
-<td><a href="../22/">NUT-22</a></td>
-</tr>
-<tr>
-<td>31004</td>
-<td>BAT mint rate limit exceeded</td>
-<td><a href="../22/">NUT-22</a></td>
-</tr>
-</tbody>
-</table>
+<h1 id="nut-29-batched-minting">NUT-29: Batched Minting<a class="headerlink" href="#nut-29-batched-minting" title="Permanent link">&para;</a></h1>
+<p><code>optional</code></p>
+<p><code>depends on: NUT-04</code></p>
+<p><code>uses: NUT-20</code></p>
+<p>This spec describes how a wallet can mint multiple quotes in one batched operation by requesting blind signatures for multiple multiple quotes in a single atomic request.</p>
+<hr />
+<h2 id="1-batch-checking-quote-state">1. Batch Checking Quote State<a class="headerlink" href="#1-batch-checking-quote-state" title="Permanent link">&para;</a></h2>
+<p>Before minting, the wallet SHOULD verify that each mint quote has been paid. It does this by sending:</p>
+<div class="codehilite"><pre><span></span><code><span class="err">POST https://mint.host:3338/v1/mint/quote/{method}/check</span>
+</code></pre></div>
+
+<p>The wallet includes the following body in its request:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quotes&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">s</span><span class="kc">tr</span><span class="p">]</span><span class="err">&gt;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>where <code>quotes</code> is an array of <em>unique</em> mint quote IDs.</p>
+<p>The mint returns a JSON array of mint quotes objects as defined by the payment method's NUT specification. The quotes in this array MUST be in the same order as in the request.</p>
+<h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
+<p>Below is an example for checking two bolt11 mint quotes.</p>
+<h5 id="request">Request<a class="headerlink" href="#request" title="Permanent link">&para;</a></h5>
+<div class="codehilite"><pre><span></span><code><span class="err">POST https://mint.host:3338/v1/mint/quote/bolt11/check</span>
+<span class="err">Content-Type: application/json</span>
+
+<span class="err">{</span>
+<span class="err">  &quot;quotes&quot;: [ &quot;quote_id_1&quot;, &quot;quote_id_2&quot; ]</span>
+<span class="err">}</span>
+</code></pre></div>
+
+<h5 id="response">Response<a class="headerlink" href="#response" title="Permanent link">&para;</a></h5>
+<div class="codehilite"><pre><span></span><code><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;quote_id_1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lnbc...&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PAID&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1234567890</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;quote_id_2&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lnbc...&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UNPAID&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1234567890</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+
+<h4 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h4>
+<p>This is a query endpoint that uses all-or-nothing error handling, matching the behavior of the batch mint endpoint:</p>
+<ul>
+<li>If any <code>quote_id</code> is not known by the mint, the mint MUST reject the entire request and return an appropriate error</li>
+<li>If any <code>quote_id</code> cannot be parsed (invalid format), the mint MUST reject the entire request and return an appropriate error</li>
+</ul>
+<hr />
+<h2 id="2-executing-the-batched-mint">2. Executing the Batched Mint<a class="headerlink" href="#2-executing-the-batched-mint" title="Permanent link">&para;</a></h2>
+<h4 id="request-by-wallet">Request by wallet<a class="headerlink" href="#request-by-wallet" title="Permanent link">&para;</a></h4>
+<p>Once all quoted payments are confirmed, the wallet mints the proofs by calling:</p>
+<div class="codehilite"><pre><span></span><code><span class="err">POST https://mint.host:3338/v1/mint/{method}/batch</span>
+</code></pre></div>
+
+<p>The wallet includes the following body in its request:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quotes&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">s</span><span class="kc">tr</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;quote_amounts&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">i</span><span class="kc">nt</span><span class="p">]</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Optional</span>
+<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dedMessage</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span><span class="p">]</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// Optional</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<ul>
+<li><code>quotes</code>: array of <em>unique</em> quote IDs.</li>
+<li><code>quote_amounts</code>: array of expected amounts to mint per quote, in the same order as <code>quotes</code>.</li>
+<li>Required for payment methods that demand an amount like bolt12; Optional for other methods like bolt11.</li>
+<li><code>outputs</code>: array of blinded messages (see <a href="../00/">NUT-00</a>).</li>
+<li><code>signatures</code>: array of signatures for NUT-20 locked quotes. See <a href="#nut-20-support">NUT-20 Support</a></li>
+</ul>
+<h4 id="response-by-mint">Response by mint<a class="headerlink" href="#response-by-mint" title="Permanent link">&para;</a></h4>
+<p>The mint responds with:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dSig</span><span class="kc">nature</span><span class="p">]</span><span class="err">&gt;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<ul>
+<li><code>signatures</code>: an array of blind signatures, one for each provided blinded message, in the same order as the <code>outputs</code> array.</li>
+</ul>
+<h3 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h3>
+<p>Below is an example for minting two NUT-20 locked bolt11 mint quotes.</p>
+<h5 id="request_1">Request<a class="headerlink" href="#request_1" title="Permanent link">&para;</a></h5>
+<div class="codehilite"><pre><span></span><code><span class="err">POST https://mint.host:3338/v1/mint/bolt12/batch</span>
+<span class="err">Content-Type: application/json</span>
+
+<span class="err">{</span>
+<span class="err">  &quot;quotes&quot;: [</span>
+<span class="err">    &quot;quote_id_1&quot;,</span>
+<span class="err">    &quot;quote_id_2&quot;</span>
+<span class="err">  ],</span>
+<span class="err">  &quot;quote_amounts&quot;: [</span>
+<span class="err">    100,</span>
+<span class="err">    50</span>
+<span class="err">  ],</span>
+<span class="err">  &quot;signatures&quot;: [</span>
+<span class="err">    &quot;d9be080b33179387e504bb6991ea41ae0dd715e28b01ce9f63d57198a095bccc776874914288e6989e97ac9d255ac667c205fa8d90a211184b417b4ffdd24092&quot;,</span>
+<span class="err">    &quot;f2d97118390195cf5bef21d84c94e505dcdc2760154519536f74ba5e27f886f313b82296610df14db1d91d346e988ed384070bad084aaf06d14ccd7686157f24&quot;</span>
+<span class="err">  ],</span>
+<span class="err">  &quot;outputs&quot;: [</span>
+<span class="err">    {</span>
+<span class="err">      &quot;amount&quot;: 128,</span>
+<span class="err">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
+<span class="err">      &quot;B_&quot;: &quot;035015e6d7ade60ba8426cefaf1832bbd27257636e44a76b922d78e79b47cb689d&quot;</span>
+<span class="err">    },</span>
+<span class="err">    {</span>
+<span class="err">      &quot;amount&quot;: 16,</span>
+<span class="err">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
+<span class="err">      &quot;B_&quot;: &quot;0288d7649652d0a83fc9c966c969fb217f15904431e61a44b14999fabc1b5d9ac6&quot;</span>
+<span class="err">    },</span>
+<span class="err">    {</span>
+<span class="err">      &quot;amount&quot;: 4,</span>
+<span class="err">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
+<span class="err">      &quot;B_&quot;: &quot;03b85be0c0a9f51056375b632a2f2c8149831b9827fad677be9807455e7d84b584&quot;</span>
+<span class="err">    },</span>
+<span class="err">    {</span>
+<span class="err">      &quot;amount&quot;: 2,</span>
+<span class="err">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
+<span class="err">      &quot;B_&quot;: &quot;0276bbcf69e1b1238e6d39fc14c84e7cdfd519fee07f3369d2b2b23045390e2efc&quot;</span>
+<span class="err">    }</span>
+<span class="err">  ]</span>
+<span class="err">}</span>
+</code></pre></div>
+
+<h5 id="response_1">Response<a class="headerlink" href="#response_1" title="Permanent link">&para;</a></h5>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;0208657b2917f469f275226cc931e5389451f6eed515d586ad16fa7a700eed4fb6&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;037dc0b5e712a39ef22f5bba1d49bc65a323ab9e0b771f7281d8c33280e2e58dbc&quot;</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="request-validation">Request Validation<a class="headerlink" href="#request-validation" title="Permanent link">&para;</a></h3>
+<p>The mint MUST validate the following before processing a batch mint request:</p>
+<ol>
+<li><strong>Non-empty batch</strong>: The <code>quotes</code> array MUST NOT be empty</li>
+<li><strong>Unique quotes</strong>: All quote IDs in the <code>quotes</code> array MUST be unique (no duplicates)</li>
+<li><strong>Valid quote IDs</strong>: All quote IDs MUST exist in the mint's database</li>
+<li><strong>Payment method consistency</strong>: All quotes MUST have the same payment method, matching <code>{method}</code> in the URL path</li>
+<li><strong>Currency unit consistency</strong>: All quotes MUST use the same currency unit</li>
+<li><strong>Quote state</strong>: All quotes MUST be in PAID state (or have a mintable amount for payment methods that allow multiple mint operations like bolt12)</li>
+<li><strong>Amount balance</strong>: The sum of amounts contained in the <code>outputs</code> MUST equal the sum of <code>quote_amounts</code> (bolt11) or MUST NOT exceed it (bolt12)</li>
+<li><strong>Signature validation (NUT-20)</strong>: The <code>signature</code> array length MUST match the <code>quotes</code> array length; locked quotes MUST include a valid signature; unlocked quotes MUST NOT include one</li>
+</ol>
+<p>Implementations MAY impose additional constraints such as maximum batch size based on their resource limitations. If any validation fails, the mint MUST reject the entire batch and return an appropriate error without minting any quotes.</p>
+<h3 id="nut-20-support">NUT-20 support<a class="headerlink" href="#nut-20-support" title="Permanent link">&para;</a></h3>
+<p>Per <a href="../20/">NUT-20</a>, quotes can require authentication via signatures. When using batch minting with NUT-20 locked quotes:</p>
+<h4 id="signature-array-structure">Signature Array Structure<a class="headerlink" href="#signature-array-structure" title="Permanent link">&para;</a></h4>
+<p><strong>Array structure:</strong></p>
+<ul>
+<li>The <code>signature</code> field is an array with length equal to <code>quote.length</code> (one entry per quote)</li>
+<li><code>signatures[i]</code> corresponds to <code>quotes[i]</code></li>
+</ul>
+<p><strong>Per-quote signatures:</strong></p>
+<ul>
+<li><strong>Locked quotes</strong> (with <code>pubkey</code>): <code>signature[i]</code> contains the signature string</li>
+<li><strong>Unlocked quotes</strong>: <code>signatures[i]</code> is <code>null</code></li>
+</ul>
+<p><strong>Field requirement:</strong></p>
+<ul>
+<li><strong>Required</strong>: If ANY quote is locked</li>
+<li><strong>Optional</strong>: May be omitted entirely if all quotes are unlocked</li>
+</ul>
+<h4 id="signature-message">Signature Message<a class="headerlink" href="#signature-message" title="Permanent link">&para;</a></h4>
+<p>Following the <a href="../20/#message-aggregation">NUT-20 message aggregation</a> pattern, the signature for <code>quotes[i]</code> is computed as:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">msg_to_sign</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quote_id</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">B_0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">B_1</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">B_</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Where:</p>
+<ul>
+<li><code>quote_id[i]</code> is the UTF-8 encoded quote ID at index <code>i</code></li>
+<li><code>B_0 ... B_(n-1)</code> are <strong>all blinded messages</strong> from the <code>outputs</code> array (regardless of amount splitting)</li>
+<li><code>||</code> denotes concatenation</li>
+</ul>
+<p>The signature is a BIP340 Schnorr signature on the SHA-256 hash of <code>msg_to_sign</code>.</p>
+<h3 id="signature-validation-failure">Signature Validation Failure<a class="headerlink" href="#signature-validation-failure" title="Permanent link">&para;</a></h3>
+<p>If <strong>any signature in the batch is invalid</strong>, the mint MUST reject the <strong>entire batch</strong> and return an error. This maintains atomicity: all quotes must be successfully authenticated and minted together, or none at all.</p>
+<h3 id="example_2">Example<a class="headerlink" href="#example_2" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;quotes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;locked_quote_id_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;unlocked_quote_id_2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;locked_quote_id_3&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;keyset_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;keyset_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;keyset_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;d9be080b...&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Signature for quote[0], covers ALL 3 outputs</span>
+<span class="w">    </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="c1">// Quote[1] is unlocked</span>
+<span class="w">    </span><span class="s2">&quot;a1c5f7e2...&quot;</span><span class="w"> </span><span class="c1">// Signature for quote[2], covers ALL 3 outputs</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="implementation-notes">Implementation Notes<a class="headerlink" href="#implementation-notes" title="Permanent link">&para;</a></h2>
+<h3 id="batch-size-limits">Batch Size Limits<a class="headerlink" href="#batch-size-limits" title="Permanent link">&para;</a></h3>
+<p>Mints MAY advertise a maximum batch size through the <a href="../06/">NUT-06</a> mint info endpoint. The batch size limit is included in the <code>nuts</code> object under the <code>29</code> key:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;nuts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;29&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;max_batch_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;methods&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;bolt11&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;bolt12&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Fields:</p>
+<ul>
+<li><code>max_batch_size</code> (optional): Maximum number of quotes allowed in a single batch request. If omitted, the batch size limit is implementation-defined and clients MUST handle <code>BATCH_SIZE_EXCEEDED</code> errors gracefully.</li>
+<li><code>methods</code> (optional): Array of payment methods supported for batch minting. If omitted, all methods supported by the mint (per NUT-04) are available for batching.</li>
+</ul>
 
 
 
