@@ -184,9 +184,8 @@ and a minimum channel lifetime that Charlie requires, Alice defines the channel 
  - `input_fee_ppk`: the fee rate for that keyset.
  - `maximum_amount_for_one_output`: used in the deterministic amount-selection algorithm as an upper bound on the size of any individual output in the funding token or in the commitment outputs. May be helpful with privacy, in the case of large-capacity channels.
 
- - `expiry`  unix timestamp: If Charlie doesn't close before this time, Alice can re-claim all the funds after this has expired
+ - `expiry_timestamp`  unix timestamp: If Charlie doesn't close before this time, Alice can re-claim all the funds after this has expired
  - `setup_timestamp` unix timestamp: the time when Alice is setting up this channel
- - `sender_nonce`: Random data selected by Alice to add more randomness. May be useful if Alice and Charlie have multiple channels with otherwise-identical parameters.
 
 There is also a _shared secret_, computed via Diffie Helman using the
 keys of the two parties.
@@ -430,8 +429,8 @@ Where:
 - `"data"` contains Alice's blinded pubkey.
 - The `"pubkeys"` tag contains Charlie's blinded pubkey.
 - The `"refund"` tag contains Alice's blinded pubkey.
-- `"n_sigs": "2"` requires both Alice and Charlie's signatures before locktime
-- After locktime, Alice can spend alone using her refund blinded secret key
+- `"n_sigs": "2"` requires both Alice and Charlie's signatures before the NUT-11 `locktime` tag, which is derived from the channel's `expiry_timestamp`
+- After that `locktime`, Alice can spend alone using her refund blinded secret key
 
 ## Commitment Output Secrets (1-of-1 with Per-Proof Blinded Pubkeys)
 
@@ -552,7 +551,7 @@ When closing the channel, both parties sign with their **blinded** secret keys:
 
 These signatures verify against the blinded pubkeys in the funding token.
 
-For the **locktime refund path**, Alice signs with her **refund** blinded secret key derived from `p2bk_context = "sender_stage1_refund"`. This key corresponds to the blinded pubkey in the `refund` tag.
+For the refund path controlled by the NUT-11 `locktime` tag (derived from `expiry_timestamp`), Alice signs with her **refund** blinded secret key derived from `p2bk_context = "sender_stage1_refund"`. This key corresponds to the blinded pubkey in the `refund` tag.
 
 When spending the commitment outputs in stage 2:
 - **Charlie** signs each of his proofs with the per-proof blinded secret key for that `(amount, index)`, as described above.
