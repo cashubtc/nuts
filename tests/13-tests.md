@@ -91,3 +91,25 @@ The corresponding blinding factors `r` are:
   "r_4": "5550337312d223ba62e3f75cfe2ab70477b046d98e3e71804eade3956c7b98cf"
 }
 ```
+
+## P2PK Derivation
+
+Using [NUT-13](13.md) derivation procedure for P2PK, we derive values starting from the following BIP39 mnemonic:
+
+```json
+{
+  "mnemonic": "half depart obvious quality work element tank gorilla view sugar picture humble"
+}
+```
+
+The public keys derived for the first five counters from `counter=0` to `counter=4` are:
+
+```json
+{
+  "m/129372'/10'/0'/0'/0": "03381fbf0996b81d49c35bae17a70d71db9a9e802b1af5c2516fc90381f4741e06",
+  "m/129372'/10'/0'/0'/1": "039bbb7a9cd234da13a113cdd8e037a25c66bbf3a77139d652786a1d7e9d73e600",
+  "m/129372'/10'/0'/0'/2": "02ffd52ed54761750d75b67342544cc8da8a0994f84c46d546e0ab574dd3651a29",
+  "m/129372'/10'/0'/0'/3": "02751ab780960ff177c2300e440fddc0850238a78782a1cab7b0ae03c41978d92d",
+  "m/129372'/10'/0'/0'/4": "0391a9ba1c3caf39ca0536d44419a6ceeda922ee61aa651a72a60171499c02b423"
+}
+```
