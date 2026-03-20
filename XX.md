@@ -2,7 +2,7 @@
 
 `optional`
 
-`depends on: NUT-11 (P2PK), NUT-12 (DLEQ), NUT-09 (restore signatures), NUT-07 (token state check), NUT-?28? P2BK, (NUT-17 is beneficial, but not required)`
+`depends on: NUT-11 (P2PK), NUT-12 (DLEQ), NUT-09 (restore signatures), NUT-07 (token state check), NUT-28 (P2BK), (NUT-17 is beneficial, but not required)`
 
 ---
 
@@ -32,7 +32,7 @@ final balances into their wallets.
 No change or extension to the mint's behaviour is needed.
 The mint simply sees and executes standard P2PK swaps.
 The mint doesn't know that there is a channel, due to various techniques - including
-pay-to-blinded-pubkey (... NUT-28? ...) - which make it difficult for
+pay-to-blinded-pubkey (NUT-28) - which make it difficult for
 the mint to correlate the swaps and tokens.
 
 This document doesn't discuss transport of the payments.
@@ -423,18 +423,27 @@ The deterministic process is a function of five things:
 As these are all deterministic and based on information known to both parties,
 both parties can construct all these outputs and secrets and blinding factors.
 
-The secret's _nonce_ is computed as follows:
+The secret's _nonce_ and the blind-signature _blinding factor_ are computed as follows:
 
 ```
 deterministic_nonce(...)
  =
    SHA256(channel_secret || "{channel_id}|{output_context}|{amount}|nonce|{index}")
+
+blinding_factor(...)
+ =
+   SHA256(channel_secret || "{channel_id}|{output_context}|{amount}|blinding|{index}")
 ```
+
+where `output_context` is one of `funding`, `sender` or `receiver`.
+The `blinding_factor` here is the per-proof factor used in the Cashu blind-signature
+scheme; it is separate from the pubkey-tweak derivations described below.
 
 ## Funding Token Secret (2-of-2 with Blinded Pubkeys)
 
 The keys are blinded. Later, we discuss how the 1-of-1 keys for the commitment outputs
-are blinded using a NUT-28-style shared-secret scheme. But a simpler deterministic
+are blinded using a NUT-28-style shared-secret scheme.
+But (for now, we should change to NUT-28 for this too), a simpler deterministic
 scalar-tweak scheme is used for the 2-of-2 keys - and refund key - in the funding token.
 For the funding token, the blinded pubkeys are derived directly from
 context-specific scalars of the form:
@@ -448,7 +457,8 @@ where `context` is one of:
 - `receiver_stage1`
 - `sender_stage1_refund`
 
-The `retry_counter` is incremented until a valid nonzero scalar is found.
+The `retry_counter` is incremented until a valid scalar is found,
+i.e. one in the range `1 <= s < n` where `n` is the secp256k1 group order.
 That scalar is then applied directly to the relevant party's pubkey, with
 BIP-340 parity handling, to derive the blinded pubkey.
 While Alice and Charlie know the tweaks that are applied, the mint (Bob) does not.
@@ -488,8 +498,8 @@ Example funding token secret (JSON):
 Where:
 - `"data"` contains Alice's blinded pubkey.
 - The `"pubkeys"` tag contains Charlie's blinded pubkey.
-- The `"refund"` tag contains Alice's blinded pubkey.
-- `"n_sigs": "2"` requires both Alice and Charlie's signatures before the NUT-11 `locktime` tag, which is derived from the channel's `expiry_timestamp`
+- The `"refund"` tag contains Alice's blinded _refund_ pubkey.
+- `"n_sigs": "2"` requires both Alice and Charlie's signatures before the NUT-11 `locktime` tag, which is the channel's `expiry_timestamp`
 - After that `locktime`, Alice can spend alone using her refund blinded secret key
 
 ## Commitment Output Secrets (1-of-1 with Per-Proof Blinded Pubkeys)
@@ -507,8 +517,9 @@ ephemeral_secret = SHA256(
 )
 ```
 
-where `stage2_context` is `receiver_stage2` or `sender_stage2`.
-The `retry_counter` is incremented until a valid secret key is found.
+where `stage2_context` is `receiver_stage2` or `sender_stage2`, for Charlie's balance and Alice's remainder respectively.
+The `retry_counter` is incremented until the hash yields such a valid scalar
+for use as the ephemeral secret key.
 
 Then an ECDH shared secret is computed between that ephemeral private key and
 the recipient's public key, and the NUT-28 tweak scalar is derived as:
@@ -517,13 +528,12 @@ the recipient's public key, and the NUT-28 tweak scalar is derived as:
 stage2_tweak_scalar = SHA256("Cashu_P2BK_v1" || shared_secret_x || 0x00)
 ```
 
-If that does not yield a valid nonzero scalar, the current implementation
-retries with an extra trailing `0xff` byte, matching the NUT-28-style fallback
-used in the code.
+If that does not yield a valid scalar, the current implementation
+retries with an extra trailing `0xff` byte.
 
-That scalar is then applied to the recipient's pubkey using the
-NUT-28 / BIP-340 parity rules to derive the blinded pubkey for that
-specific `(amount, index)` output.
+That scalar is then applied to the recipient's pubkey, where the recipient
+can then use the NUT-28 / BIP-340 parity rules to derive the corresponding private key
+for that specific `(amount, index)` output.
 
 Example commitment output secret for Charlie (JSON):
 
@@ -556,24 +566,6 @@ Example commitment output secret for Alice (JSON):
 The `"data"` field contains Alice's blinded pubkey derived as described above.
 No explicit `sigflag` tag is required here; a missing or `null` tag set is interpreted as the default `SIG_INPUTS` behavior.
 
-## Blinding Factor for Blind Signatures
-
-The blinding factor (for the Cashu blind signature scheme) is computed separately from the P2BK blinding:
-
-```
-blinding_factor = SHA256(channel_secret || "{channel_id}|{context}|{amount}|blinding|{index}")
-```
-
-where `context` is one of "funding", "sender" or "receiver".
-
-This is used to blind the secret before sending to the mint, and to unblind the mint's signature.
-
-Every output in this system, i.e. those in the funding token and also those which result when
-spending the funding, is fully deterministic and can be created by either party but not by the mint.
-The determinism covers the amounts, the `Secret.nonce`, the blinding of the pubkeys, and
-also the blinding factor that is applied to the Secret to generate the BlindedMessage which
-is sent to the mint as input to any swap.
-
 # Order of outputs in the commitment transaction
 
 The commitment transaction can now be specified more completely.
@@ -587,16 +579,16 @@ those for Alice.
 They are ordered by amount (increasing). For any given amount,
 we have Charlie's deterministic outputs first, ordered by _index_ (increasing),
 and then Alice's similarly ordered. For example, if you're distributing
-a few hundred sats to each party, the first few outputs of the swap are:
+a few hundred sats to each party with a powers-of-10 mint, the last few outputs of the swap are:
 
 ```
 context    | amount | index
 
+... preceded by the 10-sat outputs ...
 "receiver" | 100    |     0
 "receiver" | 100    |     1
 "sender"   | 100    |     0
 "sender"   | 100    |     1
-... followed by the 10-sat outputs ...
 ```
 
 > [!NOTE]
@@ -619,9 +611,13 @@ sends the complete swap to the mint.
 This swap spends the _funding token_ and returns
 blind signatures (the deterministic outputs, signed by the mint) for both parties.
 
-The two parties can cooperatively close using any balance, including a balance
+Alternatively, the two parties can cooperatively close using any balance, including a balance
 smaller than the most recent signed transaction, by applying both of their signatures
 and swapping.
+Some systems using these channel payments will involve some overpayments by the client,
+for example where the precise cost of a given request isn't known in advance, and therefore
+an honest server will allow the client to close the channel with the exact final payment instead of
+the overpayment.
 
 ## Signing with Blinded Secret Keys
 
@@ -684,11 +680,11 @@ enabling Charlie to verify everything. He can verify without communicating with 
  - the channel parameters
  - the funding token, including the DLEQ proofs (NUT-12)
 
-Charlie can then verify that the parameters are acceptable to him; he can check:
+Charlie can then verify that the parameters are acceptable to him, by checking:
 
  - that the expiry time is reasonably far in the future
  - that the mint is a mint that he trusts, and the keyset is active for the correct `unit`
- - that the channel_id is computed correctly
+ - that the channel_id is computed correctly based on the parameters and the _channel secret_
  - the DLEQ proofs in the funding token are correct
  - the secrets in the funding token have the correct deterministic P2PK setup, with the keys and expiry and so on
  - the blinded pubkeys in the funding token are correctly derived:
@@ -711,7 +707,7 @@ Alice does not attempt to reuse a pre-expiry channel that was already closed.
 Charlie should maintain a mapping from the channel_id to the balance, to ensure that
 Alice doesn't attempt to decrease the balance or otherwise attempt to reuse an older channel.
 Alternatively, Charlie could maintain a per-channel record of the amount of service that
-has been provided (image files server, LLM tokens used, kilobytes of data routed by a router ...)
+has been provided (image files served, LLM tokens used, kilobytes of data routed by a router ...)
 and ensure that each new balance is sufficient to cover the amount due to Charlie for
 the service.
 
@@ -728,9 +724,9 @@ commitment transaction that is formed deterministically will also have unspent o
 
 To improve privacy further, when the channel is closed and the first of the two stages
 is executed, both parties should delay the second stage.
-This delay is to make it more difficult for the mint to correlate the swaps with each other.
+This delay is to make it more difficult for the mint to correlate the three 'exit swaps' with each other.
 
 
 # proof-of-concept
 
-_As of 2026-01-13, the implementation includes P2BK (Pay-to-Blinded-Key) with per-proof blinding for stage 2 outputs. The funding and commitment outputs are deterministic with blinded pubkeys. Fees are taken into account fully. The token-state-check and token-restore endpoints are used. The implementation is [here](https://github.com/SatsAndSports/demo_of_spillman_cashu_channel/tree/spilman.channel/crates/cdk/src/spilman), with integration tests verifying blinded signatures are accepted by the mint._
+_As of 2026-03-20, the implementation includes P2BK (Pay-to-Blinded-Key) with per-proof blinding for stage 2 outputs. The funding and commitment outputs are deterministic with blinded pubkeys. Fees are taken into account fully. The token-state-check and token-restore endpoints are used. The implementation is [here](https://github.com/SatsAndSports/demo_of_spillman_cashu_channel/tree/spilman.channel/crates/cdk/src/spilman), with many integration tests._
