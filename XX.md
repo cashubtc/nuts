@@ -49,9 +49,9 @@ Alice, the sender, takes Charlie's public information - such as his public key a
 and units and keysets that he trusts - and she defines the _channel parameters_ including
 the capacity and the expiry and so on.
 There is a corresponding _channel id_, which is defined deterministically from those parameters
-and also from a _channel secret_ derived via Diffie Hellman.
+and also from a _channel secret_ derived via Diffie-Hellman.
 
-*Determinism*. From this point onwards, everything - except the the signatures from the mint and the
+*Determinism*. From this point onwards, everything - except the signatures from the mint and the
 signatures from both parties - is
 deterministic and is known to both parties.
 The amounts of the individual outputs and blinding factors in the
@@ -120,7 +120,7 @@ until he decides to close the channel.
 
 > [!NOTE]
 > _Blinding_ The term 'blinding' is used in two different contexts here.
-> One context is the _blinding factor_ which is applied to every every secret in Cashu,
+> One context is the _blinding factor_ which is applied to every secret in Cashu,
 > creating the `BlindedMessage` (aka _output_) which is then signed by the mint.
 > This blinding factor is computed deterministically as described below.
 > Also, we blind the public keys that are used as the pubkeys to which the tokens
@@ -250,9 +250,9 @@ they are not considered as available to this amount-selection algorithm.
 If `params.maximum_amount_for_one_output` is zero, then no filtering is
 applied and all the keyset's amounts are available.
 
-The algorithm greedily takes the largest amount,
-smaller than that maximum amount,
-until it can't take any more as it would overflow the target.
+The algorithm greedily takes the largest available amount
+that is allowed by `maximum_amount_for_one_output`,
+until it can't take any more without overflowing the target.
 Then it moves on to the next-smallest amount repeatedly
 until the target is reached. Here is a pseudocode implementation:
 
@@ -323,7 +323,7 @@ The fee rate is `input_fee_ppk` for all the outputs in the channel,
 as we assume the same keyset is used in all outputs,
 Therefore, the post-swap value of any set of deterministic outputs
 can be computed as follows, where `num_deterministic_outputs(x)` is
-the number of outputs selected by the determistic algorithm described
+the number of outputs selected by the deterministic algorithm described
 above.
 
 ```
@@ -473,8 +473,9 @@ they are blinded differently because they use different derivation contexts
 (`sender_stage1` and `sender_stage1_refund`), and therefore the mint cannot
 see that `data` and `refund` correspond to the same underlying party.
 
-As the swap that spends this funding token use SIG_ALL, the same blinding is used for every output
-in the funding token.
+As the swap that spends this funding token uses SIG_ALL, the same stage-1 pubkey blinding applies
+to every funding output. The deterministic nonce and blind-signature blinding factor are still
+derived separately for each output.
 
 Example funding token secret (JSON):
 
@@ -594,12 +595,12 @@ context    | amount | index
 > [!NOTE]
 > If you have a vector of Charlie's outputs, ordered by increasing amount and index,
 > and then you append Alice's similarly ordered,
-> then you can apply a _stable sort_, such as Rust's `all_outputs.sort_by_key(|(output, _)| output.amount)` or Python's `sorted(all_outputs, key = lambma o: o.amount` to get the required ordering.
+> then you can apply a _stable sort_, such as Rust's `all_outputs.sort_by_key(|(output, _)| output.amount)` or Python's `sorted(all_outputs, key=lambda o: o.amount)` to get the required ordering.
 
 Alice then signs this (`SIG_ALL`).
 Alice can then send three pieces of data to Charlie: the `channel_id`, the balance for Charlie, and her signature.
 
-As already mentioned, Alice must send the full set of channel parameters to Charlie in the first payment - if she hasn't already sent them beforehard -
+As already mentioned, Alice must send the full set of channel parameters to Charlie in the first payment - if she hasn't already sent them beforehand -
 but after this it is sufficient for her to send those three pieces of data.
 
 # Closing the channel
