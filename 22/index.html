@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -1459,11 +1459,12 @@
 <h2 id="using-blind-authentication-tokens">Using blind authentication tokens<a class="headerlink" href="#using-blind-authentication-tokens" title="Permanent link">&para;</a></h2>
 <p>The wallet checks the <code>MintBlindAuthSetting</code> of the mint to determine which endpoints require blind authentication. Similar to <code>NUT-21</code>, the wallet performs a match on the <code>protected_endpoints</code> in the <code>MintBlindAuthSetting</code> before attempting a request to one of the mint's endpoints. If the match is positive, the wallet needs to add a blind authentication token (BAT) to the request header.</p>
 <h3 id="serialization">Serialization<a class="headerlink" href="#serialization" title="Permanent link">&para;</a></h3>
-<p>To add a blind authentication token (BAT) to the request header, we need to serialize a single <code>AuthProof</code> JSON in base64 with the prefix <code>authA</code>:</p>
-<div class="codehilite"><pre><span></span><code>authA<span class="o">[</span>base64_authproof_json<span class="o">]</span>
+<p>To add a blind authentication token (BAT) to the request header, we need to serialize a single <code>AuthProof</code> JSON as base64url with the prefix <code>authA</code>:</p>
+<div class="codehilite"><pre><span></span><code>authA<span class="o">[</span>base64url_authproof_json<span class="o">]</span>
 </code></pre></div>
 
 <p>This string is a BAT.</p>
+<p>Note that <code>base64_url</code> strings may have padding characters (usually <code>=</code>) at the end, which can be omitted. Mints <strong>MUST</strong> accept and decode both padded and unpadded forms.</p>
 <blockquote>
 <p>[!CAUTION]</p>
 <p>To protect the privacy of the wallet, the BAT MUST NOT contain the <code>dleq</code> proof when it is sent to the mint in the request header.</p>
