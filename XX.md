@@ -200,6 +200,22 @@ This NUT is fully backwards-compatible:
 - **Wallet**: Implementing this NUT is optional. Wallets that do not implement it continue to use the [NUT-13][13] linear scan.
 - **Interoperability**: Wallets that implement this NUT can recover funds from any [NUT-13][13] wallet. However, if the original wallet did NOT maintain the Depth Invariant, unspent tokens outside the `(T - d, T]` window will not be recovered. In this case, wallets **SHOULD** fall back to the [NUT-13][13] linear scan over `[0, T]` to ensure complete recovery.
 
+### Nostr mint backups (NUT-27)
+
+To signal to a restoring wallet that the original wallet maintained the Depth Invariant, wallets that implement this NUT and perform [NUT-27][27] backups **SHOULD** include a `nut_xx: true` field in the unencrypted JSON payload.
+
+Example of a [NUT-27][27] backup payload with the `nut_xx` hint:
+
+```json
+{
+  "mints": ["https://mint.example.com", "https://another-mint.org"],
+  "timestamp": 1703721600,
+  "nut_xx": true
+}
+```
+
+A restoring wallet that finds this flag **MAY** safely assume the depth invariant was maintained and skip the [NUT-13][13] linear scan fallback.
+
 ### Migration
 
 Existing wallets that adopt this NUT **SHOULD** perform a one-time consolidation at activation to bring all unspent proofs into the `(T - d, T]` window, establishing the Depth Invariant for future recoveries.
@@ -229,3 +245,4 @@ TBD — to be added before this NUT moves to final status.
 [07]: 07.md
 [09]: 09.md
 [13]: 13.md
+[27]: 27.md
