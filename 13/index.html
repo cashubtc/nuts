@@ -1591,7 +1591,7 @@ This mapping is deprecated and unsafe to use due to its small keyspace.</p>
 <li>Determine the keyset version from the keyset ID</li>
 <li>Generate <code>secret</code> and <code>r</code> from <code>counter</code> and <code>keyset</code> using the appropriate derivation method:</li>
 <li>For keyset version <code>00</code>: Use legacy BIP32 derivation</li>
-<li>For keyset version <code>01</code>: Use legacy BIP32 derivation and HMAC-SHA256 derivation (more on this below)</li>
+<li>For keyset version <code>01</code>: Use HMAC-SHA256 derivation</li>
 <li>Generate <code>BlindedMessage</code> from <code>secret</code></li>
 <li>Obtain <code>BlindSignature</code> for <code>secret</code> from the mint</li>
 <li>Unblind <code>BlindSignature</code> to <code>C</code> using <code>r</code></li>
@@ -1600,24 +1600,12 @@ This mapping is deprecated and unsafe to use due to its small keyspace.</p>
 </ol>
 <h4 id="generate-blindedmessages">Generate <code>BlindedMessages</code><a class="headerlink" href="#generate-blindedmessages" title="Permanent link">&para;</a></h4>
 <p>To generate the <code>BlindedMessages</code>, the wallet starts with a <code>counter := 0</code> and, for each increment of the <code>counter</code>, generates a <code>secret</code> and <code>r</code> using the appropriate derivation method based on the keyset version.</p>
-<blockquote>
-<p>[!CAUTION]
-We assume old wallets don't know the difference between <code>00</code> and <code>01</code> keyset ID and secret derivation: they might have generated secrets using the
-legacy derivation whereas the new derivation was required.
-Therefore, when performing a recovering for a <code>01</code> keyset, up-to-date wallets <strong>MUST</strong> check secrets with both derivation methods. (see <a href="#restoring-batches">Restoring batches</a>)</p>
-</blockquote>
 <p><strong>For keyset version <code>00</code> (legacy):</strong></p>
 <div class="codehilite"><pre><span></span><code><span class="n">secret</span> <span class="o">=</span> <span class="n">bip32</span><span class="o">.</span><span class="n">get_privkey_from_path</span><span class="p">(</span><span class="n">secret_derivation_path</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span>
 <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bip32</span><span class="o">.</span><span class="n">get_privkey_from_path</span><span class="p">(</span><span class="n">r_derivation_path</span><span class="p">)</span>
 </code></pre></div>
 
-<p><strong>For keyset version <code>01</code> (legacy and HMAC-SHA256):</strong></p>
-<p>First:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">secret</span> <span class="o">=</span> <span class="n">bip32</span><span class="o">.</span><span class="n">get_privkey_from_path</span><span class="p">(</span><span class="n">secret_derivation_path</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span>
-<span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bip32</span><span class="o">.</span><span class="n">get_privkey_from_path</span><span class="p">(</span><span class="n">r_derivation_path</span><span class="p">)</span>
-</code></pre></div>
-
-<p>Then:</p>
+<p><strong>For keyset version <code>01</code> (HMAC-SHA256):</strong></p>
 <div class="codehilite"><pre><span></span><code><span class="n">secret</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">derive_secret_and_r_hmac</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="n">keyset_id</span><span class="p">,</span> <span class="n">counter</span><span class="p">)</span>
 </code></pre></div>
 
