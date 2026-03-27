@@ -66,7 +66,7 @@ For compatibility reasons all signers SHOULD implement the following BIP32 deriv
   ex: sha256sum('auth')[:4] = bdf49c3c = 3186924604
   3186924604 % 2^31 = 1039440956.
 - version: uint32
-- index_of_amount = index of and the amounts of the keyset as if the where laid in an array. ex: [1, 2, 4, 8, 16, ...]
+- sequence_index = index of from the list of amounts for the keyset as if the where laid in an array. ex: [1, 2, 4, 8, 16, ...]
 
 `m / 129372' / unit_reference' / version' / index_of_amount'`
 
