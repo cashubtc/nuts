@@ -252,4 +252,71 @@ error:              Invalid oracle public key format
 error_code:         13010
 ```
 
+### Test 14: Swap spanning different outcome collections
+
+```shell
+# Attempt NUT-03 swap with inputs from YES keyset and outputs to NO keyset
+swap_json:          {
+  "inputs": [
+    {"amount": 64, "id": "00abc123def456", "secret": "yes_secret_1", "C": "02..."}
+  ],
+  "outputs": [
+    {"amount": 64, "id": "00def789abc012", "B_": "03..."}
+  ]
+}
+
+# Input keyset (00abc123def456) has outcome_collection_id for YES
+# Output keyset (00def789abc012) has outcome_collection_id for NO
+# Different outcome_collection_id values — MUST reject
+error_code:         13016
+error_message:      "Conditional keyset swap spans different outcome collections"
+```
+
+### Test 15: Redemption outputs must use regular keyset
+
+```shell
+# Attempt POST /v1/redeem_outcome with conditional keyset in outputs
+redeem_json:        {
+  "inputs": [
+    {
+      "amount": 64,
+      "id": "00abc123def456",
+      "secret": "yes_secret_1",
+      "C": "02...",
+      "witness": "{\"oracle_sigs\":[{\"oracle_pubkey\":\"9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0\",\"oracle_sig\":\"a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890\"}]}"
+    }
+  ],
+  "outputs": [
+    {"amount": 64, "id": "00def789abc012", "B_": "03..."}
+  ]
+}
+
+# Output keyset (00def789abc012) is a conditional keyset, not a regular keyset
+error_code:         13017
+error_message:      "Outputs must use a regular keyset"
+```
+
+### Test 16: Re-register existing condition with different config
+
+```shell
+# Condition already registered with threshold=1
+# Attempt to register same oracle event with threshold=2
+register_request_1: {
+  "threshold": 1,
+  "tags": [["description", "Will BTC reach $100k?"]],
+  "announcements": ["<hex_encoded_tlv>"]
+}
+# Returns: {"condition_id": "<tagged_hash_result>"}
+
+register_request_2: {
+  "threshold": 2,
+  "tags": [["description", "Will BTC reach $100k?"]],
+  "announcements": ["<hex_encoded_tlv>"]
+}
+
+# Same announcements but different threshold — conflict
+error_code:         13028
+error_message:      "Condition already exists"
+```
+
 [NUT-CTF]: ../CTF.md

@@ -7,20 +7,28 @@ These test vectors provide reference data for implementing numeric outcome marke
 ### Test 1: Register numeric market (HI/LO)
 
 ```shell
-# Register a numeric market via POST /v1/conditions
-request_json:       {
-  "collateral": "sat",
+# Step 1: Register a numeric condition via POST /v1/conditions
+register_request:   {
   "threshold": 1,
-  "description": "BTC/USD price on 2025-07-01",
+  "tags": [["description", "BTC/USD price on 2025-07-01"], ["n", "BTC"]],
   "announcements": ["<hex-encoded TLV with digit_decomposition_event_descriptor>"],
-  "market_type": "numeric",
+  "condition_type": "numeric",
   "lo_bound": 0,
   "hi_bound": 100000,
   "precision": 0
 }
 
-response_json:      {
-  "condition_id": "<tagged_hash_result>",
+register_response:  {
+  "condition_id": "<tagged_hash_result>"
+}
+
+# Step 2: Register partition via POST /v1/conditions/{condition_id}/partitions
+partition_request:  {
+  "collateral": "sat",
+  "partition": ["HI", "LO"]
+}
+
+partition_response: {
   "keysets": {
     "HI": "00hi11keyset22",
     "LO": "00lo33keyset44"
@@ -29,9 +37,10 @@ response_json:      {
 
 # Partition is always ["HI", "LO"] for numeric markets
 # condition_id = tagged_hash("Cashu_condition_id",
-#   oracle_pubkey || event_id || 0x02 || "HI" + 0x00 + "LO"
+#   sorted_oracle_pubkeys || event_id || outcome_count
 #   || 0x01 || lo_bound_i64be || hi_bound_i64be || precision_i32be)
-# where lo_bound_i64be = 0x0000000000000000 (0 as i64 big-endian)
+# where outcome_count = 0x02 (always 2 for numeric)
+#       lo_bound_i64be = 0x0000000000000000 (0 as i64 big-endian)
 #       hi_bound_i64be = 0x00000000000186a0 (100000 as i64 big-endian)
 #       precision_i32be = 0x00000000 (0 as i32 big-endian)
 ```
@@ -41,11 +50,10 @@ response_json:      {
 ```shell
 # lo_bound >= hi_bound
 request_json:       {
-  "collateral": "sat",
   "threshold": 1,
-  "description": "Invalid range market",
+  "tags": [["description", "Invalid range market"]],
   "announcements": ["<hex_encoded_tlv>"],
-  "market_type": "numeric",
+  "condition_type": "numeric",
   "lo_bound": 100000,
   "hi_bound": 100000,
   "precision": 0
@@ -347,6 +355,20 @@ attested_value:     5000000000000000000
 
 error_code:         13033
 error_message:      "Payout calculation overflow"
+```
+
+### Test 17: Attested value outside representable digit range
+
+```shell
+# Oracle announcement specifies 3 digits (max representable: 999)
+# But digit signatures reconstruct to a value outside that range
+# e.g., sign byte "+" then digits "1", "0", "0", "0" = 1000 (4 digits, exceeds 3-digit max)
+oracle_pubkey:      9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0
+max_representable:  999
+reconstructed:      1000
+
+error_code:         13032
+error_message:      "Attested value outside representable range"
 ```
 
 [NUT-CTF-numeric]: ../CTF-numeric.md

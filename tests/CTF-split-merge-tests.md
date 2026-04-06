@@ -63,7 +63,7 @@ outcome_count_byte: 02
 # Step 1: Register condition (POST /v1/conditions)
 register_request:   {
   "threshold": 1,
-  "description": "Will BTC reach $100k?",
+  "tags": [["description", "Will BTC reach $100k?"]],
   "announcements": ["<hex_encoded_tlv>"]
 }
 
@@ -93,7 +93,7 @@ partition_response: {
 # Step 1: Register condition
 register_request:   {
   "threshold": 1,
-  "description": "Election winner",
+  "tags": [["description", "Election winner"]],
   "announcements": ["<hex_encoded_tlv>"]
 }
 
@@ -606,7 +606,7 @@ btc_price_condition_id:  b2c3d4e5f6789012345678901234567890123456789012345678901
 # Step 1a: Register root election condition (POST /v1/conditions)
 root_condition_request: {
   "threshold": 1,
-  "description": "Election winner",
+  "tags": [["description", "Election winner"]],
   "announcements": ["<hex_encoded_tlv>"]
 }
 
@@ -630,7 +630,7 @@ root_partition_response: {
 # Step 2a: Register nested BTC price condition (POST /v1/conditions)
 nested_condition_request: {
   "threshold": 1,
-  "description": "BTC price conditional on Party A win",
+  "tags": [["description", "BTC price conditional on Party A win"]],
   "announcements": ["<hex_encoded_btc_price_tlv>"]
 }
 
