@@ -413,3 +413,24 @@ Encoded:
 ```
 CREQB1QYQQKCM4WD6X7M2LW4HXJAQZQQYQQQQQQQQQQQRYQVQQXCN5VVZSQXRGW368QUE69UHK66TWWSHX27RPD4CXCEFWVDHK6PZHCW8
 ```
+
+---
+
+### Preferred Mints Field
+
+A payment request specifying preferred mints using the `pm` field (tag 0x09).
+
+```json
+{
+  "i": "pm_test",
+  "a": 100,
+  "u": "sat",
+  "pm": ["https://mint.example.com"]
+}
+```
+
+Encoded:
+
+```
+CREQB1QYQQWURDTA6X2UM5QGQQSQQQQQQQQQQQVSPSQQGQPYQPS6R5W3C8XW309AKKJMN59EJHSCTDWPKX2TNRDAKSYWN0VM
+```
