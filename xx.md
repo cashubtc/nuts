@@ -21,14 +21,16 @@ The wallet includes the following `PostMintQuotesByPubkeyRequest` data:
 ```json
 {
   "pubkeys": <Array[str]>,
-  "pubkey_signatures": <Array[str]>
+  "pubkey_signatures": <Array[str]>,
+  "timestamp": <int>
 }
 ```
 
 - `pubkeys` is an array of hex-encoded compressed secp256k1 NUT-20 public keys (33 bytes each)
-- `pubkey_signatures` is an array of hex-encoded Schnorr signatures on `pubkeys` in the same order (64 bytes each)
+- `pubkey_signatures` is an array of hex-encoded Schnorr signatures in the same order (64 bytes each)
+- `timestamp` is the current Unix timestamp in seconds
 
-The wallet **MUST** provide a valid signature in `pubkey_signatures` for each public key in `pubkeys` with the corresponding private key in the same order as the `pubkeys` array. The message to sign is the byte representation of the public key.
+The wallet **MUST** provide a valid signature in `pubkey_signatures` for each public key in `pubkeys` with the corresponding private key in the same order as the `pubkeys` array. The message to sign is the SHA-256 hash of the concatenated string `pubkey || timestamp || mint_pubkey`. Where `||` denotes concatenation, `pubkey` is the hex-encoded public key, `timestamp` is the UTF-8 string representation of the Unix timestamp, and `mint_pubkey` is the hex-encoded public key of the mint as defined in [NUT-06][06].
 
 ## Response
 
