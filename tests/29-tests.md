@@ -83,7 +83,7 @@ The following is an invalid batch mint request with duplicate quote IDs.
 
 Expected behavior:
 
-- The mint rejects the request because quote IDs must be unique.
+- The mint rejects the request because quote IDs must be unique (error code `11016`).
 - No outputs are signed.
 
 ## Batch mint rejects mixed payment methods
