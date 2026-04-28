@@ -32,7 +32,7 @@ The wallet includes the following `PostMintQuotesByPubkeyRequest` data:
 
 The wallet **MUST** provide a valid signature in `pubkey_signatures` for each public key in `pubkeys` with the corresponding private key in the same order as the `pubkeys` array. The message to sign is the SHA-256 hash of the concatenated string `pubkey || timestamp || mint_pubkey`. Where `||` denotes concatenation, `pubkey` is the hex-encoded public key, `timestamp` is the UTF-8 string representation of the Unix timestamp, and `mint_pubkey` is the hex-encoded public key of the mint as defined in [NUT-06][06].
 
-The mint **MUST** evaluate the `timestamp` field and reject the request if it is more than 60 seconds in the past or future.
+The mint **MUST** evaluate the `timestamp` field and reject the request if it is more than 15 minutes in the past or future.
 
 ## Response
 
