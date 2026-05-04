@@ -61,7 +61,7 @@ curl -X POST http://localhost:3338/v1/mint/quote/onchain -d \
 ```json
 {
   "quote": "DSGLX9kevM...",
-  "request": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+  "request": "bc1q...",
   "unit": "sat",
   "expiry": 1701704757,
   "pubkey": "03d56ce4e446a85bbdaa547b4ec2b073d40ff802831352b8272b7dd7a4de5a7cac",
