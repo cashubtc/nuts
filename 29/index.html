@@ -1281,7 +1281,7 @@
 <p>The mint MUST validate the following before processing a batch mint request:</p>
 <ol>
 <li><strong>Non-empty batch</strong>: The <code>quotes</code> array MUST NOT be empty</li>
-<li><strong>Unique quotes</strong>: All quote IDs in the <code>quotes</code> array MUST be unique (no duplicates)</li>
+<li><strong>Unique quotes</strong>: All quote IDs in the <code>quotes</code> array MUST be unique (no duplicates) — error code <code>11016</code></li>
 <li><strong>Valid quote IDs</strong>: All quote IDs MUST exist in the mint's database</li>
 <li><strong>Payment method consistency</strong>: All quotes MUST have the same payment method, matching <code>{method}</code> in the URL path</li>
 <li><strong>Currency unit consistency</strong>: All quotes MUST use the same currency unit</li>
@@ -1353,7 +1353,7 @@
 
 <p>Fields:</p>
 <ul>
-<li><code>max_batch_size</code> (optional): Maximum number of quotes allowed in a single batch request. If omitted, the batch size limit is implementation-defined and clients MUST handle <code>BATCH_SIZE_EXCEEDED</code> errors gracefully.</li>
+<li><code>max_batch_size</code> (optional): Maximum number of quotes allowed in a single batch request. If omitted, the batch size limit is implementation-defined and clients MUST handle error code <code>11017</code> gracefully.</li>
 <li><code>methods</code> (optional): Array of payment methods supported for batch minting. If omitted, all methods supported by the mint (per NUT-04) are available for batching.</li>
 </ul>
 
