@@ -159,6 +159,8 @@ Where `fee_reserve` is the maximum onchain transaction fee the mint may charge f
 
 ### Melting Tokens
 
+Onchain melt requests are always asynchronous. The mint **MUST** return a `"PENDING"` state after validating the melt request and then broadcast the Bitcoin transaction in the background. The wallet **MUST** monitor the quote state through the check quote endpoint until the transaction reaches the required number of confirmations.
+
 For the `onchain` method, the wallet includes the following specific `PostMeltOnchainRequest` data. The wallet can include an optional `outputs` field in the melt request to receive change for overpaid onchain fees (see [NUT-08][08]):
 
 ```json
