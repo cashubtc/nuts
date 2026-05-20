@@ -176,3 +176,23 @@ Encoded:
 ```
 creqApGFpZ3BtX3Rlc3RhYRhkYXVjc2F0YnBtgXgYaHR0cHM6Ly9taW50LmV4YW1wbGUuY29t
 ```
+
+### Supported Methods Field
+
+A payment request specifying supported methods using the `sm` field.
+
+```json
+{
+  "i": "sm_test",
+  "a": 100,
+  "u": "sat",
+  "m": ["https://mint.example.com"],
+  "sm": ["bolt11", "bolt12"]
+}
+```
+
+Encoded:
+
+```
+creqAqaFpZdzbV90ZXN0YWEYZGF1Y3NhdGZib2x0MTFmYm9sdDEyYm1BeBhodHRwczovL21pbnQuZXhhbXBsZS5jb20=
+```
