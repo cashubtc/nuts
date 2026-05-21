@@ -51,6 +51,51 @@ B_: 02a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba2
 C_: 0398bc70ce8184d27ba89834d19f5199c84443c31131e48d3c1214db24247d005d
 ```
 
+### BLS12-381 (v3) round-trip
+
+Test vectors for `hash_to_curve_G1`, multiplicative blinding `B_ = r·Y`, blind signing `C_ = a·B_`, and unblinding `C = r⁻¹·C_`, for keysets with version byte `02` (see [Pairing-based BDHKE (BLS12-381)](../00.md#pairing-based-bdhke-bls12-381)).
+
+```shell
+# Test 1
+secret: "test_message"                                                                                                                                                                            # UTF-8 bytes
+r: 0000000000000000000000000000000000000000000000000000000000000003 # scalar in Fr
+a: 0000000000000000000000000000000000000000000000000000000000000002 # mint secret in Fr
+Y: 860d58e5aeda1376185436ed96412313424cc079e056d1dab595e6db4c2c9685fec7da052c8db68d88985b75a42388ad # G1 compressed
+K: aa4edef9c1ed7f729f520e47730a124fd70662a904ba1074728114d1031e1572c6c886f6b57ec72a6178288c47c335771638533957d540a9d2370f17cc7ed5863bc0b995b8825e0ee1ea1e1e4d00dbae81f14b0bf3611b78c952aacab827a053 # G2 compressed
+B_: 8e88c5f6a93f653784a66b033a00e52128499e18b095c2a56f080d1c2a937ffc9ef4600804a48d087bbd1f662f6b068f # G1 compressed
+C_: 8d52d7a6cbe5e99858d5c15c092d11a0c387c78917471211082a6e5afc2a79680dfa188fafe5d4a51c5398ce160e7a16 # G1 compressed
+C: b7a4881059133fd91a8753600d9a5e524c65d6224f6fe2d5aef9e59f1507fdad90b3b4d48ee46da5c8dfaa0b88e28b69 # G1 compressed
+```
+
+`hash_to_curve_G1` uses the DST `CASHU_BLS12_381_G1_XMD:SHA-256_SSWU_RO_` (ASCII bytes, no trailing null). `Y = hash_to_curve_G1(secret)`, `K = a·G2`, and the pairing equality `e(C, G2) == e(Y, K)` holds.
+
+### BLS12-381 (v3) batch verification
+
+Test vector for the multi-pairing batch check with deterministic weight derivation (see [Batch Verification](../00.md#batch-verification)). Two proofs signed under the same mint key `K = 2·G2`.
+
+```shell
+K: aa4edef9c1ed7f729f520e47730a124fd70662a904ba1074728114d1031e1572c6c886f6b57ec72a6178288c47c335771638533957d540a9d2370f17cc7ed5863bc0b995b8825e0ee1ea1e1e4d00dbae81f14b0bf3611b78c952aacab827a053
+
+# Proof 1
+secret_1: "batch_proof_1" # UTF-8 bytes
+r_1: 0000000000000000000000000000000000000000000000000000000000000005
+C_1: acebf797506a7031cef3189904715cb22792528f1ea0e6ab25341401d245539438ed97122f00e38ee6185cc20b09ba11 # G1 compressed
+
+# Proof 2
+secret_2: "batch_proof_2" # UTF-8 bytes
+r_2: 0000000000000000000000000000000000000000000000000000000000000007
+C_2: 9776497ad47a00f8a56233fb88f939b0572cf174a4c6d2446c0b1060434e305fae6845fd1f68b70376ba53ffe67f0414 # G1 compressed
+
+# Derived
+challenge: 539b5df396e82adab0760459590d38122d2552bc74f6bd860e915ff3b95e550a
+weight_1:  0e7ff8be2ccb756d4ef390991bdd77eb65e8db624a2729fa1657c3cf8d7d4b55
+weight_2:  6d026a181a6215b233e73b121d01908a1a1eb6911955bea5130bbf2f2966554d
+
+verify: true
+```
+
+This vector intentionally exercises both code paths. `weight_1` accepts at `ctr = 4` and `weight_2` accepts at `ctr = 0`.
+
 ## Serialization of TokenV3
 
 The following are JSON-formatted v3 tokens and their serialized counterparts.
