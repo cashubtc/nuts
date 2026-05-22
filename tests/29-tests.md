@@ -130,9 +130,9 @@ The following is a valid NUT-20 batch mint request where the signature correctly
 ```shell
 quote: "locked-quote"
 pubkey: 0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
-msg_to_sign_bytes: utf8("locked-quote") || B0 || B1
-msg_hash: 5ac550d5416e81c613b58e3f1fb095390fb828b55e8991fd9de231ca8e31e859
-signature[0]: 9408920d0b94cee5eb6df20f14d2a655e7ce2ce309dc1f1aeb69b219efe76716933b2206eba3a54f9a953c92edaa922ab3e6912e02383dda42a193409567a0dc
+msg_to_sign_bytes: utf8("locked-quote") || utf8(":") || utf8(B0) || utf8(":") || utf8(B1)
+msg_hash: 73027f17704341b1595f9aa0ccc02ccfb066ff60fc4d29f328cb2eeda6e34673
+signature[0]: 1c7e4d05aab3c9a474b9238a6ed894f9fd19431c6663518da572e4ed4219930b73090b479dc314ad13fc1d386106ed4292bda3af2aba8a7b2912f0b8586d749c
 ```
 
 ```json
@@ -151,7 +151,7 @@ signature[0]: 9408920d0b94cee5eb6df20f14d2a655e7ce2ce309dc1f1aeb69b219efe7671693
     }
   ],
   "signatures": [
-    "9408920d0b94cee5eb6df20f14d2a655e7ce2ce309dc1f1aeb69b219efe76716933b2206eba3a54f9a953c92edaa922ab3e6912e02383dda42a193409567a0dc"
+    "1c7e4d05aab3c9a474b9238a6ed894f9fd19431c6663518da572e4ed4219930b73090b479dc314ad13fc1d386106ed4292bda3af2aba8a7b2912f0b8586d749c"
   ]
 }
 ```
