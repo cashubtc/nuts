@@ -130,7 +130,7 @@ The following is a valid NUT-20 batch mint request where the signature correctly
 ```shell
 quote: "locked-quote"
 pubkey: 0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
-msg_to_sign_bytes: utf8("locked-quote") || utf8(":") || utf8(B0) || utf8(":") || utf8(B1)
+msg_to_sign_bytes: utf8("locked-quote") || utf8(":") || B0 || utf8(":") || B1
 msg_hash: 73027f17704341b1595f9aa0ccc02ccfb066ff60fc4d29f328cb2eeda6e34673
 signature[0]: 1c7e4d05aab3c9a474b9238a6ed894f9fd19431c6663518da572e4ed4219930b73090b479dc314ad13fc1d386106ed4292bda3af2aba8a7b2912f0b8586d749c
 ```
