@@ -6,7 +6,7 @@
 
 ---
 
-This NUT defines split and merge operations for conditional tokens ([NUT-CTF][CTF]). Users can deposit collateral to receive complete sets of conditional tokens (split), or surrender complete sets to recover collateral (merge). Inspired by the [Gnosis Conditional Token Framework](https://docs.gnosis.io/conditionaltokens/).
+This NUT defines split and merge operations for conditional tokens ([NUT-CTF][CTF]). Users can deposit collateral to receive complete sets of conditional tokens (split), or surrender complete sets to recover collateral (merge). Inspired by the [Gnosis Conditional Token Framework](https://conditional-tokens.readthedocs.io/en/latest/) ([contracts](https://github.com/gnosis/conditional-tokens-contracts)).
 
 Caution: Applications must verify that the mint supports both NUT-CTF and NUT-CTF-split-merge via the [info][06] endpoint.
 

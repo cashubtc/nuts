@@ -20,7 +20,7 @@ Caution: Applications that rely on oracle resolution must verify that the oracle
 
 ## Terminology
 
-- **Condition**: A question with defined outcomes, resolved by an oracle. Identified by a `condition_id`. Equivalent to "condition" in the [Gnosis Conditional Token Framework](https://docs.gnosis.io/conditionaltokens/).
+- **Condition**: A question with defined outcomes, resolved by an oracle. Identified by a `condition_id`. Equivalent to "condition" in the [Gnosis Conditional Token Framework](https://conditional-tokens.readthedocs.io/en/latest/) ([contracts](https://github.com/gnosis/conditional-tokens-contracts)), which this spec adapts to Cashu. [Polymarket](https://github.com/Polymarket/ctf-exchange-v2) is a large-scale production deployment of the same model on Ethereum.
 - **Outcome**: A single atomic result that an oracle attests to (e.g., `"YES"`, `"ALICE"`).
 - **Outcome collection**: A subset of outcomes, defined by a partition element (e.g., `"YES"`, `"ALICE|BOB"`). Each gets its own conditional keyset. Redeemable if the oracle attests to ANY outcome it contains.
 - **Partition**: A division of all outcomes into disjoint, complete outcome collections.

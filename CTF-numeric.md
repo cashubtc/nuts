@@ -8,7 +8,7 @@
 
 This NUT defines numeric outcome conditions where the oracle attests to a numeric value (e.g., BTC/USD price) rather than an enumerated outcome. The condition has two outcome collections — **HI** and **LO** — representing the high and low ends of a range. Both HI and LO token holders receive **proportional** redemption based on the attested value's position within the range.
 
-This follows the [Gnosis CTF scalar condition model](https://docs.gnosis.io/conditionaltokens/) and uses [DLC digit-decomposition oracle attestation](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Oracle.md) for interoperability.
+This follows the [Gnosis CTF scalar condition model](https://conditional-tokens.readthedocs.io/en/latest/) ([contracts](https://github.com/gnosis/conditional-tokens-contracts)) and uses [DLC digit-decomposition oracle attestation](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Oracle.md) for interoperability.
 
 ## HI/LO Conditions
 
