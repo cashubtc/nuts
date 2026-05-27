@@ -416,37 +416,18 @@ CREQB1QYQQKCM4WD6X7M2LW4HXJAQZQQYQQQQQQQQQQQRYQVQQXCN5VVZSQXRGW368QUE69UHK66TWWS
 
 ---
 
-### Preferred Mints Field
+### Preferred Mint List with Fee Reserve and Supported Methods
 
-A payment request specifying preferred mints using the `pm` field (tag 0x09).
-
-```json
-{
-  "i": "pm_test",
-  "a": 100,
-  "u": "sat",
-  "pm": ["https://mint.example.com"]
-}
-```
-
-Encoded:
-
-```
-CREQB1QYQQWURDTA6X2UM5QGQQSQQQQQQQQQQQVSPSQQGQPYQPS6R5W3C8XW309AKKJMN59EJHSCTDWPKX2TNRDAKSYWN0VM
-```
-
----
-
-### Supported Methods Field
-
-A payment request specifying supported methods using the `sm` field (tag 0x0a).
+A payment request specifying a preferred mint list with `ms` set to `false` (tag 0x09), an additional fee reserve for non-preferred mints (tag 0x0a), and the payment methods the sending mint must support (tag 0x0b).
 
 ```json
 {
-  "i": "sm_test",
+  "i": "preferred_fee_methods",
   "a": 100,
   "u": "sat",
   "m": ["https://mint.example.com"],
+  "ms": false,
+  "fr": 2,
   "sm": ["bolt11", "bolt12"]
 }
 ```
@@ -454,5 +435,5 @@ A payment request specifying supported methods using the `sm` field (tag 0x0a).
 Encoded:
 
 ```
-CREQB1QYQQGNRDTA6X2UM5QGQQSQQQQQQQQQQQVSPSQQGQQ5QPS6R5W3C8XW309AKKJMN59EJHSCTDWPKX2TNRDAKS2Q6XQZ096XJ3GCRVWEKXZ2N3W
+CREQB1QYQP2URJV4NX2UNJV4J97EN9V40K6ET5DPHKGUCZQQYQQQQQQQQQQQRYQVQQZQQ9QQVXSAR5WPEN5TE0D45KUAPWV4UXZMTSD3JJUCM0D5YSQQGQPGQQSQQQQQQQQQQQQG9SQPNZDAK8GVF3PVQQVCN0D36RZVSUP24PH
 ```
