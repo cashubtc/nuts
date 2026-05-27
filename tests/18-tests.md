@@ -158,35 +158,18 @@ Encoded:
 creqApWFpaGM5ZTQ1ZDJhYWEZAfRhdWNzYXRhbYF4GGh0dHBzOi8vbWludC5leGFtcGxlLmNvbWVudXQxMKNha2RQMlBLYWR4QjAyYzNiNWJiMjdlMzYxNDU3YzkyZDkzZDc4ZGQ3M2QzZDUzNzMyMTEwYjJjZmU4YjUwZmJjMGFiYzYxNWU5YzMzMWF0gYJndGltZW91dGQzNjAw
 ```
 
-### Preferred Mints Field
+### Preferred Mint List with Fee Reserve and Supported Methods
 
-A payment request specifying preferred mints using the `pm` field.
-
-```json
-{
-  "i": "pm_test",
-  "a": 100,
-  "u": "sat",
-  "pm": ["https://mint.example.com"]
-}
-```
-
-Encoded:
-
-```
-creqApGFpZ3BtX3Rlc3RhYRhkYXVjc2F0YnBtgXgYaHR0cHM6Ly9taW50LmV4YW1wbGUuY29t
-```
-
-### Supported Methods Field
-
-A payment request specifying supported methods using the `sm` field.
+A payment request specifying a preferred mint list with `ms` set to `false`, an additional fee reserve for non-preferred mints, and the payment methods the sending mint must support.
 
 ```json
 {
-  "i": "sm_test",
+  "i": "preferred_fee_methods",
   "a": 100,
   "u": "sat",
   "m": ["https://mint.example.com"],
+  "ms": false,
+  "fr": 2,
   "sm": ["bolt11", "bolt12"]
 }
 ```
@@ -194,5 +177,5 @@ A payment request specifying supported methods using the `sm` field.
 Encoded:
 
 ```
-creqAqaFpZdzbV90ZXN0YWEYZGF1Y3NhdGZib2x0MTFmYm9sdDEyYm1BeBhodHRwczovL21pbnQuZXhhbXBsZS5jb20=
+creqAp2FpdXByZWZlcnJlZF9mZWVfbWV0aG9kc2FhGGRhdWNzYXRhbYF4GGh0dHBzOi8vbWludC5leGFtcGxlLmNvbWJtc_RiZnICYnNtgmZib2x0MTFmYm9sdDEy
 ```
