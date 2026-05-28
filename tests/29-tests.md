@@ -92,7 +92,10 @@ The following is an invalid request to `/v1/mint/bolt11/batch` where one quote i
 
 ```json
 {
-  "quotes": ["019e6d5a-2347-7000-80fe-07ae8fa79774", "019e6d5a-2347-7000-8791-dbfba168f0ad"],
+  "quotes": [
+    "019e6d5a-2347-7000-80fe-07ae8fa79774",
+    "019e6d5a-2347-7000-8791-dbfba168f0ad"
+  ],
   "quote_amounts": [5, 3],
   "outputs": [{ "amount": 8, "id": "keyset_1", "B_": "<blinded_message>" }]
 }
@@ -109,7 +112,10 @@ The following is an invalid batch mint request where `signatures` length does no
 
 ```json
 {
-  "quotes": ["019e6d5a-2347-7000-80fe-07ae8fa79774", "019e6d5a-2347-7000-8791-dbfba168f0ad"],
+  "quotes": [
+    "019e6d5a-2347-7000-80fe-07ae8fa79774",
+    "019e6d5a-2347-7000-8791-dbfba168f0ad"
+  ],
   "outputs": [
     { "amount": 1, "id": "keyset_1", "B_": "<blinded_message_0>" },
     { "amount": 1, "id": "keyset_1", "B_": "<blinded_message_1>" }
