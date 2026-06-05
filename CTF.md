@@ -16,7 +16,7 @@ The oracle signature scheme is compatible with the [DLC specification](https://g
 
 Caution: Applications that rely on oracle resolution must verify that the oracle is trustworthy and check via the mint's [info][06] endpoint that NUT-CTF is supported.
 
-**Related specifications:** [NUT-CTF-split-merge][CTF-split-merge] defines split/merge operations for creating and dissolving complete sets of conditional tokens. [NUT-CTF-numeric][CTF-numeric] extends this framework with numeric outcome conditions.
+**Related specifications:** [NUT-CTF-split-merge][CTF-split-merge] defines the `convert` operation — payoff-preserving rebalancing of conditional positions (split, merge, recombine, and conversion). [NUT-CTF-numeric][CTF-numeric] extends this framework with numeric outcome conditions.
 
 ## Terminology
 
@@ -29,7 +29,9 @@ Caution: Applications that rely on oracle resolution must verify that the oracle
 
 ## Outcome Collections
 
-Outcome collections allow tokens to represent one or more outcomes. An outcome collection is either a single outcome or an OR-combination joined by `|` (e.g., `"ALICE|BOB"` = "Alice or Bob wins"). If an outcome name contains `|`, it MUST be escaped as `\|`.
+Outcome collections allow tokens to represent one or more outcomes. An outcome collection is either a single outcome or an OR-combination joined by `|` (e.g., `"ALICE|BOB"` = "Alice or Bob wins"). If an outcome name contains `|`, it MUST be escaped as `\|`; a literal `\` is escaped as `\\`. The token `"*"` is reserved (it denotes collateral in [NUT-CTF-split-merge][CTF-split-merge]) and is invalid as an outcome name and as an outcome collection string.
+
+Outcome collection strings have a single canonical form so that, e.g., `ALICE|BOB` and `BOB|ALICE` derive the same keyset: outcome names are NFC-normalised and components are ordered by the outcome's index in the oracle announcement (for numeric conditions, the fixed order `["HI", "LO"]`). See [NUT-CTF-split-merge][CTF-split-merge] for the full encoding rules.
 
 ### Partition Rules
 
@@ -37,13 +39,14 @@ Partition keys MUST form a valid partition of all outcomes:
 
 1. **Disjoint**: No outcome appears in multiple outcome collections
 2. **Complete**: Every outcome appears in exactly one outcome collection
+3. **Non-trivial**: A partition MUST contain at least two outcome collections, and no single outcome collection may cover all outcomes (error 13043). The full-outcome-set payoff vector is represented only as collateral, never as a conditional keyset — this keeps the reserved collateral key `"*"` unambiguous in [NUT-CTF-split-merge][CTF-split-merge].
 
 Valid partitions for outcomes `["ALICE", "BOB", "CAROL"]`:
 
 - `{"ALICE": [...], "BOB": [...], "CAROL": [...]}` (individual outcomes)
 - `{"ALICE|BOB": [...], "CAROL": [...]}` (one collection + one individual)
 
-Invalid: `{"ALICE|BOB": [...], "BOB|CAROL": [...]}` (overlapping), `{"ALICE|BOB": [...]}` (incomplete).
+Invalid: `{"ALICE|BOB": [...], "BOB|CAROL": [...]}` (overlapping), `{"ALICE|BOB": [...]}` (incomplete), `{"ALICE|BOB|CAROL": [...]}` (full-set / single-element).
 
 ## Conditional Keysets
 
@@ -79,10 +82,10 @@ Where `condition_id` and `outcome_collection_id` are 64-character hex strings. T
 ```
 Issuance:   Mint issues conditional tokens (via partition registration + keyset-specific minting)
 Trading:    Conditional keyset -> same/rotated conditional keyset (NUT-03 swap, same outcome_collection_id, no witness)
-Redemption: Conditional keyset -> regular keyset                  (POST /v1/redeem_outcome + oracle witness)
+Redemption: Conditional keyset -> regular keyset (root) / parent keyset (nested)  (POST /v1/redeem_outcome + oracle witness)
 ```
 
-- **Issuance**: The mint creates conditional keysets during [partition registration](#register-partition). Users obtain conditional tokens through [NUT-CTF-split-merge][CTF-split-merge] split operations or other minting mechanisms.
+- **Issuance**: The mint creates conditional keysets during [partition registration](#register-partition). Users obtain conditional tokens through [NUT-CTF-split-merge][CTF-split-merge] convert (split) operations or other minting mechanisms. Every conditional token, by any issuance path, MUST be backed by locked collateral at least equal to its face amount; sub-face or market-priced issuance into a conditional keyset is forbidden (see [NUT-CTF-split-merge][CTF-split-merge] Issuance Invariant).
 - **Trading**: Standard [NUT-03][03] swap. All conditional keysets in a swap MUST share the same `outcome_collection_id`. No oracle witness required.
 - **Redemption**: After oracle attestation, winners submit tokens to `POST /v1/redeem_outcome` with oracle signatures in `Proof.witness`.
 
@@ -99,7 +102,7 @@ Where:
 - `tagged_hash(tag, msg) = SHA256(SHA256(tag) || SHA256(tag) || msg)` — [BIP-340 tagged hash](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki)
 - `sorted_oracle_pubkeys`: 32-byte x-only public keys, sorted lexicographically, concatenated. Derived from `announcements[].oracle_public_key`.
 - `event_id`: UTF-8 encoded event identifier. Derived from `announcements[0].oracle_event.event_id`. All announcements MUST share the same `event_id`.
-- `outcome_count`: 1-byte unsigned integer. Derived from `len(announcements[0].oracle_event.event_descriptor.outcomes)`.
+- `outcome_count`: 1-byte unsigned integer. Derived from `len(announcements[0].oracle_event.event_descriptor.outcomes)`. All announcements MUST share the same ordered outcome list; that order (from `announcements[0]`) is the canonical outcome index used by outcome-collection encoding.
 
 The `condition_id` is partition-independent — the same oracle event always produces the same ID regardless of partitioning.
 
@@ -297,7 +300,7 @@ curl -X POST https://mint.host:3338/v1/conditions/a1b2c3d4.../partitions \
 #### Mint Behavior
 
 1. Looks up condition (error 13021 if not found)
-2. Validates partition rules (error 13037 overlapping, error 13038 incomplete)
+2. Validates partition rules (error 13037 overlapping, error 13038 incomplete, error 13043 full-set or single-element)
 3. If `parent_collection_id` is non-zero: verifies the referenced collection exists (error 13021 if not)
 4. For each outcome collection: computes `outcome_collection_id`, reuses existing keyset or creates new one
 5. Returns keyset map
@@ -417,7 +420,7 @@ POST https://mint.host:3338/v1/redeem_outcome
 ```
 
 - `inputs`: `Proof` objects from a **single conditional keyset**, each with `witness` containing oracle attestation
-- `outputs`: `BlindedMessage` objects using a **regular keyset** (same unit)
+- `outputs`: `BlindedMessage` objects (same unit). For a root condition, outputs use a **regular keyset**. For a nested condition (the input keyset's `parent_collection_id` is non-zero), outputs use the **parent collection's conditional keyset** — the active keyset whose `outcome_collection_id` equals that `parent_collection_id` — consistent with nested convert in [NUT-CTF-split-merge][CTF-split-merge].
 
 `Alice` MAY omit `oracle_sigs` if `Bob` has already recorded a valid attestation for this outcome collection (check via `GET /v1/conditions/{condition_id}`).
 
@@ -445,14 +448,14 @@ Mints implementing NUT-CTF MUST enforce these rules on [NUT-03][03] swap:
 - Swaps spanning different `outcome_collection_id` values: **MUST reject**
 - Swaps mixing conditional and regular keysets: **MUST reject**
 
-All conditional-to-regular conversions go through `POST /v1/redeem_outcome`.
+All conditional-to-regular conversions go through `POST /v1/redeem_outcome`. Movement of value **across** outcome collections within a condition (regrouping, or crossing the collateral boundary) goes through the payoff-preserving `POST /v1/ctf/convert` operation ([NUT-CTF-split-merge][CTF-split-merge]), never a NUT-03 swap.
 
 ## Redemption Verification
 
 When `Bob` receives a `POST /v1/redeem_outcome` request:
 
 1. All inputs MUST use the same conditional keyset
-2. All outputs MUST use a regular keyset (same unit)
+2. All outputs MUST use a regular keyset (root condition) or the parent collection's conditional keyset (nested condition), same unit
 3. If `Bob` already has a valid attestation for this outcome collection, MAY skip steps 4-5
 4. Each input MUST include valid `witness` with `oracle_sigs`
 5. Verify at least `threshold` signatures from distinct oracles using [DLC signing algorithm](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Oracle.md#signing-algorithm) with tagged hash `"DLC/oracle/attestation/v0"` and UTF-8 NFC-normalized outcome string
@@ -486,13 +489,14 @@ If the oracle does not attest within expected time, the mint MAY refund conditio
 | 13014 | Conditional keyset requires oracle witness                  |
 | 13015 | Oracle has not attested to this outcome collection          |
 | 13016 | Conditional keyset swap spans different outcome collections |
-| 13017 | Outputs must use a regular keyset                           |
+| 13017 | Invalid keyset for collateral/output side                   |
 | 13020 | Invalid condition ID                                        |
 | 13021 | Condition not found                                         |
 | 13027 | Oracle threshold not met                                    |
 | 13028 | Condition already exists                                    |
 | 13037 | Overlapping outcome collections                             |
 | 13038 | Incomplete partition                                        |
+| 13043 | Full-set or single-element partition                        |
 
 ## Mint Info Setting
 

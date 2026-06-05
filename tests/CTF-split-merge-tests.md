@@ -1,6 +1,6 @@
 # NUT-CTF-split-merge Test Vectors
 
-These test vectors provide reference data for implementing the Conditional Token Framework (CTF) with per-outcome collection keysets. All values are hex-encoded for reproducibility.
+These test vectors provide reference data for implementing the Conditional Token Framework (CTF) convert operation (split, merge, recombine, conversion) with per-outcome collection keysets. All values are hex-encoded for reproducibility. Split and merge are the `"*"`-inputs and `"*"`-outputs special cases of `POST /v1/ctf/convert`.
 
 ## Condition ID Calculation
 
@@ -116,7 +116,9 @@ partition_response: {
 }
 ```
 
-## Split Operation
+## Convert Operation — Split
+
+A split is a `POST /v1/ctf/convert` whose inputs are collateral under the reserved key `"*"`.
 
 ### Test 6: Binary condition split request
 
@@ -124,7 +126,7 @@ partition_response: {
 # Condition parameters
 condition_id:          <tagged_hash_result>
 
-# Input (100 sats collateral using regular keyset)
+# Input (100 sats collateral using regular keyset, fee F = 0)
 input_amount:       100
 input_keyset_id:    009a1f293253e41e  # regular keyset
 
@@ -132,14 +134,16 @@ input_keyset_id:    009a1f293253e41e  # regular keyset
 yes_keyset_id:      00abc123def456
 no_keyset_id:       00def789abc012
 
-# Split request JSON
+# Convert (split) request JSON — POST /v1/ctf/convert
 request_json:       {
   "condition_id": "<tagged_hash_result>",
-  "inputs": [
-    {"amount": 64, "id": "009a1f293253e41e", "secret": "secret1", "C": "02..."},
-    {"amount": 32, "id": "009a1f293253e41e", "secret": "secret2", "C": "02..."},
-    {"amount": 4, "id": "009a1f293253e41e", "secret": "secret3", "C": "02..."}
-  ],
+  "inputs": {
+    "*": [
+      {"amount": 64, "id": "009a1f293253e41e", "secret": "secret1", "C": "02..."},
+      {"amount": 32, "id": "009a1f293253e41e", "secret": "secret2", "C": "02..."},
+      {"amount": 4, "id": "009a1f293253e41e", "secret": "secret3", "C": "02..."}
+    ]
+  },
   "outputs": {
     "YES": [
       {"amount": 64, "id": "00abc123def456", "B_": "03..."},
@@ -203,7 +207,9 @@ swap_json:          {
 result:             PASS
 ```
 
-## Merge Operation
+## Convert Operation — Merge
+
+A merge is a `POST /v1/ctf/convert` whose outputs are collateral under the reserved key `"*"`.
 
 ### Test 9: Binary condition merge request
 
@@ -211,8 +217,8 @@ result:             PASS
 # Condition parameters
 condition_id:          <tagged_hash_result>
 
-# Inputs (100 sats of each outcome collection using conditional keysets)
-# Outputs use regular keyset
+# Inputs (100 sats of each outcome collection using conditional keysets, fee F = 0)
+# Outputs are collateral under "*"
 request_json:       {
   "condition_id": "<tagged_hash_result>",
   "inputs": {
@@ -227,14 +233,16 @@ request_json:       {
       {"amount": 4, "id": "00def789abc012", "secret": "no_secret_3", "C": "02..."}
     ]
   },
-  "outputs": [
-    {"amount": 64, "id": "009a1f293253e41e", "B_": "03..."},
-    {"amount": 32, "id": "009a1f293253e41e", "B_": "03..."},
-    {"amount": 4, "id": "009a1f293253e41e", "B_": "03..."}
-  ]
+  "outputs": {
+    "*": [
+      {"amount": 64, "id": "009a1f293253e41e", "B_": "03..."},
+      {"amount": 32, "id": "009a1f293253e41e", "B_": "03..."},
+      {"amount": 4, "id": "009a1f293253e41e", "B_": "03..."}
+    ]
+  }
 }
 
-# Input proofs use conditional keysets, output BlindedMessages use regular keyset
+# Input proofs use conditional keysets, output BlindedMessages are collateral ("*")
 # No oracle witness required (complete set cancels out)
 output_total:       100
 ```
@@ -242,13 +250,15 @@ output_total:       100
 ### Test 10: Successful merge response
 
 ```shell
-# Response with signatures for collateral outputs (regular keyset)
+# Response with signatures for collateral outputs under "*" (regular keyset)
 response_json:      {
-  "signatures": [
-    {"amount": 64, "id": "009a1f293253e41e", "C_": "02...sig1..."},
-    {"amount": 32, "id": "009a1f293253e41e", "C_": "02...sig2..."},
-    {"amount": 4, "id": "009a1f293253e41e", "C_": "02...sig3..."}
-  ]
+  "signatures": {
+    "*": [
+      {"amount": 64, "id": "009a1f293253e41e", "C_": "02...sig1..."},
+      {"amount": 32, "id": "009a1f293253e41e", "C_": "02...sig2..."},
+      {"amount": 4, "id": "009a1f293253e41e", "C_": "02...sig3..."}
+    ]
+  }
 }
 
 # Resulting proofs use regular keyset (not condition-specific)
@@ -315,27 +325,28 @@ error_message:      "Oracle has not attested to this outcome collection"
 
 ## Error Cases
 
-### Test 13: Split amount mismatch
+### Test 13: Convert (split) payoff mismatch
 
 ```shell
-# Input total != output total for each outcome collection
+# Input total != output total for some outcome (out(YES) != in(YES) - F)
 input_total:        100
 output_yes_total:   90   # Mismatch!
 output_no_total:    100
 
-error_code:         13022
-error_message:      "Split amount mismatch"
+error_code:         13041
+error_message:      "Convert payoff/fee violation"
 ```
 
 ### Test 14: Missing outcome collection in outputs
 
 ```shell
 # Binary condition but only YES outputs provided
+# in(NO) = 100, out(NO) = 0  ->  out(NO) != in(NO) - F
 outcome_collections:  ["YES", "NO"]
 outputs_provided:   ["YES"]  # Missing NO!
 
-error_code:         13038
-error_message:      "Incomplete partition"
+error_code:         13041
+error_message:      "Convert payoff/fee violation"
 ```
 
 ### Test 15: Invalid condition ID
@@ -361,47 +372,48 @@ error_message:      "Condition not found"
 ### Test 17: Unequal outcome collection amounts
 
 ```shell
-# Different amounts for different outcome collections
+# Different amounts for different outcomes (out(NO) != in(NO) - F)
 input_total:        100
 output_yes_total:   100
 output_no_total:    50   # Different!
 
-error_code:         13022
-error_message:      "Split amount mismatch"
+error_code:         13041
+error_message:      "Convert payoff/fee violation"
 ```
 
-### Test 18: Merge amount mismatch
+### Test 18: Convert (merge) payoff mismatch
 
 ```shell
-# Input amounts don't match
+# Input amounts don't match across outcomes (in(YES) != in(NO))
 input_yes_total:    100
 input_no_total:     80   # Mismatch!
 
-error_code:         13025
-error_message:      "Merge amount mismatch"
+error_code:         13041
+error_message:      "Convert payoff/fee violation"
 ```
 
 ### Test 19: Missing outcome collection in merge inputs
 
 ```shell
 # Binary condition but only YES inputs provided
+# in(NO) = 0 but out(NO) (from "*") = output_total  ->  violation
 outcome_collections:  ["YES", "NO"]
 inputs_provided:    ["YES"]  # Missing NO!
 
-error_code:         13038
-error_message:      "Incomplete partition"
+error_code:         13041
+error_message:      "Convert payoff/fee violation"
 ```
 
 ### Test 20: Output amount mismatch in merge
 
 ```shell
-# Output total doesn't equal per-outcome collection input total
+# Collateral output total doesn't equal per-outcome input total
 input_yes_total:    100
 input_no_total:     100
-output_total:       50   # Should be 100!
+output_total:       50   # Should be 100 (F = 0)!
 
-error_code:         13025
-error_message:      "Merge amount mismatch"
+error_code:         13041
+error_message:      "Convert payoff/fee violation"
 ```
 
 ## Multi-Oracle Condition ID
@@ -440,12 +452,14 @@ keysets:
   "ALICE|BOB":      00aabb11cc22dd33
   "CAROL":          00ccdd44ee55ff66
 
-# Split request with outcome collections
+# Convert (split) request with outcome collections
 request_json:       {
   "condition_id": "<tagged_hash_result>",
-  "inputs": [
-    {"amount": 100, "id": "009a1f293253e41e", "secret": "secret1", "C": "02..."}
-  ],
+  "inputs": {
+    "*": [
+      {"amount": 100, "id": "009a1f293253e41e", "secret": "secret1", "C": "02..."}
+    ]
+  },
   "outputs": {
     "ALICE|BOB": [
       {"amount": 64, "id": "00aabb11cc22dd33", "B_": "03..."},
@@ -534,14 +548,16 @@ request_json:       {
       {"amount": 100, "id": "00ccdd44ee55ff66", "secret": "carol_secret_1", "C": "02..."}
     ]
   },
-  "outputs": [
-    {"amount": 64, "id": "009a1f293253e41e", "B_": "03..."},
-    {"amount": 32, "id": "009a1f293253e41e", "B_": "03..."},
-    {"amount": 4, "id": "009a1f293253e41e", "B_": "03..."}
-  ]
+  "outputs": {
+    "*": [
+      {"amount": 64, "id": "009a1f293253e41e", "B_": "03..."},
+      {"amount": 32, "id": "009a1f293253e41e", "B_": "03..."},
+      {"amount": 4, "id": "009a1f293253e41e", "B_": "03..."}
+    ]
+  }
 }
 
-# Input proofs use outcome collection keysets, outputs use regular keyset
+# Input proofs use outcome collection keysets, outputs are collateral under "*"
 # Valid merge - outcome collections form complete partition
 merge_result:       SUCCESS
 ```
@@ -659,13 +675,16 @@ nested_partition_response: {
 
 ```shell
 # Split PARTY_A tokens into PARTY_A&UP and PARTY_A&DOWN
-# Inputs use PARTY_A conditional keyset (from root condition)
+# Inputs are the parent collection (PARTY_A) under "*" — nested collateral
 # Outputs use nested condition conditional keysets
 request_json:       {
   "condition_id": "<btc_price_condition_id>",
-  "inputs": [
-    {"amount": 100, "id": "00aa11bb22cc33dd", "secret": "party_a_secret_1", "C": "02..."}
-  ],
+  "parent_collection_id": "<x_only_pubkey_of_PARTY_A>",
+  "inputs": {
+    "*": [
+      {"amount": 100, "id": "00aa11bb22cc33dd", "secret": "party_a_secret_1", "C": "02..."}
+    ]
+  },
   "outputs": {
     "UP": [
       {"amount": 64, "id": "00cc33dd44ee55ff", "B_": "03..."},
@@ -691,6 +710,7 @@ result:             PASS
 # Merge PARTY_A&UP and PARTY_A&DOWN back to PARTY_A tokens
 request_json:       {
   "condition_id": "<btc_price_condition_id>",
+  "parent_collection_id": "<x_only_pubkey_of_PARTY_A>",
   "inputs": {
     "UP": [
       {"amount": 100, "id": "00cc33dd44ee55ff", "secret": "up_secret_1", "C": "02..."}
@@ -699,14 +719,16 @@ request_json:       {
       {"amount": 100, "id": "00dd44ee55ff6600", "secret": "down_secret_1", "C": "02..."}
     ]
   },
-  "outputs": [
-    {"amount": 64, "id": "00aa11bb22cc33dd", "B_": "03..."},
-    {"amount": 32, "id": "00aa11bb22cc33dd", "B_": "03..."},
-    {"amount": 4, "id": "00aa11bb22cc33dd", "B_": "03..."}
-  ]
+  "outputs": {
+    "*": [
+      {"amount": 64, "id": "00aa11bb22cc33dd", "B_": "03..."},
+      {"amount": 32, "id": "00aa11bb22cc33dd", "B_": "03..."},
+      {"amount": 4, "id": "00aa11bb22cc33dd", "B_": "03..."}
+    ]
+  }
 }
 
-# Outputs use PARTY_A keyset (parent outcome collection), not regular keyset
+# Nested collateral "*" is the PARTY_A parent keyset (not a regular keyset)
 result:             PASS
 ```
 
@@ -758,6 +780,79 @@ bob_result:         FAIL (oracle signed YES, not NO)
 # Net result:
 # - Alice: started with 100 sats, now has 100 sats + 40 sats from sale = 140 sats
 # - Bob: paid 40 sats for worthless NO tokens = -40 sats
+```
+
+## Convert — Recombine and Conversion
+
+### Test 36: Recombine (floor 0, fee paid as collateral)
+
+```shell
+# Condition Omega = {A, B, C, D}; registered collections include A, B|C, A|B|C
+# Holder of A(1) + B|C(1) recombines into A|B|C(1). Fee F = 1, so the holder
+# adds 1 sat of collateral under "*" to satisfy in(o) >= F on every outcome.
+
+request_json:       {
+  "condition_id": "<tagged_hash_result>",
+  "inputs": {
+    "*":   [{"amount": 1, "id": "009a1f293253e41e", "secret": "c1", "C": "02..."}],
+    "A":   [{"amount": 1, "id": "00a000...",         "secret": "a1", "C": "02..."}],
+    "B|C": [{"amount": 1, "id": "00bc00...",         "secret": "bc1", "C": "02..."}]
+  },
+  "outputs": {
+    "A|B|C": [{"amount": 1, "id": "00abc0...", "B_": "03..."}]
+  }
+}
+
+# Per-outcome: in = (A:2, B:2, C:2, D:1), out = (A:1, B:1, C:1, D:0)
+# out(o) == in(o) - 1 for every o. Mint retains 1 on every outcome.
+result:             PASS
+```
+
+### Test 37: Conversion (negative-risk style, collateral on output)
+
+```shell
+# Condition Omega = {A, B, C, D}; registered collections A|B|C, B|C|D, B|C. Fee F = 1.
+request_json:       {
+  "condition_id": "<tagged_hash_result>",
+  "inputs": {
+    "A|B|C": [{"amount": 100, "id": "00abc0...", "secret": "s1", "C": "02..."}],
+    "B|C|D": [{"amount": 100, "id": "00bcd0...", "secret": "s2", "C": "02..."}]
+  },
+  "outputs": {
+    "*":   [{"amount": 99,  "id": "009a1f293253e41e", "B_": "03..."}],
+    "B|C": [{"amount": 100, "id": "00bc00...",         "B_": "03..."}]
+  }
+}
+
+# Per-outcome: in = (A:100, B:200, C:200, D:100), out = (A:99, B:199, C:199, D:99)
+# out(o) == in(o) - 1 for every o. 99 sats withdrawn as spendable collateral, no witness.
+result:             PASS
+```
+
+### Test 38: Convert fee not covered on some outcome
+
+```shell
+# Pure recombine A(1) + B|C(1) -> A|B|C(1) WITHOUT adding collateral, F = 1.
+# in = (A:1, B:1, C:1, D:0); in(D) = 0 < F  ->  rejected.
+error_code:         13041
+error_message:      "Convert payoff/fee violation"
+```
+
+### Test 39: Convert after attestation recorded
+
+```shell
+# Oracle attestation already recorded for the condition.
+error_code:         13042
+error_message:      "Convert not permitted for this condition"
+```
+
+### Test 40: Full-set / single-element partition rejected at registration
+
+```shell
+# Attempt to register a partition whose only element covers all outcomes
+partition:          ["ALICE|BOB|CAROL"]   # full-set, single element
+error_code:         13043
+error_message:      "Full-set or single-element partition"
 ```
 
 [NUT-CTF-split-merge]: ../CTF-split-merge.md

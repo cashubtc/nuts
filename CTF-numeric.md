@@ -174,14 +174,14 @@ Same attestation, same range:
 
 The mint MUST ensure that for a given face `amount`, total HI redemption + total LO redemption = `amount` (minus fees). The `amount - floor(amount * hi_payout_ratio)` formula for LO guarantees this by avoiding independent rounding.
 
-## Split and Merge
+## Convert (Split and Merge)
 
-Split and merge operations work identically to [NUT-CTF-split-merge][CTF-split-merge] enum conditions:
+The [NUT-CTF-split-merge][CTF-split-merge] `convert` operation applies to numeric conditions. For canonicalisation, a numeric condition's outcome-atom set is the fixed synthetic order `Ω = ["HI", "LO"]`, independent of the digit-decomposition oracle fields. The only outcome collections are the two single atoms `HI` and `LO`; the full set `HI|LO` is the collateral/forbidden full-set and is never a conditional keyset. Convert on a numeric condition therefore reduces to:
 
-- **Split**: Deposit collateral, receive equal amounts of HI and LO tokens
-- **Merge**: Surrender equal amounts of HI and LO tokens, receive collateral back
+- **Split**: Deposit collateral, receive equal amounts of HI and LO tokens (`outputs {"HI": ..., "LO": ...}`)
+- **Merge**: Surrender equal amounts of HI and LO tokens, receive collateral back (`outputs {"*": ...}`)
 
-No special handling is needed — numeric conditions always have exactly 2 outcome collections (`HI`, `LO`).
+Exact-equality conservation preserves the HI/LO face vector, so the proportional redemption above is unaffected. No other special handling is needed.
 
 ## Combinatorial Markets
 

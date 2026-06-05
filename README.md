@@ -46,7 +46,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [28][28]                           | Pay to Blinded Key (P2BK)         | [cdk], [cashu-ts][ts]                                                          | -                                                |
 | [29][29]                           | Batched Mint                      | -                                                                              | -                                                |
 | [CTF][CTF]                         | Conditional Token Framework       | -                                                                              | -                                                |
-| [CTF-split-merge][CTF-split-merge] | Conditional Token Split and Merge | -                                                                              | -                                                |
+| [CTF-split-merge][CTF-split-merge] | Conditional Token Convert (Split, Merge, Recombine) | -                                                            | -                                                |
 | [CTF-numeric][CTF-numeric]         | Numeric Outcome Conditions        | -                                                                              | -                                                |
 
 #### Wallets

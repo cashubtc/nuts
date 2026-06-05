@@ -1,6 +1,6 @@
 # Supplementary: NUT-CTF-split-merge Complete Example
 
-This document provides a full end-to-end example of the CTF split/merge lifecycle. For the normative specification, see [NUT-CTF-split-merge][CTF-split-merge].
+This document provides a full end-to-end example of the CTF convert lifecycle. For the normative specification, see [NUT-CTF-split-merge][CTF-split-merge].
 
 ## Complete Example
 
@@ -56,39 +56,41 @@ POST https://mint.host:3338/v1/conditions/a1b2c3d4e5f67890.../partitions
 }
 ```
 
-### Step 2: Split Collateral
+### Step 2: Split Collateral (convert with `"*"` inputs)
 
-`Alice` wants to participate with 100 sats:
+`Alice` wants to participate with 100 sats. A split is a convert whose inputs are collateral under the reserved key `"*"`:
 
 **Request** of `Alice`:
 
 ```http
-POST https://mint.host:3338/v1/ctf/split
+POST https://mint.host:3338/v1/ctf/convert
 ```
 
 ```json
 {
   "condition_id": "a1b2c3d4e5f67890...",
-  "inputs": [
-    {
-      "amount": 64,
-      "id": "009a1f293253e41e",
-      "secret": "random_secret_1",
-      "C": "02..."
-    },
-    {
-      "amount": 32,
-      "id": "009a1f293253e41e",
-      "secret": "random_secret_2",
-      "C": "02..."
-    },
-    {
-      "amount": 4,
-      "id": "009a1f293253e41e",
-      "secret": "random_secret_3",
-      "C": "02..."
-    }
-  ],
+  "inputs": {
+    "*": [
+      {
+        "amount": 64,
+        "id": "009a1f293253e41e",
+        "secret": "random_secret_1",
+        "C": "02..."
+      },
+      {
+        "amount": 32,
+        "id": "009a1f293253e41e",
+        "secret": "random_secret_2",
+        "C": "02..."
+      },
+      {
+        "amount": 4,
+        "id": "009a1f293253e41e",
+        "secret": "random_secret_3",
+        "C": "02..."
+      }
+    ]
+  },
   "outputs": {
     "YES": [
       { "amount": 64, "id": "00abc123def456", "B_": "03..." },
@@ -136,6 +138,30 @@ The oracle attests that YES won by publishing a DLC attestation signature on `"Y
 ### Step 5: Winner Redemption
 
 `Alice` redeems her YES tokens via `POST /v1/redeem_outcome` ([NUT-CTF][CTF]) with `oracle_sigs` witness. Inputs use the YES conditional keyset, outputs use a regular keyset. The mint verifies the oracle signatures and returns regular proofs.
+
+## Conversion Example (negative-risk style)
+
+For a four-outcome condition `Ω = {A, B, C, D}` with registered collections `A|B|C`, `B|C|D`, and `B|C`, a holder of `A|B|C` and `B|C|D` tokens converts to collateral plus a `B|C` token in one call. With `F = 1`:
+
+```http
+POST https://mint.host:3338/v1/ctf/convert
+```
+
+```json
+{
+  "condition_id": "a1b2c3d4e5f67890...",
+  "inputs": {
+    "A|B|C": [ { "amount": 100, "id": "00abc...", "secret": "s1", "C": "02..." } ],
+    "B|C|D": [ { "amount": 100, "id": "00bcd...", "secret": "s2", "C": "02..." } ]
+  },
+  "outputs": {
+    "*":   [ { "amount": 99,  "id": "009a1f293253e41e", "B_": "03..." } ],
+    "B|C": [ { "amount": 100, "id": "00bc0...",          "B_": "03..." } ]
+  }
+}
+```
+
+Per-outcome: `in = (A:100, B:200, C:200, D:100)`, `out = (A:99, B:199, C:199, D:99)`, so `out(o) == in(o) − 1` for every outcome. `Alice` withdraws 99 sats of spendable collateral (the bundle's guaranteed floor, minus the fee) without any oracle witness, and keeps a `B|C` position. The mint retains 1 sat on every outcome.
 
 [00]: ../00.md
 [02]: ../02.md

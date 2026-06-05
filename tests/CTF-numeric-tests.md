@@ -288,19 +288,21 @@ lo_output:          80 sats
 # Conservation:         PASS
 ```
 
-## Split and Merge
+## Convert (Split and Merge)
 
 ### Test 14: Numeric market split
 
 ```shell
-# Split 100 sats into HI and LO tokens
+# Split 100 sats into HI and LO tokens (POST /v1/ctf/convert, collateral under "*")
 request_json:       {
   "condition_id": "<tagged_hash_result>",
-  "inputs": [
-    {"amount": 64, "id": "009a1f293253e41e", "secret": "secret1", "C": "02..."},
-    {"amount": 32, "id": "009a1f293253e41e", "secret": "secret2", "C": "02..."},
-    {"amount": 4, "id": "009a1f293253e41e", "secret": "secret3", "C": "02..."}
-  ],
+  "inputs": {
+    "*": [
+      {"amount": 64, "id": "009a1f293253e41e", "secret": "secret1", "C": "02..."},
+      {"amount": 32, "id": "009a1f293253e41e", "secret": "secret2", "C": "02..."},
+      {"amount": 4, "id": "009a1f293253e41e", "secret": "secret3", "C": "02..."}
+    ]
+  },
   "outputs": {
     "HI": [
       {"amount": 64, "id": "00hi11keyset22", "B_": "03..."},
@@ -332,14 +334,16 @@ request_json:       {
       {"amount": 100, "id": "00lo33keyset44", "secret": "lo_secret_1", "C": "02..."}
     ]
   },
-  "outputs": [
-    {"amount": 64, "id": "009a1f293253e41e", "B_": "03..."},
-    {"amount": 32, "id": "009a1f293253e41e", "B_": "03..."},
-    {"amount": 4, "id": "009a1f293253e41e", "B_": "03..."}
-  ]
+  "outputs": {
+    "*": [
+      {"amount": 64, "id": "009a1f293253e41e", "B_": "03..."},
+      {"amount": 32, "id": "009a1f293253e41e", "B_": "03..."},
+      {"amount": 4, "id": "009a1f293253e41e", "B_": "03..."}
+    ]
+  }
 }
 
-# Standard NUT-CTF-split-merge merge - no oracle witness needed
+# NUT-CTF-split-merge convert (merge) - collateral under "*", no oracle witness needed
 result:             PASS
 ```
 

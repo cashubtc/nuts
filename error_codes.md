@@ -40,12 +40,10 @@
 | 13014 | Conditional keyset requires oracle witness                  | [NUT-CTF][CTF]                                                                                   |
 | 13015 | Oracle has not attested to this outcome collection          | [NUT-CTF][CTF]                                                                                   |
 | 13016 | Conditional keyset swap spans different outcome collections | [NUT-CTF][CTF]                                                                                   |
-| 13017 | Outputs must use a regular keyset                           | [NUT-CTF][CTF]                                                                                   |
+| 13017 | Invalid keyset for collateral/output side                   | [NUT-CTF][CTF], [NUT-CTF-split-merge][CTF-split-merge]                                           |
 | 13020 | Invalid condition ID                                        | [NUT-CTF][CTF]                                                                                   |
 | 13021 | Condition not found                                         | [NUT-CTF][CTF], [NUT-CTF-split-merge][CTF-split-merge]                                           |
-| 13022 | Split amount mismatch                                       | [NUT-CTF-split-merge][CTF-split-merge]                                                           |
 | 13024 | Condition not active                                        | [NUT-CTF-split-merge][CTF-split-merge]                                                           |
-| 13025 | Merge amount mismatch                                       | [NUT-CTF-split-merge][CTF-split-merge]                                                           |
 | 13027 | Oracle threshold not met                                    | [NUT-CTF][CTF]                                                                                   |
 | 13028 | Condition already exists                                    | [NUT-CTF][CTF]                                                                                   |
 | 13030 | Invalid numeric range (lo_bound >= hi_bound)                | [NUT-CTF-numeric][CTF-numeric]                                                                   |
@@ -55,6 +53,9 @@
 | 13037 | Overlapping outcome collections                             | [NUT-CTF][CTF], [NUT-CTF-split-merge][CTF-split-merge]                                           |
 | 13038 | Incomplete partition                                        | [NUT-CTF][CTF], [NUT-CTF-split-merge][CTF-split-merge]                                           |
 | 13040 | Maximum condition depth exceeded                            | [NUT-CTF-split-merge][CTF-split-merge]                                                           |
+| 13041 | Convert payoff/fee violation                                | [NUT-CTF-split-merge][CTF-split-merge]                                                           |
+| 13042 | Convert not permitted for this condition                    | [NUT-CTF-split-merge][CTF-split-merge]                                                           |
+| 13043 | Full-set or single-element partition                        | [NUT-CTF][CTF], [NUT-CTF-split-merge][CTF-split-merge]                                           |
 
 [00]: 00.md
 [01]: 01.md
