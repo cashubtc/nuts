@@ -56,6 +56,9 @@
 | 13041 | Convert payoff/fee violation                                | [NUT-CTF-split-merge][CTF-split-merge]                                                           |
 | 13042 | Convert not permitted for this condition                    | [NUT-CTF-split-merge][CTF-split-merge]                                                           |
 | 13043 | Full-set or reserved outcome collection                     | [NUT-CTF][CTF], [NUT-CTF-split-merge][CTF-split-merge]                                           |
+| 13044 | Missing or insufficient registration fee                    | [NUT-CTF][CTF]                                                                                   |
+| 13045 | Hash to curve failed                                        | [NUT-CTF][CTF]                                                                                   |
+| 13046 | EC point operation failed                                   | [NUT-CTF][CTF]                                                                                   |
 
 [00]: 00.md
 [01]: 01.md

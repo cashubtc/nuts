@@ -458,6 +458,8 @@ If the oracle does not attest within expected time, the mint MAY refund conditio
 | 13038 | Unknown outcome in outcome collection                       |
 | 13043 | Full-set or reserved outcome collection                     |
 | 13044 | Missing or insufficient registration fee                    |
+| 13045 | Hash to curve failed                                        |
+| 13046 | EC point operation failed                                   |
 
 ## Mint Info Setting
 
