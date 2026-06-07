@@ -1173,7 +1173,7 @@
 
 <p>Response:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DSGLX9kevM...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;019e6d5a-2347-7000-8322-05d51d498303&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lnbc100n1pj4apw9...&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
@@ -1183,13 +1183,13 @@
 </code></pre></div>
 
 <p>Check quote state:</p>
-<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://localhost:3338/v1/mint/quote/bolt11/DSGLX9kevM...
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://localhost:3338/v1/mint/quote/bolt11/019e6d5a-2347-7000-8322-05d51d498303
 </code></pre></div>
 
 <p>Minting tokens:</p>
 <div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://mint.host:3338/v1/mint/bolt11<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
 <span class="s1">&#39;{</span>
-<span class="s1">  &quot;quote&quot;: &quot;DSGLX9kevM...&quot;,</span>
+<span class="s1">  &quot;quote&quot;: &quot;019e6d5a-2347-7000-8322-05d51d498303&quot;,</span>
 <span class="s1">  &quot;outputs&quot;: [</span>
 <span class="s1">    {</span>
 <span class="s1">      &quot;amount&quot;: 8,</span>
@@ -1295,7 +1295,7 @@
 
 <p>Melt quote response:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TRmjduhIsPxd...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;019e6d5a-2347-7000-8449-370fefb42fed&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lnbc100n1p3kdrv5sp5lpdxzghe5j67q...&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
@@ -1306,17 +1306,17 @@
 </code></pre></div>
 
 <p>Check quote state:</p>
-<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://localhost:3338/v1/melt/quote/bolt11/TRmjduhIsPxd...
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://localhost:3338/v1/melt/quote/bolt11/019e6d5a-2347-7000-8449-370fefb42fed
 </code></pre></div>
 
 <p>Melt request:</p>
 <div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://mint.host:3338/v1/melt/bolt11<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
-<span class="s1">&#39;{&quot;quote&quot;: &quot;od4CN5smMMS3K3QVHkbGGNCTxfcAIyIXeq8IrfhP&quot;, &quot;inputs&quot;: [...]}&#39;</span>
+<span class="s1">&#39;{&quot;quote&quot;: &quot;019e6d5a-2347-7000-813e-a11ea6e419e7&quot;, &quot;inputs&quot;: [...]}&#39;</span>
 </code></pre></div>
 
 <p>Successful melt response:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TRmjduhIsPxd...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;019e6d5a-2347-7000-8449-370fefb42fed&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lnbc100n1p3kdrv5sp5lpdxzghe5j67q...&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
