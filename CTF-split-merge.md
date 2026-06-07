@@ -6,7 +6,7 @@
 
 ---
 
-This NUT defines a single **convert** operation for conditional tokens ([NUT-CTF][CTF]): any payoff-preserving rebalance of conditional positions within one condition at one nesting level. Convert subsumes four operations:
+This NUT defines a single **convert** operation for conditional tokens ([NUT-CTF][CTF]): any payoff-preserving rebalance of root-level conditional positions within one condition. Convert subsumes four operations:
 
 - **Split**: deposit collateral, receive a complete set of conditional tokens.
 - **Merge**: surrender a complete set of conditional tokens, recover collateral.
@@ -27,7 +27,7 @@ Wallet ────────────► Mint   User ───────
                                                    keysets)                   (− fee F)                              Keyset
 ```
 
-1. **Register**: Condition + partition registered via [NUT-CTF][CTF] to create conditional keysets.
+1. **Register**: Condition registered via [NUT-CTF][CTF] with requested outcome collections to create conditional keysets.
 2. **Convert**: `Alice` submits an input bundle of proofs and an output bundle of blinded messages; the mint signs the outputs iff the operation is payoff-preserving after a flat fee (see [Conservation Rule](#conservation-rule)).
 3. **Trade**: Standard [NUT-03][03] swaps within the same conditional keyset.
 4. **Attest**: Oracle signs winning outcome.
@@ -35,7 +35,7 @@ Wallet ────────────► Mint   User ───────
 
 ## Payoff-Vector Model
 
-For a condition with outcome-atom set **Ω** (for nested conditions, the child outcomes under the parent collection), a token for outcome collection `S` with amount `a` is the **payoff vector** that pays `a` on each outcome in `cover(S)` and `0` elsewhere. **Collateral** — plain ecash on a regular keyset (root), or the parent collection's conditional keyset (nested) — is the **all-ones** vector: it pays on every outcome in Ω.
+For a condition with outcome-atom set **Ω**, a token for outcome collection `S` with amount `a` is the **payoff vector** that pays `a` on each outcome in `cover(S)` and `0` elsewhere. **Collateral** — plain ecash on a regular keyset — is the **all-ones** vector: it pays on every outcome in Ω.
 
 A convert is valid iff the input and output payoff vectors are equal after deducting a flat fee on every outcome. This single condition generalises split, merge, recombine, and conversion.
 
@@ -63,10 +63,9 @@ POST https://mint.host:3338/v1/ctf/convert
 ```
 
 - `condition_id`: 64-char hex (error 13021 if unknown).
-- `parent_collection_id` (optional): 64-char hex. Defaults to all zeros for root conditions.
+- `parent_collection_id` (optional): reserved for future nested conditions. It MUST be omitted or the all-zero 32-byte hex string; any non-zero value MUST be rejected.
 - `inputs` / `outputs`: objects mapping each map key to an array of `Proof` / `BlindedMessage`. A map key is either a **canonical outcome collection string** (see [Canonical Collection Encoding](#canonical-collection-encoding)) or the reserved key `"*"` denoting **collateral**:
-  - For root conditions (`parent_collection_id` all zeros), `"*"` uses the **regular keyset** of the collateral unit.
-  - For nested conditions, `"*"` uses the **parent collection's conditional keyset** — the active keyset whose `outcome_collection_id` equals `parent_collection_id`.
+  - `"*"` uses the **regular keyset** of the collateral unit.
 - Duplicate JSON member names within `inputs` or `outputs` MUST be rejected.
 
 **Response** of `Bob`:
@@ -92,8 +91,8 @@ curl -X POST https://mint.host:3338/v1/ctf/convert \
 
 | Operation | `inputs` | `outputs` |
 | --------- | -------- | --------- |
-| Split | `{"*": [...]}` | per-outcome-collection map (a partition) |
-| Merge | per-outcome-collection map (a partition) | `{"*": [...]}` |
+| Split | `{"*": [...]}` | per-outcome-collection map covering every outcome |
+| Merge | per-outcome-collection map covering every outcome | `{"*": [...]}` |
 | Recombine | conditional collections only (no `"*"`) | conditional collections only (no `"*"`) |
 | Conversion | conditional ± `"*"` | conditional ± `"*"` |
 
@@ -145,7 +144,7 @@ This rule:
 
 ## Coverage From Keyset Metadata
 
-A map key is untrusted text and MUST NOT be used to compute coverage. For every non-`"*"` entry, `Bob` MUST resolve each `Proof`/`BlindedMessage` keyset `id` to its **stored keyset metadata** (error 12001 if unknown) and verify that the metadata matches this `condition_id`, `parent_collection_id`, unit, and a canonical outcome collection. The request map key MUST equal that canonical collection (error 13041 otherwise). `cover()` is derived from the metadata, never from the request string. Every `"*"` proof/message MUST use the collateral keyset defined above (error 13017 if a regular/conditional keyset is placed under the wrong key).
+A map key is untrusted text and MUST NOT be used to compute coverage. For every non-`"*"` entry, `Bob` MUST resolve each `Proof`/`BlindedMessage` keyset `id` to its **stored keyset metadata** (error 12001 if unknown) and verify that the metadata matches this `condition_id`, unit, and a canonical outcome collection. The request map key MUST equal that canonical collection (error 13041 otherwise). `cover()` is derived from the metadata, never from the request string. Every `"*"` proof/message MUST use the regular collateral keyset defined above (error 13017 if a regular/conditional keyset is placed under the wrong key).
 
 ## Canonical Collection Encoding
 
@@ -164,7 +163,7 @@ Outcome collections have a single canonical string form, used both as map keys h
 `Bob`:
 
 1. Looks up the condition (error 13021 if not found). Rejects if an attestation has been recorded for the condition (error 13042), or if any involved keyset is inactive (error 12002). These two conditions are the only cutoffs: maturity is **not** a cutoff, and there is no separate status check — a `violation` status implies a recorded (conflicting) attestation, and an `expired` condition implies inactive keysets, so both are already covered. Convert is allowed until an attestation is recorded, provided the keysets are still active.
-2. For each entry, resolves keyset metadata and validates `condition_id`, `parent_collection_id`, unit, canonical collection == map key, and `"*"` ↔ collateral keyset placement (see [Coverage From Keyset Metadata](#coverage-from-keyset-metadata)).
+2. Rejects any non-zero `parent_collection_id`. For each entry, resolves keyset metadata and validates `condition_id`, unit, canonical collection == map key, and `"*"` ↔ collateral keyset placement (see [Coverage From Keyset Metadata](#coverage-from-keyset-metadata)).
 3. Rejects if any two input proofs across all entries share a secret (error 11007), or if any input or output amount is not positive, or if there is no input, or if `outputs` is empty.
 4. Verifies all input proofs are valid and unspent (errors 10001 / 11001).
 5. Computes `in(o)`, `out(o)`, and `F`, and enforces the [Conservation Rule](#conservation-rule) for every `o ∈ Ω` (error 13041).
@@ -176,7 +175,7 @@ Outcome collections have a single canonical string form, used both as map keys h
 - **Solvency**: Let `R` be the real collateral the mint holds and `L(o)` the outstanding conditional liability at outcome `o`. The conservation rule forces the per-outcome change `ΔL(o)` to equal the real collateral change `ΔR` minus the retained fee, for every `o`. Since `R ≥ L(o)` holds at inception (every conditional token is backed at face — see [Issuance Invariant](#issuance-invariant)), convert preserves `R ≥ L(o)` for all `o`. No oracle witness is required: a payoff-preserving conversion cancels all outcome risk.
 - **Non-contingent fee / DoS**: Because `F` is retained on every outcome, each convert costs the requester real collateral regardless of the eventual outcome, bounding free operations. Keysets with `input_fee_ppk == 0` make convert free and MUST be rejected for convert (error 13041) unless separate admission control is in force. Mints MAY additionally require [NUT-21][21]/[NUT-22][22] authentication, rate limits, or per-request caps on output count / distinct collections / total amount as defense-in-depth.
 - **Privacy**: As with any multi-input operation, the mint observes that all inputs and outputs of one convert are co-owned; a consolidating convert can link previously unlinked tokens.
-- **Depth Limits**: Mints MAY impose a maximum nesting depth via [Mint Info Setting](#mint-info-setting).
+- **Root-only scope**: This version does not define nested/combinatorial condition construction. Mints MUST reject non-zero `parent_collection_id` values.
 
 ### Issuance Invariant
 
@@ -184,16 +183,10 @@ Every conditional token, by any issuance path, MUST be backed by locked collater
 
 ## Full-Set and Reserved Key Rules
 
-To keep `"*"` unambiguous, the following [NUT-CTF][CTF] partition rules apply:
+To keep `"*"` unambiguous, the following [NUT-CTF][CTF] outcome collection rules apply:
 
-- A partition MUST contain at least two outcome collections, and no single outcome collection may cover all of Ω. The full-set payoff vector is represented only as collateral, never as a conditional keyset.
+- No single outcome collection may cover all of Ω. The full-set payoff vector is represented only as collateral, never as a conditional keyset.
 - `"*"` is reserved: it is invalid as an outcome name and as an outcome collection string.
-
-## Combinatorial Markets
-
-Conditions can be nested hierarchically (e.g. "Party A wins AND BTC > $100k") by splitting parent-collection tokens into sub-condition partitions. Outcome collection IDs use EC point addition ([NUT-CTF][CTF]), so nesting order does not matter: `(Party_A) & (BTC_UP)` = `(BTC_UP) & (Party_A)`.
-
-When `parent_collection_id` is non-zero, the collateral side (`"*"`) is the parent collection's conditional keyset rather than a regular keyset, for both convert and [NUT-CTF][CTF] redemption. See [supplementary material](suppl/CTF-split-merge.md) for a full combinatorial example.
 
 ## Error Codes
 
@@ -205,7 +198,7 @@ When `parent_collection_id` is non-zero, the collateral side (`"*"`) is the pare
 | 13021 | Condition not found                          |
 | 13041 | Convert payoff/fee violation                 |
 | 13042 | Convert not permitted for this condition     |
-| 13043 | Full-set or single-element partition         |
+| 13043 | Full-set outcome collection                  |
 
 ## Mint Info Setting
 
@@ -214,14 +207,12 @@ The [NUT-06][06] `MintMethodSetting`:
 ```json
 {
   "CTF-split-merge": {
-    "supported": true,
-    "max_depth": <int>
+    "supported": true
   }
 }
 ```
 
 - `supported`: Boolean indicating support for the convert operation.
-- `max_depth` (optional): Maximum nesting depth. If unspecified, only root conditions (depth 1) are supported.
 
 For a complete end-to-end example including registration, convert, trading, and redemption, see the [supplementary material](suppl/CTF-split-merge.md).
 

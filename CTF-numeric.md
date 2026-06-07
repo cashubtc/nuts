@@ -17,7 +17,7 @@ A numeric condition has exactly 2 outcome collections:
 - **LO**: Represents the low end of the range. LO holders profit when the attested value is near or below `lo_bound`.
 - **HI**: Represents the high end of the range. HI holders profit when the attested value is near or above `hi_bound`.
 
-The partition is always `["HI", "LO"]` for numeric conditions.
+The outcome collection keysets are always `["HI", "LO"]` for numeric conditions.
 
 ## Payout Calculation
 
@@ -75,14 +75,15 @@ POST https://mint.host:3338/v1/conditions
   "condition_type": "numeric",
   "lo_bound": 0,
   "hi_bound": 100000,
-  "precision": 0
+  "precision": 0,
+  "collateral": "sat"
 }
 ```
 
 ```bash
 curl -X POST https://mint.host:3338/v1/conditions \
   -H "Content-Type: application/json" \
-  -d '{"threshold":1,"tags":[["description","BTC/USD price"]],"announcements":["fdd824..."],"condition_type":"numeric","lo_bound":0,"hi_bound":100000,"precision":0}'
+  -d '{"threshold":1,"tags":[["description","BTC/USD price"]],"announcements":["fdd824..."],"condition_type":"numeric","lo_bound":0,"hi_bound":100000,"precision":0,"collateral":"sat"}'
 ```
 
 - `condition_type`: `"numeric"` (vs default `"enum"` for existing [NUT-CTF][CTF] conditions). When omitted, defaults to `"enum"`.
@@ -98,7 +99,7 @@ curl -X POST https://mint.host:3338/v1/conditions \
 }
 ```
 
-After condition registration, the wallet registers the partition via `POST /v1/conditions/{condition_id}/partitions` ([NUT-CTF][CTF]) with `"partition": ["HI", "LO"]` and the desired `collateral` to create the conditional keysets.
+The mint always creates the `HI` and `LO` keysets during numeric condition registration. If `default_keyset_creation` is `"none"`, a client MAY provide `outcome_collections` exactly as `["HI", "LO"]`; any other collection is invalid. If the mint advertises `"one-vs-rest"` or `"all"`, the client MUST omit `outcome_collections`. In all cases, `collateral` is required because numeric registration creates keysets.
 
 ## Condition ID for Numeric Conditions
 
@@ -118,7 +119,7 @@ Where:
 - `hi_bound_i64be`: `hi_bound` encoded as 8-byte big-endian signed integer
 - `precision_i32be`: `precision` encoded as 4-byte big-endian signed integer
 
-`outcome_count` = 2 (always). The partition is always `["HI", "LO"]` and is registered separately via `POST /v1/conditions/{condition_id}/partitions` ([NUT-CTF][CTF]).
+`outcome_count` = 2 (always). The outcome collection keysets are always `["HI", "LO"]`.
 
 ## Oracle Witness for Digit Decomposition
 
@@ -185,7 +186,7 @@ Exact-equality conservation preserves the HI/LO face vector, so the proportional
 
 ## Combinatorial Markets
 
-Numeric conditions can participate in [NUT-CTF-split-merge][CTF-split-merge] combinatorial markets. The `parent_collection_id` and `collateral` fields work the same way as for enum conditions. For example, a user could split election tokens into numeric BTC price sub-conditions.
+Numeric conditions can participate in root-level [NUT-CTF-split-merge][CTF-split-merge] convert operations. Nested/combinatorial construction is out of scope for this version.
 
 ## Error Codes
 

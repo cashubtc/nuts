@@ -15,27 +15,19 @@ register_request:   {
   "condition_type": "numeric",
   "lo_bound": 0,
   "hi_bound": 100000,
-  "precision": 0
+  "precision": 0,
+  "collateral": "sat"
 }
 
 register_response:  {
-  "condition_id": "<tagged_hash_result>"
-}
-
-# Step 2: Register partition via POST /v1/conditions/{condition_id}/partitions
-partition_request:  {
-  "collateral": "sat",
-  "partition": ["HI", "LO"]
-}
-
-partition_response: {
+  "condition_id": "<tagged_hash_result>",
   "keysets": {
     "HI": "00hi11keyset22",
     "LO": "00lo33keyset44"
   }
 }
 
-# Partition is always ["HI", "LO"] for numeric markets
+# Numeric keysets are always ["HI", "LO"].
 # condition_id = tagged_hash("Cashu_condition_id",
 #   sorted_oracle_pubkeys || event_id || outcome_count
 #   || 0x01 || lo_bound_i64be || hi_bound_i64be || precision_i32be)

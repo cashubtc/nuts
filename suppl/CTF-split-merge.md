@@ -18,30 +18,9 @@ POST https://mint.host:3338/v1/conditions
 {
   "threshold": 1,
   "tags": [["description", "Will BTC reach $100k by June 2025?"]],
-  "announcements": ["fdd824fd<...hex-encoded oracle_announcement TLV...>"]
-}
-```
-
-`Bob` responds with:
-
-```json
-{
-  "condition_id": "a1b2c3d4e5f67890..."
-}
-```
-
-### Step 1b: Register Partition
-
-**Request** of `Alice`:
-
-```http
-POST https://mint.host:3338/v1/conditions/a1b2c3d4e5f67890.../partitions
-```
-
-```json
-{
+  "announcements": ["fdd824fd<...hex-encoded oracle_announcement TLV...>"],
   "collateral": "sat",
-  "partition": ["YES", "NO"]
+  "outcome_collections": ["YES", "NO"]
 }
 ```
 
@@ -49,6 +28,7 @@ POST https://mint.host:3338/v1/conditions/a1b2c3d4e5f67890.../partitions
 
 ```json
 {
+  "condition_id": "a1b2c3d4e5f67890...",
   "keysets": {
     "YES": "00abc123def456",
     "NO": "00def789abc012"

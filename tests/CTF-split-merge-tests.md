@@ -4,7 +4,7 @@ These test vectors provide reference data for implementing the Conditional Token
 
 ## Condition ID Calculation
 
-The condition ID is computed as `tagged_hash("Cashu_condition_id", sorted_oracle_pubkeys || event_id || outcome_count)` where `tagged_hash(tag, msg) = SHA256(SHA256(tag) || SHA256(tag) || msg)`. The condition ID is partition-independent.
+The condition ID is computed as `tagged_hash("Cashu_condition_id", sorted_oracle_pubkeys || event_id || outcome_count)` where `tagged_hash(tag, msg) = SHA256(SHA256(tag) || SHA256(tag) || msg)`. The condition ID is independent of requested outcome keysets.
 
 ### Test 1: Binary condition ID
 
@@ -21,7 +21,7 @@ tag:                "Cashu_condition_id"
 tag_utf8:           43617368755f636f6e646974696f6e5f6964
 tag_hash:           SHA256(tag_utf8)
 
-# Preimage (message for tagged hash) — no partition keys
+# Preimage (message for tagged hash) — no outcome keyset identifiers
 msg_hex:            9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce06274635f70726963655f3130306b5f3230323502
 
 # Condition ID = SHA256(tag_hash || tag_hash || msg)
@@ -38,7 +38,7 @@ outcome_count:      3
 outcome_count_byte: 03
 
 # Condition ID = tagged_hash("Cashu_condition_id", oracle_pubkey || event_id || outcome_count)
-# No partition keys — condition_id is partition-independent
+# No outcome keyset identifiers — condition_id is keyset-independent
 ```
 
 ### Test 3: Condition ID with special characters in question
@@ -52,32 +52,24 @@ outcome_count:      2
 outcome_count_byte: 02
 
 # Condition ID uses tagged_hash (includes space, /, >, $ characters in event_id)
-# No partition keys in condition_id
+# No outcome keyset identifiers in condition_id
 ```
 
-## Condition and Partition Registration
+## Condition Registration
 
-### Test 4: Register condition and partition (binary)
+### Test 4: Register condition with default keysets (binary)
 
 ```shell
 # Step 1: Register condition (POST /v1/conditions)
 register_request:   {
   "threshold": 1,
   "tags": [["description", "Will BTC reach $100k?"]],
-  "announcements": ["<hex_encoded_tlv>"]
+  "announcements": ["<hex_encoded_tlv>"],
+  "collateral": "sat"
 }
 
 register_response:  {
-  "condition_id": "<tagged_hash_result>"
-}
-
-# Step 2: Register partition (POST /v1/conditions/{condition_id}/partitions)
-partition_request:  {
-  "collateral": "sat",
-  "partition": ["YES", "NO"]
-}
-
-partition_response: {
+  "condition_id": "<tagged_hash_result>",
   "keysets": {
     "YES": "00abc123def456",
     "NO": "00def789abc012"
@@ -87,31 +79,26 @@ partition_response: {
 # These keyset IDs are used in all subsequent split/merge/trade operations
 ```
 
-### Test 5: Three-outcome condition with partition registration
+### Test 5: Three-outcome condition with one-vs-rest keysets
 
 ```shell
 # Step 1: Register condition
 register_request:   {
   "threshold": 1,
   "tags": [["description", "Election winner"]],
-  "announcements": ["<hex_encoded_tlv>"]
+  "announcements": ["<hex_encoded_tlv>"],
+  "collateral": "sat"
 }
 
 register_response:  {
-  "condition_id": "<tagged_hash_result>"
-}
-
-# Step 2: Register partition
-partition_request:  {
-  "collateral": "sat",
-  "partition": ["CANDIDATE_A", "CANDIDATE_B", "CANDIDATE_C"]
-}
-
-partition_response: {
+  "condition_id": "<tagged_hash_result>",
   "keysets": {
     "CANDIDATE_A": "00aa11bb22cc33dd",
     "CANDIDATE_B": "00bb22cc33dd44ee",
-    "CANDIDATE_C": "00cc33dd44ee55ff"
+    "CANDIDATE_C": "00cc33dd44ee55ff",
+    "CANDIDATE_A|CANDIDATE_B": "00dd44ee55ff6600",
+    "CANDIDATE_A|CANDIDATE_C": "00ee55ff66007711",
+    "CANDIDATE_B|CANDIDATE_C": "00ff660077118822"
   }
 }
 ```
@@ -436,7 +423,7 @@ event_id:           "btc_price_100k_2025"
 outcome_count:      2
 
 # condition_id = tagged_hash("Cashu_condition_id", sorted_pubkeys || event_id || outcome_count)
-# No partition keys — condition_id is partition-independent
+# No outcome keyset identifiers — condition_id is keyset-independent
 ```
 
 ## Outcome Collections
@@ -444,10 +431,10 @@ outcome_count:      2
 ### Test 22: Split with outcome collections (3-outcome condition)
 
 ```shell
-# Condition with 3 outcomes, partition registered with outcome collections
+# Condition with 3 outcomes, registered with root outcome collection keysets
 outcomes:           ["ALICE", "BOB", "CAROL"]
 
-# Partition registration returned keysets for this partition
+# Condition registration returned these keysets
 keysets:
   "ALICE|BOB":      00aabb11cc22dd33
   "CAROL":          00ccdd44ee55ff66
@@ -474,8 +461,8 @@ request_json:       {
   }
 }
 
-# Partition check
-partition_valid:    true (ALICE|BOB and CAROL cover all outcomes, disjoint)
+# Payoff check
+payoff_valid:       true (ALICE|BOB and CAROL cover all outcomes, disjoint)
 ```
 
 ### Test 23: Outcome collection redemption (oracle signs covered outcome)
@@ -510,28 +497,28 @@ error_code:         13015
 error_message:      "Oracle has not attested to this outcome collection"
 ```
 
-### Test 25: Overlapping outcome collections error
+### Test 25: Duplicate canonical outcome collection error
 
 ```shell
-# Invalid partition - BOB appears in both sets
-outputs_keys:       ["ALICE|BOB", "BOB|CAROL"]
+# Invalid request - duplicate after canonicalization
+outcome_collections: ["ALICE|BOB", "BOB|ALICE"]
 condition_outcomes:    ["ALICE", "BOB", "CAROL"]
 
 # Validation fails
 error_code:         13037
-error_message:      "Overlapping outcome collections"
+error_message:      "Duplicate canonical outcome collection"
 ```
 
-### Test 26: Incomplete partition error
+### Test 26: Unknown outcome collection member error
 
 ```shell
-# Invalid partition - CAROL is missing
-outputs_keys:       ["ALICE|BOB"]
+# Invalid request - DAVE is not in the oracle outcome list
+outcome_collections: ["ALICE|DAVE"]
 condition_outcomes:    ["ALICE", "BOB", "CAROL"]
 
 # Validation fails
 error_code:         13038
-error_message:      "Incomplete partition"
+error_message:      "Unknown outcome in outcome collection"
 ```
 
 ### Test 27: Merge with outcome collections
@@ -558,7 +545,7 @@ request_json:       {
 }
 
 # Input proofs use outcome collection keysets, outputs are collateral under "*"
-# Valid merge - outcome collections form complete partition
+# Valid merge - outcome collections form a complete disjoint cover
 merge_result:       SUCCESS
 ```
 
@@ -616,130 +603,67 @@ btc_price_condition_id:  b2c3d4e5f6789012345678901234567890123456789012345678901
 #   P_election_A + P_btc_UP = P_btc_UP + P_election_A
 ```
 
-### Test 31: Nested condition and partition registration
+### Test 31: Nested parent collection rejected
 
 ```shell
 # Step 1a: Register root election condition (POST /v1/conditions)
 root_condition_request: {
   "threshold": 1,
   "tags": [["description", "Election winner"]],
-  "announcements": ["<hex_encoded_tlv>"]
+  "announcements": ["<hex_encoded_tlv>"],
+  "collateral": "sat"
 }
 
 root_condition_response: {
-  "condition_id": "<election_condition_id>"
-}
-
-# Step 1b: Register root partition (POST /v1/conditions/{election_condition_id}/partitions)
-root_partition_request: {
-  "collateral": "sat",
-  "partition": ["PARTY_A", "PARTY_B"]
-}
-
-root_partition_response: {
+  "condition_id": "<election_condition_id>",
   "keysets": {
     "PARTY_A": "00aa11bb22cc33dd",
     "PARTY_B": "00bb22cc33dd44ee"
   }
 }
 
-# Step 2a: Register nested BTC price condition (POST /v1/conditions)
-nested_condition_request: {
-  "threshold": 1,
-  "tags": [["description", "BTC price conditional on Party A win"]],
-  "announcements": ["<hex_encoded_btc_price_tlv>"]
-}
-
-nested_condition_response: {
-  "condition_id": "<btc_price_condition_id>"
-}
-
-# Step 2b: Register nested partition (POST /v1/conditions/{btc_price_condition_id}/partitions)
-# parent_collection_id = outcome_collection_id(0, election_condition_id, "PARTY_A")
-# collateral = outcome_collection_id of PARTY_A in election condition
-nested_partition_request: {
-  "collateral": "<outcome_collection_id_of_PARTY_A>",
-  "partition": ["UP", "DOWN"],
+# Nested/combinatorial construction is out of scope for this version.
+convert_request: {
+  "condition_id": "<election_condition_id>",
   "parent_collection_id": "<x_only_pubkey_of_PARTY_A>"
 }
 
-nested_partition_response: {
-  "keysets": {
-    "UP": "00cc33dd44ee55ff",
-    "DOWN": "00dd44ee55ff6600"
-  }
-}
+error_code: 13041
 ```
 
-### Test 32: Nested condition split
+### Test 32: Nested condition split rejected
 
 ```shell
-# Split PARTY_A tokens into PARTY_A&UP and PARTY_A&DOWN
-# Inputs are the parent collection (PARTY_A) under "*" — nested collateral
-# Outputs use nested condition conditional keysets
+# Non-zero parent_collection_id is reserved for future nested support.
 request_json:       {
   "condition_id": "<btc_price_condition_id>",
   "parent_collection_id": "<x_only_pubkey_of_PARTY_A>",
-  "inputs": {
-    "*": [
-      {"amount": 100, "id": "00aa11bb22cc33dd", "secret": "party_a_secret_1", "C": "02..."}
-    ]
-  },
-  "outputs": {
-    "UP": [
-      {"amount": 64, "id": "00cc33dd44ee55ff", "B_": "03..."},
-      {"amount": 32, "id": "00cc33dd44ee55ff", "B_": "03..."},
-      {"amount": 4, "id": "00cc33dd44ee55ff", "B_": "03..."}
-    ],
-    "DOWN": [
-      {"amount": 64, "id": "00dd44ee55ff6600", "B_": "03..."},
-      {"amount": 32, "id": "00dd44ee55ff6600", "B_": "03..."},
-      {"amount": 4, "id": "00dd44ee55ff6600", "B_": "03..."}
-    ]
-  }
+  "inputs": {"*": [{"amount": 100, "id": "009a1f293253e41e", "secret": "secret", "C": "02..."}]},
+  "outputs": {"UP": [{"amount": 99, "id": "00cc33dd44ee55ff", "B_": "03..."}]}
 }
 
-# Input uses PARTY_A keyset (parent outcome collection)
-# Outputs use UP/DOWN keysets (nested outcome collections)
-result:             PASS
+error_code:         13041
 ```
 
-### Test 33: Nested condition merge
+### Test 33: Nested condition merge rejected
 
 ```shell
-# Merge PARTY_A&UP and PARTY_A&DOWN back to PARTY_A tokens
 request_json:       {
   "condition_id": "<btc_price_condition_id>",
   "parent_collection_id": "<x_only_pubkey_of_PARTY_A>",
-  "inputs": {
-    "UP": [
-      {"amount": 100, "id": "00cc33dd44ee55ff", "secret": "up_secret_1", "C": "02..."}
-    ],
-    "DOWN": [
-      {"amount": 100, "id": "00dd44ee55ff6600", "secret": "down_secret_1", "C": "02..."}
-    ]
-  },
-  "outputs": {
-    "*": [
-      {"amount": 64, "id": "00aa11bb22cc33dd", "B_": "03..."},
-      {"amount": 32, "id": "00aa11bb22cc33dd", "B_": "03..."},
-      {"amount": 4, "id": "00aa11bb22cc33dd", "B_": "03..."}
-    ]
-  }
+  "inputs": {"UP": [{"amount": 100, "id": "00cc33dd44ee55ff", "secret": "up_secret_1", "C": "02..."}]},
+  "outputs": {"*": [{"amount": 99, "id": "009a1f293253e41e", "B_": "03..."}]}
 }
 
-# Nested collateral "*" is the PARTY_A parent keyset (not a regular keyset)
-result:             PASS
+error_code:         13041
 ```
 
-### Test 34: Maximum depth exceeded
+### Test 34: Maximum depth unsupported
 
 ```shell
-# Attempt to prepare condition at depth exceeding max_depth
-# Mint's max_depth = 2
-# Attempting depth 3 preparation
-error_code:         13040
-error_message:      "Maximum condition depth exceeded"
+# This version has no max_depth setting; all non-root parent_collection_id values are rejected.
+error_code:         13041
+error_message:      "Convert payoff/fee violation"
 ```
 
 ## Complete Flow Example
@@ -750,7 +674,7 @@ error_message:      "Maximum condition depth exceeded"
 # Step 1a: Register condition (POST /v1/conditions)
 condition_id:          <tagged_hash_result>
 
-# Step 1b: Register partition (POST /v1/conditions/{condition_id}/partitions)
+# Step 1b: Keysets returned by condition registration
 keysets:
   YES:              00abc123def456
   NO:               00def789abc012
@@ -846,13 +770,13 @@ error_code:         13042
 error_message:      "Convert not permitted for this condition"
 ```
 
-### Test 40: Full-set / single-element partition rejected at registration
+### Test 40: Full-set outcome collection rejected at registration
 
 ```shell
-# Attempt to register a partition whose only element covers all outcomes
-partition:          ["ALICE|BOB|CAROL"]   # full-set, single element
+# Attempt to register an outcome collection that covers all outcomes
+outcome_collections: ["ALICE|BOB|CAROL"]
 error_code:         13043
-error_message:      "Full-set or single-element partition"
+error_message:      "Full-set or reserved outcome collection"
 ```
 
 [NUT-CTF-split-merge]: ../CTF-split-merge.md

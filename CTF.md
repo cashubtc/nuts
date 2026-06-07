@@ -10,7 +10,7 @@ This NUT defines conditional tokens and conditional keysets for oracle-attested 
 
 A **conditional token** is a regular Cashu token ([NUT-00][00]) signed under a conditional keyset. It can be transferred and swapped like any other Cashu token, with one additional ability: it can be redeemed for regular ecash via `POST /v1/redeem_outcome` by providing a DLC oracle's attestation signature as a witness.
 
-A **conditional keyset** is a per-outcome-collection signing keyset ([NUT-02][02]) that the mint creates during partition registration. Each outcome collection gets a unique keyset with different signing keys.
+A **conditional keyset** is a per-outcome-collection signing keyset ([NUT-02][02]) that the mint creates during condition registration. Each outcome collection gets a unique keyset with different signing keys.
 
 The oracle signature scheme is compatible with the [DLC specification](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Oracle.md), allowing Cashu mints to leverage existing DLC oracle infrastructure.
 
@@ -22,8 +22,7 @@ Caution: Applications that rely on oracle resolution must verify that the oracle
 
 - **Condition**: A question with defined outcomes, resolved by an oracle. Identified by a `condition_id`. Equivalent to "condition" in the [Gnosis Conditional Token Framework](https://conditional-tokens.readthedocs.io/en/latest/) ([contracts](https://github.com/gnosis/conditional-tokens-contracts)), which this spec adapts to Cashu. [Polymarket](https://github.com/Polymarket/ctf-exchange-v2) is a large-scale production deployment of the same model on Ethereum.
 - **Outcome**: A single atomic result that an oracle attests to (e.g., `"YES"`, `"ALICE"`).
-- **Outcome collection**: A subset of outcomes, defined by a partition element (e.g., `"YES"`, `"ALICE|BOB"`). Each gets its own conditional keyset. Redeemable if the oracle attests to ANY outcome it contains.
-- **Partition**: A division of all outcomes into disjoint, complete outcome collections.
+- **Outcome collection**: A non-empty, non-full subset of outcomes (e.g., `"YES"`, `"ALICE|BOB"`). Each requested collection gets its own conditional keyset. Redeemable if the oracle attests to ANY outcome it contains.
 - **Condition ID** (`condition_id`): 32-byte tagged hash uniquely identifying a condition. Partition-independent. See [Condition ID](#condition-id).
 - **Outcome collection ID** (`outcome_collection_id`): 32-byte x-only public key uniquely identifying an outcome collection within a condition. See [Outcome Collection ID](#outcome-collection-id).
 
@@ -33,24 +32,25 @@ Outcome collections allow tokens to represent one or more outcomes. An outcome c
 
 Outcome collection strings have a single canonical form so that, e.g., `ALICE|BOB` and `BOB|ALICE` derive the same keyset: outcome names are NFC-normalised and components are ordered by the outcome's index in the oracle announcement (for numeric conditions, the fixed order `["HI", "LO"]`). See [NUT-CTF-split-merge][CTF-split-merge] for the full encoding rules.
 
-### Partition Rules
+### Outcome Collection Keyset Rules
 
-Partition keys MUST form a valid partition of all outcomes:
+Condition registration MAY request any set of non-empty, non-full outcome collections:
 
-1. **Disjoint**: No outcome appears in multiple outcome collections
-2. **Complete**: Every outcome appears in exactly one outcome collection
-3. **Non-trivial**: A partition MUST contain at least two outcome collections, and no single outcome collection may cover all outcomes (error 13043). The full-outcome-set payoff vector is represented only as collateral, never as a conditional keyset — this keeps the reserved collateral key `"*"` unambiguous in [NUT-CTF-split-merge][CTF-split-merge].
+1. Each requested outcome collection MUST be canonical.
+2. Requested outcome collections MAY overlap.
+3. Duplicate canonical outcome collections in one request MUST be rejected.
+4. No single outcome collection may cover all outcomes (error 13043). The full-outcome-set payoff vector is represented only as collateral, never as a conditional keyset — this keeps the reserved collateral key `"*"` unambiguous in [NUT-CTF-split-merge][CTF-split-merge].
 
-Valid partitions for outcomes `["ALICE", "BOB", "CAROL"]`:
+Valid requested keysets for outcomes `["A", "B", "C"]`:
 
-- `{"ALICE": [...], "BOB": [...], "CAROL": [...]}` (individual outcomes)
-- `{"ALICE|BOB": [...], "CAROL": [...]}` (one collection + one individual)
+- `["A", "B", "C"]` (individual outcomes)
+- `["A", "B", "C", "A|B", "B|C", "A|C"]` (all non-full collections)
 
-Invalid: `{"ALICE|BOB": [...], "BOB|CAROL": [...]}` (overlapping), `{"ALICE|BOB": [...]}` (incomplete), `{"ALICE|BOB|CAROL": [...]}` (full-set / single-element).
+Invalid: `["A|B|C"]` (full-set), `["A", "A"]` (duplicate), `["A", "D"]` (unknown outcome).
 
 ## Conditional Keysets
 
-Each outcome collection gets a unique keyset created during [partition registration](#register-partition). These use the same mechanism as regular keysets ([NUT-02][02]).
+Each requested outcome collection gets a unique keyset created during [condition registration](#register-condition). These use the same mechanism as regular keysets ([NUT-02][02]).
 
 **Properties:**
 
@@ -80,12 +80,12 @@ Where `condition_id` and `outcome_collection_id` are 64-character hex strings. T
 ## Token Lifecycle
 
 ```
-Issuance:   Mint issues conditional tokens (via partition registration + keyset-specific minting)
+Issuance:   Mint issues conditional tokens (via condition registration + keyset-specific minting)
 Trading:    Conditional keyset -> same/rotated conditional keyset (NUT-03 swap, same outcome_collection_id, no witness)
-Redemption: Conditional keyset -> regular keyset (root) / parent keyset (nested)  (POST /v1/redeem_outcome + oracle witness)
+Redemption: Conditional keyset -> regular keyset  (POST /v1/redeem_outcome + oracle witness)
 ```
 
-- **Issuance**: The mint creates conditional keysets during [partition registration](#register-partition). Users obtain conditional tokens through [NUT-CTF-split-merge][CTF-split-merge] convert (split) operations or other minting mechanisms. Every conditional token, by any issuance path, MUST be backed by locked collateral at least equal to its face amount; sub-face or market-priced issuance into a conditional keyset is forbidden (see [NUT-CTF-split-merge][CTF-split-merge] Issuance Invariant).
+- **Issuance**: The mint creates conditional keysets during [condition registration](#register-condition). Users obtain conditional tokens through [NUT-CTF-split-merge][CTF-split-merge] convert (split) operations or other minting mechanisms. Every conditional token, by any issuance path, MUST be backed by locked collateral at least equal to its face amount; sub-face or market-priced issuance into a conditional keyset is forbidden (see [NUT-CTF-split-merge][CTF-split-merge] Issuance Invariant).
 - **Trading**: Standard [NUT-03][03] swap. All conditional keysets in a swap MUST share the same `outcome_collection_id`. No oracle witness required.
 - **Redemption**: After oracle attestation, winners submit tokens to `POST /v1/redeem_outcome` with oracle signatures in `Proof.witness`.
 
@@ -104,7 +104,7 @@ Where:
 - `event_id`: UTF-8 encoded event identifier. Derived from `announcements[0].oracle_event.event_id`. All announcements MUST share the same `event_id`.
 - `outcome_count`: 1-byte unsigned integer. Derived from `len(announcements[0].oracle_event.event_descriptor.outcomes)`. All announcements MUST share the same ordered outcome list; that order (from `announcements[0]`) is the canonical outcome index used by outcome-collection encoding.
 
-The `condition_id` is partition-independent — the same oracle event always produces the same ID regardless of partitioning.
+The `condition_id` is independent of requested keysets — the same oracle event always produces the same ID regardless of which outcome collections are requested.
 
 > **Note:** [NUT-CTF-numeric][CTF-numeric] extends this formula with additional parameters for numeric conditions.
 
@@ -124,7 +124,7 @@ The transport for discovering oracle announcements from oracles is unspecified. 
 
 ## Condition Registry
 
-Conditions are registered via `POST /v1/conditions` before any operations on conditional tokens. Conditional keysets are created during [partition registration](#register-partition).
+Conditions are registered via `POST /v1/conditions` before any operations on conditional tokens. Conditional keysets are created during condition registration.
 
 ### Condition Info
 
@@ -139,14 +139,6 @@ Conditions are registered via `POST /v1/conditions` before any operations on con
     "<outcome_collection>": <hex_str>,
     ...
   },
-  "partitions": [
-    {
-      "partition": <Array[str]>,
-      "collateral": <str>,
-      "parent_collection_id": <hex_str>,
-      "registered_at": <int>
-    }
-  ],
   "attestation": {
     "status": <str>,
     "winning_outcome": <str>,
@@ -160,12 +152,7 @@ Conditions are registered via `POST /v1/conditions` before any operations on con
 - `tags`: [NIP-88][NIP-88] tag array (e.g., `[["description", "..."], ["n", "BTC"]]`). Display-only metadata; does NOT affect `condition_id`.
 - `announcements`: Hex-encoded oracle announcement TLV bytes
 - `registered_at`: Unix timestamp of registration
-- `keysets`: Flat map of ALL outcome collections to keyset IDs across all root-level partitions. Shared outcome collections appear once. Nested keysets (non-zero `parent_collection_id`) are not included — use `GET /v1/conditional_keysets`.
-- `partitions`: Array of registered partitions:
-  - `partition`: Partition keys (e.g., `["YES", "NO"]`)
-  - `collateral`: Unit string for root (e.g., `"sat"`), or `outcome_collection_id` hex for nested
-  - `parent_collection_id`: 64-char hex; all zeros for root conditions
-  - `registered_at`: Unix timestamp
+- `keysets`: Flat map of all root-level requested outcome collections to keyset IDs. Use `GET /v1/conditional_keysets` for full keyset metadata.
 - `attestation` (optional, omitted if no attestation):
   - `status`: `"pending"` | `"attested"` | `"expired"` | `"violation"`
   - `winning_outcome`: Attested outcome string (`null` if pending)
@@ -217,7 +204,7 @@ GET https://mint.host:3338/v1/conditions/{condition_id}
 POST https://mint.host:3338/v1/conditions
 ```
 
-Registers a new condition. Does not create keysets — keysets are created during [partition registration](#register-partition).
+Registers a new condition and creates requested conditional keysets.
 
 **Request** of `Alice`:
 
@@ -225,64 +212,25 @@ Registers a new condition. Does not create keysets — keysets are created durin
 {
   "threshold": <int>,
   "tags": <Array[Array[str]]>,
-  "announcements": <Array[hex_str]>
+  "announcements": <Array[hex_str]>,
+  "collateral": <str>,
+  "outcome_collections": <Array[str]>,
+  "fee": <Array[Proof]>
 }
 ```
 
 - `threshold`: Minimum oracles required (default: 1)
 - `tags`: [NIP-88][NIP-88] tag array
 - `announcements`: Hex-encoded oracle announcement TLV bytes
+- `collateral`: Unit string for root conditions (e.g., `"sat"`). REQUIRED if `outcome_collections` is present or if the mint's default keyset creation rule creates keysets.
+- `outcome_collections` (optional): Canonical outcome collections to create keysets for. If omitted, the mint applies its `default_keyset_creation` policy. If the mint advertises `default_keyset_creation` as `"one-vs-rest"` or `"all"`, clients MUST omit this field and the mint MUST reject client-defined collections.
+- `fee` (optional): A non-refundable anti-spam registration fee paid as `Proof` objects. The proofs MUST be from a **regular** keyset ([NUT-02][02]) whose unit equals `collateral`; conditional-keyset proofs MUST be rejected (error 13017). The mint marks these proofs spent and retains them as revenue — they are **not** condition collateral and never enter the [NUT-CTF-split-merge][CTF-split-merge] solvency accounting. REQUIRED when the mint advertises a non-zero registration fee (see [Mint Info Setting](#mint-info-setting)); MAY be omitted when the advertised fee is `0`. See [Registration Fee](#registration-fee).
 
 **Response** of `Bob`:
 
 ```json
 {
-  "condition_id": <hex_str>
-}
-```
-
-```bash
-curl -X POST https://mint.host:3338/v1/conditions \
-  -H "Content-Type: application/json" \
-  -d '{"threshold":1,"tags":[["description","Will BTC reach $100k?"]],"announcements":["fdd824fd..."]}'
-```
-
-#### Mint Behavior
-
-1. Parses and verifies announcement signatures (error 13011 if failed)
-2. Computes `condition_id`
-3. If condition exists with matching config: returns existing `condition_id` (idempotent)
-4. If condition exists with different config: error 13028
-5. If new: stores and returns `condition_id`
-
-The mint MUST make condition registration idempotent. Mints MAY require [NUT-21][21] or [NUT-22][22] authentication for DoS prevention.
-
-### Register Partition
-
-```http
-POST https://mint.host:3338/v1/conditions/{condition_id}/partitions
-```
-
-Registers a partition and creates conditional keysets.
-
-**Request** of `Alice`:
-
-```json
-{
-  "collateral": <str>,
-  "partition": <Array[str]>,
-  "parent_collection_id": <hex_str>
-}
-```
-
-- `collateral`: Unit string for root (e.g., `"sat"`), or `outcome_collection_id` hex for nested
-- `partition`: Partition keys (e.g., `["ALICE|BOB", "CAROL"]`). MUST satisfy [Partition Rules](#partition-rules).
-- `parent_collection_id` (optional): 64-char hex. Defaults to all zeros for root conditions.
-
-**Response** of `Bob`:
-
-```json
-{
+  "condition_id": <hex_str>,
   "keysets": {
     "<outcome_collection_1>": <hex_str>,
     "<outcome_collection_2>": <hex_str>,
@@ -292,50 +240,62 @@ Registers a partition and creates conditional keysets.
 ```
 
 ```bash
-curl -X POST https://mint.host:3338/v1/conditions/a1b2c3d4.../partitions \
+curl -X POST https://mint.host:3338/v1/conditions \
   -H "Content-Type: application/json" \
-  -d '{"collateral":"sat","partition":["YES","NO"]}'
+  -d '{"threshold":1,"tags":[["description","Will BTC reach $100k?"]],"announcements":["fdd824fd..."],"collateral":"sat","outcome_collections":["YES","NO"]}'
 ```
 
 #### Mint Behavior
 
-1. Looks up condition (error 13021 if not found)
-2. Validates partition rules (error 13037 overlapping, error 13038 incomplete, error 13043 full-set or single-element)
-3. If `parent_collection_id` is non-zero: verifies the referenced collection exists (error 13021 if not)
-4. For each outcome collection: computes `outcome_collection_id`, reuses existing keyset or creates new one
-5. Returns keyset map
+1. Parses and verifies announcement signatures (error 13011 if failed)
+2. Computes `condition_id`
+3. Determines requested keysets:
+   - If `outcome_collections` is provided and `default_keyset_creation` is `"none"`: canonicalizes and validates the requested collections.
+   - If `outcome_collections` is provided and `default_keyset_creation` is `"one-vs-rest"` or `"all"`: rejects the request.
+   - If omitted: applies `default_keyset_creation`.
+4. If condition exists with matching config and requested keyset set: returns existing `condition_id` and keysets (idempotent). The mint MUST NOT charge the registration fee on this path — see [Registration Fee](#registration-fee).
+5. If condition exists with different config or requested keyset set: error 13028
+6. If new: charges the registration fee (if any), stores the condition, creates keysets, and returns `condition_id` and `keysets` — all in a single atomic transaction (see [Registration Fee](#registration-fee))
 
-**Key property:** Keysets are per `outcome_collection_id`, not per partition. If two partitions include the same outcome collection (e.g., both include `"CAROL"`), they share the same keyset. This makes tokens fungible across partitions.
+The mint MUST make condition registration idempotent. Mints MAY charge a [registration fee](#registration-fee) and/or require [NUT-21][21] or [NUT-22][22] authentication for DoS prevention.
 
-**Idempotency:** The mint MUST make partition registration idempotent.
+### Registration Fee
 
-**DoS prevention:** Mints MAY require [NUT-21][21] or [NUT-22][22] authentication.
+To bound condition-registration spam, a mint MAY charge a non-refundable fee per new condition, advertised via [Mint Info Setting](#mint-info-setting). The required amount, denominated in the `collateral` unit, is:
+
+```
+required_fee = registration_fee_base + registration_fee_per_keyset * num_keysets
+```
+
+where `num_keysets` is the number of conditional keysets this registration creates (after step 3 above). When `registration_fee_base` and `registration_fee_per_keyset` are both `0`, registration is free and the `fee` field MAY be omitted.
+
+When `required_fee > 0`, the mint MUST, for a **new** condition only:
+
+1. Require the `fee` field. Each `Proof` MUST be valid, unspent, from a regular keyset whose unit equals `collateral` (error 13017 for a conditional/wrong-unit keyset), and the sum of `fee` proof amounts MUST be at least `required_fee` (error 13044 otherwise).
+2. Atomically, in a single transaction: mark the `fee` proofs spent, store the condition, and create the keysets. If any step fails, none are applied — a failed registration MUST NOT consume the fee.
+
+The mint MUST compute `required_fee` and verify the fee **after** the idempotency check (step 4). A repeated registration that resolves to an existing condition MUST return the existing result without charging again; otherwise a client retry would either double-charge or fail because the original `fee` proofs are already spent. The registration fee is mint revenue and is independent of condition collateral and the [NUT-CTF-split-merge][CTF-split-merge] solvency invariant.
 
 ## Outcome Collection ID
 
-Each outcome collection has a unique `outcome_collection_id` derived from the condition ID, outcome collection string, and optional parent collection ID. The result is a 32-byte x-only public key on secp256k1.
+Each outcome collection has a unique `outcome_collection_id` derived from the condition ID and outcome collection string. The result is a 32-byte x-only public key on secp256k1.
 
 ### Computation
 
 ```
-outcome_collection_id(parent_collection_id, condition_id, outcome_collection_string):
+outcome_collection_id(condition_id, outcome_collection_string):
   1. h = tagged_hash("Cashu_outcome_collection_id", condition_id || outcome_collection_string_bytes)
   2. P = hash_to_curve(h)
-  3. If parent_collection_id is the identity (32 zero bytes):
-       Return x_only(P)
-     Else:
-       parent_point = lift_x(parent_collection_id)
-       Return x_only(EC_add(parent_point, P))
+  3. Return x_only(P)
 ```
 
 Where:
 
 - `tagged_hash`: BIP-340 tagged hash
 - `hash_to_curve`: Same approach as [NUT-00][00]'s `hash_to_curve` with domain separation via tagged hash input
-- `EC_add`: secp256k1 point addition
-- `lift_x` / `x_only`: Per [BIP-340](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki)
+- `x_only`: Per [BIP-340](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki)
 
-Because EC point addition is commutative, nesting order does not matter in combinatorial markets — `(Party_A) & (BTC_UP)` produces the same ID as `(BTC_UP) & (Party_A)`.
+This version defines root-level outcome collections only. Combinatorial/nested condition construction is intentionally out of scope until the registration API includes an explicit way to create parent-scoped keysets.
 
 ## Conditional Keyset Discovery
 
@@ -420,7 +380,7 @@ POST https://mint.host:3338/v1/redeem_outcome
 ```
 
 - `inputs`: `Proof` objects from a **single conditional keyset**, each with `witness` containing oracle attestation
-- `outputs`: `BlindedMessage` objects (same unit). For a root condition, outputs use a **regular keyset**. For a nested condition (the input keyset's `parent_collection_id` is non-zero), outputs use the **parent collection's conditional keyset** — the active keyset whose `outcome_collection_id` equals that `parent_collection_id` — consistent with nested convert in [NUT-CTF-split-merge][CTF-split-merge].
+- `outputs`: `BlindedMessage` objects (same unit). Outputs use a **regular keyset**.
 
 `Alice` MAY omit `oracle_sigs` if `Bob` has already recorded a valid attestation for this outcome collection (check via `GET /v1/conditions/{condition_id}`).
 
@@ -455,15 +415,15 @@ All conditional-to-regular conversions go through `POST /v1/redeem_outcome`. Mov
 When `Bob` receives a `POST /v1/redeem_outcome` request:
 
 1. All inputs MUST use the same conditional keyset
-2. All outputs MUST use a regular keyset (root condition) or the parent collection's conditional keyset (nested condition), same unit
+2. All outputs MUST use a regular keyset with the same unit
 3. If `Bob` already has a valid attestation for this outcome collection, MAY skip steps 4-5
 4. Each input MUST include valid `witness` with `oracle_sigs`
 5. Verify at least `threshold` signatures from distinct oracles using [DLC signing algorithm](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Oracle.md#signing-algorithm) with tagged hash `"DLC/oracle/attestation/v0"` and UTF-8 NFC-normalized outcome string
-6. Verify this outcome collection is the attested winner
+6. Verify this outcome collection contains the attested atomic outcome
 
 ### Attestation Handling
 
-The mint MUST persistently record the first valid attestation (winning outcome + timestamp) for each condition. This record MUST survive restarts.
+The mint MUST persistently record the first valid attestation (atomic winning outcome + timestamp) for each condition. This record MUST survive restarts.
 
 The mint MUST NOT process redemptions for non-winning keysets. If a valid signature for a different outcome is received (a DLC protocol violation), the mint MUST reject it and MUST log the conflict. Mints SHOULD expose violations via condition info.
 
@@ -494,9 +454,10 @@ If the oracle does not attest within expected time, the mint MAY refund conditio
 | 13021 | Condition not found                                         |
 | 13027 | Oracle threshold not met                                    |
 | 13028 | Condition already exists                                    |
-| 13037 | Overlapping outcome collections                             |
-| 13038 | Incomplete partition                                        |
-| 13043 | Full-set or single-element partition                        |
+| 13037 | Duplicate canonical outcome collection                      |
+| 13038 | Unknown outcome in outcome collection                       |
+| 13043 | Full-set or reserved outcome collection                     |
+| 13044 | Missing or insufficient registration fee                    |
 
 ## Mint Info Setting
 
@@ -507,7 +468,10 @@ The [NUT-06][06] `MintMethodSetting` indicates support for this feature:
   "CTF": {
     "supported": true,
     "dlc_version": <str>,
-    "vesting_period": <int>
+    "vesting_period": <int>,
+    "default_keyset_creation": <str>,
+    "registration_fee_base": <int>,
+    "registration_fee_per_keyset": <int>
   }
 }
 ```
@@ -515,6 +479,13 @@ The [NUT-06][06] `MintMethodSetting` indicates support for this feature:
 - `supported`: Boolean indicating NUT-CTF support
 - `vesting_period` (optional): Seconds after `event_maturity_epoch` for redemption. Default: 30 days (2592000). `0` = no expiry.
 - `dlc_version`: DLC protocol version (currently `"0"`)
+- `default_keyset_creation`: `"none"` (default), `"one-vs-rest"`, or `"all"`.
+  - `"none"`: omitted `outcome_collections` creates no enum keysets; clients MAY request explicit non-full enum collections.
+  - `"one-vs-rest"`: omitted `outcome_collections` creates each atomic outcome and its complement, deduplicated for binary conditions; clients MUST NOT request explicit collections.
+  - `"all"`: omitted `outcome_collections` creates every non-empty, non-full collection subject to mint limits; clients MUST NOT request explicit collections.
+  - Numeric conditions always create `HI` and `LO` keysets at registration, regardless of this policy.
+- `registration_fee_base` (optional): Flat anti-spam fee charged per new condition, in the smallest unit of the condition's `collateral`. Default: `0` (free). See [Registration Fee](#registration-fee).
+- `registration_fee_per_keyset` (optional): Additional fee charged per conditional keyset the registration creates, in the smallest unit of the condition's `collateral`. Default: `0`. The total required fee is `registration_fee_base + registration_fee_per_keyset * num_keysets`.
 
 [00]: 00.md
 [01]: 01.md
