@@ -215,7 +215,8 @@ Registers a new condition and creates requested conditional keysets.
   "announcements": <Array[hex_str]>,
   "collateral": <str>,
   "outcome_collections": <Array[str]>,
-  "fee": <Array[Proof]>
+  "fee": <Array[Proof]>,
+  "outputs": <Array[BlindedMessage]>
 }
 ```
 
@@ -224,7 +225,8 @@ Registers a new condition and creates requested conditional keysets.
 - `announcements`: Hex-encoded oracle announcement TLV bytes
 - `collateral`: Unit string for root conditions (e.g., `"sat"`). REQUIRED if `outcome_collections` is present or if the mint's default keyset creation rule creates keysets.
 - `outcome_collections` (optional): Canonical outcome collections to create keysets for. If omitted, the mint applies its `default_keyset_creation` policy. If the mint advertises `default_keyset_creation` as `"one-vs-rest"` or `"all"`, clients MUST omit this field and the mint MUST reject client-defined collections.
-- `fee` (optional): A non-refundable anti-spam registration fee paid as `Proof` objects. The proofs MUST be from a **regular** keyset ([NUT-02][02]) whose unit equals `collateral`; conditional-keyset proofs MUST be rejected (error 13017). The mint marks these proofs spent and retains them as revenue — they are **not** condition collateral and never enter the [NUT-CTF-split-merge][CTF-split-merge] solvency accounting. REQUIRED when the mint advertises a non-zero registration fee (see [Mint Info Setting](#mint-info-setting)); MAY be omitted when the advertised fee is `0`. See [Registration Fee](#registration-fee).
+- `fee` (optional): Anti-spam registration fee inputs paid as `Proof` objects. The proofs MUST be from a **regular** keyset ([NUT-02][02]) whose unit equals `collateral`; conditional-keyset proofs MUST be rejected (error 13017). REQUIRED when the mint advertises a non-zero registration fee (see [Mint Info Setting](#mint-info-setting)); MAY be omitted when the advertised fee is `0`. The mint retains exactly `required_fee` as revenue and returns any excess as regular ecash change using `outputs` / `change` as described in [Registration Fee](#registration-fee).
+- `outputs` (optional): Blank `BlindedMessage` objects for returning excess fee input as regular ecash change, following the [NUT-08][08] blank-output model. The `amount` field in these messages is ignored by the mint and MAY be set to any valid placeholder amount by the client. Outputs MUST use a regular keyset whose unit equals `collateral`; conditional-keyset outputs MUST be rejected (error 13017). Clients SHOULD provide enough blank outputs to represent the maximum possible change from the selected `fee` proofs.
 
 **Response** of `Bob`:
 
@@ -235,7 +237,8 @@ Registers a new condition and creates requested conditional keysets.
     "<outcome_collection_1>": <hex_str>,
     "<outcome_collection_2>": <hex_str>,
     ...
-  }
+  },
+  "change": <Array[BlindSignature]>
 }
 ```
 
@@ -255,13 +258,13 @@ curl -X POST https://mint.host:3338/v1/conditions \
    - If omitted: applies `default_keyset_creation`.
 4. If condition exists with matching config and requested keyset set: returns existing `condition_id` and keysets (idempotent). The mint MUST NOT charge the registration fee on this path — see [Registration Fee](#registration-fee).
 5. If condition exists with different config or requested keyset set: error 13028
-6. If new: charges the registration fee (if any), stores the condition, creates keysets, and returns `condition_id` and `keysets` — all in a single atomic transaction (see [Registration Fee](#registration-fee))
+6. If new: charges the registration fee (if any), stores the condition, creates keysets, and returns `condition_id`, `keysets`, and any fee `change` — all in a single atomic transaction (see [Registration Fee](#registration-fee))
 
 The mint MUST make condition registration idempotent. Mints MAY charge a [registration fee](#registration-fee) and/or require [NUT-21][21] or [NUT-22][22] authentication for DoS prevention.
 
 ### Registration Fee
 
-To bound condition-registration spam, a mint MAY charge a non-refundable fee per new condition, advertised via [Mint Info Setting](#mint-info-setting). The required amount, denominated in the `collateral` unit, is:
+To bound condition-registration spam, a mint MAY charge a fee per new condition, advertised via [Mint Info Setting](#mint-info-setting). The required amount, denominated in the `collateral` unit, is:
 
 ```
 required_fee = registration_fee_base + registration_fee_per_keyset * num_keysets
@@ -269,12 +272,20 @@ required_fee = registration_fee_base + registration_fee_per_keyset * num_keysets
 
 where `num_keysets` is the number of conditional keysets this registration creates (after step 3 above). When `registration_fee_base` and `registration_fee_per_keyset` are both `0`, registration is free and the `fee` field MAY be omitted.
 
+The registration fee is mint-authoritative: the mint computes `num_keysets` after canonicalization, validation, default policy expansion, duplicate removal, and full-set exclusion. Clients MUST NOT rely on a locally computed keyset count as the payment authority.
+
+No additional [NUT-02][02] `input_fee_ppk` is charged on `fee` proofs for condition registration; `required_fee` is the sole amount retained by the mint. When `required_fee == 0`, the mint MUST NOT consume any `fee` proofs and MUST NOT sign `outputs` as fee change.
+
 When `required_fee > 0`, the mint MUST, for a **new** condition only:
 
 1. Require the `fee` field. Each `Proof` MUST be valid, unspent, from a regular keyset whose unit equals `collateral` (error 13017 for a conditional/wrong-unit keyset), and the sum of `fee` proof amounts MUST be at least `required_fee` (error 13044 otherwise).
-2. Atomically, in a single transaction: mark the `fee` proofs spent, store the condition, and create the keysets. If any step fails, none are applied — a failed registration MUST NOT consume the fee.
+2. Compute `change_amount = sum(fee) - required_fee`.
+3. If `change_amount > 0`, require `outputs` with enough blank messages to return the exact change amount as regular ecash. The mint decomposes `change_amount` into amounts supported by the output keyset, assigns those amounts to the blank outputs, signs them, and returns the resulting positive-value `BlindSignature`s in `change`. The returned `change` signatures MUST preserve the order of the blank outputs they correspond to and MUST omit zero-value outputs, matching [NUT-08][08]. If exact change cannot be returned from the provided outputs, the mint MUST reject the request (error 13044) and MUST NOT consume the fee proofs.
+4. Atomically, in a single transaction: mark the `fee` proofs spent, store the condition, and create the keysets. If any step fails, none are applied — a failed registration MUST NOT consume the fee.
 
-The mint MUST compute `required_fee` and verify the fee **after** the idempotency check (step 4). A repeated registration that resolves to an existing condition MUST return the existing result without charging again; otherwise a client retry would either double-charge or fail because the original `fee` proofs are already spent. The registration fee is mint revenue and is independent of condition collateral and the [NUT-CTF-split-merge][CTF-split-merge] solvency invariant.
+The response for a new paid registration MUST include `change` when `change_amount > 0`, and MAY omit `change` or return an empty array when `change_amount == 0`.
+
+The mint MUST compute `required_fee` and verify the fee **after** the idempotency check (step 4). A repeated registration that resolves to an existing condition MUST return the existing `condition_id` and `keysets` without charging again and without returning `change`; clients keep their unspent `fee` proofs and discard unused blank outputs. This prevents a client retry from double-charging or failing because retry proofs were already spent. The registration fee is mint revenue and is independent of condition collateral and the [NUT-CTF-split-merge][CTF-split-merge] solvency invariant. Fee change is regular ecash and is not condition collateral.
 
 ## Outcome Collection ID
 
@@ -457,7 +468,7 @@ If the oracle does not attest within expected time, the mint MAY refund conditio
 | 13037 | Duplicate canonical outcome collection                      |
 | 13038 | Unknown outcome in outcome collection                       |
 | 13043 | Full-set or reserved outcome collection                     |
-| 13044 | Missing or insufficient registration fee                    |
+| 13044 | Missing or insufficient registration fee or change outputs   |
 | 13045 | Hash to curve failed                                        |
 | 13046 | EC point operation failed                                   |
 
