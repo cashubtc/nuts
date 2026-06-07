@@ -280,12 +280,12 @@ When `required_fee > 0`, the mint MUST, for a **new** condition only:
 
 1. Require the `fee` field. Each `Proof` MUST be valid, unspent, from a regular keyset whose unit equals `collateral` (error 13017 for a conditional/wrong-unit keyset), and the sum of `fee` proof amounts MUST be at least `required_fee` (error 13044 otherwise).
 2. Compute `change_amount = sum(fee) - required_fee`.
-3. If `change_amount > 0`, require `outputs` with enough blank messages to return the exact change amount as regular ecash. The mint decomposes `change_amount` into amounts supported by the output keyset, assigns those amounts to the blank outputs, signs them, and returns the resulting positive-value `BlindSignature`s in `change`. The returned `change` signatures MUST preserve the order of the blank outputs they correspond to and MUST omit zero-value outputs, matching [NUT-08][08]. If exact change cannot be returned from the provided outputs, the mint MUST reject the request (error 13044) and MUST NOT consume the fee proofs.
+3. If `change_amount > 0`, require `outputs` with enough blank messages to return the exact change amount as regular ecash. The mint decomposes `change_amount` into amounts supported by the output keyset, assigns those amounts to the blank outputs, signs them, and returns the resulting positive-value `BlindSignature`s in `change`. The returned `change` signatures MUST preserve the order of the blank outputs they correspond to and MUST omit zero-value outputs, matching [NUT-08][08]. If exact change cannot be returned from the provided outputs, the mint MUST reject the request (error 13047) and MUST NOT consume the fee proofs.
 4. Atomically, in a single transaction: mark the `fee` proofs spent, store the condition, and create the keysets. If any step fails, none are applied — a failed registration MUST NOT consume the fee.
 
 The response for a new paid registration MUST include `change` when `change_amount > 0`, and MAY omit `change` or return an empty array when `change_amount == 0`.
 
-The mint MUST compute `required_fee` and verify the fee **after** the idempotency check (step 4). A repeated registration that resolves to an existing condition MUST return the existing `condition_id` and `keysets` without charging again and without returning `change`; clients keep their unspent `fee` proofs and discard unused blank outputs. This prevents a client retry from double-charging or failing because retry proofs were already spent. The registration fee is mint revenue and is independent of condition collateral and the [NUT-CTF-split-merge][CTF-split-merge] solvency invariant. Fee change is regular ecash and is not condition collateral.
+The mint MUST compute `required_fee` and verify the fee **after** the idempotency check (Mint Behavior step 4). A repeated registration that resolves to an existing condition MUST return the existing `condition_id` and `keysets` without charging again and without returning `change`; clients keep their unspent `fee` proofs and discard unused blank outputs. This prevents a client retry from double-charging or failing because retry proofs were already spent. The registration fee is mint revenue and is independent of condition collateral and the [NUT-CTF-split-merge][CTF-split-merge] solvency invariant. Fee change is regular ecash and is not condition collateral.
 
 ## Outcome Collection ID
 
@@ -468,9 +468,10 @@ If the oracle does not attest within expected time, the mint MAY refund conditio
 | 13037 | Duplicate canonical outcome collection                      |
 | 13038 | Unknown outcome in outcome collection                       |
 | 13043 | Full-set or reserved outcome collection                     |
-| 13044 | Missing or insufficient registration fee or change outputs   |
+| 13044 | Missing or insufficient registration fee                    |
 | 13045 | Hash to curve failed                                        |
 | 13046 | EC point operation failed                                   |
+| 13047 | Insufficient or invalid change outputs                      |
 
 ## Mint Info Setting
 
