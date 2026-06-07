@@ -92,7 +92,10 @@ The following is an invalid request to `/v1/mint/bolt11/batch` where one quote i
 
 ```json
 {
-  "quotes": ["bolt11_quote_id", "bolt12_quote_id"],
+  "quotes": [
+    "019e6d5a-2347-7000-80fe-07ae8fa79774",
+    "019e6d5a-2347-7000-8791-dbfba168f0ad"
+  ],
   "quote_amounts": [5, 3],
   "outputs": [{ "amount": 8, "id": "keyset_1", "B_": "<blinded_message>" }]
 }
@@ -109,7 +112,10 @@ The following is an invalid batch mint request where `signatures` length does no
 
 ```json
 {
-  "quotes": ["locked_quote_id_1", "locked_quote_id_2"],
+  "quotes": [
+    "019e6d5a-2347-7000-80fe-07ae8fa79774",
+    "019e6d5a-2347-7000-8791-dbfba168f0ad"
+  ],
   "outputs": [
     { "amount": 1, "id": "keyset_1", "B_": "<blinded_message_0>" },
     { "amount": 1, "id": "keyset_1", "B_": "<blinded_message_1>" }
@@ -128,16 +134,16 @@ Expected behavior:
 The following is a valid NUT-20 batch mint request where the signature correctly covers all outputs in order. The quote has pubkey `0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798` (sk = 1).
 
 ```shell
-quote: "locked-quote"
+quote: "019e6d5a-2347-7000-80fe-07ae8fa79774"
 pubkey: 0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
-msg_to_sign_bytes: utf8("locked-quote") || B0 || B1
+msg_to_sign_bytes: utf8("019e6d5a-2347-7000-80fe-07ae8fa79774") || B0 || B1
 msg_hash: 5ac550d5416e81c613b58e3f1fb095390fb828b55e8991fd9de231ca8e31e859
 signature[0]: 9408920d0b94cee5eb6df20f14d2a655e7ce2ce309dc1f1aeb69b219efe76716933b2206eba3a54f9a953c92edaa922ab3e6912e02383dda42a193409567a0dc
 ```
 
 ```json
 {
-  "quotes": ["locked-quote"],
+  "quotes": ["019e6d5a-2347-7000-80fe-07ae8fa79774"],
   "outputs": [
     {
       "amount": 1,
