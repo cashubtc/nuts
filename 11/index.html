@@ -1085,6 +1085,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#public-key-canonicalisation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Key Canonicalisation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#use-cases" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1517,6 +1528,8 @@
 <li><code>refund: &lt;hex_str&gt;</code> are additional public keys that can provide signatures after <code>locktime</code> (<em>allows multiple entries</em>)</li>
 <li><code>n_sigs_refund: &lt;int&gt;</code> specifies the minimum number of <a href="#refund-multisig">Refund Multisig</a> public keys providing valid signatures after <code>locktime</code> expires</li>
 </ul>
+<p>Each of the above tags may appear exactly <strong>ONCE</strong> in a P2PK secret. If a tag appears more than once, the P2PK secret is malformed and the Proof <strong>MUST</strong> be rejected as unspendable.</p>
+<p>If <code>n_sigs</code> or <code>n_sigs_refund</code> is not a positive integer, or exceeds the total number of keys in its pathway, the P2PK secret is malformed and the Proof <strong>MUST</strong> be rejected as unspendable.</p>
 <blockquote>
 <p>[!NOTE]</p>
 <p>The tag serialization type is <code>[&lt;str&gt;, &lt;str&gt;, ...]</code> but some tag values are <code>int</code>. Wallets and mints must cast types appropriately for de/serialization.</p>
@@ -1529,6 +1542,7 @@
 </ul>
 <p>If any one input has the signature flag <code>SIG_ALL</code>, then all inputs are required to have the same kind, the flag <code>SIG_ALL</code> and the same <code>Secret.data</code> and <code>Secret.tags</code>, otherwise an error is returned.</p>
 <p><code>SIG_INPUTS</code> is only enforced if no input is <code>SIG_ALL</code>.</p>
+<p>If a P2PK secret has any other signature flag value, the P2PK secret is malformed and the Proof <strong>MUST</strong> be rejected as unspendable.</p>
 <h3 id="signature-flag-sig_inputs">Signature flag <code>SIG_INPUTS</code><a class="headerlink" href="#signature-flag-sig_inputs" title="Permanent link">&para;</a></h3>
 <p><code>SIG_INPUTS</code> means that each <code>Proof</code> (input) requires its own signature. The signature is provided in the <code>Proof.witness</code> field of each input separately. The format of the <a href="#witness-format">witness</a> was defined earlier on.</p>
 <h4 id="signed-inputs">Signed inputs<a class="headerlink" href="#signed-inputs" title="Permanent link">&para;</a></h4>
@@ -1636,6 +1650,30 @@ Each pathway has a self-contained set of conditions which must be satisfied for 
 <span class="p">]</span>
 </code></pre></div>
 
+<h2 id="public-key-canonicalisation">Public Key Canonicalisation<a class="headerlink" href="#public-key-canonicalisation" title="Permanent link">&para;</a></h2>
+<p>Public keys <strong>MUST</strong> use the <a href="https://learnmeabitcoin.com/technical/public-key#public-key-format">compressed Secp256k1 public key format</a>.</p>
+<p>Each key <strong>MUST</strong> appear at most <strong>ONCE</strong> per <a href="#Multisig">multi-signature</a> pathway. The same key <strong>MAY</strong> appear in both pathways.</p>
+<p>Keys are compared using their lowercase x-coordinate (<code>02</code> or <code>03</code> y-parity prefix ignored).</p>
+<p>Example: the following keys are considered equivalent because they all have the same lowercase x-coordinate, so can all be Schnorr signed using the same secret key:</p>
+<div class="codehilite"><pre><span></span><code><span class="mi">02698</span><span class="err">c</span><span class="mf">4e2</span><span class="err">b</span><span class="mi">5</span><span class="kc">f</span><span class="mi">9534</span><span class="err">cd</span><span class="mi">0687</span><span class="err">d</span><span class="mi">87513</span><span class="err">c</span><span class="mi">759790</span><span class="err">c</span><span class="kc">f</span><span class="mi">829</span><span class="err">aa</span><span class="mi">5739184</span><span class="err">a</span><span class="mf">3e3735471</span><span class="kc">f</span><span class="err">bda</span><span class="mi">904</span><span class="w"> </span><span class="c1">// 02 lowercase</span>
+<span class="mi">02698</span><span class="err">C</span><span class="mf">4E2</span><span class="err">B</span><span class="mi">5</span><span class="err">F</span><span class="mi">9534</span><span class="err">CD</span><span class="mi">0687</span><span class="err">D</span><span class="mi">87513</span><span class="err">C</span><span class="mi">759790</span><span class="err">CF</span><span class="mi">829</span><span class="err">AA</span><span class="mi">5739184</span><span class="err">A</span><span class="mf">3E3735471</span><span class="err">FBDA</span><span class="mi">904</span><span class="w"> </span><span class="c1">// 02 uppercase</span>
+<span class="mi">02698</span><span class="err">C</span><span class="mf">4e2</span><span class="err">B</span><span class="mi">5</span><span class="kc">f</span><span class="mi">9534</span><span class="err">cD</span><span class="mi">0687</span><span class="err">d</span><span class="mi">87513</span><span class="err">C</span><span class="mi">759790</span><span class="err">cF</span><span class="mi">829</span><span class="err">aa</span><span class="mi">5739184</span><span class="err">a</span><span class="mf">3e3735471</span><span class="kc">f</span><span class="err">bda</span><span class="mi">904</span><span class="w"> </span><span class="c1">// 02 mixed case</span>
+<span class="mi">03698</span><span class="err">c</span><span class="mf">4e2</span><span class="err">b</span><span class="mi">5</span><span class="kc">f</span><span class="mi">9534</span><span class="err">cd</span><span class="mi">0687</span><span class="err">d</span><span class="mi">87513</span><span class="err">c</span><span class="mi">759790</span><span class="err">c</span><span class="kc">f</span><span class="mi">829</span><span class="err">aa</span><span class="mi">5739184</span><span class="err">a</span><span class="mf">3e3735471</span><span class="kc">f</span><span class="err">bda</span><span class="mi">904</span><span class="w"> </span><span class="c1">// 03 lowercase</span>
+<span class="mi">03698</span><span class="err">C</span><span class="mf">4E2</span><span class="err">B</span><span class="mi">5</span><span class="err">F</span><span class="mi">9534</span><span class="err">CD</span><span class="mi">0687</span><span class="err">D</span><span class="mi">87513</span><span class="err">C</span><span class="mi">759790</span><span class="err">CF</span><span class="mi">829</span><span class="err">AA</span><span class="mi">5739184</span><span class="err">A</span><span class="mf">3E3735471</span><span class="err">FBDA</span><span class="mi">904</span><span class="w"> </span><span class="c1">// 03 uppercase</span>
+<span class="mi">03698</span><span class="err">C</span><span class="mf">4e2</span><span class="err">B</span><span class="mi">5</span><span class="kc">f</span><span class="mi">9534</span><span class="err">cD</span><span class="mi">0687</span><span class="err">d</span><span class="mi">87513</span><span class="err">C</span><span class="mi">759790</span><span class="err">cF</span><span class="mi">829</span><span class="err">aa</span><span class="mi">5739184</span><span class="err">a</span><span class="mf">3e3735471</span><span class="kc">f</span><span class="err">bda</span><span class="mi">904</span><span class="w"> </span><span class="c1">// 03 mixed case</span>
+</code></pre></div>
+
+<p>Example: key duplicated in main pathway (malformed):</p>
+<div class="codehilite"><pre><span></span><code>&quot;data&quot;: &quot;02698c4e2b5f9534cd0687d87513c759790cf829aa5739184a3e3735471fbda904&quot;,
+&quot;pubkeys&quot;: &quot;03698c4e2b5f9534cd0687d87513c759790cf829aa5739184a3e3735471fbda904&quot;
+</code></pre></div>
+
+<p>Example: key allowed in both pathways:</p>
+<div class="codehilite"><pre><span></span><code>&quot;data&quot;: &quot;02698c4e2b5f9534cd0687d87513c759790cf829aa5739184a3e3735471fbda904&quot;,
+&quot;refund&quot;: &quot;03698c4e2b5f9534cd0687d87513c759790cf829aa5739184a3e3735471fbda904&quot;
+</code></pre></div>
+
+<p>If a pathway contains a duplicate key, the P2PK secret is malformed and the Proof <strong>MUST</strong> be rejected as unspendable.</p>
 <h2 id="use-cases">Use cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
 <p>The following use cases are unlocked using P2PK:</p>
 <ul>
