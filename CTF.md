@@ -134,6 +134,7 @@ Conditions are registered via `POST /v1/conditions` before any operations on con
   "threshold": <int>,
   "tags": <Array[Array[str]]>,
   "announcements": <Array[hex_str]>,
+  "collateral": <str>,
   "registered_at": <int>,
   "keysets": {
     "<outcome_collection>": <hex_str>,
@@ -151,6 +152,7 @@ Conditions are registered via `POST /v1/conditions` before any operations on con
 - `threshold`: Minimum oracles required for attestation (default: 1)
 - `tags`: [NIP-88][NIP-88] tag array (e.g., `[["description", "..."], ["n", "BTC"]]`). Display-only metadata; does NOT affect `condition_id`.
 - `announcements`: Hex-encoded oracle announcement TLV bytes
+- `collateral` (optional): Condition's collateral currency unit, echoing the value accepted during registration. Clients use this to verify unit consistency before building markets on a condition.
 - `registered_at`: Unix timestamp of registration
 - `keysets`: Flat map of all root-level requested outcome collections to keyset IDs. Use `GET /v1/conditional_keysets` for full keyset metadata.
 - `attestation` (optional, omitted if no attestation):
