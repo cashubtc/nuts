@@ -196,7 +196,7 @@ Every individual output (`BlindSignature`) and spent input includes a nested `po
 
 ### 2. Message Formats and Keys
 
-Each receipt `signature` is produced by the mint using the keyset-specific private key of the corresponding value (amount) for that input or output.
+Each receipt `signature` is a BIP340 Schnorr signature on the SHA-256 hash of the formatted message to sign. It is produced by the mint using the keyset-specific private key of the corresponding value (amount) for that input or output.
 
 #### A. Outputs (Blinded Messages)
 For each returned blind signature, the mint returns a nested `pol_receipt`.
@@ -204,7 +204,7 @@ For each returned blind signature, the mint returns a nested `pol_receipt`.
   `{B_hex}:{target_epoch}`
   where `{B_hex}` is the hex-encoded string of the output's BlindedMessage `B'`, and `{target_epoch}` is the target upcoming epoch index string.
 - **Signing key:** The keyset private key corresponding to the output's specific amount (`keyset.private_keys[amount]`).
-- **Verification:** Wallets verify the signature against the keyset public key corresponding to the output's amount (`keyset.public_keys[amount]`).
+- **Verification:** Wallets verify the BIP340 Schnorr signature on the SHA-256 hash of the formatted message against the keyset public key corresponding to the output's amount (`keyset.public_keys[amount]`).
 
 #### B. Spent Inputs (Ecash Proofs)
 For each spent proof in a swap or melt, the mint returns a list of `spent_receipts` in the response.
@@ -212,7 +212,7 @@ For each spent proof in a swap or melt, the mint returns a list of `spent_receip
   `{Y_hex}:{target_epoch}`
   where `{Y_hex}` is the hex-encoded public key string of the spent proof's curve point `Y = hash_to_curve(secret)`, and `{target_epoch}` is the target upcoming epoch index string.
 - **Signing key:** The keyset private key corresponding to the spent input's specific amount (`keyset.private_keys[amount]`).
-- **Verification:** Wallets verify the signature against the keyset public key corresponding to the spent input's amount (`keyset.public_keys[amount]`).
+- **Verification:** Wallets verify the BIP340 Schnorr signature on the SHA-256 hash of the formatted message against the keyset public key corresponding to the spent input's amount (`keyset.public_keys[amount]`).
 
 ### 3. Response Structure & Alignment
 
