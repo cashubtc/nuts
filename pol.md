@@ -266,12 +266,25 @@ Check that the outstanding balance reported matches:
 
 ## Cryptographic Fraud Challenge (JSON format)
 
-If any verification path walk fails (e.g., the leaf is not present or has a sum value different from the token's face value, or the computed root doesn't match the signed root), the wallet generates a **Fraud Challenge**. This is an aggregated, self-contained JSON document that can be shared publicly to mathematically prove the mint committed perjury:
+If any verification path walk fails (e.g., the leaf is not present or has a sum value different from the token's face value, or the computed root doesn't match the signed root), the wallet generates a **Fraud Challenge**. This is an aggregated, self-contained JSON document that can be shared publicly to mathematically prove the mint committed perjury.
+
+To prove that the ecash note (input or output) is genuinely from that mint and of the claimed keyset, a third party must be able to verify the mint's signature on it. Therefore, the fraud challenge contains the original blinded message and blind signature (for `issued` proofs), or the nullifier and unblinded signature (for `spent` proofs), as well as a DLEQ proof if the keyset version requires it:
+
+1. **For keyset version <= v2 (BDHKE):**
+   - Verification of the BDHKE signature requires a Discrete Logarithm Equality (DLEQ) proof to be verified by a third party.
+   - For `issued` proofs: The challenge includes `B_hex`, the blind signature `C_prime_hex`, and the DLEQ proof `dleq` (consisting of `{e, s}`) returned by the mint in `BlindSignature` (NUT-12).
+   - For `spent` proofs: The challenge includes the nullifier `Y_hex`, the unblinded signature `C_hex`, and the DLEQ proof `dleq` (consisting of `{e, s, r}`, where `r` is the secret's blinding factor) returned in `Proof` (NUT-12).
+
+2. **For keyset version >= v3 (BLS):**
+   - No DLEQ proof is necessary. A third party can directly verify the BLS signature (`C_prime_hex` or `C_hex`) against the public key of the keyset corresponding to the token's value.
+
+### Challenge JSON Schema
 
 ```json
 {
   "challenge_type": "pol_fraud_proof",
   "keyset_id": "009a6154b71113b7",
+  "keyset_version": 2,
   "epoch_index": 1,
   "manifest": { ... },
   "pol_receipt": {
@@ -279,7 +292,17 @@ If any verification path walk fails (e.g., the leaf is not present or has a sum 
     "signature": "<hex_encoded_signature>"
   },
   "proof_type": "issued | spent",
-  "item": "02b1a...",
+  "leaf_data": {
+    "B_hex": "02b1a...",             // Blinded message B' (required for proof_type "issued")
+    "C_prime_hex": "038a1...",       // Blind signature C' (required for proof_type "issued")
+    "Y_hex": "02b1a...",             // Nullifier Y = hash_to_curve(secret) (required for proof_type "spent")
+    "C_hex": "038a1...",             // Unblinded signature C (required for proof_type "spent")
+    "dleq": {                        // Required if keyset_version <= 2
+      "e": "8a31...",
+      "s": "4b2c...",
+      "r": "9f1d..."                 // Blinding factor r (only required/included for proof_type "spent")
+    }
+  },
   "index": "8a31...",
   "claimed_value": 1000,
   "actual_value": 0,
@@ -288,4 +311,4 @@ If any verification path walk fails (e.g., the leaf is not present or has a sum 
 }
 ```
 
-This format provides all mathematical inputs needed for any independent third party to verify the forgery without relying on trust. The inclusion of the `pol_receipt` (signed by the keyset-amount private key) serves as the indisputable proof that the mint previously promised to include this note in the specified epoch.
+This format provides all mathematical inputs needed for any independent third party to verify the forgery without relying on trust. The inclusion of the `pol_receipt` (signed by the keyset-amount private key) serves as the indisputable proof that the mint previously promised to include this note in the specified epoch, while the verified signature on the leaf data proves that the note itself was legitimately issued/processed by that mint.
