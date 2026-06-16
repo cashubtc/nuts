@@ -13,10 +13,12 @@ This document specifies a synchronized, epoch-based, stateless Proof of Liabilit
 A Cashu mint acts as a custodian of backing assets. To prove that the mint is solvent, it must prove that its outstanding liabilities (total issued ecash minus total spent/redeemed ecash) are fully backed by its outstanding reserves, and that no individual users' balances are hidden or manipulated.
 
 This is solved using two synchronized Sparse Merkle Sum Trees (MS-SMT):
+
 1. **Issued Tree (Promises):** Tracks all blinded messages `B'` signed by the mint.
 2. **Spent Tree (Proofs Used):** Tracks all spent proof secrets `Y` (where `Y = hash_to_curve(secret)`) that have been redeemed or swapped at the mint.
 
 Using an MS-SMT of depth 256 ensures that:
+
 - Every active or spent token has a unique, deterministic leaf index calculated directly from its public key/secret hash.
 - This prevents the mint from omitting or "double-bookkeeping" liabilities without being cryptographically caught.
 - Epoch-based synchronization with OpenTimestamps commits the state roots to the Bitcoin blockchain periodically (e.g., daily), creating an immutable history.
@@ -43,11 +45,14 @@ Leaf indices are calculated deterministically:
 ### 2. Node Structure & Hashing
 
 Each node in the sum tree is a pair `(hash, sum_value)` where:
+
 - `hash` is a 32-byte binary digest.
 - `sum_value` is an integer representing the aggregated satoshi amount.
 
 #### Default Empty Nodes
+
 To represent empty branches without storing 2^256 nodes, default empty node values are precomputed for each level `d` from 0 to 256:
+
 - **At level 0 (leaf):**
   - `hash_0` is the SHA256 hash of empty bytes (`b""`).
   - `sum_0` is `0`.
@@ -58,7 +63,9 @@ To represent empty branches without storing 2^256 nodes, default empty node valu
     where `bytes_8(x)` is the 8-byte big-endian representation of integer `x`.
 
 #### Parent Node Computation
+
 For any level `d` from 0 to 255, two neighboring sibling nodes `L = (hash_L, sum_L)` and `R = (hash_R, sum_R)` at level `d` are aggregated into parent node `P = (hash_P, sum_P)` at level `d+1`:
+
 - `sum_P` is the integer sum: `sum_L + sum_R`
 - `hash_P` is the SHA256 hash of the concatenated bytes:
   `hash_L + hash_R + bytes_8(sum_L) + bytes_8(sum_R)`
@@ -89,6 +96,7 @@ Every epoch interval (e.g., 24 hours), the mint builds the Issued and Spent tree
 ## Compact Bitmasked Sibling Proofs
 
 Rather than returning all 256 sibling nodes (which would require over 10 KB of data per proof), the mint returns a **Compact Sibling Proof** leveraging a bitmask:
+
 1. If a sibling at level `d` is a default empty node, it is **omitted** from the returned list of siblings.
 2. A 256-bit bitmask is returned. The `d`-th bit of the mask is set to `1` if the sibling at level `d` is non-empty (included in the response), and `0` if the sibling is empty (and should be substituted with the precomputed default empty node for level `d`).
 
@@ -97,12 +105,15 @@ Rather than returning all 256 sibling nodes (which would require over 10 KB of d
 ## HTTP API Specifications
 
 ### 1. Get Keyset Manifest
+
 `GET /v1/pol/{keyset_id}/manifest`
 
 **Query Parameters:**
+
 - `epoch_index` (optional, integer): Defaults to the latest epoch if omitted.
 
 **Response:**
+
 ```json
 {
   "keyset_id": "009a6154b71113b7",
@@ -124,21 +135,23 @@ Rather than returning all 256 sibling nodes (which would require over 10 KB of d
 ```
 
 ### 2. Query Issued Tree Proofs
+
 `POST /v1/pol/{keyset_id}/proofs/issued`
 
 **Query Parameters:**
+
 - `epoch_index` (optional, integer): Defaults to latest.
 
 **Request Body:**
+
 ```json
 {
-  "blinded_messages": [
-    "02b1a..."
-  ]
+  "blinded_messages": ["02b1a..."]
 }
 ```
 
 **Response:**
+
 ```json
 {
   "proofs": [
@@ -159,17 +172,18 @@ Rather than returning all 256 sibling nodes (which would require over 10 KB of d
 ```
 
 ### 3. Query Spent Tree Proofs
+
 `POST /v1/pol/{keyset_id}/proofs/spent`
 
 **Query Parameters:**
+
 - `epoch_index` (optional, integer): Defaults to latest.
 
 **Request Body:**
+
 ```json
 {
-  "ys": [
-    "02b1a..."
-  ]
+  "ys": ["02b1a..."]
 }
 ```
 
@@ -198,12 +212,13 @@ Every individual output (`BlindSignature`) and spent input includes a nested `po
 
 Each receipt is signed under the keyset's per-amount key (`private_keys[amount]`), binding it to the note's denomination. The signature scheme follows the keyset's curve (NUT-02 version byte):
 
-| Version | Curve | Signature |
-|-----------|-----------|------------------------------------------------------------|
-| `00`/`01` | secp256k1 | BIP340 Schnorr over `SHA-256(message)` |
-| `02` | BLS12-381 | `σ = a · H_G1(message)`, verified `e(σ, G2) == e(H_G1(message), K)` |
+| Version   | Curve     | Signature                                                           |
+| --------- | --------- | ------------------------------------------------------------------- |
+| `00`/`01` | secp256k1 | BIP340 Schnorr over `SHA-256(message)`                              |
+| `02`      | BLS12-381 | `σ = a · H_G1(message)`, verified `e(σ, G2) == e(H_G1(message), K)` |
 
 **Message to sign:** the UTF-8 bytes of the point hex, a literal `:`, and the target epoch index as a decimal string.
+
 - **Output:** `<B'_hex>:<target_epoch>`, e.g. `02b1a...d4f:12`
 - **Spent input:** `<Y_hex>:<target_epoch>`, e.g. `02e9c...a07:12`, where `Y = hash_to_curve(secret)`.
 
@@ -216,7 +231,7 @@ Each receipt is signed under the keyset's per-amount key (`private_keys[amount]`
 To maintain simplicity and zero overhead, returned receipts are **fully order-preserving** (matching 1:1 indexes of inputs and outputs of the request):
 
 - **Mint responses (`POST /v1/mint/bolt11` and `POST /v1/mint/bolt11/batch`):** Each returned `BlindSignature` object inside the `signatures` array has its own nested `pol_receipt`.
-- **Swap responses (`POST /v1/swap`):** 
+- **Swap responses (`POST /v1/swap`):**
   - Output receipts are nested inside each `BlindSignature` object in the `signatures` array.
   - Input spent receipts are returned as a top-level list of receipts `spent_receipts: List[PolReceipt]` where `spent_receipts[i]` maps to `inputs[i]` of the request.
 - **Melt responses (`POST /v1/melt/bolt11`):** Spent receipts are returned as a top-level list `spent_receipts: List[PolReceipt]` where `spent_receipts[i]` maps to `inputs[i]` of the request.
@@ -228,18 +243,23 @@ To maintain simplicity and zero overhead, returned receipts are **fully order-pr
 Wallets **SHOULD** periodically audit their held tokens using the following 5-step solvency verification protocol:
 
 ### Step 1: Verify Manifest Signature
+
 Verify the `mint_signature` against `signing_pubkey` for the formatted epoch string. Ensure that the `signing_pubkey` matches the mint's master public key advertised in the NUT-06 `/v1/info` endpoint response.
 
 ### Step 2: Validate OpenTimestamps Attestation
+
 Parse the binary `ots_receipt` to verify that the root hashes were committed to the Bitcoin blockchain. To verify anchoring programmatically without external library dependencies:
+
 1. **Upgrade Proof (Optional):** Submit the binary `ots_receipt` to a public calendar server upgrade endpoint (e.g., `https://alice.btc.calendar.opentimestamps.org/upgrade`). If a mined block contains the commitment, the calendar returns an upgraded receipt containing the on-chain Merkle path.
 2. **Scan for Block Attestation:** Scan the binary upgraded receipt for the Bitcoin Block Header attestation tag (`0x00` followed by `0x05` for `A_BLOCKHEADER`).
 3. **Parse Block Height:** Parse the Bitcoin block height immediately following the tag (serialized as a standard variable-length VarInt).
 4. **Verify Block Confirmation:** Query any independent public Bitcoin block explorer API (e.g. `https://mempool.space/api/blocks/tip/height`) to check that the parsed block height exists, matches the manifest timestamp, and has sufficient confirmations. If present, the attestation is fully confirmed. If the pending tag `0x00 0x06` is found instead, the receipt has been submitted to the calendar but is still awaiting blockchain anchoring.
 
 ### Step 3: Validate Issued Path Walks
+
 For each active token held:
-1. Reconstruct `B'` (if only holding `C` and `r`, compute `B' = Y + rG`).
+
+1. Reconstruct `B'` (for BDHKE keysets: if only holding `C` and `r`, compute `B' = Y + rG`; for BLS keysets: compute `B' = r · Y`).
 2. Compute the leaf index by parsing the SHA256 hash of `B'` as a big-endian integer.
 3. Reconstruct the root hash and sum by walking up the 256 levels:
    - For `d` from 0 to 255:
@@ -250,12 +270,15 @@ For each active token held:
 4. Ensure the computed root matches `root_issued`.
 
 ### Step 4: Validate Spent Path Walks
+
 For all spent tokens (history):
+
 1. Compute `Y = hash_to_curve(secret)`.
 2. Compute the leaf index by parsing the SHA256 hash of `Y` as a big-endian integer.
 3. Perform the same walk up to verify inclusion in the `root_spent` tree.
 
 ### Step 5: Verify Solvency Equation
+
 Check that the outstanding balance reported matches:
 `outstanding_balance == root_issued_sum - root_spent_sum`
 
