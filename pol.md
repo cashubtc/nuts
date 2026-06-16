@@ -196,23 +196,20 @@ Every individual output (`BlindSignature`) and spent input includes a nested `po
 
 ### 2. Message Formats and Keys
 
-Each receipt `signature` is a BIP340 Schnorr signature on the SHA-256 hash of the formatted message to sign. It is produced by the mint using the keyset-specific private key of the corresponding value (amount) for that input or output.
+Each receipt is signed under the keyset's per-amount key (`private_keys[amount]`), binding it to the note's denomination. The signature scheme follows the keyset's curve (NUT-02 version byte):
 
-#### A. Outputs (Blinded Messages)
-For each returned blind signature, the mint returns a nested `pol_receipt`.
-- **Message format to sign:**
-  `{B_hex}:{target_epoch}`
-  where `{B_hex}` is the hex-encoded string of the output's BlindedMessage `B'`, and `{target_epoch}` is the target upcoming epoch index string.
-- **Signing key:** The keyset private key corresponding to the output's specific amount (`keyset.private_keys[amount]`).
-- **Verification:** Wallets verify the BIP340 Schnorr signature on the SHA-256 hash of the formatted message against the keyset public key corresponding to the output's amount (`keyset.public_keys[amount]`).
+| Version | Curve | Signature |
+|-----------|-----------|------------------------------------------------------------|
+| `00`/`01` | secp256k1 | BIP340 Schnorr over `SHA-256(message)` |
+| `02` | BLS12-381 | `σ = a · H_G1(message)`, verified `e(σ, G2) == e(H_G1(message), K)` |
 
-#### B. Spent Inputs (Ecash Proofs)
-For each spent proof in a swap or melt, the mint returns a list of `spent_receipts` in the response.
-- **Message format to sign:**
-  `{Y_hex}:{target_epoch}`
-  where `{Y_hex}` is the hex-encoded public key string of the spent proof's curve point `Y = hash_to_curve(secret)`, and `{target_epoch}` is the target upcoming epoch index string.
-- **Signing key:** The keyset private key corresponding to the spent input's specific amount (`keyset.private_keys[amount]`).
-- **Verification:** Wallets verify the BIP340 Schnorr signature on the SHA-256 hash of the formatted message against the keyset public key corresponding to the spent input's amount (`keyset.public_keys[amount]`).
+**Message to sign:** the UTF-8 bytes of the point hex, a literal `:`, and the target epoch index as a decimal string.
+- **Output:** `<B'_hex>:<target_epoch>`, e.g. `02b1a...d4f:12`
+- **Spent input:** `<Y_hex>:<target_epoch>`, e.g. `02e9c...a07:12`, where `Y = hash_to_curve(secret)`.
+
+**secp256k1 (`00`/`01`):** verify the BIP340 signature against `public_keys[amount]`.
+
+**BLS12-381 (`02`):** `H_G1` is `hash_to_curve_G1` (RFC 9380) under DST `"Cashu_PoL_Receipt_BLS12381G1_XMD:SHA-256_SSWU_RO_"`, which MUST differ from the BDHKE secret DST. `σ` is the compressed G1 encoding; `K = public_keys[amount]` (G2). Receipts MAY be batch-verified per NUT-00.
 
 ### 3. Response Structure & Alignment
 
