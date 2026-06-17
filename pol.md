@@ -64,7 +64,7 @@ Every epoch interval (e.g., 24 hours), the mint constructs and signs an Epoch Ma
 5. **Manifest Message:** Construct a colon-separated UTF-8 string:
    `"{keyset_id}:{epoch_index}:{timestamp}:{root_issued_hash}:{root_issued_sum}:{root_spent_hash}:{root_spent_sum}:{outstanding_balance}:{ots_receipt}"`
    where `ots_receipt` is the hex-encoded OTS receipt.
-6. **Signing:** Sign the message using the mint's master NUT-06 private key.
+6. **Signing:** Sign the message with a BIP-340 Schnorr signature using the mint's master NUT-06 private key signing the SHA256 digest of this serialized manifest string.
 7. **Publish:** Store and publish the signed manifest, signatures, and OTS receipts.
 
 ---
@@ -168,7 +168,7 @@ Returned receipts are fully order-preserving (1:1 index matching of request inpu
 Wallets periodically audit their held and spent tokens:
 
 ### Step 1: Verify Manifest Signature
-Verify `mint_signature` against the mint's master public key (`signing_pubkey` from `/v1/info`) over the constructed epoch string.
+Verify the BIP-340 Schnorr signature `mint_signature` against the mint's master public key (`signing_pubkey` from `/v1/info`) over the SHA256 digest of the constructed epoch string.
 
 ### Step 2: Validate OpenTimestamps Attestation
 1. **Upgrade Receipt:** Post `ots_receipt` to a calendar upgrade endpoint (e.g., `https://alice.btc.calendar.opentimestamps.org/upgrade`) to fetch the Merkle path.
