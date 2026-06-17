@@ -11,13 +11,13 @@ This NUT improves the **liveness** guarantees of custodial ecash mints that hold
 A mint can delegate to multiple other mints. If a set of mints all act as delegates for each other, they collectively inherit a **1-of-n liveness** property: as long as one mint in the set stays online, the users of every mint in the set can redeem their funds.
 
 > [!IMPORTANT]
-> This is **ordered custodial failover, not trustless unilateral exit.** It improves recovery from liveness failures, not from malicious custody. Users are **not** protected if the original mint steals reserves before failing or is insolvent, and after failover they inherit the usual custodial trust assumptions under the delegate mint. It only ensures that *"the original mint disappeared"* no longer means *"the funds are lost forever."*
+> This is **ordered custodial failover, not trustless unilateral exit.** It improves recovery from liveness failures, not from malicious custody. Users are **not** protected if the original mint steals reserves before failing or is insolvent, and after failover they inherit the usual custodial trust assumptions under the delegate mint. It only ensures that _"the original mint disappeared"_ no longer means _"the funds are lost forever."_
 
 ## Overview
 
 The scheme has four parts, three of which are wire-protocol concerns specified normatively here, and one (the on-chain reserve) which is informational:
 
-1. **Advertisement** — a Bobnnounces its delegates, the keysets it backs, and its spent-proof feed via [NUT-06][06] (normative).
+1. **Advertisement** — a mint announces its delegates, the keysets it backs, and its spent-proof feed via [NUT-06][06] (normative).
 2. **Spent-proof firehose** — a sequenced feed of spent-proof identifiers that delegate mints subscribe to and mirror locally (normative).
 3. **Failover redemption** — how a delegate accepts and pays out the original mint's proofs after taking over (normative).
 4. **Reserve construction** — a recommended on-chain Taproot construction that enforces the failover ordering (informational, see [Appendix](#appendix-reserve-construction-informational)).
@@ -190,7 +190,7 @@ A mint signals support via [NUT-06][06] with the following setting. Both roles a
 
 ```json
 "nuts": {
-  "31": {
+  "xx": {
     "supported": true,
     "reserves": [
       {
@@ -229,7 +229,7 @@ Example:
 
 ```json
 "nuts": {
-  "31": {
+  "xx": {
     "supported": true,
     "reserves": [
       { "method": "onchain", "address": "bc1p...", "descriptor": null }
@@ -275,13 +275,13 @@ This pairs well with TEE-based mints. A TEE reduces custody trust but increases 
 
 See [error_codes.md][errors]. Codes relevant to this NUT:
 
-| Code  | Description                                  |
-| ----- | -------------------------------------------- |
-| 33001 | Proof from unknown or unmirrored keyset      |
-| 33002 | Delegation window not yet open               |
-| 33003 | Recovered reserve exhausted                  |
-| 33004 | Proof DLEQ verification failed               |
-| 33005 | Firehose sequence out of range               |
+| Code  | Description                             |
+| ----- | --------------------------------------- |
+| 33001 | Proof from unknown or unmirrored keyset |
+| 33002 | Delegation window not yet open          |
+| 33003 | Recovered reserve exhausted             |
+| 33004 | Proof DLEQ verification failed          |
+| 33005 | Firehose sequence out of range          |
 
 [00]: 00.md
 [01]: 01.md
