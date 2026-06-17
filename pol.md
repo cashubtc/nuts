@@ -1,4 +1,4 @@
-# NUT Draft: Proof of Liabilities (Solvency Audits)
+# NUT-XX: Proof of Liabilities
 
 `optional`
 
