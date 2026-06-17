@@ -6,13 +6,13 @@
 
 ## Abstract
 
-This document specifies a synchronized, epoch-based, stateless Proof of Liabilities (PoL) auditing scheme using a 256-depth Sparse Merkle Sum Tree (MS-SMT) with compact bitmasked sibling proofs and automated OpenTimestamps (OTS) commitments on-chain. This scheme allows wallets and external auditors to mathematically verify the solvency of a Cashu mint.
+This document specifies a synchronized, epoch-based, stateless Proof of Liabilities (PoL) auditing scheme using a 256-depth Sparse Merkle Sum Tree (MS-SMT) with compact bitmasked sibling proofs and automated OpenTimestamps (OTS) commitments on-chain. This scheme allows wallets and external auditors to mathematically verify the outstanding liabilities of a Cashu mint.
 
 ---
 
 ## Architecture Overview
 
-A Cashu mint acts as a custodian of backing assets. Solvency is proven using two synchronized 256-depth Sparse Merkle Sum Trees (MS-SMT):
+A Cashu mint acts as a custodian of backing assets. Outstanding liabilities are proven using two synchronized 256-depth Sparse Merkle Sum Trees (MS-SMT):
 1. **Issued Tree (Promises):** Tracks all signed blinded messages $B'$.
 2. **Spent Tree (Proofs Used):** Tracks all spent proof secrets $Y = \text{hash\_to\_curve}(\text{secret})$.
 
@@ -194,7 +194,7 @@ For spent tokens (history):
 2. Leaf index $I = \text{SHA256}(Y)$ parsed as a big-endian integer.
 3. Walk up the tree and verify matching `root_spent`.
 
-### Step 5: Verify Solvency Equation
+### Step 5: Verify Liabilities Equation
 Ensure:
 $$\text{outstanding\_balance} == \text{root\_issued\_sum} - \text{root\_spent\_sum}$$
 
