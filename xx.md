@@ -1,4 +1,4 @@
-# NUT-29: Mint Quote Lookup by Public Key
+# NUT-XX: Mint Quote Lookup by Public Key
 
 `optional`
 
@@ -21,14 +21,26 @@ The wallet includes the following `PostMintQuotesByPubkeyRequest` data:
 ```json
 {
   "pubkeys": <Array[str]>,
-  "pubkey_signatures": <Array[str]>
+  "pubkey_signatures": <Array[str]>,
+  "timestamp": <int>,
+  "nonce": <str>
 }
 ```
 
 - `pubkeys` is an array of hex-encoded compressed secp256k1 NUT-20 public keys (33 bytes each)
-- `pubkey_signatures` is an array of hex-encoded Schnorr signatures on `pubkeys` in the same order (64 bytes each)
+- `pubkey_signatures` is an array of hex-encoded Schnorr signatures in the same order as `pubkeys` (64 bytes each)
+- `timestamp` is the Unix time (seconds) the request was created
+- `nonce` is a random 16-byte hex string
 
-The wallet **MUST** provide a valid signature in `pubkey_signatures` for each public key in `pubkeys` with the corresponding private key in the same order as the `pubkeys` array. The message to sign is the byte representation of the public key.
+For each `pubkey`, the corresponding `pubkey_signatures` entry signs the SHA-256 hash of:
+
+```
+"Cashu_MintQuoteLookup_v1" || mint_pubkey || pubkey || nonce || timestamp
+```
+
+`mint_pubkey` is the mint's `pubkey` from its [NUT-06][06] info response, which a mint supporting this NUT **MUST** provide. Fields are concatenated as their UTF-8 string representations; `timestamp` is placed last as the only variable-length field.
+
+The mint **MUST** reject the request unless every signature is valid, `timestamp` is within `max_age` seconds of the mint's clock, and `nonce` is unused within that window. On retry the wallet **MUST** use a fresh `timestamp` and `nonce` and re-sign.
 
 ## Response
 
@@ -48,11 +60,14 @@ The settings for this NUT are part of the mint info response ([NUT-06][06]):
 
 ```json
 {
-  "29": {
-    "supported": <bool>
+  "XX": {
+    "supported": <bool>,
+    "max_age": <int>
   }
 }
 ```
+
+- `max_age` is the maximum age in seconds of a `timestamp` the mint will accept.
 
 [04]: 04.md
 [06]: 06.md
