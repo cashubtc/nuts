@@ -1155,26 +1155,37 @@
 <h1 id="the-dleq-proof">The DLEQ proof<a class="headerlink" href="#the-dleq-proof" title="Permanent link">&para;</a></h1>
 <p>The purpose of this DLEQ is to prove that the mint has used the same private key <code>a</code> for creating its public key <code>A</code> (<a href="../01/">NUT-01</a>) and for signing the BlindedMessage <code>B'</code>. <code>Bob</code> returns the DLEQ proof additional to the blind signature <code>C'</code> for a mint or swap operation.</p>
 <p>The complete DLEQ proof reads</p>
-<div class="codehilite"><pre><span></span><code><span class="gh">#</span> DLEQ Proof
+<div class="codehilite"><pre><span></span><code><span class="err">#</span><span class="w"> </span><span class="nt">DLEQ</span><span class="w"> </span><span class="nt">Proof</span>
 
-(These steps occur when Bob returns C&#39;)
+<span class="o">(</span><span class="nt">These</span><span class="w"> </span><span class="nt">steps</span><span class="w"> </span><span class="nt">occur</span><span class="w"> </span><span class="nt">when</span><span class="w"> </span><span class="nt">Bob</span><span class="w"> </span><span class="nt">returns</span><span class="w"> </span><span class="nt">C</span><span class="s1">&#39;)</span>
 
-Bob:
-r = random nonce
-R1 = r*G
-R2 = r*B&#39;
-e = hash(R1,R2,A,C&#39;)
-s = r + e*a
-return e, s
+<span class="s1">Bob:</span>
+<span class="s1">r = HMAC-SHA256(key=a, data=&quot;Cashu_DLEQ_R_v1&quot; || A || B&#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nt">C</span><span class="s1">&#39; || ctr) # Deterministic nonce</span>
+<span class="s1">R1 = r*G</span>
+<span class="s1">R2 = r*B&#39;</span>
+<span class="nt">e</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">hash</span><span class="o">(</span><span class="nt">R1</span><span class="o">,</span><span class="nt">R2</span><span class="o">,</span><span class="nt">A</span><span class="o">,</span><span class="nt">C</span><span class="s1">&#39;)</span>
+<span class="s1">s = (r + e*a) mod n</span>
+<span class="s1">return e, s</span>
 
-Alice:
-R1 = s*G - e*A
-R2 = s*B&#39; - e*C&#39;
-e == hash(R1,R2,A,C&#39;)
+<span class="s1">Alice:</span>
+<span class="s1">R1 = s*G - e*A</span>
+<span class="s1">R2 = s*B&#39;</span><span class="w"> </span><span class="nt">-</span><span class="w"> </span><span class="nt">e</span><span class="o">*</span><span class="nt">C</span><span class="s1">&#39;</span>
+<span class="s1">e == hash(R1,R2,A,C&#39;</span><span class="o">)</span>
 
-If true, a in A = a*G must be equal to a in C&#39; = a*B&#39;
+<span class="nt">If</span><span class="w"> </span><span class="nt">true</span><span class="o">,</span><span class="w"> </span><span class="nt">a</span><span class="w"> </span><span class="nt">in</span><span class="w"> </span><span class="nt">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">a</span><span class="o">*</span><span class="nt">G</span><span class="w"> </span><span class="nt">must</span><span class="w"> </span><span class="nt">be</span><span class="w"> </span><span class="nt">equal</span><span class="w"> </span><span class="nt">to</span><span class="w"> </span><span class="nt">a</span><span class="w"> </span><span class="nt">in</span><span class="w"> </span><span class="nt">C</span><span class="s1">&#39; = a*B&#39;</span>
+
+<span class="nt">where</span><span class="o">:</span>
+<span class="w">  </span><span class="nt">G</span><span class="o">,</span><span class="w"> </span><span class="nt">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">secp256k1</span><span class="w"> </span><span class="nt">generator</span><span class="w"> </span><span class="nt">point</span><span class="o">,</span><span class="w"> </span><span class="nt">and</span><span class="w"> </span><span class="nt">curve</span><span class="w"> </span><span class="nt">order</span>
+<span class="w">  </span><span class="nt">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">mint</span><span class="s1">&#39;s amount-i private key, as 32-byte big-endian (HMAC key)</span>
+<span class="s1">  A, B&#39;</span><span class="o">,</span><span class="w"> </span><span class="nt">C</span><span class="err">&#39;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">uncompressed</span><span class="w"> </span><span class="o">(</span><span class="nt">65</span><span class="w"> </span><span class="nt">byte</span><span class="o">)</span><span class="w"> </span><span class="nt">SEC1</span><span class="w"> </span><span class="nt">public</span><span class="w"> </span><span class="nt">points</span><span class="w"> </span><span class="nt">as</span><span class="w"> </span><span class="nt">raw</span><span class="w"> </span><span class="nt">bytes</span>
+<span class="w">  </span><span class="nt">ctr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">nonce</span><span class="w"> </span><span class="nt">counter</span><span class="w"> </span><span class="nt">byte</span><span class="o">;</span><span class="w"> </span><span class="nt">set</span><span class="w"> </span><span class="nt">to</span><span class="w"> </span><span class="nt">0x00</span><span class="w"> </span><span class="nt">initially</span><span class="o">,</span><span class="w"> </span><span class="nt">increment</span><span class="w"> </span><span class="nt">and</span><span class="w"> </span><span class="nt">retry</span><span class="w"> </span><span class="nt">if</span><span class="w"> </span><span class="nt">r</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nt">0</span><span class="w"> </span><span class="nt">or</span><span class="w"> </span><span class="nt">r</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nt">n</span><span class="w"> </span><span class="o">(</span><span class="nt">max</span><span class="w"> </span><span class="nt">256</span><span class="w"> </span><span class="nt">tries</span><span class="o">)</span>
 </code></pre></div>
 
+<blockquote>
+<p>[!CAUTION]</p>
+<p>Mints <strong>SHOULD</strong> use a rejection-sampled deterministic nonce (<code>r</code>) to avoid RNG failures. See the <a href="../tests/12-tests/">test vectors</a>.</p>
+<p>Reusing a nonce across different challenges leaks the private key immediately (<code>a = (s₁ - s₂) · (e₁ - e₂)⁻¹ mod n</code>). Mints that use random nonces <strong>MUST</strong> source them from a cryptographically secure RNG.</p>
+</blockquote>
 <h3 id="hash-function">Hash function<a class="headerlink" href="#hash-function" title="Permanent link">&para;</a></h3>
 <p>The hash function <code>hash(x: &lt;Array&lt;[PublicKey]&gt;) -&gt; bytes</code> generates a deterministic SHA256 hash for a given input list of <code>PublicKey</code>. The uncompressed (32+32+1)-byte hexadecimal representations (130 characters) of each <code>PublicKey</code> is concatenated before taking the SHA256 hash.</p>
 <div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">hash_e</span><span class="p">(</span><span class="o">*</span><span class="n">publickeys</span><span class="p">:</span> <span class="n">PublicKey</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
