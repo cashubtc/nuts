@@ -13,6 +13,7 @@ This document specifies a synchronized, epoch-based, stateless Proof of Liabilit
 ## Architecture Overview
 
 A Cashu mint acts as a custodian of backing assets. Outstanding liabilities are proven using two synchronized 256-depth Sparse Merkle Sum Trees (MS-SMT):
+
 1. **Issued Tree (Promises):** Tracks all signed blinded messages $B'$.
 2. **Spent Tree (Proofs Used):** Tracks all spent proof secrets $Y = \text{hash\_to\_curve}(\text{secret})$.
 
@@ -38,7 +39,9 @@ The MS-SMT has a fixed depth of 256 levels (level 0 at leaves, 256 at root).
 Each node is represented as $(hash, sum\_value)$ where $hash$ is 32 bytes and $sum\_value$ is an 8-byte big-endian integer.
 
 #### Default Empty Nodes
+
 Precomputed default empty nodes at level $d \in [0, 256]$:
+
 - **Level 0 (leaf):**
   - $hash_0 = \text{SHA256}(b"")$
   - $sum_0 = 0$
@@ -47,7 +50,9 @@ Precomputed default empty nodes at level $d \in [0, 256]$:
   - $hash_d = \text{SHA256}(hash_{d-1} \mathbin{\Vert} hash_{d-1} \mathbin{\Vert} \text{bytes}_8(0) \mathbin{\Vert} \text{bytes}_8(0))$
 
 #### Parent Node Computation
+
 For siblings $L = (hash_L, sum_L)$ and $R = (hash_R, sum_R)$ at level $d$:
+
 - $sum_P = sum_L + sum_R$
 - $hash_P = \text{SHA256}(hash_L \mathbin{\Vert} hash_R \mathbin{\Vert} \text{bytes}_8(sum_L) \mathbin{\Vert} \text{bytes}_8(sum_R))$
 
@@ -78,9 +83,12 @@ To minimize proof size, default empty sibling nodes are omitted. Instead, the mi
 ## HTTP API Specifications
 
 ### 1. Get Keyset Manifest
+
 `GET /v1/pol/{keyset_id}/manifest`
+
 - **Query Params:** `epoch_index` (optional, integer)
 - **Response:**
+
 ```json
 {
   "keyset_id": "009a6154b71113b7",
@@ -96,13 +104,18 @@ To minimize proof size, default empty sibling nodes are omitted. Instead, the mi
 ```
 
 ### 2. Query Issued Tree Proofs
+
 `POST /v1/pol/{keyset_id}/proofs/issued`
+
 - **Query Params:** `epoch_index` (optional, integer)
 - **Request Body:**
+
 ```json
 { "blinded_messages": ["02b1a..."] }
 ```
+
 - **Response:**
+
 ```json
 {
   "proofs": [
@@ -118,12 +131,16 @@ To minimize proof size, default empty sibling nodes are omitted. Instead, the mi
 ```
 
 ### 3. Query Spent Tree Proofs
+
 `POST /v1/pol/{keyset_id}/proofs/spent`
+
 - **Query Params:** `epoch_index` (optional, integer)
 - **Request Body:**
+
 ```json
 { "ys": ["02b1a..."] }
 ```
+
 - **Response:** Same format as `/proofs/issued` with the $Y$ point hex string in the `item` field.
 
 ---
@@ -133,6 +150,7 @@ To minimize proof size, default empty sibling nodes are omitted. Instead, the mi
 The mint **MUST** return a cryptographically signed **PoL Receipt** nested inside each input spent and output returned during state-transitioning actions (`mint`, `melt`, and `swap`).
 
 ### 1. Receipt JSON Schema
+
 ```json
 {
   "target_epoch": 12,
@@ -148,13 +166,15 @@ Each receipt is signed under the keyset's per-amount private key (`private_keys[
   - **Output:** `B'_hex:target_epoch`
   - **Spent Input:** `Y_hex:target_epoch`
 
-| Version | Curve | Signature Details |
-| :--- | :--- | :--- |
-| `00`/`01` | secp256k1 | BIP340 Schnorr over $\text{SHA256}(\text{message})$. Verified against `public_keys[amount]`. |
-| `02` | BLS12-381 | $\sigma = a \cdot H_{G1}(\text{message})$ (compressed G1). Verified via $e(\sigma, G2) == e(H_{G1}(\text{message}), K)$ where $K = \text{public\_keys}[amount]$ (G2). $H_{G1}$ is RFC 9380 `hash_to_curve_G1` under DST `"Cashu_PoL_Receipt_BLS12381G1_XMD:SHA-256_SSWU_RO_"`. |
+| Version   | Curve     | Signature Details                                                                                                                                                                                                                                                              |
+| :-------- | :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `00`/`01` | secp256k1 | BIP340 Schnorr over $\text{SHA256}(\text{message})$. Verified against `public_keys[amount]`.                                                                                                                                                                                   |
+| `02`      | BLS12-381 | $\sigma = a \cdot H_{G1}(\text{message})$ (compressed G1). Verified via $e(\sigma, G2) == e(H_{G1}(\text{message}), K)$ where $K = \text{public\_keys}[amount]$ (G2). $H_{G1}$ is RFC 9380 `hash_to_curve_G1` under DST `"Cashu_PoL_Receipt_BLS12381G1_XMD:SHA-256_SSWU_RO_"`. |
 
 ### 3. Response Alignment
+
 Returned receipts are fully order-preserving (1:1 index matching of request inputs/outputs):
+
 - **Mint (`POST /v1/mint/bolt11` & `/v1/mint/bolt11/batch`):** Nested in `pol_receipt` of each `BlindSignature` inside `signatures`.
 - **Swap (`POST /v1/swap`):**
   - Outputs: Nested in `pol_receipt` of each `BlindSignature` inside `signatures`.
@@ -168,16 +188,20 @@ Returned receipts are fully order-preserving (1:1 index matching of request inpu
 Wallets periodically audit their held and spent tokens:
 
 ### Step 1: Verify Manifest Signature
+
 Verify the BIP-340 Schnorr signature `mint_signature` against the mint's master public key (`signing_pubkey` from `/v1/info`) over the SHA256 digest of the constructed epoch string.
 
 ### Step 2: Validate OpenTimestamps Attestation
+
 1. **Upgrade Receipt:** Post `ots_receipt` to a calendar upgrade endpoint (e.g., `https://alice.btc.calendar.opentimestamps.org/upgrade`) to fetch the Merkle path.
 2. **Scan for Block:** Find block header attestation tag `0x00 0x05` (`A_BLOCKHEADER`). If pending tag `0x00 0x06` is found, the receipt is still awaiting block confirmation.
 3. **Parse Height:** Decode the Bitcoin block height (serialized as a VarInt) immediately following the tag.
 4. **Confirm:** Check via an independent explorer (e.g., `https://mempool.space/api/...`) that the block height exists, matches the manifest timestamp, and has sufficient confirmations.
 
 ### Step 3: Validate Issued Path Walks
+
 For each held active token:
+
 1. Reconstruct $B'$ (BDHKE: $B' = Y + rG$; BLS: $B' = r \cdot Y$).
 2. Leaf index $I = \text{SHA256}(B')$ parsed as a big-endian integer.
 3. Walk up the 256 levels:
@@ -189,12 +213,15 @@ For each held active token:
 4. Ensure the final root matches `root_issued`.
 
 ### Step 4: Validate Spent Path Walks
+
 For spent tokens (history):
+
 1. Compute $Y = \text{hash\_to\_curve}(\text{secret})$.
 2. Leaf index $I = \text{SHA256}(Y)$ parsed as a big-endian integer.
 3. Walk up the tree and verify matching `root_spent`.
 
 ### Step 5: Verify Liabilities Equation
+
 Ensure:
 $$\text{outstanding\_balance} == \text{root\_issued\_sum} - \text{root\_spent\_sum}$$
 
@@ -208,34 +235,36 @@ If verification fails, the wallet generates a **Fraud Challenge**—a self-conta
 - **BLS (Keyset Version >= v3):** No DLEQ proof is required; the BLS signature ($C'$ or $C$) can be verified directly against the keyset-amount public key.
 
 ### Challenge JSON Schema
+
 ```json
 {
   "challenge_type": "pol_fraud_proof",
   "keyset_id": "009a6154b71113b7",
   "keyset_version": 2,
   "epoch_index": 1,
-  "manifest": { "..." : "..." },
+  "manifest": { "...": "..." },
   "pol_receipt": {
     "target_epoch": 1,
     "signature": "<hex_encoded_signature>"
   },
   "proof_type": "issued | spent",
   "leaf_data": {
-    "B_hex": "02b1a...",             // Required for "issued"
-    "C_prime_hex": "038a1...",       // Required for "issued"
-    "Y_hex": "02b1a...",             // Required for "spent"
-    "C_hex": "038a1...",             // Required for "spent"
-    "dleq": {                        // Required if keyset_version <= 2
+    "B_hex": "02b1a...", // Required for "issued"
+    "C_prime_hex": "038a1...", // Required for "issued"
+    "Y_hex": "02b1a...", // Required for "spent"
+    "C_hex": "038a1...", // Required for "spent"
+    "dleq": {
+      // Required if keyset_version <= 2
       "e": "8a31...",
       "s": "4b2c...",
-      "r": "9f1d..."                 // Only required for "spent"
+      "r": "9f1d..." // Only required for "spent"
     }
   },
   "index": "8a31...",
   "claimed_value": 1000,
   "actual_value": 0,
   "compact_mask": "0x...",
-  "siblings": [ { "hash": "...", "sum": 0 } ]
+  "siblings": [{ "hash": "...", "sum": 0 }]
 }
 ```
 
