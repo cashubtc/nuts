@@ -78,6 +78,8 @@ Every epoch interval (e.g., 24 hours), the mint constructs and signs an Epoch Ma
 
 To minimize proof size, default empty sibling nodes are omitted. Instead, the mint returns a 256-bit bitmask where the $d$-th bit indicates if the sibling at level $d$ is non-empty ($1$) or empty ($0$, to be replaced by the precomputed default empty node).
 
+For detailed examples and test vectors, see the [test vectors][tests].
+
 ---
 
 ## HTTP API Specifications
@@ -269,3 +271,5 @@ If verification fails, the wallet generates a **Fraud Challenge**—a self-conta
 ```
 
 The `pol_receipt` (signed by the keyset-amount private key) proves the mint promised inclusion in the specified epoch, while the verified signature on the leaf data proves the note was legitimately issued or spent.
+
+[tests]: tests/pol-tests.md
