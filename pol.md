@@ -28,10 +28,10 @@ The MS-SMT has a fixed depth of 256 levels (level 0 at leaves, 256 at root).
 ### 1. Leaf Index and Keys
 
 - **Issued Leaf Index ($I_{\text{issued}}$):**
-  - Index: $\text{SHA256}(\text{UTF8}(B'\_{\text{hex}}))$ parsed as a big-endian integer.
+  - Index: $\text{SHA256}(\text{bytes}(B'))$ (using the 33-byte compressed public key representation of $B'$) parsed as a big-endian integer.
   - Value: Face amount of the signed promise.
 - **Spent Leaf Index ($I_{\text{spent}}$):**
-  - Index: $\text{SHA256}(\text{hex}(Y_{\text{compressed}}))$ parsed as a big-endian integer.
+  - Index: $\text{SHA256}(\text{bytes}(Y))$ (using the 33-byte compressed public key representation of $Y$) parsed as a big-endian integer.
   - Value: Face amount of the spent proof.
 
 ### 2. Node Structure & Hashing

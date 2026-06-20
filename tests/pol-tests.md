@@ -57,43 +57,43 @@ Precomputed default empty nodes at level $d \in [0, 256]$. Each empty node has a
 
 ## 2. 2-Leaf Tree Computation
 
-This test vector uses two active leaf nodes.
+This test vector uses two active leaf nodes, derived by hashing the raw 33-byte compressed public key values of the blinded messages.
 
 ### Leaves
 
-| Item            | Value | Hash (SHA256)                                                      | Index Integer (Hex)                                                  |
-| :-------------- | :---- | :----------------------------------------------------------------- | :------------------------------------------------------------------- |
-| `blinded_msg_1` | 100   | `d6957170936084afd3512013e8c474b5a859ce6e788964eacd61ffd380cd5487` | `0xd6957170936084afd3512013e8c474b5a859ce6e788964eacd61ffd380cd5487` |
-| `blinded_msg_2` | 250   | `6675428850697b62d86c14e6e91a3999b600cc44ae17d965f8d643d5892075e4` | `0x6675428850697b62d86c14e6e91a3999b600cc44ae17d965f8d643d5892075e4` |
+| Blinded Message $B'$ (33-Byte Compressed Pubkey Hex)                 | Value | Hash (SHA256 of Raw Bytes)                                         | Index Integer (Hex)                                                  |
+| :------------------------------------------------------------------- | :---- | :----------------------------------------------------------------- | :------------------------------------------------------------------- |
+| `02b1a03e1b10a23429fa221087e53f19001b97ad89498a44b93b3f23a851121df4` | 100   | `6711094bb65007f6313a7c2edc4833378ef715aaf8f62ce0f9478c591dba1e85` | `0x6711094bb65007f6313a7c2edc4833378ef715aaf8f62ce0f9478c591dba1e85` |
+| `02c3a50646bc1a1fef3da21973b064eb6897de58231c5f3e2730bf18361592394a` | 250   | `aa80cd1d9ae985f212fd6c41cdf4c8747c92d787e9d8fd45e5d7e3f85941937f` | `0xaa80cd1d9ae985f212fd6c41cdf4c8747c92d787e9d8fd45e5d7e3f85941937f` |
 
 ### Tree Root
 
-- **Hash:** `7c4314392d644e3bacd868701a4db93ec123020355ae7833283ad6640debd3ff`
+- **Hash:** `fe8a4d26af66d5abffad49a553a483a466e81098c0006c32d8685b692dd0d755`
 - **Sum:** `350`
 
 ### Sibling Inclusion Proofs
 
-#### Proof for `blinded_msg_1`
+#### Proof for `02b1a03e...`
 
 - **Compact Mask:** `0x8000000000000000000000000000000000000000000000000000000000000000` (Bit 255 is set, indicating only the level 255 sibling is non-empty)
 - **Siblings:**
   ```json
   [
     {
-      "hash": "1aecc383233a40792fdb7ddb76d377792acc854d1adab60bab8f5e81588a6d1e",
+      "hash": "57f827f76a295fbc65ca015eb80ece857ef5335beebbd3b39a53f1cbcd3ae97f",
       "sum": 250
     }
   ]
   ```
 
-#### Proof for `blinded_msg_2`
+#### Proof for `02c3a506...`
 
 - **Compact Mask:** `0x8000000000000000000000000000000000000000000000000000000000000000`
 - **Siblings:**
   ```json
   [
     {
-      "hash": "530ca26a79023d36e9ac21a3000f1848be5c79ba19b9a7a19bb8637fcb96897f",
+      "hash": "deae1aa655612bfe4b489ca03f706457d9b8ed9510645e6fdf0da492227ccd53",
       "sum": 100
     }
   ]
@@ -103,66 +103,66 @@ This test vector uses two active leaf nodes.
 
 ## 3. 3-Leaf Tree Computation
 
-This test vector uses three active leaf nodes. Note that `blinded_msg_1` and `blinded_msg_3` share a path at higher levels since they are both located in the right subtree of the root (index MSB = `1`).
+This test vector uses three active leaf nodes. Note that the second and third public keys share a path in the right subtree of the root (index MSB = `1`) and only diverge at bit index 253.
 
 ### Leaves
 
-| Item            | Value | Hash (SHA256)                                                      | Index Integer (Hex)                                                  |
-| :-------------- | :---- | :----------------------------------------------------------------- | :------------------------------------------------------------------- |
-| `blinded_msg_1` | 100   | `d6957170936084afd3512013e8c474b5a859ce6e788964eacd61ffd380cd5487` | `0xd6957170936084afd3512013e8c474b5a859ce6e788964eacd61ffd380cd5487` |
-| `blinded_msg_2` | 250   | `6675428850697b62d86c14e6e91a3999b600cc44ae17d965f8d643d5892075e4` | `0x6675428850697b62d86c14e6e91a3999b600cc44ae17d965f8d643d5892075e4` |
-| `blinded_msg_3` | 500   | `d3b82220e9b89c35bc8a9bcf4862ea534f299ef90062b528e279ad03c6e33a0c` | `0xd3b82220e9b89c35bc8a9bcf4862ea534f299ef90062b528e279ad03c6e33a0c` |
+| Blinded Message $B'$ (33-Byte Compressed Pubkey Hex)                 | Value | Hash (SHA256 of Raw Bytes)                                         | Index Integer (Hex)                                                  |
+| :------------------------------------------------------------------- | :---- | :----------------------------------------------------------------- | :------------------------------------------------------------------- |
+| `02b1a03e1b10a23429fa221087e53f19001b97ad89498a44b93b3f23a851121df4` | 100   | `6711094bb65007f6313a7c2edc4833378ef715aaf8f62ce0f9478c591dba1e85` | `0x6711094bb65007f6313a7c2edc4833378ef715aaf8f62ce0f9478c591dba1e85` |
+| `02c3a50646bc1a1fef3da21973b064eb6897de58231c5f3e2730bf18361592394a` | 250   | `aa80cd1d9ae985f212fd6c41cdf4c8747c92d787e9d8fd45e5d7e3f85941937f` | `0xaa80cd1d9ae985f212fd6c41cdf4c8747c92d787e9d8fd45e5d7e3f85941937f` |
+| `03c0029b38423f03b6d203a55e2d6778035740e40dd3d888301b3b47aede737b6f` | 500   | `95b7ec67b1f85ca98781f08fc4613559820b99f178707b29c8ebb4577aca5f40` | `0x95b7ec67b1f85ca98781f08fc4613559820b99f178707b29c8ebb4577aca5f40` |
 
 ### Tree Root
 
-- **Hash:** `40e8ca24d54cb722675fb14f06ca0eb615fa743230e9573ebc63ba33b1aa1e57`
+- **Hash:** `cfe3bb0bf9c93e6d70912fedaaac0c9f858d18279305dcbd92f585b7e362adca`
 - **Sum:** `850`
 
 ### Sibling Inclusion Proofs
 
-#### Proof for `blinded_msg_1`
+#### Proof for `02b1a03e...`
 
-- **Compact Mask:** `0x8400000000000000000000000000000000000000000000000000000000000000` (Bits 255 and 250 are set)
+- **Compact Mask:** `0x8000000000000000000000000000000000000000000000000000000000000000` (Bit 255 is set)
 - **Siblings:**
   ```json
   [
     {
-      "hash": "52cb8c18abd3086eb6625da50c37c04aab32044866446b95c11c4d5ade04d8f1",
+      "hash": "d12b7283fd13e96c22719e183c272857957feb457789d5eec820325cc70390dc",
+      "sum": 750
+    }
+  ]
+  ```
+
+#### Proof for `02c3a506...`
+
+- **Compact Mask:** `0xa000000000000000000000000000000000000000000000000000000000000000` (Bits 255 and 253 are set)
+- **Siblings:**
+  ```json
+  [
+    {
+      "hash": "8d8ada84c6af46ca1b5da3dd9974b0c941746faa7bc3b08717028028813fefb0",
       "sum": 500
     },
     {
-      "hash": "1aecc383233a40792fdb7ddb76d377792acc854d1adab60bab8f5e81588a6d1e",
-      "sum": 250
-    }
-  ]
-  ```
-
-#### Proof for `blinded_msg_2`
-
-- **Compact Mask:** `0x8000000000000000000000000000000000000000000000000000000000000000`
-- **Siblings:**
-  ```json
-  [
-    {
-      "hash": "e273595bf29ad7e352b68c77c73cafa08cf70017283d3ac98a5230b785a5a6c8",
-      "sum": 600
-    }
-  ]
-  ```
-
-#### Proof for `blinded_msg_3`
-
-- **Compact Mask:** `0x8400000000000000000000000000000000000000000000000000000000000000` (Bits 255 and 250 are set)
-- **Siblings:**
-  ```json
-  [
-    {
-      "hash": "11bf3654634b3b2bf66f31af348bce2572cba1ebeea2eca304d7a7d97b2ed80d",
+      "hash": "deae1aa655612bfe4b489ca03f706457d9b8ed9510645e6fdf0da492227ccd53",
       "sum": 100
+    }
+  ]
+  ```
+
+#### Proof for `03c0029b...`
+
+- **Compact Mask:** `0xa000000000000000000000000000000000000000000000000000000000000000` (Bits 255 and 253 are set)
+- **Siblings:**
+  ```json
+  [
+    {
+      "hash": "b44b631c9ffcbfbeef7a46e3e0ee6a84bd51e2981145766bfcfe715668d6c5b3",
+      "sum": 250
     },
     {
-      "hash": "1aecc383233a40792fdb7ddb76d377792acc854d1adab60bab8f5e81588a6d1e",
-      "sum": 250
+      "hash": "deae1aa655612bfe4b489ca03f706457d9b8ed9510645e6fdf0da492227ccd53",
+      "sum": 100
     }
   ]
   ```
@@ -180,7 +180,7 @@ The mint periodically aggregates the roots for all keysets, creates a determinis
 - **Keyset ID:** `009a6154b71113b7`
 - **Epoch Index:** `1`
 - **Timestamp:** `2026-06-11T12:00:00Z`
-- **Root Issued Hash:** `7c4314392d644e3bacd868701a4db93ec123020355ae7833283ad6640debd3ff`
+- **Root Issued Hash:** `fe8a4d26af66d5abffad49a553a483a466e81098c0006c32d8685b692dd0d755`
 - **Root Issued Sum:** `350`
 - **Root Spent Hash:** `2a7b5220250ca23ef34228a6a223035aaefdf08c715836c46be4fc941699f6ba` (default empty node at level 256)
 - **Root Spent Sum:** `0`
@@ -192,11 +192,11 @@ The mint periodically aggregates the roots for all keysets, creates a determinis
 The colon-separated UTF-8 string to sign:
 
 ```
-009a6154b71113b7:1:2026-06-11T12:00:00Z:7c4314392d644e3bacd868701a4db93ec123020355ae7833283ad6640debd3ff:350:2a7b5220250ca23ef34228a6a223035aaefdf08c715836c46be4fc941699f6ba:0:350:00000000000000004d4f434b5f4f54535f524543454950545f464f525f484153485f676c6f62616c5f6469676573745f6865785f76616c7565
+009a6154b71113b7:1:2026-06-11T12:00:00Z:fe8a4d26af66d5abffad49a553a483a466e81098c0006c32d8685b692dd0d755:350:2a7b5220250ca23ef34228a6a223035aaefdf08c715836c46be4fc941699f6ba:0:350:00000000000000004d4f434b5f4f54535f524543454950545f464f525f484153485f676c6f62616c5f6469676573745f6865785f76616c7565
 ```
 
 ### Signature Computation
 
-- **Message SHA-256 Digest:** `ff6034b0bed27ce2d842e63d6f1c2f8d9b526c0aac86eac93965d9c4454f7d87`
+- **Message SHA-256 Digest:** `ffc9fca9a90ac9c4d2dac1062bd506a024deb077da74d0ef989bc92beec72bb2`
 - **Auxiliary Random Data (`aux_rand`):** `b777e0270e6f6bd9302268a253ffda221ce9257a6e13349e198169745c45d72e`
-- **BIP-340 Schnorr Signature (`mint_signature`):** `2cedaa542f50483d4555dca5723004f859f411579fd65cb83991c3b87acd96e01e8d947132b0a898b8fada873587287a4d391cded21ed45da07a08cd4492a44e`
+- **BIP-340 Schnorr Signature (`mint_signature`):** `45407dc674cd4185deddb8be5b48e14b131ab28005fc1c03422863dd3f19a123f40f8d046897fb1957d851c24e6d9aea28396ba1b7db3718368138afe71e5b83`
