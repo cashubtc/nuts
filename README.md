@@ -46,6 +46,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [28][28] | Pay to Blinded Key (P2BK)         | [cdk], [cashu-ts][ts]                                                          | -                                                |
 | [29][29] | Batched Mint                      | -                                                                              | -                                                |
 | [30][30] | Payment Method: Onchain           | -                                                                              | -                                                |
+| [XX][XX] | Non-Interactive Mint Delegation   | -                                                                              | -                                                |
 
 #### Wallets
 
@@ -105,3 +106,4 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [28]: 28.md
 [29]: 29.md
 [30]: 30.md
+[XX]: xx.md
