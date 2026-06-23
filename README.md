@@ -44,8 +44,8 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [26][26] | Payment Request Bech32m Encoding  | [cdk], [cashu-ts][ts]                                                          | -                                                |
 | [27][27] | Nostr Mint Backup                 | [Cashu.me][cashume], [cdk]                                                     | -                                                |
 | [28][28] | Pay to Blinded Key (P2BK)         | [cdk], [cashu-ts][ts]                                                          | -                                                |
-| [29][29] | Batched Mint                      | -                                                                              | -                                                |
-| [30][30] | Payment Method: Onchain           | -                                                                              | -                                                |
+| [29][29] | Batched Mint                      | [cdk], [cashu-ts][ts]                                                          | [Nutshell][py], [cdk-mintd]                      |
+| [30][30] | Payment Method: Onchain           | [cdk], [cashu-ts][ts], [Cashu.me][cashume]                                     | [cdk-mintd]                                      |
 
 #### Wallets
 
