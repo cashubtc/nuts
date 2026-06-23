@@ -1,4 +1,4 @@
-# NUT-29: Mint Quote Lookup by Public Key
+# NUT-XX: Mint Quote Lookup by Public Key
 
 `optional`
 
@@ -26,9 +26,17 @@ The wallet includes the following `PostMintQuotesByPubkeyRequest` data:
 ```
 
 - `pubkeys` is an array of hex-encoded compressed secp256k1 NUT-20 public keys (33 bytes each)
-- `pubkey_signatures` is an array of hex-encoded Schnorr signatures on `pubkeys` in the same order (64 bytes each)
+- `pubkey_signatures` is an array of hex-encoded Schnorr signatures in the same order as `pubkeys` (64 bytes each)
 
-The wallet **MUST** provide a valid signature in `pubkey_signatures` for each public key in `pubkeys` with the corresponding private key in the same order as the `pubkeys` array. The message to sign is the byte representation of the public key.
+For each `pubkey`, the corresponding `pubkey_signatures` entry signs the SHA-256 hash of:
+
+```
+"Cashu_MintQuoteLookup_v1" || mint_pubkey || pubkey
+```
+
+`mint_pubkey` is the mint's `pubkey` from its [NUT-06][06] info response, which a mint supporting this NUT **MUST** provide. Fields are concatenated as their UTF-8 string representations.
+
+The mint **MUST** reject the request unless every signature is valid.
 
 ## Response
 
@@ -48,7 +56,7 @@ The settings for this NUT are part of the mint info response ([NUT-06][06]):
 
 ```json
 {
-  "29": {
+  "XX": {
     "supported": <bool>
   }
 }
