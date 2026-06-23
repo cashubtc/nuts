@@ -1137,11 +1137,12 @@
 <h1 id="nut-24-http-402-payment-required">NUT-24: HTTP 402 Payment Required<a class="headerlink" href="#nut-24-http-402-payment-required" title="Permanent link">&para;</a></h1>
 <p><code>optional</code></p>
 <p><code>uses: NUT-12</code></p>
-<p><code>depends on: NUT-18</code></p>
+<p><code>depends on: NUT-18, NUT-26</code></p>
 <hr />
 <p>This NUT describes how Cashu tokens can be used with HTTP 402 Payment Required responses to enable payments for HTTP resources.</p>
 <h3 id="server-response">Server response<a class="headerlink" href="#server-response" title="Permanent link">&para;</a></h3>
-<p>HTTP servers may respond with the HTTP status code 402 with a <code>X-Cashu</code> header containing an <a href="../18/#encoded-request">encoded</a> NUT-18 <a href="../18/">payment request</a> with the following fields:</p>
+<p>HTTP servers may respond with the HTTP status code 402 and an <code>X-Cashu</code> header containing a payment request, encoded in either <a href="../18/">NUT-18</a> <code>creqA</code> or <a href="../26/">NUT-26</a> <code>creqB</code> formats. Wallets <strong>MUST</strong> support both formats.</p>
+<p>The decoded payment request has the following fields:</p>
 <div class="codehilite"><pre><span></span><code><span class="err">{</span>
 <span class="w">    </span><span class="ss">&quot;a&quot;</span><span class="err">:</span><span class="w"> </span><span class="nc">int</span><span class="p">,</span>
 <span class="w">    </span><span class="ss">&quot;u&quot;</span><span class="err">:</span><span class="w"> </span><span class="nf">str</span><span class="p">,</span>
@@ -1156,7 +1157,7 @@
 <li><code>m</code>: Array of mint URLs that the server accepts tokens from</li>
 <li><code>nut10</code>: The required <a href="../10/">NUT-10</a> locking condition</li>
 </ul>
-<p>Note that there is no transport field since we expect an in-band payment.</p>
+<p>Note: there is no transport field since we expect an in-band payment.</p>
 <h3 id="client-payment">Client payment<a class="headerlink" href="#client-payment" title="Permanent link">&para;</a></h3>
 <p>After receiving a 402 response with a <code>X-Cashu</code> header, the client may retry the request with a <code>cashuB</code> token in the <code>X-Cashu</code> header as payment.</p>
 <p>The token MUST be from one of the mints listed in the <code>mints</code> array, and MUST be of the same <code>unit</code> and greater than or equal to the <code>amount</code>.</p>
