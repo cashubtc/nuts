@@ -231,9 +231,120 @@ verification:       FAIL
 error_code:         13027  # Oracle threshold not met
 ```
 
+## Registration Fee Tests
+
+### Test 12: Per-unit registration fee calculation
+
+```shell
+# Mint info advertises different fee schedules per collateral unit
+mint_info_ctf:      {
+  "supported": true,
+  "dlc_version": "0",
+  "default_keyset_creation": "one-vs-rest",
+  "registration_fees": [
+    {
+      "unit": "sat",
+      "registration_fee_base": 10,
+      "registration_fee_per_keyset": 2
+    },
+    {
+      "unit": "usd",
+      "registration_fee_base": 50,
+      "registration_fee_per_keyset": 5
+    }
+  ]
+}
+
+# Binary condition with collateral "sat" creates YES and NO keysets
+collateral:         "sat"
+num_keysets:        2
+
+# Required fee uses the matching "sat" schedule, not the "usd" schedule
+required_fee:       10 + 2 * 2 = 14
+
+register_request:   {
+  "threshold": 1,
+  "tags": [["description", "Will BTC reach $100k?"]],
+  "announcements": ["<hex_encoded_tlv>"],
+  "collateral": "sat",
+  "fee": [
+    {"amount": 16, "id": "009a1f293253e41e", "secret": "fee_secret", "C": "02..."}
+  ],
+  "outputs": [
+    {"amount": 1, "id": "009a1f293253e41e", "B_": "03..."}
+  ]
+}
+
+# Mint retains exactly 14 sat and returns 2 sat as regular ecash change
+change_amount:      2
+result:             PASS
+```
+
+### Test 13: Missing unit fee schedule means free registration
+
+```shell
+# Mint info has no entry for "eurc"
+mint_info_ctf:      {
+  "supported": true,
+  "dlc_version": "0",
+  "default_keyset_creation": "one-vs-rest",
+  "registration_fees": [
+    {
+      "unit": "sat",
+      "registration_fee_base": 10,
+      "registration_fee_per_keyset": 2
+    }
+  ]
+}
+
+register_request:   {
+  "threshold": 1,
+  "tags": [["description", "EURC market"]],
+  "announcements": ["<hex_encoded_tlv>"],
+  "collateral": "eurc"
+}
+
+# No "eurc" fee schedule is advertised, so both fee components default to 0
+required_fee:       0
+fee_proofs_spent:   0
+result:             PASS
+```
+
+### Test 14: Registration fee proofs must match collateral unit
+
+```shell
+# Mint info requires 14 sat for this binary condition
+mint_info_ctf:      {
+  "supported": true,
+  "dlc_version": "0",
+  "default_keyset_creation": "one-vs-rest",
+  "registration_fees": [
+    {
+      "unit": "sat",
+      "registration_fee_base": 10,
+      "registration_fee_per_keyset": 2
+    }
+  ]
+}
+
+register_request:   {
+  "threshold": 1,
+  "tags": [["description", "Will BTC reach $100k?"]],
+  "announcements": ["<hex_encoded_tlv>"],
+  "collateral": "sat",
+  "fee": [
+    {"amount": 50, "id": "00usdregularkeyset", "secret": "fee_secret", "C": "02..."}
+  ]
+}
+
+# Fee proof keyset unit is "usd", but collateral is "sat"
+error_code:         13017
+error_message:      "Invalid keyset for collateral/output side"
+```
+
 ## Error Validation Tests
 
-### Test 12: Outcome collection not attested by oracle
+### Test 15: Outcome collection not attested by oracle
 
 ```shell
 # Attempt to claim with outcome collection not matching attestation
@@ -243,7 +354,7 @@ error_code:         13015
 error_message:      "Oracle has not attested to this outcome collection"
 ```
 
-### Test 13: Invalid oracle public key format
+### Test 16: Invalid oracle public key format
 
 ```shell
 # 33-byte compressed key instead of 32-byte x-only
@@ -252,7 +363,7 @@ error:              Invalid oracle public key format
 error_code:         13010
 ```
 
-### Test 14: Swap spanning different outcome collections
+### Test 17: Swap spanning different outcome collections
 
 ```shell
 # Attempt NUT-03 swap with inputs from YES keyset and outputs to NO keyset
@@ -272,7 +383,7 @@ error_code:         13016
 error_message:      "Conditional keyset swap spans different outcome collections"
 ```
 
-### Test 15: Redemption outputs must use regular keyset
+### Test 18: Redemption outputs must use regular keyset
 
 ```shell
 # Attempt POST /v1/redeem_outcome with conditional keyset in outputs
@@ -296,7 +407,7 @@ error_code:         13017
 error_message:      "Outputs must use a regular keyset"
 ```
 
-### Test 16: Re-register existing condition with different config
+### Test 19: Re-register existing condition with different config
 
 ```shell
 # Condition already registered with threshold=1
