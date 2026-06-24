@@ -225,7 +225,7 @@ Registers a new condition and creates requested conditional keysets.
 - `threshold`: Minimum oracles required (default: 1)
 - `tags`: [NIP-88][NIP-88] tag array
 - `announcements`: Hex-encoded oracle announcement TLV bytes
-- `collateral`: Unit string for root conditions (e.g., `"sat"`). REQUIRED if `outcome_collections` is present or if the mint's default keyset creation rule creates keysets.
+- `collateral`: Unit string for root conditions (e.g., `"sat"`). REQUIRED if `outcome_collections` is present or if the mint's default keyset creation rule creates keysets. The unit SHOULD be advertised in `registration_fees`; mints SHOULD reject new condition registration for non-advertised collateral units (error 13048).
 - `outcome_collections` (optional): Canonical outcome collections to create keysets for. If omitted, the mint applies its `default_keyset_creation` policy. If the mint advertises `default_keyset_creation` as `"one-vs-rest"` or `"all"`, clients MUST omit this field and the mint MUST reject client-defined collections.
 - `fee` (optional): Anti-spam registration fee inputs paid as `Proof` objects. The proofs MUST be from a **regular** keyset ([NUT-02][02]) whose unit equals `collateral`; conditional-keyset proofs MUST be rejected (error 13017). REQUIRED when the mint advertises a non-zero registration fee for the requested `collateral` unit (see [Mint Info Setting](#mint-info-setting)); MAY be omitted when the advertised fee for that unit is `0`. The mint retains exactly `required_fee` as revenue and returns any excess as regular ecash change using `outputs` / `change` as described in [Registration Fee](#registration-fee).
 - `outputs` (optional): Blank `BlindedMessage` objects for returning excess fee input as regular ecash change, following the [NUT-08][08] blank-output model. The `amount` field in these messages is ignored by the mint and MAY be set to any valid placeholder amount by the client. Outputs MUST use a regular keyset whose unit equals `collateral`; conditional-keyset outputs MUST be rejected (error 13017). Clients SHOULD provide enough blank outputs to represent the maximum possible change from the selected `fee` proofs.
@@ -266,13 +266,15 @@ The mint MUST make condition registration idempotent. Mints MAY charge a [regist
 
 ### Registration Fee
 
-To bound condition-registration spam, a mint MAY charge a fee per new condition, advertised per collateral unit via [Mint Info Setting](#mint-info-setting). For a registration whose `collateral` is unit `u`, the mint selects the unique advertised registration-fee setting whose `unit == u`. If no setting is advertised for `u`, both fee components are treated as `0`. The required amount, denominated in the smallest unit of `collateral`, is:
+To bound condition-registration spam, a mint MAY charge a fee per new condition, advertised per collateral unit via [Mint Info Setting](#mint-info-setting). The `registration_fees` array also declares which collateral units the mint supports for CTF condition registration. A mint MAY advertise fee settings for only a subset of otherwise supported currency units. CTF registration is supported only for advertised units; if no setting is advertised for the requested `collateral`, the mint SHOULD reject new condition registration (error 13048). A mint that wants free registration for a unit MUST explicitly advertise that unit with both fee components set to `0`.
+
+For a registration whose `collateral` is unit `u`, the mint selects the unique advertised registration-fee setting whose `unit == u`. The required amount, denominated in the smallest unit of `collateral`, is:
 
 ```
 required_fee = registration_fee_base + registration_fee_per_keyset * num_keysets
 ```
 
-where `registration_fee_base` and `registration_fee_per_keyset` are taken from the selected fee setting, or from the default zero-fee setting when no matching setting is advertised, and `num_keysets` is the number of conditional keysets this registration creates (after step 3 above). When `registration_fee_base` and `registration_fee_per_keyset` are both `0`, registration is free and the `fee` field MAY be omitted.
+where `registration_fee_base` and `registration_fee_per_keyset` are taken from the selected fee setting, and `num_keysets` is the number of conditional keysets this registration creates (after step 3 above). When `registration_fee_base` and `registration_fee_per_keyset` are both `0`, registration is free and the `fee` field MAY be omitted.
 
 The registration fee is mint-authoritative: the mint computes `num_keysets` after canonicalization, validation, default policy expansion, duplicate removal, and full-set exclusion. Clients MUST NOT rely on a locally computed keyset count as the payment authority.
 
@@ -474,6 +476,7 @@ If the oracle does not attest within expected time, the mint MAY refund conditio
 | 13045 | Hash to curve failed                                        |
 | 13046 | EC point operation failed                                   |
 | 13047 | Insufficient or invalid change outputs                      |
+| 13048 | Unsupported CTF collateral unit                             |
 
 ## Mint Info Setting
 
@@ -505,7 +508,7 @@ The [NUT-06][06] setting indicates support for this feature:
   - `"one-vs-rest"`: omitted `outcome_collections` creates each atomic outcome and its complement, deduplicated for binary conditions; clients MUST NOT request explicit collections.
   - `"all"`: omitted `outcome_collections` creates every non-empty, non-full collection subject to mint limits; clients MUST NOT request explicit collections.
   - Numeric conditions always create `HI` and `LO` keysets at registration, regardless of this policy.
-- `registration_fees` (optional): Array of per-collateral-unit registration fee settings. Missing array or missing entry for a `collateral` unit means registration for that unit is free. Mints MUST NOT advertise more than one entry for the same `unit`; clients SHOULD treat duplicate entries as invalid mint configuration.
+- `registration_fees`: Array of per-collateral-unit registration fee settings. Each entry advertises support for CTF registration with that collateral unit. Mints MAY omit otherwise supported currency units from this array; clients MUST treat omitted units as unsupported for new CTF condition registration. Mints MUST NOT advertise more than one entry for the same `unit`; clients SHOULD treat duplicate entries as invalid mint configuration.
 - `registration_fees[].unit`: Collateral unit this fee schedule applies to.
 - `registration_fees[].registration_fee_base` (optional): Flat anti-spam fee charged per new condition, in the smallest unit of `unit`. Default: `0` (free). See [Registration Fee](#registration-fee).
 - `registration_fees[].registration_fee_per_keyset` (optional): Additional fee charged per conditional keyset the registration creates, in the smallest unit of `unit`. Default: `0`. The total required fee is `registration_fee_base + registration_fee_per_keyset * num_keysets`.

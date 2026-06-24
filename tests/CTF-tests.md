@@ -280,7 +280,7 @@ change_amount:      2
 result:             PASS
 ```
 
-### Test 13: Missing unit fee schedule means free registration
+### Test 13: Missing unit fee schedule rejects registration
 
 ```shell
 # Mint info has no entry for "eurc"
@@ -304,10 +304,9 @@ register_request:   {
   "collateral": "eurc"
 }
 
-# No "eurc" fee schedule is advertised, so both fee components default to 0
-required_fee:       0
-fee_proofs_spent:   0
-result:             PASS
+# No "eurc" fee schedule is advertised, so CTF registration for "eurc" is unsupported
+error_code:         13048
+error_message:      "Unsupported CTF collateral unit"
 ```
 
 ### Test 14: Registration fee proofs must match collateral unit
