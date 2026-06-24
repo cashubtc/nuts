@@ -38,6 +38,8 @@ The MS-SMT has a fixed depth of 256 levels (level 0 at leaves, 256 at root).
 
 Each node is represented as $(hash, sum\_value)$ where $hash$ is 32 bytes and $sum\_value$ is an 8-byte big-endian integer.
 
+If `sum_L + sum_R >= 2^64`, tree construction MUST fail.
+
 #### Default Empty Nodes
 
 Precomputed default empty nodes at level $d \in [0, 256]$:
@@ -96,7 +98,7 @@ For detailed examples and test vectors, see the [test vectors][tests].
   "keyset_id": "009a6154b71113b7",
   "epoch_index": 1,
   "timestamp": "2026-06-11T12:00:00Z",
-  "signing_pubkey": "020...",
+  "signing_pubkey": "f3dd0e40dd3d888301b3b47aede737b6f9451ab451dfc05a1ae023ab4235b4dd",
   "root_issued": { "hash": "8f3c...", "sum": 1000000 },
   "root_spent": { "hash": "4d1a...", "sum": 450000 },
   "outstanding_balance": 550000,
@@ -177,11 +179,11 @@ Each receipt is signed under the keyset's per-amount private key (`private_keys[
 
 Returned receipts are fully order-preserving (1:1 index matching of request inputs/outputs):
 
-- **Mint (`POST /v1/mint/bolt11` & `/v1/mint/bolt11/batch`):** Nested in `pol_receipt` of each `BlindSignature` inside `signatures`.
+- **Mint (`POST /v1/mint/{method}` & `/v1/mint/{method}/batch`):** Nested in `pol_receipt` of each `BlindSignature` inside `signatures`.
 - **Swap (`POST /v1/swap`):**
   - Outputs: Nested in `pol_receipt` of each `BlindSignature` inside `signatures`.
   - Inputs: Top-level `spent_receipts: List[PolReceipt]` mapping to the request's `inputs`.
-- **Melt (`POST /v1/melt/bolt11`):** Top-level `spent_receipts: List[PolReceipt]` mapping to the request's `inputs`.
+- **Melt (`POST /v1/melt/{method}`):** Top-level `spent_receipts: List[PolReceipt]` mapping to the request's `inputs`.
 
 ---
 
@@ -208,7 +210,6 @@ For each held active token:
 2. Leaf index $I = \text{SHA256}(B')$ parsed as a big-endian integer.
 3. Walk up the 256 levels:
    - For $d \in [0, 255]$:
-     - The $d$-th bit of the bitmask determines child position.
      - If the $d$-th bit is $1$, pop the next sibling from the proof's `siblings`.
      - If $0$, use default empty node $(default\_hash[d], 0)$.
      - Compute the parent node $(hash, sum)$ at level $d+1$.
