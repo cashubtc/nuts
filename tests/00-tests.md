@@ -67,11 +67,11 @@ C_: 8d52d7a6cbe5e99858d5c15c092d11a0c387c78917471211082a6e5afc2a79680dfa188fafe5
 C: b7a4881059133fd91a8753600d9a5e524c65d6224f6fe2d5aef9e59f1507fdad90b3b4d48ee46da5c8dfaa0b88e28b69 # G1 compressed
 ```
 
-`hash_to_curve_G1` uses the DST `CASHU_BLS12_381_G1_XMD:SHA-256_SSWU_RO_` (ASCII bytes, no trailing null). `Y = hash_to_curve_G1(secret)`, `K = a·G2`, and the pairing equality `e(C, G2) == e(Y, K)` holds.
+`hash_to_curve_G1` uses the DST `CASHU_BLS12_381_G1_XMD:SHA-256_SSWU_RO_` (ASCII bytes, no trailing null). `Y = hash_to_curve_G1(secret)`, `K = a·g2`, and the pairing equality `e(C, g2) == e(Y, K)` holds.
 
 ### BLS12-381 (v3) batch verification
 
-Test vector for the multi-pairing batch check with deterministic weight derivation (see [Batch Verification](../00.md#batch-verification)). Two proofs signed under the same mint key `K = 2·G2`.
+Test vector for the multi-pairing batch check with deterministic weight derivation (see [Batch Verification](../00.md#batch-verification)). Two proofs signed under the same mint key `K = 2·g2`.
 
 ```shell
 K: aa4edef9c1ed7f729f520e47730a124fd70662a904ba1074728114d1031e1572c6c886f6b57ec72a6178288c47c335771638533957d540a9d2370f17cc7ed5863bc0b995b8825e0ee1ea1e1e4d00dbae81f14b0bf3611b78c952aacab827a053
