@@ -157,3 +157,25 @@ Encoded:
 ```
 creqApWFpaGM5ZTQ1ZDJhYWEZAfRhdWNzYXRhbYF4GGh0dHBzOi8vbWludC5leGFtcGxlLmNvbWVudXQxMKNha2RQMlBLYWR4QjAyYzNiNWJiMjdlMzYxNDU3YzkyZDkzZDc4ZGQ3M2QzZDUzNzMyMTEwYjJjZmU4YjUwZmJjMGFiYzYxNWU5YzMzMWF0gYJndGltZW91dGQzNjAw
 ```
+
+### Preferred Mint List with Fee Reserve and Supported Methods
+
+A payment request specifying a preferred mint list with `mp` set to `true`, an additional fee reserve for non-preferred mints, and the payment methods the sending mint must support.
+
+```json
+{
+  "i": "preferred_fee_methods",
+  "a": 100,
+  "u": "sat",
+  "m": ["https://mint.example.com"],
+  "mp": true,
+  "fr": 2,
+  "sm": ["bolt11", "bolt12"]
+}
+```
+
+Encoded:
+
+```
+creqAp2FpdXByZWZlcnJlZF9mZWVfbWV0aG9kc2FhGGRhdWNzYXRhbYF4GGh0dHBzOi8vbWludC5leGFtcGxlLmNvbWJtcPViZnICYnNtgmZib2x0MTFmYm9sdDEy
+```
