@@ -418,7 +418,7 @@ CREQB1QYQQKCM4WD6X7M2LW4HXJAQZQQYQQQQQQQQQQQRYQVQQXCN5VVZSQXRGW368QUE69UHK66TWWS
 
 ### Preferred Mint List with Fee Reserve and Supported Methods
 
-A payment request specifying a preferred mint list with `ms` set to `false` (tag 0x09), an additional fee reserve for non-preferred mints (tag 0x0a), and the payment methods the sending mint must support (tag 0x0b).
+A payment request specifying a preferred mint list with `mp` set to `true` (tag 0x09), an additional fee reserve for non-preferred mints (tag 0x0a), and the payment methods the sending mint must support (tag 0x0b).
 
 ```json
 {
@@ -426,7 +426,7 @@ A payment request specifying a preferred mint list with `ms` set to `false` (tag
   "a": 100,
   "u": "sat",
   "m": ["https://mint.example.com"],
-  "ms": false,
+  "mp": true,
   "fr": 2,
   "sm": ["bolt11", "bolt12"]
 }
@@ -435,5 +435,5 @@ A payment request specifying a preferred mint list with `ms` set to `false` (tag
 Encoded:
 
 ```
-CREQB1QYQP2URJV4NX2UNJV4J97EN9V40K6ET5DPHKGUCZQQYQQQQQQQQQQQRYQVQQZQQ9QQVXSAR5WPEN5TE0D45KUAPWV4UXZMTSD3JJUCM0D5YSQQGQPGQQSQQQQQQQQQQQQG9SQPNZDAK8GVF3PVQQVCN0D36RZVSUP24PH
+CREQB1QYQP2URJV4NX2UNJV4J97EN9V40K6ET5DPHKGUCZQQYQQQQQQQQQQQRYQVQQZQQ9QQVXSAR5WPEN5TE0D45KUAPWV4UXZMTSD3JJUCM0D5YSQQGPPGQQSQQQQQQQQQQQQG9SQPNZDAK8GVF3PVQQVCN0D36RZVSDWZJ5Y
 ```
