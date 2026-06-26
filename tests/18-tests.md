@@ -177,5 +177,5 @@ A payment request specifying a preferred mint list with `mp` set to `true`, an a
 Encoded:
 
 ```
-creqAuQAHYWl1cHJlZmVycmVkX2ZlZV9tZXRob2RzYWEYZGF1Y3NhdGFtgXgYaHR0cHM6Ly9taW50LmV4YW1wbGUuY29tYm1w9WJmcgJic22CZmJvbHQxMWZib2x0MTI=
+creqAp2FpdXByZWZlcnJlZF9mZWVfbWV0aG9kc2FhGGRhdWNzYXRhbYF4GGh0dHBzOi8vbWludC5leGFtcGxlLmNvbWJtcPViZnICYnNtgmZib2x0MTFmYm9sdDEy
 ```
