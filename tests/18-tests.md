@@ -160,7 +160,7 @@ creqApWFpaGM5ZTQ1ZDJhYWEZAfRhdWNzYXRhbYF4GGh0dHBzOi8vbWludC5leGFtcGxlLmNvbWVudXQ
 
 ### Preferred Mint List with Fee Reserve and Supported Methods
 
-A payment request specifying a preferred mint list with `ms` set to `false`, an additional fee reserve for non-preferred mints, and the payment methods the sending mint must support.
+A payment request specifying a preferred mint list with `mp` set to `true`, an additional fee reserve for non-preferred mints, and the payment methods the sending mint must support.
 
 ```json
 {
@@ -168,7 +168,7 @@ A payment request specifying a preferred mint list with `ms` set to `false`, an 
   "a": 100,
   "u": "sat",
   "m": ["https://mint.example.com"],
-  "ms": false,
+  "mp": true,
   "fr": 2,
   "sm": ["bolt11", "bolt12"]
 }
@@ -177,5 +177,5 @@ A payment request specifying a preferred mint list with `ms` set to `false`, an 
 Encoded:
 
 ```
-creqAp2FpdXByZWZlcnJlZF9mZWVfbWV0aG9kc2FhGGRhdWNzYXRhbYF4GGh0dHBzOi8vbWludC5leGFtcGxlLmNvbWJtc_RiZnICYnNtgmZib2x0MTFmYm9sdDEy
+creqAuQAHYWl1cHJlZmVycmVkX2ZlZV9tZXRob2RzYWEYZGF1Y3NhdGFtgXgYaHR0cHM6Ly9taW50LmV4YW1wbGUuY29tYm1w9WJmcgJic22CZmJvbHQxMWZib2x0MTI=
 ```
