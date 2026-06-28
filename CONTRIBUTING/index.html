@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://cashubtc.github.io/nuts/28/">
+        <link rel="canonical" href="https://cashubtc.github.io/nuts/CONTRIBUTING/">
       
       
       
@@ -21,7 +21,7 @@
     
     
       
-        <title>NUT-28: Pay-to-Blinded-Key (P2BK) - Cashu NUTs Specifications</title>
+        <title>Contributing - Cashu NUTs Specifications</title>
       
     
     
@@ -72,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#nut-28-pay-to-blinded-key-p2bk" class="md-skip">
+        <a href="#contributing" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              NUT-28: Pay-to-Blinded-Key (P2BK)
+              Contributing
             
           </span>
         </div>
@@ -1134,145 +1134,18 @@
   
 
 
-<h1 id="nut-28-pay-to-blinded-key-p2bk">NUT-28: Pay-to-Blinded-Key (P2BK)<a class="headerlink" href="#nut-28-pay-to-blinded-key-p2bk" title="Permanent link">&para;</a></h1>
-<p><code>optional</code></p>
-<p><code>depends on: NUT-11</code></p>
-<hr />
-<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
-<p>This NUT describes Pay-to-Blinded-Key (P2BK), which extends the <a href="../11/">NUT-11</a> (P2PK) spending conditions. By implication, it also extends <a href="../14/">NUT-14</a> (HTLC).</p>
-<p>P2BK preserves privacy by blinding each NUT-11 receiver pubkey <code>P</code> with an ECDH-derived scalar <code>rᵢ</code>. Both sides can deterministically derive the same <code>rᵢ</code> from their own keys, but a third party cannot. This improves user privacy by preventing the mint from linking multiple P2PK spends by the same party.</p>
-<h2 id="ecdh-shared-secret-zx">ECDH Shared Secret (Zx)<a class="headerlink" href="#ecdh-shared-secret-zx" title="Permanent link">&para;</a></h2>
-<p>Elliptic-curve Diffie–Hellman (ECDH) allows two parties to create an x-coordinate shared secret (<code>Zx</code>) by combining their private key with the public key of the other party: <code>Zx = x(epG) = x(eP) = x(pE)</code>.</p>
-<p>For P2BK, the sender creates an ephemeral keypair (private key: <code>e</code>, public key: <code>E</code>), which protects the privacy of their usual long-lived public key. They then calculate the shared secret by combining the ephemeral private key (<code>e</code>) and the receiver's long-lived public key (<code>P</code>).</p>
-<p>The receiver calculates the same shared secret <code>Zx</code> using their private key (<code>p</code>) and the ephemeral public key (<code>E</code>), which is supplied by the sender in the <a href="#proof-object-extension">proof metadata</a>.</p>
-<p>The shared secret <code>Zx</code> is then used to derive the blinded public keys.</p>
-<h2 id="deriving-blinded-public-keys">Deriving Blinded Public Keys<a class="headerlink" href="#deriving-blinded-public-keys" title="Permanent link">&para;</a></h2>
-<p>Per NUT-11, there are up to 11 locking 'slots' in the order: <code>[data, ...pubkeys, ...refund]</code>.</p>
-<p>Slot 0 is the <code>data</code> tag. Slots 1-10 can be any combination of <code>pubkeys</code> and <code>refund</code> keys.</p>
-<p>Each public key in the NUT-11 proof is permanently blinded using a deterministic blinding scalar (<code>rᵢ</code>), where <code>i</code> is the <em>slot index</em>.</p>
-<p>The blinding scalar for each slot is calculated as:</p>
-<div class="codehilite"><pre><span></span><code>rᵢ = SHA-256( DOMAIN_SEPARATOR || Zx || i_byte)
-</code></pre></div>
+<h1 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h1>
+<h2 id="formatting">Formatting<a class="headerlink" href="#formatting" title="Permanent link">&para;</a></h2>
+<p>All files are formatted with <a href="https://prettier.io">Prettier</a>, and a CI check
+enforces it on every push and pull request.</p>
+<p>Run the same pinned version CI uses (see
+<a href="../.github/workflows/prettier.yml"><code>.github/workflows/prettier.yml</code></a>):</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># check formatting (same as CI)</span>
+npx<span class="w"> </span>prettier@3.9.1<span class="w"> </span>--check<span class="w"> </span>.
 
-<p>Where:</p>
-<ul>
-<li><code>DOMAIN_SEPARATOR</code> constant byte string <code>b"Cashu_P2BK_v1"</code></li>
-<li><code>Zx</code> is the ECDH shared secret (<code>eP</code> for sender, <code>pE</code> for receiver).</li>
-<li><code>i_byte</code> is the single unsigned byte representation of <code>i</code>: (<code>0x00</code> to <code>0x0A</code>)</li>
-<li><code>||</code> denotes concatenation</li>
-</ul>
-<p>If <code>rᵢ</code> is not in the range <code>1 ≤ rᵢ ≤ n−1</code>, retry once with an extra <code>0xff</code> byte appended to the hash input as follows:</p>
-<div class="codehilite"><pre><span></span><code>rᵢ = SHA-256( b&quot;Cashu_P2BK_v1&quot; || Zx || i_byte || 0xff )
+<span class="c1"># auto-fix</span>
+npx<span class="w"> </span>prettier@3.9.1<span class="w"> </span>--write<span class="w"> </span>.
 </code></pre></div>
-
-<p>If <code>rᵢ</code> is still not in the range <code>1 ≤ rᵢ ≤ n−1</code>, abort and discard the ephemeral keypair.</p>
-<p>Finally, the public key (<code>P</code>) for slot <code>i</code> is blinded (<code>P'</code>) as follows:</p>
-<div class="codehilite"><pre><span></span><code>P&#39; = P + rᵢG
-</code></pre></div>
-
-<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
-<p>Below is an example implementation in TypeScript.</p>
-<div class="codehilite"><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">deriveP2BKBlindingTweakFromECDH</span><span class="p">(</span>
-<span class="w">  </span><span class="nx">point</span><span class="o">:</span><span class="w"> </span><span class="kt">WeierstrassPoint</span><span class="o">&lt;</span><span class="nx">bigint</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// E or P</span>
-<span class="w">  </span><span class="nx">scalar</span><span class="o">:</span><span class="w"> </span><span class="kt">bigint</span><span class="p">,</span><span class="w"> </span><span class="c1">// p or e</span>
-<span class="w">  </span><span class="nx">slotIndex</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span><span class="w"> </span><span class="c1">// i</span>
-<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">bigint</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="c1">// Calculate x-only ECDH shared point (Zx)</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">Zx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">point</span><span class="p">.</span><span class="nx">multiply</span><span class="p">(</span><span class="nx">scalar</span><span class="p">).</span><span class="nx">toBytes</span><span class="p">(</span><span class="kc">true</span><span class="p">).</span><span class="nx">slice</span><span class="p">(</span><span class="mf">1</span><span class="p">);</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">iByte</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Uint8Array</span><span class="p">([</span><span class="nx">slotIndex</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xff</span><span class="p">]);</span>
-<span class="w">  </span><span class="c1">// Derive deterministic blinding factor (r):</span>
-<span class="w">  </span><span class="c1">// Note: bytesToNumber does NOT reduce modulo n</span>
-<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">r</span><span class="o">:</span><span class="w"> </span><span class="kt">bigint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">bytesToNumber</span><span class="p">(</span><span class="nx">sha256</span><span class="p">(</span><span class="nx">Bytes</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span><span class="nx">P2BK_DST</span><span class="p">,</span><span class="w"> </span><span class="nx">Zx</span><span class="p">,</span><span class="w"> </span><span class="nx">iByte</span><span class="p">)));</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mi">0n</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nx">secp256k1</span><span class="p">.</span><span class="nx">Point</span><span class="p">.</span><span class="nx">CURVE</span><span class="p">().</span><span class="nx">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="c1">// Very unlikely to get here!</span>
-<span class="w">    </span><span class="nx">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">bytesToNumber</span><span class="p">(</span>
-<span class="w">      </span><span class="nx">sha256</span><span class="p">(</span><span class="nx">Bytes</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span><span class="nx">P2BK_DST</span><span class="p">,</span><span class="w"> </span><span class="nx">Zx</span><span class="p">,</span><span class="w"> </span><span class="nx">iByte</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Uint8Array</span><span class="p">([</span><span class="mh">0xff</span><span class="p">]))),</span>
-<span class="w">    </span><span class="p">);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mi">0n</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nx">secp256k1</span><span class="p">.</span><span class="nx">Point</span><span class="p">.</span><span class="nx">CURVE</span><span class="p">().</span><span class="nx">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="c1">// Astronomically unlikely to get here!</span>
-<span class="w">      </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">&quot;P2BK: tweak derivation failed&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">r</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div>
-
-<p>For detailed examples of slot blinding, see the <a href="../tests/28-tests/">test vectors</a>.</p>
-<blockquote>
-<p>[!IMPORTANT]
-All receiver keys <strong>MUST</strong> be in compressed SEC1 format (33 bytes) before ECDH and blinding. \
-The sender <strong>MUST add an '02' prefix</strong> to BIP-340 x-only pubkeys (eg Nostr).</p>
-</blockquote>
-<h2 id="proof-object-extension">Proof Object Extension<a class="headerlink" href="#proof-object-extension" title="Permanent link">&para;</a></h2>
-<p>Each proof adds a single new metadata field:</p>
-<div class="codehilite"><pre><span></span><code>{
-  &quot;amount&quot;: int,
-  &quot;id&quot;: hex_str,
-  &quot;secret&quot;: str,          // still [&quot;P2PK&quot;, {...}]
-  &quot;C&quot;: hex_str,
-  &quot;p2pk_e&quot;: hex_str       // NEW: 33-byte SEC1 compressed ephemeral public key E
-}
-</code></pre></div>
-
-<ul>
-<li><code>p2pk_e</code> contains the sender's ephemeral pubkey (<code>E</code>) used for blinding</li>
-<li>All pubkeys inside the <code>"P2PK"</code> secret are the blinded forms <code>P'</code></li>
-<li>The mint sees standard P2PK data and remains unaware of the blinding</li>
-<li>For Token V4 encoding, the <code>p2pk_e</code> field is named <code>pe</code>, and <code>E</code> is encoded as a 33 byte CBOR bstr</li>
-</ul>
-<h2 id="deriving-private-keys">Deriving Private Keys<a class="headerlink" href="#deriving-private-keys" title="Permanent link">&para;</a></h2>
-<p>With P2BK, the NUT-11 public locking keys are permanently blinded. The mint sees only the blinded public keys, and expects signatures from the corresponding private key.</p>
-<p>The receiver must therefore derive the correct blinded private key (<code>k</code>). Because BIP-340 lifts public keys to even-Y parity, there are two possible derivation paths:</p>
-<ul>
-<li>Standard derivation: <code>k = (p + rᵢ) mod n</code></li>
-<li>Negated derivation: <code>k = (-p + rᵢ) mod n</code></li>
-</ul>
-<p>Where <code>p</code> is the receiver's long lived private key.</p>
-<p>To decide which derivation to use, the receiver calculates their natural pubkey (<code>pG</code>) and compares the parity to their actual pubkey (<code>P</code>).</p>
-<p>If the parity matches, use standard derivation, otherwise use negated derivation.</p>
-<p>The fastest way to do this in a wallet is to unblind, verify the key is a match, then select derivation by parity:</p>
-<p>a. compute <code>Rᵢ = rᵢG</code> \
-b. unblind <code>P = P' − Rᵢ</code> \
-c. verify <code>x(P) == x(pG)</code> \
-d. use standard derivation if <code>parity(P) == parity(pG)</code>, otherwise use negated derivation</p>
-<h2 id="sender-workflow">Sender Workflow<a class="headerlink" href="#sender-workflow" title="Permanent link">&para;</a></h2>
-<ol>
-<li>Generate a fresh random scalar <code>e</code> and compute <code>E = eG</code></li>
-<li>For <strong>each receiver key</strong> <code>P</code>, compute: \
-   a. Unique shared secret for this key: <code>Zx = x(eP)</code> \
-   b. Slot index <code>i</code> in <code>[data, ...pubkeys, ...refund]</code> \
-   c. Blinding scalar: <code>rᵢ = SHA-256(b"Cashu_P2BK_v1" || Zx || i_byte)</code> \
-   d. Blinded Public Key: <code>P' = P + rᵢG</code></li>
-<li>Build the canonical P2PK secret with the blinded <code>P'</code> keys in their slots.</li>
-<li>Interact with the mint normally; the mint never learns <code>P</code> or <code>rᵢ</code></li>
-<li>Include <code>p2pk_e = E</code> in the final proof</li>
-</ol>
-<blockquote>
-<p>[!IMPORTANT]
-Use a fresh ephemeral keypair (<code>e</code> / <code>E</code>) for each new output, so that every proof has
-unique blinded keys and a unique <code>E</code> in the <code>Proof.p2pk_e</code> field.</p>
-<p>In the case of <code>SIG_ALL</code>, the <strong>SAME</strong> ephemeral keypair <strong>MUST</strong> be used for all
-outputs, as all <code>SIG_ALL</code> proof secrets must have IDENTICAL <code>data</code> and <code>tags</code> fields.</p>
-</blockquote>
-<h2 id="receiver-workflow">Receiver Workflow<a class="headerlink" href="#receiver-workflow" title="Permanent link">&para;</a></h2>
-<ol>
-<li>Read <code>E</code> from <code>proof.p2pk_e</code> and the key slot order index <code>i</code> from <code>[data, ...pubkeys, ...refund]</code></li>
-<li>Calculate your unique shared secret: <code>Zx = x(pE)</code></li>
-<li>For each slot <code>i</code>, compute: \
-   a. Blinding scalar: <code>rᵢ = SHA-256(b"Cashu_P2BK_v1" || Zx || i_byte)</code> \
-   b. Compute <code>Rᵢ = rᵢG</code> \
-   c. Unblind <code>P = P' − Rᵢ</code> \
-   d. Verify <code>x(P) == x(pG)</code>. If it does not match, this <code>P'</code> is not for this private key, skip it. \
-   e. Derive the secret key using:</li>
-<li>standard derivation if <code>parity(P) == parity(pG)</code></li>
-<li>negative derivation otherwise</li>
-<li>Remove the <code>p2pk_e</code> field from the proof</li>
-<li>Sign with the derived private keys and spend as an ordinary P2PK proof</li>
-</ol>
-<blockquote>
-<p>[!NOTE]
-Each receiver can only calculate their OWN shared secret (<code>pE</code>), because a shared secret requires either the receiver's private key (<code>pE</code>) or the sender's ephemeral private key (<code>eP</code>).</p>
-</blockquote>
 
 
 
