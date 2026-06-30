@@ -1382,7 +1382,7 @@
 <p><strong>Asynchronous:</strong> A method-specific NUT can require asynchronous execution for a payment method. For other methods, the wallet can request asynchronous execution with <code>prefer_async: true</code> in the melt request body if it is supported by the mint. In both cases, the request returns immediately after validation with a <code>"PENDING"</code> state. The wallet must then monitor the payment progress through polling or websocket notifications.</p>
 <h2 id="common-request-and-response-formats">Common Request and Response Formats<a class="headerlink" href="#common-request-and-response-formats" title="Permanent link">&para;</a></h2>
 <h3 id="requesting-a-melt-quote">Requesting a Melt Quote<a class="headerlink" href="#requesting-a-melt-quote" title="Permanent link">&para;</a></h3>
-<p>To request a melt quote, the wallet of <code>Alice</code> makes a <code>POST /v1/melt/quote/{method}</code> request where <code>method</code> is the payment method requested (e.g., <code>bolt11</code>, <code>bolt12</code>, etc.).</p>
+<p>To request a melt quote, the wallet of <code>Alice</code> makes a <code>POST /v1/melt/quote/{method}</code> request where <code>method</code> is the payment method requested (e.g., <code>bolt11</code>, <code>bolt12</code>, etc.). <code>method</code> <strong>MUST</strong> match <code>[a-z0-9_-]+</code>.</p>
 <div class="codehilite"><pre><span></span><code><span class="err">POST https://mint.host:3338/v1/melt/quote/{method}</span>
 </code></pre></div>
 
@@ -1548,6 +1548,7 @@ For methods that involve external payments (like Lightning), a synchronous call 
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;method_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;min_amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;max_amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;options&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Objec</span><span class="kc">t</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span>
@@ -1555,6 +1556,7 @@ For methods that involve external payments (like Lightning), a synchronous call 
 </code></pre></div>
 
 <p><code>min_amount</code> and <code>max_amount</code> indicate the minimum and maximum amount for an operation of this method-unit pair. <code>options</code> are method-specific and can be defined in method-specific NUTs.</p>
+<p><code>method_name</code> is a human-readable name for the payment method. If <code>null</code> or omitted, wallets <strong>SHOULD</strong> derive it from <code>method</code> by replacing <code>_</code> and <code>-</code> with spaces and title-casing each word (e.g. <code>bolt11</code> -&gt; <code>Bolt11</code>, <code>apple-pay</code> -&gt; <code>Apple Pay</code>).</p>
 
 
 
