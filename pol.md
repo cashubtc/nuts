@@ -14,7 +14,7 @@ This document specifies a synchronized, epoch-based, stateless Proof of Liabilit
 
 A Cashu mint acts as a custodian of backing assets. Outstanding liabilities are proven using two synchronized 256-depth Sparse Merkle Sum Trees (MS-SMT):
 
-1. **Issued Tree (Promises):** Tracks all signed blinded messages $B'$.
+1. **Issued Tree (Blinded Messages):** Tracks all active, unsigned blinded messages $B\_$.
 2. **Spent Tree (Proofs Used):** Tracks all spent proof secrets $Y = \text{hash\_to\_curve}(\text{secret})$.
 
 This prevents the mint from omitting or manipulating liabilities. Epoch-based state roots are periodically committed to the Bitcoin blockchain via OpenTimestamps, establishing an immutable history.
@@ -28,8 +28,8 @@ The MS-SMT has a fixed depth of 256 levels (level 0 at leaves, 256 at root).
 ### 1. Leaf Index and Keys
 
 - **Issued Leaf Index ($I_{\text{issued}}$):**
-  - Index: $\text{SHA256}(\text{bytes}(B'))$ (using the 33-byte compressed public key representation of $B'$) parsed as a big-endian integer.
-  - Value: Face amount of the signed promise.
+  - Index: $\text{SHA256}(\text{bytes}(B\_))$ (using the 33-byte compressed public key representation of $B\_$) parsed as a big-endian integer.
+  - Value: Face amount of the token associated with the blinded message.
 - **Spent Leaf Index ($I_{\text{spent}}$):**
   - Index: $\text{SHA256}(\text{bytes}(Y))$ (using the 33-byte compressed public key representation of $Y$) parsed as a big-endian integer.
   - Value: Face amount of the spent proof.
@@ -39,6 +39,13 @@ The MS-SMT has a fixed depth of 256 levels (level 0 at leaves, 256 at root).
 Each node is represented as $(hash, sum\_value)$ where $hash$ is 32 bytes and $sum\_value$ is an 8-byte big-endian integer.
 
 If `sum_L + sum_R >= 2^64`, tree construction MUST fail.
+
+#### Active Leaf Nodes (Level 0)
+
+For an active (non-empty) leaf node at level 0 with Leaf Index $I$ and token value $v$:
+
+- $hash_0 = I$ (the 32-byte Leaf Index hash itself, i.e., $I_{\text{issued}}$ or $I_{\text{spent}}$)
+- $sum_0 = v$ (the 8-byte big-endian integer representation of the value $v$)
 
 #### Default Empty Nodes
 
@@ -64,13 +71,17 @@ For siblings $L = (hash_L, sum_L)$ and $R = (hash_R, sum_R)$ at level $d$:
 
 Every epoch interval (e.g., 24 hours), the mint constructs and signs an Epoch Manifest:
 
-1. **Sort Keysets:** Sort all unexpired keyset IDs alphabetically.
-2. **Commitment Data:** Concatenate the UTF-8 `keyset_id`, 32-byte `root_issued_hash`, and 32-byte `root_spent_hash` for each keyset sequentially.
+1. **Sort Keysets:** Normalize all active unexpired `keyset_id` strings to lowercase hexadecimal representation, and then sort them alphabetically (lexicographically by their ASCII values).
+2. **Commitment Data:** Concatenate the UTF-8 lowercase `keyset_id`, 32-byte binary `root_issued_hash`, and 32-byte binary `root_spent_hash` for each keyset sequentially.
 3. **Global Digest:** Compute $\text{SHA256}(\text{commitment\_data})$.
 4. **OTS Submission:** Submit this digest to OTS calendar servers to obtain a binary receipt.
 5. **Manifest Message:** Construct a colon-separated UTF-8 string:
    `"{keyset_id}:{epoch_index}:{timestamp}:{root_issued_hash}:{root_issued_sum}:{root_spent_hash}:{root_spent_sum}:{outstanding_balance}:{ots_receipt}"`
-   where `ots_receipt` is the hex-encoded OTS receipt.
+   where:
+   - `keyset_id` MUST be a lowercase hexadecimal string.
+   - `timestamp` MUST be serialized as an RFC 3339 string with second precision, without fractional seconds, and strictly using uppercase `Z` for the UTC timezone (e.g., `2026-06-11T12:00:00Z`).
+   - `root_issued_hash` and `root_spent_hash` MUST be serialized as 64-character lowercase hexadecimal strings.
+   - `ots_receipt` MUST be serialized as the lowercase hexadecimal representation of the OpenTimestamps (OTS) receipt file.
 6. **Signing:** Sign the message with a BIP-340 Schnorr signature using the mint's master NUT-06 private key signing the SHA256 digest of this serialized manifest string.
 7. **Publish:** Store and publish the signed manifest, signatures, and OTS receipts.
 
@@ -79,6 +90,8 @@ Every epoch interval (e.g., 24 hours), the mint constructs and signs an Epoch Ma
 ## Compact Bitmasked Sibling Proofs
 
 To minimize proof size, default empty sibling nodes are omitted. Instead, the mint returns a 256-bit bitmask where the $d$-th bit indicates if the sibling at level $d$ is non-empty ($1$) or empty ($0$, to be replaced by the precomputed default empty node).
+
+The `compact_mask` MUST be serialized as a 66-character lowercase hexadecimal string, starting with `0x` followed by exactly 64 lowercase hexadecimal characters representing the 256-bit bitmask (big-endian, where the MSB is bit 255).
 
 For detailed examples and test vectors, see the [test vectors][tests].
 
@@ -206,8 +219,8 @@ Verify the BIP-340 Schnorr signature `mint_signature` against the mint's master 
 
 For each held active token:
 
-1. Reconstruct $B'$ (BDHKE: $B' = Y + rG$; BLS: $B' = r \cdot Y$).
-2. Leaf index $I = \text{SHA256}(B')$ parsed as a big-endian integer.
+1. Reconstruct the unsigned blinded message $B\_$ (BDHKE: $B\_ = Y + rG$; BLS: $B\_ = r \cdot Y$).
+2. Leaf index $I = \text{SHA256}(\text{bytes}(B\_))$ parsed as a big-endian integer.
 3. Walk up the 256 levels:
    - For $d \in [0, 255]$:
      - If the $d$-th bit is $1$, pop the next sibling from the proof's `siblings`.
@@ -220,7 +233,7 @@ For each held active token:
 For spent tokens (history):
 
 1. Compute $Y = \text{hash\_to\_curve}(\text{secret})$.
-2. Leaf index $I = \text{SHA256}(Y)$ parsed as a big-endian integer.
+2. Leaf index $I = \text{SHA256}(\text{bytes}(Y))$ parsed as a big-endian integer.
 3. Walk up the tree and verify matching `root_spent`.
 
 ### Step 5: Verify Liabilities Equation

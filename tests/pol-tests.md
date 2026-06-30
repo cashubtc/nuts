@@ -61,7 +61,7 @@ This test vector uses two active leaf nodes, derived by hashing the raw 33-byte 
 
 ### Leaves
 
-| Blinded Message $B'$ (33-Byte Compressed Pubkey Hex)                 | Value | Hash (SHA256 of Raw Bytes)                                         | Index Integer (Hex)                                                  |
+| Blinded Message $B\_$ (33-Byte Compressed Pubkey Hex)                | Value | Hash (SHA256 of Raw Bytes)                                         | Index Integer (Hex)                                                  |
 | :------------------------------------------------------------------- | :---- | :----------------------------------------------------------------- | :------------------------------------------------------------------- |
 | `02b1a03e1b10a23429fa221087e53f19001b97ad89498a44b93b3f23a851121df4` | 100   | `6711094bb65007f6313a7c2edc4833378ef715aaf8f62ce0f9478c591dba1e85` | `0x6711094bb65007f6313a7c2edc4833378ef715aaf8f62ce0f9478c591dba1e85` |
 | `02c3a50646bc1a1fef3da21973b064eb6897de58231c5f3e2730bf18361592394a` | 250   | `aa80cd1d9ae985f212fd6c41cdf4c8747c92d787e9d8fd45e5d7e3f85941937f` | `0xaa80cd1d9ae985f212fd6c41cdf4c8747c92d787e9d8fd45e5d7e3f85941937f` |
@@ -107,7 +107,7 @@ This test vector uses three active leaf nodes. Note that the second and third pu
 
 ### Leaves
 
-| Blinded Message $B'$ (33-Byte Compressed Pubkey Hex)                 | Value | Hash (SHA256 of Raw Bytes)                                         | Index Integer (Hex)                                                  |
+| Blinded Message $B\_$ (33-Byte Compressed Pubkey Hex)                | Value | Hash (SHA256 of Raw Bytes)                                         | Index Integer (Hex)                                                  |
 | :------------------------------------------------------------------- | :---- | :----------------------------------------------------------------- | :------------------------------------------------------------------- |
 | `02b1a03e1b10a23429fa221087e53f19001b97ad89498a44b93b3f23a851121df4` | 100   | `6711094bb65007f6313a7c2edc4833378ef715aaf8f62ce0f9478c591dba1e85` | `0x6711094bb65007f6313a7c2edc4833378ef715aaf8f62ce0f9478c591dba1e85` |
 | `02c3a50646bc1a1fef3da21973b064eb6897de58231c5f3e2730bf18361592394a` | 250   | `aa80cd1d9ae985f212fd6c41cdf4c8747c92d787e9d8fd45e5d7e3f85941937f` | `0xaa80cd1d9ae985f212fd6c41cdf4c8747c92d787e9d8fd45e5d7e3f85941937f` |
