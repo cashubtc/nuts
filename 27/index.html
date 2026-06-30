@@ -1196,7 +1196,7 @@
 <li><code>d</code> tag with value <code>"mint-list"</code> (addressable event identifier)</li>
 <li><code>client</code> tag with the client name (optional but recommended)</li>
 <li><code>created_at</code>: Unix timestamp of the backup creation</li>
-<li><code>pubkey</code>: The derived public key for mint backup</li>
+<li><code>pubkey</code>: The derived public key for mint backup (x-only, 32-byte hex)</li>
 </ul>
 <h3 id="backup-data-format">Backup Data Format<a class="headerlink" href="#backup-data-format" title="Permanent link">&para;</a></h3>
 <p>The plaintext data that gets encrypted in the <code>content</code> field has the following JSON structure:</p>
@@ -1244,7 +1244,7 @@
 <span class="w">    </span><span class="p">[</span><span class="s2">&quot;client&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;cashu.me&quot;</span><span class="p">]</span>
 <span class="w">  </span><span class="p">],</span>
 <span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1703721600</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;pubkey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02bc9097997d81afb2cc7346b5e4345a9346bd2a506eb7958598a72f0cf85163ea&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pubkey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bc9097997d81afb2cc7346b5e4345a9346bd2a506eb7958598a72f0cf85163ea&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;sig&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span>
 <span class="p">}</span>
 </code></pre></div>
