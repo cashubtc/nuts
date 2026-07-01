@@ -1323,6 +1323,7 @@
 <li>Signature(s) as per the <a href="../11/">NUT-11</a> rules for <strong>Locktime MultiSig</strong>.</li>
 </ul>
 <p>This pathway is <strong>ALWAYS</strong> available to the receivers, as possession of the preimage confirms performance of the Sender's wishes.</p>
+<p><strong>NOTE:</strong> If the <code>pubkeys</code> tag is absent, the preimage alone spends the proof; no signature is required.</p>
 <h3 id="sender-pathway-timelocked-refund">Sender Pathway (timelocked refund)<a class="headerlink" href="#sender-pathway-timelocked-refund" title="Permanent link">&para;</a></h3>
 <p>The sender(s) listed in the <code>refund</code> tag can spend the proof once the <code>locktime</code> lock has "expired" by providing signature(s) as per the <a href="../11/">NUT-11</a> rules for <strong>Refund MultiSig</strong>.</p>
 <p><strong>NOTE:</strong> As per the <a href="../11/">NUT-11</a> rules, if the <code>refund</code> tag is not present, the HTLC proof would become "anyone can spend" after the <code>locktime</code> lock has "expired". Likewise, if the <code>locktime</code> is not present, or is not a valid unix timestamp, the HTLC proof will be permanently locked and can only be spent using the Receiver (hash lock) pathway.</p>
