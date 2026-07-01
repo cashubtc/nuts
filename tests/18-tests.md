@@ -27,7 +27,7 @@ A basic payment request with required fields.
 Encoded (CBOR serialized to base64url):
 
 ```
-creqApWF0gaNhdGVub3N0cmFheKlucHJvZmlsZTFxeTI4d3VtbjhnaGo3dW45ZDNzaGp0bnl2OWtoMnVld2Q5aHN6OW1od2RlbjV0ZTB3ZmprY2N0ZTljdXJ4dmVuOWVlaHFjdHJ2NWhzenJ0aHdkZW41dGUwZGVoaHh0bnZkYWtxcWd5ZGFxeTdjdXJrNDM5eWtwdGt5c3Y3dWRoZGh1NjhzdWNtMjk1YWtxZWZkZWhrZjBkNDk1Y3d1bmw1YWeBgmFuYjE3YWloYjdhOTAxNzZhYQphdWNzYXRhbYF4Imh0dHBzOi8vbm9mZWVzLnRlc3RudXQuY2FzaHUuc3BhY2U=
+creqApWF0gaNhdGVub3N0cmFheKlucHJvZmlsZTFxcXNnbTZxZmEzYzhkdHoyZnZ6aHZmcWVhY213bTBlNTBwZTNrNXRmbXZwamptbjB2ajdtMnRncHozbWh4dWU2OXVoaHlldHZ2OXVqdWVycGQ0Nmh4dG5mZHVxM3dhbW53dmF6N3RtanY0a3h6N2Z3OHFlbnh2ZXd3ZGN4emNtOTl1cXM2YW1ud3Zhejd0bXdkYWVqdW1yMGRzNGxqaDduYWeBgmFuYjE3YWloYjdhOTAxNzZhYQphdWNzYXRhbYF3aHR0cHM6Ly84MzMzLnNwYWNlOjMzMzg
 ```
 
 ### Complete Payment Request
@@ -160,7 +160,7 @@ creqApWFpaGM5ZTQ1ZDJhYWEZAfRhdWNzYXRhbYF4GGh0dHBzOi8vbWludC5leGFtcGxlLmNvbWVudXQ
 
 ### Preferred Mint List with Fee Reserve and Supported Methods
 
-A payment request specifying a preferred mint list with `mp` set to `true`, an additional fee reserve for non-preferred mints, and the payment methods the sending mint must support.
+A payment request specifying a preferred mint list with `mp` set to `true`, an additional fee required for non-preferred mints (`fr`), and the supported payment methods (`sm`). `bolt12` carries a per-method fee (`mf`) that stacks with the top-level `fr` fee required.
 
 ```json
 {
@@ -170,12 +170,12 @@ A payment request specifying a preferred mint list with `mp` set to `true`, an a
   "m": ["https://mint.example.com"],
   "mp": true,
   "fr": 2,
-  "sm": ["bolt11", "bolt12"]
+  "sm": [{ "mn": "bolt11" }, { "mn": "bolt12", "mf": 5 }]
 }
 ```
 
 Encoded:
 
 ```
-creqAp2FpdXByZWZlcnJlZF9mZWVfbWV0aG9kc2FhGGRhdWNzYXRhbYF4GGh0dHBzOi8vbWludC5leGFtcGxlLmNvbWJtcPViZnICYnNtgmZib2x0MTFmYm9sdDEy
+creqAp2FpdXByZWZlcnJlZF9mZWVfbWV0aG9kc2FhGGRhdWNzYXRhbYF4GGh0dHBzOi8vbWludC5leGFtcGxlLmNvbWJtcPViZnICYnNtgqFibW5mYm9sdDExomJtbmZib2x0MTJibWYF
 ```
