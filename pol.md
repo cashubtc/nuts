@@ -75,8 +75,8 @@ Every epoch interval (e.g., 24 hours), the mint constructs and signs an Epoch Ma
 2. **Commitment Data:** Prepend the 32-byte binary `previous_global_digest` of the previous epoch (for the first epoch, this MUST be 32 bytes of zeros `0x00...00`). Then concatenate the UTF-8 lowercase `keyset_id`, 32-byte binary `root_issued_hash`, and 32-byte binary `root_spent_hash` for each keyset sequentially.
 3. **Global Digest:** Compute `SHA256(commitment_data)`.
 4. **OTS Submission & Upgrading:**
-   - Submit the **Global Digest** to OpenTimestamps (OTS) calendar servers to obtain an initial *pending* (incomplete) receipt.
-   - **Mint Upgrade Burden:** The mint MUST monitor the calendar server, upgrade the pending `.ots` receipt to an *anchored* (completed) state once the transaction has been confirmed on the Bitcoin blockchain, and republish the fully upgraded, offline-verifiable `.ots` receipt alongside the manifest.
+   - Submit the **Global Digest** to OpenTimestamps (OTS) calendar servers to obtain an initial _pending_ (incomplete) receipt.
+   - **Mint Upgrade Burden:** The mint MUST monitor the calendar server, upgrade the pending `.ots` receipt to an _anchored_ (completed) state once the transaction has been confirmed on the Bitcoin blockchain, and republish the fully upgraded, offline-verifiable `.ots` receipt alongside the manifest.
 5. **Manifest Message:** Construct a colon-separated UTF-8 string:
    `"{keyset_id}:{epoch_index}:{timestamp}:{previous_global_digest}:{root_issued_hash}:{root_issued_sum}:{root_spent_hash}:{root_spent_sum}:{outstanding_balance}"`
    where:
