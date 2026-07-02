@@ -180,6 +180,7 @@ The mint periodically aggregates the roots for all keysets, creates a determinis
 - **Keyset ID:** `009a6154b71113b7`
 - **Epoch Index:** `1`
 - **Timestamp:** `2026-06-11T12:00:00Z`
+- **Previous Global Digest:** `0000000000000000000000000000000000000000000000000000000000000000`
 - **Root Issued Hash:** `fe8a4d26af66d5abffad49a553a483a466e81098c0006c32d8685b692dd0d755`
 - **Root Issued Sum:** `350`
 - **Root Spent Hash:** `2a7b5220250ca23ef34228a6a223035aaefdf08c715836c46be4fc941699f6ba` (default empty node at level 256)
@@ -189,14 +190,14 @@ The mint periodically aggregates the roots for all keysets, creates a determinis
 
 ### Serialized Manifest String
 
-The colon-separated UTF-8 string to sign:
+The colon-separated UTF-8 string to sign (which excludes the `ots_receipt` and includes the `previous_global_digest`):
 
 ```
-009a6154b71113b7:1:2026-06-11T12:00:00Z:fe8a4d26af66d5abffad49a553a483a466e81098c0006c32d8685b692dd0d755:350:2a7b5220250ca23ef34228a6a223035aaefdf08c715836c46be4fc941699f6ba:0:350:00000000000000004d4f434b5f4f54535f524543454950545f464f525f484153485f676c6f62616c5f6469676573745f6865785f76616c7565
+009a6154b71113b7:1:2026-06-11T12:00:00Z:0000000000000000000000000000000000000000000000000000000000000000:fe8a4d26af66d5abffad49a553a483a466e81098c0006c32d8685b692dd0d755:350:2a7b5220250ca23ef34228a6a223035aaefdf08c715836c46be4fc941699f6ba:0:350
 ```
 
 ### Signature Computation
 
-- **Message SHA-256 Digest:** `ffc9fca9a90ac9c4d2dac1062bd506a024deb077da74d0ef989bc92beec72bb2`
+- **Message SHA-256 Digest:** `045fde0709052b35c875488668bd78d5bc06d38a219c768a616c7fa9b88d064a`
 - **Auxiliary Random Data (`aux_rand`):** `b777e0270e6f6bd9302268a253ffda221ce9257a6e13349e198169745c45d72e`
-- **BIP-340 Schnorr Signature (`mint_signature`):** `45407dc674cd4185deddb8be5b48e14b131ab28005fc1c03422863dd3f19a123f40f8d046897fb1957d851c24e6d9aea28396ba1b7db3718368138afe71e5b83`
+- **BIP-340 Schnorr Signature (`mint_signature`):** `71f4ab4d3279597095ee8c374e13374192e0cbf2016f7ea0fca35dca68df69c9c70a607ba361f7b18130ea899b9f28f487869a9b7ee69d75d74ed0a06b50bed6`

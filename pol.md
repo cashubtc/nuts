@@ -72,17 +72,19 @@ For siblings `L = (hash_L, sum_L)` and `R = (hash_R, sum_R)` at level `d`:
 Every epoch interval (e.g., 24 hours), the mint constructs and signs an Epoch Manifest:
 
 1. **Sort Keysets:** Normalize all active unexpired `keyset_id` strings to lowercase hexadecimal representation, and then sort them alphabetically (lexicographically by their ASCII values).
-2. **Commitment Data:** Concatenate the UTF-8 lowercase `keyset_id`, 32-byte binary `root_issued_hash`, and 32-byte binary `root_spent_hash` for each keyset sequentially.
+2. **Commitment Data:** Prepend the 32-byte binary `previous_global_digest` of the previous epoch (for the first epoch, this MUST be 32 bytes of zeros `0x00...00`). Then concatenate the UTF-8 lowercase `keyset_id`, 32-byte binary `root_issued_hash`, and 32-byte binary `root_spent_hash` for each keyset sequentially.
 3. **Global Digest:** Compute `SHA256(commitment_data)`.
-4. **OTS Submission:** Submit this digest to OTS calendar servers to obtain a binary receipt.
+4. **OTS Submission & Upgrading:**
+   - Submit the **Global Digest** to OpenTimestamps (OTS) calendar servers to obtain an initial *pending* (incomplete) receipt.
+   - **Mint Upgrade Burden:** The mint MUST monitor the calendar server, upgrade the pending `.ots` receipt to an *anchored* (completed) state once the transaction has been confirmed on the Bitcoin blockchain, and republish the fully upgraded, offline-verifiable `.ots` receipt alongside the manifest.
 5. **Manifest Message:** Construct a colon-separated UTF-8 string:
-   `"{keyset_id}:{epoch_index}:{timestamp}:{root_issued_hash}:{root_issued_sum}:{root_spent_hash}:{root_spent_sum}:{outstanding_balance}:{ots_receipt}"`
+   `"{keyset_id}:{epoch_index}:{timestamp}:{previous_global_digest}:{root_issued_hash}:{root_issued_sum}:{root_spent_hash}:{root_spent_sum}:{outstanding_balance}"`
    where:
    - `keyset_id` MUST be a lowercase hexadecimal string.
    - `timestamp` MUST be serialized as an RFC 3339 string with second precision, without fractional seconds, and strictly using uppercase `Z` for the UTC timezone (e.g., `2026-06-11T12:00:00Z`).
+   - `previous_global_digest` MUST be serialized as a 64-character lowercase hexadecimal string.
    - `root_issued_hash` and `root_spent_hash` MUST be serialized as 64-character lowercase hexadecimal strings.
-   - `ots_receipt` MUST be serialized as the lowercase hexadecimal representation of the OpenTimestamps (OTS) receipt file.
-6. **Signing:** Sign the message with a BIP-340 Schnorr signature using the mint's master NUT-06 private key signing the SHA256 digest of this serialized manifest string.
+6. **Signing:** Sign the message with a BIP-340 Schnorr signature using the mint's master NUT-06 private key signing the SHA256 digest of this serialized manifest string. Note that this signature is over the manifest metadata only and **excludes** the `ots_receipt` to allow upgrading the receipt without changing the signature or causing equivocation false-positives.
 7. **Publish:** Store and publish the signed manifest, signatures, and OTS receipts.
 
 ---
@@ -111,6 +113,7 @@ For detailed examples and test vectors, see the [test vectors][tests].
   "keyset_id": "009a6154b71113b7",
   "epoch_index": 1,
   "timestamp": "2026-06-11T12:00:00Z",
+  "previous_global_digest": "0000000000000000000000000000000000000000000000000000000000000000",
   "signing_pubkey": "f3dd0e40dd3d888301b3b47aede737b6f9451ab451dfc05a1ae023ab4235b4dd",
   "root_issued": { "hash": "8f3c...", "sum": 1000000 },
   "root_spent": { "hash": "4d1a...", "sum": 450000 },
@@ -179,9 +182,13 @@ The mint **MUST** return a cryptographically signed **PoL Receipt** nested insid
 
 Each receipt is signed under the keyset's per-amount private key (`private_keys[amount]`) corresponding to the note's denomination.
 
-- **Message to Sign:** `<point_hex>:<target_epoch_decimal_string>`
-  - **Output:** `B'_hex:target_epoch`
-  - **Spent Input:** `Y_hex:target_epoch`
+To prevent cross-protocol signature replay attacks and provide robust domain separation, a specific domain prefix MUST be prepended to the message to form the payload to be signed:
+
+- **Message to Sign:**
+  - **Output (Issued/Active):** `"Cashu_PoL_Receipt_Issued:" || B'_hex || ":" || target_epoch_decimal_string`
+  - **Spent Input:** `"Cashu_PoL_Receipt_Spent:" || Y_hex || ":" || target_epoch_decimal_string`
+
+Where `B'_hex` and `Y_hex` are the 33-byte compressed hexadecimal representations of `B'` and `Y` (lowercase), and `target_epoch_decimal_string` is the decimal representation of the target epoch (e.g., `"12"`).
 
 | Version   | Curve     | Signature Details                                                                                                                                                                                                                            |
 | :-------- | :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -210,10 +217,11 @@ Verify the BIP-340 Schnorr signature `mint_signature` against the mint's master 
 
 ### Step 2: Validate OpenTimestamps Attestation
 
-1. **Upgrade Receipt:** Post `ots_receipt` to a calendar upgrade endpoint (e.g., `https://alice.btc.calendar.opentimestamps.org/upgrade`) to fetch the Merkle path.
-2. **Scan for Block:** Find block header attestation tag `0x00 0x05` (`A_BLOCKHEADER`). If pending tag `0x00 0x06` is found, the receipt is still awaiting block confirmation.
-3. **Parse Height:** Decode the Bitcoin block height (serialized as a VarInt) immediately following the tag.
-4. **Confirm:** Check via an independent explorer (e.g., `https://mempool.space/api/...`) that the block height exists, matches the manifest timestamp, and has sufficient confirmations.
+1. **Verify or Upgrade Receipt:** The verifier retrieves the `ots_receipt`. If the receipt contains a pending tag (`0x00 0x06`) and has remained unconfirmed/pending after a maximum timeout bound (MUST NOT be more than 24 hours from the manifest `timestamp`), the verifier MUST treat it as an **audit failure**, rather than waiting indefinitely.
+2. **Upgrade Proof (if pending):** If the receipt is still pending but within the timeout window, the verifier can attempt to fetch the Merkle path by posting the `ots_receipt` to a calendar upgrade endpoint (e.g., `https://alice.btc.calendar.opentimestamps.org/upgrade`). Note, however, that a properly functioning mint carries the upgrade burden and should publish already upgraded, offline-verifiable receipts.
+3. **Scan for Block:** Find block header attestation tag `0x00 0x05` (`A_BLOCKHEADER`).
+4. **Parse Height:** Decode the Bitcoin block height (serialized as a VarInt) immediately following the tag.
+5. **Confirm Block Timestamp:** Check via an independent explorer (e.g., `https://mempool.space/api/...`) that the block height exists and has sufficient confirmations. Furthermore, verify that the Bitcoin block's timestamp is within a reasonable tolerance window (e.g., within 4 hours) of the manifest `timestamp`, rather than requiring an exact match.
 
 ### Step 3: Validate Issued Path Walks
 
