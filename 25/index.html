@@ -1162,7 +1162,8 @@
 <span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;pubkey&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;amount_paid&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;amount_issued&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span>
+<span class="w">  </span><span class="nt">&quot;amount_issued&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1173,6 +1174,7 @@
 <li><code>expiry</code> is the Unix timestamp until which the mint quote is valid</li>
 <li><code>amount_paid</code> is the amount that has been paid to the mint via the bolt12 offer</li>
 <li><code>amount_issued</code> is the amount of ecash that has been issued for the given mint quote</li>
+<li><code>updated_at</code> is defined in <a href="../04/">NUT-04</a></li>
 </ul>
 <h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
 <p><strong>Request</strong> with curl:</p>
@@ -1190,11 +1192,12 @@
 <span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704757</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;pubkey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03d56ce4e446a85bbdaa547b4ec2b073d40ff802831352b8272b7dd7a4de5a7cac&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;amount_paid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;amount_issued&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">  </span><span class="nt">&quot;amount_issued&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704657</span>
 <span class="p">}</span>
 </code></pre></div>
 
-<p>Check quote state:</p>
+<p>Check mint quote:</p>
 <div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://localhost:3338/v1/mint/quote/bolt12/019e6d5a-2347-7000-8449-370fefb42fed
 </code></pre></div>
 

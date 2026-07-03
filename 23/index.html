@@ -1154,17 +1154,22 @@
 <span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// The bolt11 invoice to pay</span>
 <span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w">  </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">STATE</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;amount_paid&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;amount_issued&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">STATE</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Deprecated, optional</span>
 <span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span>
 <span class="p">}</span>
 </code></pre></div>
 
-<p><code>state</code> is an enum string field with possible values <code>"UNPAID"</code>, <code>"PAID"</code>, <code>"ISSUED"</code>:</p>
+<p><code>amount_paid</code>, <code>amount_issued</code>, and <code>updated_at</code> are defined in <a href="../04/">NUT-04</a>.</p>
+<p><code>state</code> is a deprecated enum string field with possible values <code>"UNPAID"</code>, <code>"PAID"</code>, <code>"ISSUED"</code>:</p>
 <ul>
 <li><code>"UNPAID"</code> means that the quote's request has not been paid yet.</li>
 <li><code>"PAID"</code> means that the quote's request has been paid but the ecash is not issued yet.</li>
 <li><code>"ISSUED"</code> means that the quote has been paid and the ecash has been issued.</li>
 </ul>
+<p>Wallets <strong>SHOULD</strong> use <code>amount_paid</code> and <code>amount_issued</code> instead of <code>state</code> whenever these fields are present.</p>
 <p><code>expiry</code> is the Unix timestamp until which the <code>request</code> can be paid (i.e. the bolt11 invoice expiry).</p>
 <h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
 <p>Request with curl:</p>
@@ -1177,12 +1182,15 @@
 <span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lnbc100n1pj4apw9...&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;amount_paid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;amount_issued&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704657</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UNPAID&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704757</span>
 <span class="p">}</span>
 </code></pre></div>
 
-<p>Check quote state:</p>
+<p>Check mint quote:</p>
 <div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://localhost:3338/v1/mint/quote/bolt11/019e6d5a-2347-7000-8322-05d51d498303
 </code></pre></div>
 

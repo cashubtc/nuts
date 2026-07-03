@@ -1158,7 +1158,8 @@
 <span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;pubkey&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;amount_paid&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;amount_issued&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span>
+<span class="w">  </span><span class="nt">&quot;amount_issued&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1170,6 +1171,7 @@
 <li><code>pubkey</code> is the public key from the request</li>
 <li><code>amount_paid</code> is the total confirmed amount paid to the request in UTXOs that are eligible for minting</li>
 <li><code>amount_issued</code> is the amount of ecash that has been issued for the given mint quote</li>
+<li><code>updated_at</code> is defined in <a href="../04/">NUT-04</a></li>
 </ul>
 <p>If <code>expiry</code> is not <code>null</code>, the wallet <strong>SHOULD NOT</strong> send payments to the request after <code>expiry</code>. Mints <strong>MUST</strong> keep monitoring transactions they detected before <code>expiry</code> until the transaction reaches the required number of confirmations or is evicted or replaced. Payments first detected by the mint after <code>expiry</code> <strong>MUST NOT</strong> increase <code>amount_paid</code>.</p>
 <h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
@@ -1187,16 +1189,17 @@
 <span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704757</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;pubkey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03d56ce4e446a85bbdaa547b4ec2b073d40ff802831352b8272b7dd7a4de5a7cac&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;amount_paid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;amount_issued&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">  </span><span class="nt">&quot;amount_issued&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704657</span>
 <span class="p">}</span>
 </code></pre></div>
 
-<p>Check quote state:</p>
+<p>Check mint quote:</p>
 <div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://localhost:3338/v1/mint/quote/onchain/019e6d5a-2347-7000-8850-39c85ed1b5d3
 </code></pre></div>
 
 <h3 id="minting-tokens">Minting Tokens<a class="headerlink" href="#minting-tokens" title="Permanent link">&para;</a></h3>
-<p>The quote state will only update to show <code>amount_paid</code> once a Bitcoin transaction has reached the minimum number of confirmations specified in the mint's settings.</p>
+<p>The quote accounting will only update to show <code>amount_paid</code> once a Bitcoin transaction has reached the minimum number of confirmations specified in the mint's settings.</p>
 <p>If the <code>onchain</code> mint method has a <code>min_amount</code> setting, each UTXO paid to the quote address is evaluated independently against <code>min_amount</code>. UTXOs with an amount less than <code>min_amount</code> <strong>MUST NOT</strong> increase <code>amount_paid</code> and <strong>MUST NOT</strong> count towards the mintable balance for the quote. Multiple UTXOs below <code>min_amount</code> <strong>MUST NOT</strong> be aggregated to reach <code>min_amount</code>.</p>
 <p>For the <code>onchain</code> method, the wallet includes the following specific <code>PostMintOnchainRequest</code> data:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
