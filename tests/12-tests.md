@@ -13,6 +13,24 @@ C_: "02a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba2"
 hash(R1, R2, K, C_): "a4dc034b74338c28c6bc3ea49731f2a24440fc7c4affc08b31a93fc9fbe6401e"
 ```
 
+## Deterministic nonce derivation
+
+The following vectors verify the deterministic `r` derivation. All values are fixed; an implementation **MUST** reproduce `e` and `s` exactly.
+
+```shell
+a:  0000000000000000000000000000000000000000000000000000000000000002
+A:  02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5
+B_: 02a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba2
+C_: 0244eccfc7a348274458bb38044c7f3c389b3c2086c7ec18b5812d2877ab937787
+```
+
+```shell
+e: 2a16ffee280aff3c429045607f9b8e0bf8b35910c44c1b20b9dfaf01b263d7b3
+s: 9df27731238334718d120d4f74611a7c668233f988e687ac3fb188f0a34a2dab
+```
+
+Verification (`e == hash(R1, R2, A, C_)`) **MUST** pass.
+
 ## DLEQ verification on `BlindSignature`
 
 The following is a `BlindSignature` with a **valid** DLEQ proof.
