@@ -1094,6 +1094,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Mint quote">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deterministic-quote-locking-key-derivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deterministic quote locking key derivation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1319,6 +1336,20 @@
 <p>[!IMPORTANT]</p>
 <p><strong>Privacy:</strong> To prevent the mint from being able to link multiple mint quotes, wallets <strong>SHOULD</strong> generate a unique public key for each mint quote request.</p>
 </blockquote>
+<h3 id="deterministic-quote-locking-key-derivation">Deterministic quote locking key derivation<a class="headerlink" href="#deterministic-quote-locking-key-derivation" title="Permanent link">&para;</a></h3>
+<p>Wallets can deterministically generate private keys for NUT-20 quote locking from their wallet seed.</p>
+<p>The following BIP32 derivation path is used to derive the private key:</p>
+<div class="codehilite"><pre><span></span><code>m/129373&#39;/20&#39;/0&#39;/0&#39;/{counter}
+</code></pre></div>
+
+<p>Where:</p>
+<ul>
+<li><code>129373'</code> is the Cashu wallet derivation namespace.</li>
+<li><code>20'</code> is the wallet derivation index for NUT-20 quote locking keys.</li>
+<li><code>{counter}</code> is an incrementing, non-hardened BIP32 child index.</li>
+</ul>
+<p>The wallet <strong>SHOULD</strong> use a new counter value for each mint quote request. The NUT-20 quote locking counter is independent from NUT-13 keyset counters and other wallet derivation counters.</p>
+<p>The wallet uses the compressed secp256k1 public key derived from the private key as the quote <code>pubkey</code>. This allows a wallet to restore the private key needed to sign for unpaid or paid NUT-20 locked mint quotes during a recovery process.</p>
 <p>The mint <code>Bob</code> then responds with a <code>PostMintQuoteBolt11Response</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
