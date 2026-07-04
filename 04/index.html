@@ -1329,6 +1329,7 @@
 <span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// UUID v7</span>
 <span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w">  </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;amount_paid&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;amount_issued&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
@@ -1341,6 +1342,7 @@
 <li><code>quote</code> is the quote ID in UUID v7 format</li>
 <li><code>request</code> is the payment request for the quote</li>
 <li><code>unit</code> corresponds to the value provided in the request</li>
+<li><code>method</code> is the payment method of the quote</li>
 <li><code>amount_paid</code> is the total amount that has been paid to the mint for this quote, denominated in <code>unit</code></li>
 <li><code>amount_issued</code> is the total amount of ecash that has been issued for this quote, denominated in <code>unit</code></li>
 <li><code>updated_at</code> is a Unix timestamp integer indicating when the quote was last updated</li>
