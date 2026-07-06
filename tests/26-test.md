@@ -416,9 +416,9 @@ CREQB1QYQQKCM4WD6X7M2LW4HXJAQZQQYQQQQQQQQQQQRYQVQQXCN5VVZSQXRGW368QUE69UHK66TWWS
 
 ---
 
-### Preferred Mint List with Fee Reserve and Supported Methods
+### Preferred Mint List with Supported Methods and Net Fees
 
-A payment request specifying a preferred mint list with `mp` set to `true` (tag 0x09), an additional fee required for non-preferred mints (`fr`, tag 0x0a), and the supported payment methods (`sm`, tag 0x0b). `bolt12` carries a per-method fee (`mf`, sub-tag 0x02) that stacks with the top-level `fr` fee required.
+A payment request specifying a preferred mint list with `mp` set to `true` (tag 0x09), an amount net of input fees (`nf`, tag 0x0a), and the supported payment methods (`sm`, tag 0x0b). `bolt12` carries a per-method fee (`mf`, sub-tag 0x02) that applies to payments from non-preferred mints.
 
 ```json
 {
@@ -427,7 +427,7 @@ A payment request specifying a preferred mint list with `mp` set to `true` (tag 
   "u": "sat",
   "m": ["https://mint.example.com"],
   "mp": true,
-  "fr": 2,
+  "nf": true,
   "sm": [{ "mn": "bolt11" }, { "mn": "bolt12", "mf": 5 }]
 }
 ```
@@ -435,5 +435,5 @@ A payment request specifying a preferred mint list with `mp` set to `true` (tag 
 Encoded:
 
 ```
-CREQB1QYQP2URJV4NX2UNJV4J97EN9V40K6ET5DPHKGUCZQQYQQQQQQQQQQQRYQVQQZQQ9QQVXSAR5WPEN5TE0D45KUAPWV4UXZMTSD3JJUCM0D5YSQQGPPGQQSQQQQQQQQQQQQG9SQZGPQQRXYMMVWSCNZZCQZSQSQPNZDAK8GVFJQGQQSQQQQQQQQQQQQ5SX95HX
+CREQB1QYQP2URJV4NX2UNJV4J97EN9V40K6ET5DPHKGUCZQQYQQQQQQQQQQQRYQVQQZQQ9QQVXSAR5WPEN5TE0D45KUAPWV4UXZMTSD3JJUCM0D5YSQQGPPGQQZQGTQQYSZQQXVFHKCAP3XY9SQ9QPQQRXYMMVWSCNYQSQPQQQQQQQQQQQQPGZ0CGYS
 ```
