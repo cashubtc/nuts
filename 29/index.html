@@ -1330,6 +1330,8 @@
 <li><code>b"Cashu_MintQuoteSig_v1"</code> is the domain-separation tag as raw ASCII bytes, not length-prefixed.</li>
 <li><code>quotes[i]</code> is the UTF-8 encoded quote ID from the request's <code>quotes</code> array at index <code>i</code></li>
 <li><code>outputs</code> are <strong>all blinded messages</strong> from the request's <code>outputs</code> array (regardless of which quote they correspond to)</li>
+<li><code>amount_j</code> is the output amount as canonical minimal big-endian bytes (e.g. <code>0</code> → empty byte array, <code>1</code> → <code>0x01</code>, <code>256</code> → <code>0x0100</code>); thus <code>len32(amount_j)</code> is its length in bytes as a 32-bit integer (e.g. <code>0</code> for amount <code>0</code>, <code>1</code> for amount <code>1</code>, <code>2</code> for amount <code>256</code>).</li>
+<li><code>B_j</code> is the raw byte representation of the blinded message (e.g. 33-byte compressed secp256k1 or 48-byte BLS12-381 point), decoded from the request's hex string.</li>
 <li><code>||</code> denotes byte concatenation and <code>len32(x)</code> is the 32-bit (4-byte) big-endian length of the following data <code>x</code>.</li>
 </ul>
 <h3 id="signature-validation-failure">Signature Validation Failure<a class="headerlink" href="#signature-validation-failure" title="Permanent link">&para;</a></h3>
