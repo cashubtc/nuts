@@ -1354,6 +1354,7 @@
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w">  </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;amount_paid&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;amount_issued&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
@@ -1384,16 +1385,21 @@
 
 <h2 id="signing-the-mint-request">Signing the mint request<a class="headerlink" href="#signing-the-mint-request" title="Permanent link">&para;</a></h2>
 <h3 id="message-aggregation">Message aggregation<a class="headerlink" href="#message-aggregation" title="Permanent link">&para;</a></h3>
-<p>To provide a signature for a mint request, the owner of the signing public keys must concatenate the quote ID <code>quote</code> in <code>PostMintQuoteBolt11Response</code> and the <code>B_</code> fields of all <code>BlindedMessages</code> in the <code>PostMintBolt11Request</code> (i.e., the outputs, see <a href="../00/">NUT-00</a>) to a single message string in the order they appear in the <code>PostMintRequest</code>. This concatenated string is then hashed and signed (see <a href="#signature-scheme">Signature scheme</a>).</p>
-<blockquote>
-<p>[!NOTE]</p>
-<p>Concatenating the quote ID and the outputs into a single message prevents maliciously replacing the outputs.</p>
-</blockquote>
-<p>If a request has <code>n</code> outputs, the message to sign becomes:</p>
-<div class="codehilite"><pre><span></span><code>msg_to_sign =  quote || B_0 || ... || B_(n-1)
+<p>To authenticate a mint request, the signer commits to the quote ID and all <code>BlindedMessages</code> (the outputs, see <a href="../00/">NUT-00</a>) of the <code>PostMintBolt11Request</code>, in the order they appear in the request. The message is built over raw bytes:</p>
+<div class="codehilite"><pre><span></span><code>msg_to_sign = &quot;Cashu_MintQuoteSig_v1&quot;                 // domain-separation tag (ASCII, not length-prefixed)
+              || len32(quote) || quote                // quote = UTF-8 quote id
+              || for each output i (in request order):
+                   len32(amount_i) || amount_i        // amount = canonical minimal big-endian
+                   || len32(B_i)     || B_i           // B_ = raw compressed point bytes
 </code></pre></div>
 
-<p>Where <code>||</code> denotes concatenation, <code>quote</code> is the UTF-8 quote id in <code>PostMintQuoteBolt11Response</code>, and each <code>B_n</code> is a UTF-8 encoded hex string of the outputs in the <code>PostMintBolt11Request</code>.</p>
+<p>Where:</p>
+<ul>
+<li><code>||</code> denotes byte concatenation and <code>len32(x)</code> is the 32-bit (4-byte) big-endian length of the byte array <code>x</code> in bytes.</li>
+<li><code>quote</code> is the UTF-8 quote id from the <code>PostMintQuoteBolt11Response</code>.</li>
+<li><code>amount_i</code> is the output amount as canonical minimal big-endian bytes (e.g. <code>0</code> → empty byte array, <code>1</code> → <code>0x01</code>, <code>256</code> → <code>0x0100</code>); thus <code>len32(amount_i)</code> is its length in bytes as a 32-bit integer (e.g. <code>0</code> for amount <code>0</code>, <code>1</code> for amount <code>1</code>, <code>2</code> for amount <code>256</code>).</li>
+<li><code>B_i</code> is the raw byte representation of the blinded message (e.g. 33-byte compressed secp256k1 or 48-byte BLS12-381 point), decoded from the request's hex string.</li>
+</ul>
 <h3 id="signature-scheme">Signature scheme<a class="headerlink" href="#signature-scheme" title="Permanent link">&para;</a></h3>
 <p>To mint a quote where a public key was provided, the wallet includes a signature on <code>msg_to_sign</code> in the <code>PostMintBolt11Request</code>. We use a <a href="https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki">BIP340</a> Schnorr signature on the SHA-256 hash of the message to sign as defined above.</p>
 <h2 id="minting-tokens">Minting tokens<a class="headerlink" href="#minting-tokens" title="Permanent link">&para;</a></h2>
@@ -1410,7 +1416,7 @@
 </code></pre></div>
 
 <p>with the <code>quote</code> being the quote ID from the previous step and <code>outputs</code> being <code>BlindedMessages</code> as in <a href="../04/">NUT-04</a>.</p>
-<p><code>signature</code> is the signature on the <code>msg_to_sign</code> which is the concatenated quote id and the outputs as defined above.</p>
+<p><code>signature</code> is the signature on the <code>msg_to_sign</code> as defined above.</p>
 <p>The mint responds with a <code>PostMintBolt11Response</code> as in <a href="../04/">NUT-04</a> if all validations are successful.</p>
 <h2 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h2>
 <p>Request of <code>Alice</code> with curl:</p>
