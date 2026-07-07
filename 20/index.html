@@ -1386,15 +1386,16 @@
 <h2 id="signing-the-mint-request">Signing the mint request<a class="headerlink" href="#signing-the-mint-request" title="Permanent link">&para;</a></h2>
 <h3 id="message-aggregation">Message aggregation<a class="headerlink" href="#message-aggregation" title="Permanent link">&para;</a></h3>
 <p>To authenticate a mint request, the signer commits to the quote ID and all <code>BlindedMessages</code> (the outputs, see <a href="../00/">NUT-00</a>) of the <code>PostMintBolt11Request</code>, in the order they appear in the request. The message is built over raw bytes:</p>
-<div class="codehilite"><pre><span></span><code>msg_to_sign = &quot;Cashu_MintQuoteSig_v1&quot;                 // domain-separation tag (ASCII, not length-prefixed)
-              || len32(quote) || quote                // quote = UTF-8 quote id
+<div class="codehilite"><pre><span></span><code>msg_to_sign = b&quot;Cashu_MintQuoteSig_v1&quot;
+              || len32(quote) || quote
               || for each output i (in request order):
-                   len32(amount_i) || amount_i        // amount = canonical minimal big-endian
-                   || len32(B_i)     || B_i           // B_ = raw compressed point bytes
+                   len32(amount_i) || amount_i
+                   || len32(B_i)   || B_i
 </code></pre></div>
 
 <p>Where:</p>
 <ul>
+<li><code>b"Cashu_MintQuoteSig_v1"</code> is the domain-separation tag as raw ASCII bytes, not length-prefixed.</li>
 <li><code>||</code> denotes byte concatenation and <code>len32(x)</code> is the 32-bit (4-byte) big-endian length of the byte array <code>x</code> in bytes.</li>
 <li><code>quote</code> is the UTF-8 quote id from the <code>PostMintQuoteBolt11Response</code>.</li>
 <li><code>amount_i</code> is the output amount as canonical minimal big-endian bytes (e.g. <code>0</code> → empty byte array, <code>1</code> → <code>0x01</code>, <code>256</code> → <code>0x0100</code>); thus <code>len32(amount_i)</code> is its length in bytes as a 32-bit integer (e.g. <code>0</code> for amount <code>0</code>, <code>1</code> for amount <code>1</code>, <code>2</code> for amount <code>256</code>).</li>
