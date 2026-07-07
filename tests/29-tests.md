@@ -106,7 +106,7 @@ Expected behavior:
 - The mint rejects the request because all quotes must share the same payment method and match `{method}` in the URL.
 - No outputs are signed.
 
-## Batch mint rejects NUT-20 signature length mismatch
+## Batch mint rejects signatures array length mismatch
 
 The following is an invalid batch mint request where `signatures` length does not match `quotes` length.
 
@@ -129,9 +129,9 @@ Expected behavior:
 - The mint rejects the request because `signatures[i]` must exist for each `quotes[i]` when signatures are required.
 - No outputs are signed.
 
-## NUT-20 signature with valid ordering
+## Batch mint with valid signature
 
-The following is a valid NUT-20 batch mint request where the signature correctly covers all outputs in order. The quote has pubkey `0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798` (sk = 1).
+The following is a valid NUT-29 batch mint request where the signature correctly covers all outputs in order. The quote has pubkey `0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798` (sk = 1).
 
 ```shell
 quote: "019e6d5a-2347-7000-8c81-a1e0dbf3299f"
