@@ -158,9 +158,9 @@ Encoded:
 creqApWFpaGM5ZTQ1ZDJhYWEZAfRhdWNzYXRhbYF4GGh0dHBzOi8vbWludC5leGFtcGxlLmNvbWVudXQxMKNha2RQMlBLYWR4QjAyYzNiNWJiMjdlMzYxNDU3YzkyZDkzZDc4ZGQ3M2QzZDUzNzMyMTEwYjJjZmU4YjUwZmJjMGFiYzYxNWU5YzMzMWF0gYJndGltZW91dGQzNjAw
 ```
 
-### Preferred Mint List with Supported Methods and Net Fees
+### Preferred Mint List with Supported Methods
 
-A payment request specifying a preferred mint list with `mp` set to `true`, an amount net of input fees (`nf`), and the supported payment methods (`sm`). `bolt12` carries a per-method fee (`mf`) that applies to payments from non-preferred mints.
+A payment request specifying a preferred mint list with `mp` set to `true` and the supported payment methods (`sm`). `bolt12` carries a per-method fee (`mf`) that applies to payments from non-preferred mints.
 
 ```json
 {
@@ -169,7 +169,6 @@ A payment request specifying a preferred mint list with `mp` set to `true`, an a
   "u": "sat",
   "m": ["https://mint.example.com"],
   "mp": true,
-  "nf": true,
   "sm": [{ "mn": "bolt11" }, { "mn": "bolt12", "mf": 5 }]
 }
 ```
@@ -177,5 +176,5 @@ A payment request specifying a preferred mint list with `mp` set to `true`, an a
 Encoded:
 
 ```
-creqAp2FpdXByZWZlcnJlZF9mZWVfbWV0aG9kc2FhGGRhdWNzYXRhbYF4GGh0dHBzOi8vbWludC5leGFtcGxlLmNvbWJtcPVibmb1YnNtgqFibW5mYm9sdDExomJtbmZib2x0MTJibWYF
+creqApmFpdXByZWZlcnJlZF9mZWVfbWV0aG9kc2FhGGRhdWNzYXRhbYF4GGh0dHBzOi8vbWludC5leGFtcGxlLmNvbWJtcPVic22CoWJtbmZib2x0MTGiYm1uZmJvbHQxMmJtZgU=
 ```
