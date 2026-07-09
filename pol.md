@@ -186,12 +186,8 @@ To minimize verification overhead on clients, sum-MMR inclusion proofs provide t
       "item": "02b1a...",
       "leaf_index": 45012,
       "value": 1000,
-      "sibling_path": [
-        { "hash": "b4a1...", "sum": 500, "is_left": true }
-      ],
-      "peaks": [
-        { "hash": "f29a...", "sum": 20000 }
-      ]
+      "sibling_path": [{ "hash": "b4a1...", "sum": 500, "is_left": true }],
+      "peaks": [{ "hash": "f29a...", "sum": 20000 }]
     }
   ]
 }
@@ -299,11 +295,11 @@ For each held active token:
        - `current_sum = current_sum + sibling.sum`
 4. Ensure the resulting `(current_hash, current_sum)` is present as one of the peak roots in the `peaks` array of the proof.
 5. Perform Peak Bagging on `peaks` from right to left:
-    - Let the bagged accumulator B_k = P_k (the rightmost peak).
-    - For each peak P_i from right to left (i = k-1 down to 1):
-      - `sum_B_i = sum(P_i) + sum(B_i+1)`
-      - `hash_B_i = SHA256(hash(P_i) || hash(B_i+1) || bytes_8(sum(P_i)) || bytes_8(sum(B_i+1)))`
-    - Verify that the final bagged peak root B_1 matches the `issued_mmr_root_hash` and `issued_mmr_root_sum` in the Epoch Manifest.
+   - Let the bagged accumulator B_k = P_k (the rightmost peak).
+   - For each peak P_i from right to left (i = k-1 down to 1):
+     - `sum_B_i = sum(P_i) + sum(B_i+1)`
+     - `hash_B_i = SHA256(hash(P_i) || hash(B_i+1) || bytes_8(sum(P_i)) || bytes_8(sum(B_i+1)))`
+   - Verify that the final bagged peak root B_1 matches the `issued_mmr_root_hash` and `issued_mmr_root_sum` in the Epoch Manifest.
 
 ### Step 5: Validate Spent sum-MMR Sibling Walks
 
@@ -362,12 +358,8 @@ If verification fails, the wallet generates a **Fraud Challenge**—a self-conta
   "leaf_index": 45012,
   "claimed_value": 1000,
   "actual_value": 0,
-  "sibling_path": [
-    { "hash": "...", "sum": 0, "is_left": true }
-  ],
-  "peaks": [
-    { "hash": "...", "sum": 0 }
-  ]
+  "sibling_path": [{ "hash": "...", "sum": 0, "is_left": true }],
+  "peaks": [{ "hash": "...", "sum": 0 }]
 }
 ```
 
