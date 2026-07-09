@@ -66,18 +66,18 @@ Height 0:    (Node 1) (Node 2) (Node 4) (Node 5) (Node 8) (Node 9)  (Node 11)
 - **Peak 2 (Mountain of size 2 leaves):** Rooted at Node 10 (Height 1).
 - **Peak 3 (Mountain of size 1 leaf):** Rooted at Node 11 (Height 0).
 
-The number and sizes of individual mountains correspond exactly to the bits set to `1` in the binary representation of the leaf count. For example, $7 = 4 + 2 + 1$, which is represented as binary `111` ($2^2 + 2^1 + 2^0$).
+The number and sizes of individual mountains correspond exactly to the bits set to `1` in the binary representation of the leaf count. For example, 7 = 4 + 2 + 1, which is represented as binary `111` (2^2 + 2^1 + 2^0).
 
 #### Parent and Peak Bagging with Sums
 
-Because an MMR is a forest of multiple peak roots $P_1, P_2, \dots, P_k$ of strictly decreasing heights, a single unique root `(root_hash, root_sum)` must be derived for signing and on-chain commitments. This is done via **Right-to-Left Peak Bagging**:
+Because an MMR is a forest of multiple peak roots P_1, P_2, ..., P_k of strictly decreasing heights, a single unique root `(root_hash, root_sum)` must be derived for signing and on-chain commitments. This is done via **Right-to-Left Peak Bagging**:
 
-1. Start with the rightmost peak as the initial accumulator: $B_k = P_k$.
-2. For each peak $P_i$ from right to left ($i = k-1$ down to $1$):
-   - Compute parent $B_i = \text{Parent}(P_i, B_{i+1})$:
-     - `sum_{B_i} = sum(P_i) + sum(B_{i+1})`
-     - `hash_{B_i} = SHA256(hash(P_i) || hash(B_{i+1}) || bytes_8(sum(P_i)) || bytes_8(sum(B_{i+1})))`
-3. The final bagged root is $B_1$. If the MMR is empty (size 0), the root has `hash = SHA256(b"")` and `sum = 0`.
+1. Start with the rightmost peak as the initial accumulator: B_k = P_k.
+2. For each peak P_i from right to left (i = k-1 down to 1):
+   - Compute parent B_i = Parent(P_i, B_i+1):
+     - `sum_B_i = sum(P_i) + sum(B_i+1)`
+     - `hash_B_i = SHA256(hash(P_i) || hash(B_i+1) || bytes_8(sum(P_i)) || bytes_8(sum(B_i+1)))`
+3. The final bagged root is B_1. If the MMR is empty (size 0), the root has `hash = SHA256(b"")` and `sum = 0`.
 
 #### Stack-Based Construction Algorithm
 
@@ -99,7 +99,7 @@ An elegant and standard way to dynamically construct the MMR and track heights w
 
 ### 4. Append-Only Consistency Verification
 
-To verify that MMR $M$ (of size $m$) is a valid append-only extension of MMR $N$ (of size $n$, where $m > n$), an auditor compares their peak lists. Standard MMR consistency proofs verify that the peaks of the old MMR $N$ are preserved and deterministically folded into the peaks of the new MMR $M$ as new elements are added. This ensures that no past leaf can be modified or deleted without invalidating the extension proof.
+To verify that MMR M (of size m) is a valid append-only extension of MMR N (of size n, where m > n), an auditor compares their peak lists. Standard MMR consistency proofs verify that the peaks of the old MMR N are preserved and deterministically folded into the peaks of the new MMR M as new elements are added. This ensures that no past leaf can be modified or deleted without invalidating the extension proof.
 
 ---
 
@@ -131,7 +131,7 @@ To minimize verification overhead on clients, sum-MMR inclusion proofs provide t
 
 1. **Leaf Index:** The sequential 0-based insertion index of the leaf.
 2. **Sibling Path:** A list of `(hash, sum, is_left)` sibling nodes traversed from the leaf up to its local mountain peak.
-3. **Peaks:** The list of all peak roots `(hash, sum)` of the MMR forest at that epoch (of size $N$).
+3. **Peaks:** The list of all peak roots `(hash, sum)` of the MMR forest at that epoch (of size N).
 
 ---
 
@@ -291,11 +291,11 @@ For each held active token:
        - `current_sum = current_sum + sibling.sum`
 4. Ensure the resulting `(current_hash, current_sum)` is present as one of the peak roots in the `peaks` array of the proof.
 5. Perform Peak Bagging on `peaks` from right to left:
-   - Let the bagged accumulator $B_k = P_k$ (the rightmost peak).
-   - For each peak $P_i$ from right to left ($i = k-1$ down to 1):
-     - `sum_{B_i} = sum(P_i) + sum(B_{i+1})`
-     - `hash_{B_i} = SHA256(hash(P_i) || hash(B_{i+1}) || bytes_8(sum(P_i)) || bytes_8(sum(B_{i+1})))`
-   - Verify that the final bagged peak root $B_1$ matches the `issued_mmr_root_hash` and `issued_mmr_root_sum` in the Epoch Manifest.
+    - Let the bagged accumulator B_k = P_k (the rightmost peak).
+    - For each peak P_i from right to left (i = k-1 down to 1):
+      - `sum_B_i = sum(P_i) + sum(B_i+1)`
+      - `hash_B_i = SHA256(hash(P_i) || hash(B_i+1) || bytes_8(sum(P_i)) || bytes_8(sum(B_i+1)))`
+    - Verify that the final bagged peak root B_1 matches the `issued_mmr_root_hash` and `issued_mmr_root_sum` in the Epoch Manifest.
 
 ### Step 5: Validate Spent sum-MMR Sibling Walks
 

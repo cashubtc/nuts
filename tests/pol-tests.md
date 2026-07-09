@@ -10,16 +10,16 @@ Each node in the sum-MMR has the structure `(hash, sum)` where `hash` is 32 byte
 
 ### Parent Node Hashing
 
-Given left child $L = (\text{hash}_L, \text{sum}_L)$ and right child $R = (\text{hash}_R, \text{sum}_R)$:
-- $\text{sum}_P = \text{sum}_L + \text{sum}_R$
-- $\text{hash}_P = \text{SHA256}(\text{hash}_L \mathbin{\Vert} \text{hash}_R \mathbin{\Vert} \text{bytes}_8(\text{sum}_L) \mathbin{\Vert} \text{bytes}_8(\text{sum}_R))$
+Given left child L = (hash_L, sum_L) and right child R = (hash_R, sum_R):
+- sum_P = sum_L + sum_R
+- hash_P = SHA256(hash_L || hash_R || bytes_8(sum_L) || bytes_8(sum_R))
 
 ### Peak Bagging Hashing (Right-to-Left)
 
-For a list of MMR peaks $P_1, P_2, \dots, P_k$ of decreasing heights, they are recursively bagged from right to left:
-- $B_k = P_k$
-- $B_i = \text{Parent}(P_i, B_{i+1}) \quad \text{for } i \in [1, k-1]$
-- The final bagged commitment root is $B_1$.
+For a list of MMR peaks P_1, P_2, ..., P_k of decreasing heights, they are recursively bagged from right to left:
+- B_k = P_k
+- B_i = Parent(P_i, B_i+1) for i in [1, k-1]
+- The final bagged commitment root is B_1.
 
 ---
 
