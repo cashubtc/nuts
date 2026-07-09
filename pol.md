@@ -99,7 +99,10 @@ An elegant and standard way to dynamically construct the MMR and track heights w
 
 ### 4. Append-Only Consistency Verification
 
-To verify that MMR M (of size m) is a valid append-only extension of MMR N (of size n, where m > n), an auditor compares their peak lists. Standard MMR consistency proofs verify that the peaks of the old MMR N are preserved and deterministically folded into the peaks of the new MMR M as new elements are added. This ensures that no past leaf can be modified or deleted without invalidating the extension proof.
+To verify that MMR M (of size m) is a valid append-only extension of MMR N (of size n, where m > n), an auditor compares their peak lists. This append-only property can be verified in two ways:
+
+1. **Standard MMR Consistency Proofs:** Cryptographically proving that the peaks of the old MMR N are deterministically preserved and folded into the peaks of the new MMR M.
+2. **Distributed Sibling Path Prefix Checks:** Any client holding a valid inclusion proof (such as for active or spent ecash) can re-request a new proof in the following epoch and verify that the old sibling path is preserved as a direct prefix of the new sibling path. If the mint modified or removed any historical entries, the internal hashes would change, immediately violating prefix preservation.
 
 ---
 
@@ -270,8 +273,13 @@ Verify the BIP-340 Schnorr signature `mint_signature` against the mint's master 
 ### Step 3: Validate MMR Append-Only Consistency
 
 To ensure the mint does not modify or delete historical entries from an epoch to another:
+
 1. Compare this epoch's `previous_global_digest` against the previous epoch's global digest (or against the digest cached by the wallet at its last audit). Treat a mismatch as an audit failure.
-2. Verify that the new epoch's MMR roots (`issued_mmr` and `spent_mmr`) are valid append-only extensions of the previous epoch's roots. This can be verified using an MMR consistency proof or by checking that the peaks of the old MMR are consistently preserved and merged in the new MMR peaks.
+2. **Sibling Path Prefix Preservation Check:** Any client holding a valid inclusion proof (for issued ecash or spent history) in a previous epoch can verify consistency when refreshing or re-requesting their proof in the current epoch:
+   - The sequential `leaf_index` and leaf node `(hash, sum)` MUST be identical across both proofs.
+   - Let `k` be the length of the sibling path of the previous proof. The first `k` elements of the new proof's `sibling_path` MUST match the old proof's `sibling_path` exactly (in node hash, sum, and `is_left` positional boolean).
+   - Any additional sibling nodes beyond index `k-1` in the new `sibling_path` represent subsequent peaks merged at higher mountain heights.
+   - If this prefix match fails, the mint has modified, reordered, or deleted a past leaf (such as removing fabricated spent leaves), which constitutes an **audit failure**. Alternatively, external auditors can verify append-only extensions using standard MMR consistency proofs.
 
 ### Step 4: Validate Issued sum-MMR Sibling Walks
 
