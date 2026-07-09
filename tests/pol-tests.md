@@ -1,168 +1,181 @@
 # Proof of Liabilities (PoL) Test Vectors
 
-This document provides test vectors for verifying implementations of the Proof of Liabilities (PoL) specification (NUT-XX), including Sparse Merkle Sum Tree (MS-SMT) computations, compact bitmasked sibling proofs, and epoch manifest BIP-340 Schnorr signing.
+This document provides test vectors for verifying implementations of the Proof of Liabilities (PoL) specification (NUT-XX), including Merkle Mountain Range with Sums (sum-MMR) computations, right-to-left peak bagging, and epoch manifest BIP-340 Schnorr signing.
 
 ---
 
-## 1. MS-SMT Precomputed Default Empty Nodes
+## 1. Node Hashing and Peak Bagging Formulations
 
-Precomputed default empty nodes at level `d in [0, 256]`. Each empty node has a sum of `0` and a hash computed by hashing the concatenation of the left child's hash, right child's hash, and their respective 8-byte big-endian sum values.
+Each node in the sum-MMR has the structure `(hash, sum)` where `hash` is 32 bytes and `sum` is an 8-byte big-endian unsigned integer (uint64).
 
-```json
-[
-  {
-    "level": 0,
-    "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "sum": 0
-  },
-  {
-    "level": 1,
-    "hash": "bc8ac1359d614e79e858cf990d2847126ed9b44defa2e0eeee501a9e979da658",
-    "sum": 0
-  },
-  {
-    "level": 2,
-    "hash": "7ca0eae62b36334057b542a025a90d7e37beee71ed761e49483746142e1144a6",
-    "sum": 0
-  },
-  {
-    "level": 3,
-    "hash": "6089c77949a1c945da0026b557dc9bf4f1dcd2c3e9b5c31ed5973e55df2a8458",
-    "sum": 0
-  },
-  {
-    "level": 4,
-    "hash": "153c8aa8d18a34da8dc499bab40e9ae55564da0c533b0005bb0f410d6b6d51e8",
-    "sum": 0
-  },
-  {
-    "level": 10,
-    "hash": "a4de2bac5474b673c8f220961b40d00329bc413c0d6f15ee1be3c181f813d07d",
-    "sum": 0
-  },
-  {
-    "level": 100,
-    "hash": "079b58a5530a258ab4ff4c988e8024094aab07fe94a897d7f04c9c936034bf99",
-    "sum": 0
-  },
-  {
-    "level": 256,
-    "hash": "2a7b5220250ca23ef34228a6a223035aaefdf08c715836c46be4fc941699f6ba",
-    "sum": 0
-  }
-]
-```
+### Parent Node Hashing
+
+Given left child $L = (\text{hash}_L, \text{sum}_L)$ and right child $R = (\text{hash}_R, \text{sum}_R)$:
+- $\text{sum}_P = \text{sum}_L + \text{sum}_R$
+- $\text{hash}_P = \text{SHA256}(\text{hash}_L \mathbin{\Vert} \text{hash}_R \mathbin{\Vert} \text{bytes}_8(\text{sum}_L) \mathbin{\Vert} \text{bytes}_8(\text{sum}_R))$
+
+### Peak Bagging Hashing (Right-to-Left)
+
+For a list of MMR peaks $P_1, P_2, \dots, P_k$ of decreasing heights, they are recursively bagged from right to left:
+- $B_k = P_k$
+- $B_i = \text{Parent}(P_i, B_{i+1}) \quad \text{for } i \in [1, k-1]$
+- The final bagged commitment root is $B_1$.
 
 ---
 
-## 2. 2-Leaf Tree Computation
+## 2. 2-Leaf MMR Tree Computation
 
-This test vector uses two active leaf nodes, derived by hashing the raw 33-byte compressed public key values of the blinded messages.
+This test vector uses two leaf nodes, representing a sum-MMR of size 2. These two leaves are merged at height 1 into a single peak root.
 
 ### Leaves
 
-| Blinded Message B\_ (33-Byte Compressed Pubkey Hex)                  | Value | Hash (SHA256 of Raw Bytes)                                         | Index Integer (Hex)                                                  |
-| :------------------------------------------------------------------- | :---- | :----------------------------------------------------------------- | :------------------------------------------------------------------- |
-| `02b1a03e1b10a23429fa221087e53f19001b97ad89498a44b93b3f23a851121df4` | 100   | `6711094bb65007f6313a7c2edc4833378ef715aaf8f62ce0f9478c591dba1e85` | `0x6711094bb65007f6313a7c2edc4833378ef715aaf8f62ce0f9478c591dba1e85` |
-| `02c3a50646bc1a1fef3da21973b064eb6897de58231c5f3e2730bf18361592394a` | 250   | `aa80cd1d9ae985f212fd6c41cdf4c8747c92d787e9d8fd45e5d7e3f85941937f` | `0xaa80cd1d9ae985f212fd6c41cdf4c8747c92d787e9d8fd45e5d7e3f85941937f` |
+| Blinded Message B\_ (33-Byte Compressed Pubkey Hex)                  | Value | Hash (SHA256 of Raw Bytes)                                         | Leaf Index |
+| :------------------------------------------------------------------- | :---- | :----------------------------------------------------------------- | :--------- |
+| `02b1a03e1b10a23429fa221087e53f19001b97ad89498a44b93b3f23a851121df4` | 100   | `6711094bb65007f6313a7c2edc4833378ef715aaf8f62ce0f9478c591dba1e85` | 0          |
+| `02c3a50646bc1a1fef3da21973b064eb6897de58231c5f3e2730bf18361592394a` | 250   | `aa80cd1d9ae985f212fd6c41cdf4c8747c92d787e9d8fd45e5d7e3f85941937f` | 1          |
 
-### Tree Root
+### Bagged Root
 
-- **Hash:** `fe8a4d26af66d5abffad49a553a483a466e81098c0006c32d8685b692dd0d755`
+- **Hash:** `90e8e647a08f35b5b24653ab52e5d27a2deddb05d1e54d5d21777ef02036b29f`
 - **Sum:** `350`
 
 ### Sibling Inclusion Proofs
 
-#### Proof for `02b1a03e...`
+#### Proof for `02b1a03e...` (Index 0)
 
-- **Compact Mask:** `0x8000000000000000000000000000000000000000000000000000000000000000` (Bit 255 is set, indicating only the level 255 sibling is non-empty)
-- **Siblings:**
+- **Leaf Index:** 0
+- **Sibling Path:**
   ```json
   [
     {
-      "hash": "57f827f76a295fbc65ca015eb80ece857ef5335beebbd3b39a53f1cbcd3ae97f",
-      "sum": 250
+      "hash": "aa80cd1d9ae985f212fd6c41cdf4c8747c92d787e9d8fd45e5d7e3f85941937f",
+      "sum": 250,
+      "is_left": false
+    }
+  ]
+  ```
+- **Peaks:**
+  ```json
+  [
+    {
+      "hash": "90e8e647a08f35b5b24653ab52e5d27a2deddb05d1e54d5d21777ef02036b29f",
+      "sum": 350
     }
   ]
   ```
 
-#### Proof for `02c3a506...`
+#### Proof for `02c3a506...` (Index 1)
 
-- **Compact Mask:** `0x8000000000000000000000000000000000000000000000000000000000000000`
-- **Siblings:**
+- **Leaf Index:** 1
+- **Sibling Path:**
   ```json
   [
     {
-      "hash": "deae1aa655612bfe4b489ca03f706457d9b8ed9510645e6fdf0da492227ccd53",
-      "sum": 100
+      "hash": "6711094bb65007f6313a7c2edc4833378ef715aaf8f62ce0f9478c591dba1e85",
+      "sum": 100,
+      "is_left": true
+    }
+  ]
+  ```
+- **Peaks:**
+  ```json
+  [
+    {
+      "hash": "90e8e647a08f35b5b24653ab52e5d27a2deddb05d1e54d5d21777ef02036b29f",
+      "sum": 350
     }
   ]
   ```
 
 ---
 
-## 3. 3-Leaf Tree Computation
+## 3. 3-Leaf MMR Tree Computation
 
-This test vector uses three active leaf nodes. Note that the second and third public keys share a path in the right subtree of the root (index MSB = `1`) and only diverge at bit index 253.
+This test vector uses three leaf nodes, representing a sum-MMR of size 3.
 
 ### Leaves
 
-| Blinded Message B\_ (33-Byte Compressed Pubkey Hex)                  | Value | Hash (SHA256 of Raw Bytes)                                         | Index Integer (Hex)                                                  |
-| :------------------------------------------------------------------- | :---- | :----------------------------------------------------------------- | :------------------------------------------------------------------- |
-| `02b1a03e1b10a23429fa221087e53f19001b97ad89498a44b93b3f23a851121df4` | 100   | `6711094bb65007f6313a7c2edc4833378ef715aaf8f62ce0f9478c591dba1e85` | `0x6711094bb65007f6313a7c2edc4833378ef715aaf8f62ce0f9478c591dba1e85` |
-| `02c3a50646bc1a1fef3da21973b064eb6897de58231c5f3e2730bf18361592394a` | 250   | `aa80cd1d9ae985f212fd6c41cdf4c8747c92d787e9d8fd45e5d7e3f85941937f` | `0xaa80cd1d9ae985f212fd6c41cdf4c8747c92d787e9d8fd45e5d7e3f85941937f` |
-| `03c0029b38423f03b6d203a55e2d6778035740e40dd3d888301b3b47aede737b6f` | 500   | `95b7ec67b1f85ca98781f08fc4613559820b99f178707b29c8ebb4577aca5f40` | `0x95b7ec67b1f85ca98781f08fc4613559820b99f178707b29c8ebb4577aca5f40` |
+| Blinded Message B\_ (33-Byte Compressed Pubkey Hex)                  | Value | Hash (SHA256 of Raw Bytes)                                         | Leaf Index |
+| :------------------------------------------------------------------- | :---- | :----------------------------------------------------------------- | :--------- |
+| `02b1a03e1b10a23429fa221087e53f19001b97ad89498a44b93b3f23a851121df4` | 100   | `6711094bb65007f6313a7c2edc4833378ef715aaf8f62ce0f9478c591dba1e85` | 0          |
+| `02c3a50646bc1a1fef3da21973b064eb6897de58231c5f3e2730bf18361592394a` | 250   | `aa80cd1d9ae985f212fd6c41cdf4c8747c92d787e9d8fd45e5d7e3f85941937f` | 1          |
+| `03c0029b38423f03b6d203a55e2d6778035740e40dd3d888301b3b47aede737b6f` | 500   | `95b7ec67b1f85ca98781f08fc4613559820b99f178707b29c8ebb4577aca5f40` | 2          |
 
-### Tree Root
+### Bagged Root
 
-- **Hash:** `cfe3bb0bf9c93e6d70912fedaaac0c9f858d18279305dcbd92f585b7e362adca`
+- **Hash:** `2518b42edfff24ecc53c8897d1860783d1d26c41d61c378fe612cddeed877040`
 - **Sum:** `850`
 
 ### Sibling Inclusion Proofs
 
-#### Proof for `02b1a03e...`
+#### Proof for `02b1a03e...` (Index 0)
 
-- **Compact Mask:** `0x8000000000000000000000000000000000000000000000000000000000000000` (Bit 255 is set)
-- **Siblings:**
+- **Leaf Index:** 0
+- **Sibling Path:**
   ```json
   [
     {
-      "hash": "d12b7283fd13e96c22719e183c272857957feb457789d5eec820325cc70390dc",
-      "sum": 750
+      "hash": "aa80cd1d9ae985f212fd6c41cdf4c8747c92d787e9d8fd45e5d7e3f85941937f",
+      "sum": 250,
+      "is_left": false
     }
   ]
   ```
-
-#### Proof for `02c3a506...`
-
-- **Compact Mask:** `0xa000000000000000000000000000000000000000000000000000000000000000` (Bits 255 and 253 are set)
-- **Siblings:**
+- **Peaks:**
   ```json
   [
     {
-      "hash": "8d8ada84c6af46ca1b5da3dd9974b0c941746faa7bc3b08717028028813fefb0",
+      "hash": "90e8e647a08f35b5b24653ab52e5d27a2deddb05d1e54d5d21777ef02036b29f",
+      "sum": 350
+    },
+    {
+      "hash": "95b7ec67b1f85ca98781f08fc4613559820b99f178707b29c8ebb4577aca5f40",
       "sum": 500
-    },
-    {
-      "hash": "deae1aa655612bfe4b489ca03f706457d9b8ed9510645e6fdf0da492227ccd53",
-      "sum": 100
     }
   ]
   ```
 
-#### Proof for `03c0029b...`
+#### Proof for `02c3a506...` (Index 1)
 
-- **Compact Mask:** `0xa000000000000000000000000000000000000000000000000000000000000000` (Bits 255 and 253 are set)
-- **Siblings:**
+- **Leaf Index:** 1
+- **Sibling Path:**
   ```json
   [
     {
-      "hash": "b44b631c9ffcbfbeef7a46e3e0ee6a84bd51e2981145766bfcfe715668d6c5b3",
-      "sum": 250
+      "hash": "6711094bb65007f6313a7c2edc4833378ef715aaf8f62ce0f9478c591dba1e85",
+      "sum": 100,
+      "is_left": true
+    }
+  ]
+  ```
+- **Peaks:**
+  ```json
+  [
+    {
+      "hash": "90e8e647a08f35b5b24653ab52e5d27a2deddb05d1e54d5d21777ef02036b29f",
+      "sum": 350
     },
     {
-      "hash": "deae1aa655612bfe4b489ca03f706457d9b8ed9510645e6fdf0da492227ccd53",
-      "sum": 100
+      "hash": "95b7ec67b1f85ca98781f08fc4613559820b99f178707b29c8ebb4577aca5f40",
+      "sum": 500
+    }
+  ]
+  ```
+
+#### Proof for `03c0029b...` (Index 2)
+
+- **Leaf Index:** 2
+- **Sibling Path:** `[]`
+- **Peaks:**
+  ```json
+  [
+    {
+      "hash": "90e8e647a08f35b5b24653ab52e5d27a2deddb05d1e54d5d21777ef02036b29f",
+      "sum": 350
+    },
+    {
+      "hash": "95b7ec67b1f85ca98781f08fc4613559820b99f178707b29c8ebb4577aca5f40",
+      "sum": 500
     }
   ]
   ```
@@ -181,11 +194,13 @@ The mint periodically aggregates the roots for all keysets, creates a determinis
 - **Epoch Index:** `1`
 - **Timestamp:** `2026-06-11T12:00:00Z`
 - **Previous Global Digest:** `0000000000000000000000000000000000000000000000000000000000000000`
-- **Root Issued Hash:** `fe8a4d26af66d5abffad49a553a483a466e81098c0006c32d8685b692dd0d755`
-- **Root Issued Sum:** `350`
-- **Root Spent Hash:** `2a7b5220250ca23ef34228a6a223035aaefdf08c715836c46be4fc941699f6ba` (default empty node at level 256)
-- **Root Spent Sum:** `0`
-- **Outstanding Balance:** `350`
+- **Issued MMR Size:** `3`
+- **Issued MMR Root Hash:** `2518b42edfff24ecc53c8897d1860783d1d26c41d61c378fe612cddeed877040`
+- **Issued MMR Root Sum:** `850`
+- **Spent MMR Size:** `0`
+- **Spent MMR Root Hash:** `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` (empty MMR hash)
+- **Spent MMR Root Sum:** `0`
+- **Outstanding Balance:** `850`
 - **OpenTimestamps Receipt (Hex):** `00000000000000004d4f434b5f4f54535f524543454950545f464f525f484153485f676c6f62616c5f6469676573745f6865785f76616c7565`
 
 ### Serialized Manifest String
@@ -193,14 +208,14 @@ The mint periodically aggregates the roots for all keysets, creates a determinis
 The colon-separated UTF-8 string to sign (which excludes the `ots_receipt` and includes the `previous_global_digest`):
 
 ```
-009a6154b71113b7:1:2026-06-11T12:00:00Z:0000000000000000000000000000000000000000000000000000000000000000:fe8a4d26af66d5abffad49a553a483a466e81098c0006c32d8685b692dd0d755:350:2a7b5220250ca23ef34228a6a223035aaefdf08c715836c46be4fc941699f6ba:0:350
+009a6154b71113b7:1:2026-06-11T12:00:00Z:0000000000000000000000000000000000000000000000000000000000000000:3:2518b42edfff24ecc53c8897d1860783d1d26c41d61c378fe612cddeed877040:850:0:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855:0:850
 ```
 
 ### Signature Computation
 
-- **Message SHA-256 Digest:** `045fde0709052b35c875488668bd78d5bc06d38a219c768a616c7fa9b88d064a`
+- **Message SHA-256 Digest:** `faaafafdc99bf27b8ba4d9b52d7ed5cd29d61c4a19ff65f8d4aaf49f6b964480`
 - **Auxiliary Random Data (`aux_rand`):** `b777e0270e6f6bd9302268a253ffda221ce9257a6e13349e198169745c45d72e`
-- **BIP-340 Schnorr Signature (`mint_signature`):** `71f4ab4d3279597095ee8c374e13374192e0cbf2016f7ea0fca35dca68df69c9c70a607ba361f7b18130ea899b9f28f487869a9b7ee69d75d74ed0a06b50bed6`
+- **BIP-340 Schnorr Signature (`mint_signature`):** `f2720ae3c1eb13600acee4ee5694df89f12a51c32c171b52d71543f75534c197b2e98246828c41d85c31ea89fbed842df4b9622a6557899fb357aa4057920322`
 
 ---
 

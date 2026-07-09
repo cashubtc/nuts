@@ -6,64 +6,100 @@
 
 ## Abstract
 
-This document specifies a synchronized, epoch-based, stateless Proof of Liabilities (PoL) auditing scheme using a 256-depth Sparse Merkle Sum Tree (MS-SMT) with compact bitmasked sibling proofs and automated OpenTimestamps (OTS) commitments on-chain. This scheme allows wallets and external auditors to mathematically verify the outstanding liabilities of a Cashu mint.
+This document specifies a synchronized, epoch-based, stateless Proof of Liabilities (PoL) auditing scheme using append-only Merkle Mountain Range with Sums (sum-MMR) trees and automated OpenTimestamps (OTS) commitments on-chain. This scheme allows wallets and external auditors to mathematically verify the outstanding liabilities of a Cashu mint while preventing historical manipulation or leaf deletion.
 
 ---
 
 ## Architecture Overview
 
-A Cashu mint acts as a custodian of backing assets. Outstanding liabilities are proven using two synchronized 256-depth Sparse Merkle Sum Trees (MS-SMT):
+A Cashu mint acts as a custodian of backing assets. Outstanding liabilities are proven using two synchronized append-only Merkle Mountain Range with Sums (sum-MMR) forests:
 
-1. **Issued Tree (Blinded Messages):** Tracks all active, unsigned blinded messages `B_`.
-2. **Spent Tree (Proofs Used):** Tracks all spent proof secrets `Y = hash_to_curve(secret)`.
+1. **Issued MMR (Blinded Messages):** Tracks all historically issued, active unspent blinded messages `B_`.
+2. **Spent MMR (Proofs Used):** Tracks all historically spent proof secrets `Y = hash_to_curve(secret)`.
 
-This prevents the mint from omitting or manipulating liabilities. Epoch-based state roots are periodically committed to the Bitcoin blockchain via OpenTimestamps, establishing an immutable history.
+This prevents the mint from omitting or manipulating liabilities. Epoch-based MMR roots are periodically committed to the Bitcoin blockchain via OpenTimestamps. Because the MMR is strictly append-only, any historical leaf modification or deletion (such as fake spent leaves being removed) is mathematically impossible, establishing a fully immutable and audit-verifiable history.
 
 ---
 
-## MS-SMT Specifications
+## sum-MMR Specifications
 
-The MS-SMT has a fixed depth of 256 levels (level 0 at leaves, 256 at root).
+A Merkle Mountain Range with Sums (sum-MMR) is an append-only collection of perfect binary Merkle-sum trees (mountains) of strictly decreasing heights.
 
-### 1. Leaf Index and Keys
+### 1. Leaf Nodes
 
-- **Issued Leaf Index (`I_issued`):**
-  - Index: `SHA256(bytes(B_))` (using the 33-byte compressed public key representation of `B_`) parsed as a big-endian integer.
-  - Value: Face amount of the token associated with the blinded message.
-- **Spent Leaf Index (`I_spent`):**
-  - Index: `SHA256(bytes(Y))` (using the 33-byte compressed public key representation of `Y`) parsed as a big-endian integer.
-  - Value: Face amount of the spent proof.
+Each leaf node represents a distinct historical transaction (issuance or spend) in sequential order of occurrence (0-based leaf index).
+
+- **Issued Leaf Node (`Leaf_issued`):**
+  - Hash: `SHA256(bytes(B_))` (using the 33-byte compressed public key representation of `B_`).
+  - Sum: Face amount of the token associated with the blinded message.
+- **Spent Leaf Node (`Leaf_spent`):**
+  - Hash: `SHA256(bytes(Y))` (using the 33-byte compressed public key representation of `Y`).
+  - Sum: Face amount of the spent proof.
 
 ### 2. Node Structure & Hashing
 
-Each node is represented as `(hash, sum_value)` where `hash` is 32 bytes and `sum_value` is an 8-byte big-endian integer.
+Each node in the sum-MMR is represented as `(hash, sum)` where `hash` is 32 bytes and `sum` is an 8-byte big-endian unsigned integer (uint64).
 
-If `sum_L + sum_R >= 2^64`, tree construction MUST fail.
-
-#### Active Leaf Nodes (Level 0)
-
-For an active (non-empty) leaf node at level 0 with Leaf Index `I` and token value `v`:
-
-- `hash_0 = I` (the 32-byte Leaf Index hash itself, i.e., `I_issued` or `I_spent`)
-- `sum_0 = v` (the 8-byte big-endian integer representation of the value `v`)
-
-#### Default Empty Nodes
-
-Precomputed default empty nodes at level `d in [0, 256]`:
-
-- **Level 0 (leaf):**
-  - `hash_0 = SHA256(b"")`
-  - `sum_0 = 0`
-- **Level d >= 1:**
-  - `sum_d = 0`
-  - `hash_d = SHA256(hash_{d-1} || hash_{d-1} || bytes_8(0) || bytes_8(0))`
+If `sum_L + sum_R >= 2^64`, tree construction/append MUST fail due to overflow.
 
 #### Parent Node Computation
 
-For siblings `L = (hash_L, sum_L)` and `R = (hash_R, sum_R)` at level `d`:
+For left child `L = (hash_L, sum_L)` and right child `R = (hash_R, sum_R)`:
 
 - `sum_P = sum_L + sum_R`
 - `hash_P = SHA256(hash_L || hash_R || bytes_8(sum_L) || bytes_8(sum_R))`
+
+### 3. MMR Construction & Node Layout
+
+Nodes are added to the MMR sequentially. The layout is determined by the post-order traversal of each perfect binary tree (mountain) formed as elements are appended. Below is an ASCII diagram of a sum-MMR with 7 leaves (resulting in 11 total nodes and 3 distinct mountain peaks):
+
+```
+Height 2:            (Node 7)
+                    /        \
+Height 1:       (Node 3)      (Node 6)             (Node 10)
+                /      \      /      \             /       \
+Height 0:    (Node 1) (Node 2) (Node 4) (Node 5) (Node 8) (Node 9)  (Node 11)
+               [L0]     [L1]     [L2]     [L3]     [L4]     [L5]      [L6]
+```
+
+- **Peak 1 (Mountain of size 4 leaves):** Rooted at Node 7 (Height 2).
+- **Peak 2 (Mountain of size 2 leaves):** Rooted at Node 10 (Height 1).
+- **Peak 3 (Mountain of size 1 leaf):** Rooted at Node 11 (Height 0).
+
+The number and sizes of individual mountains correspond exactly to the bits set to `1` in the binary representation of the leaf count. For example, $7 = 4 + 2 + 1$, which is represented as binary `111` ($2^2 + 2^1 + 2^0$).
+
+#### Parent and Peak Bagging with Sums
+
+Because an MMR is a forest of multiple peak roots $P_1, P_2, \dots, P_k$ of strictly decreasing heights, a single unique root `(root_hash, root_sum)` must be derived for signing and on-chain commitments. This is done via **Right-to-Left Peak Bagging**:
+
+1. Start with the rightmost peak as the initial accumulator: $B_k = P_k$.
+2. For each peak $P_i$ from right to left ($i = k-1$ down to $1$):
+   - Compute parent $B_i = \text{Parent}(P_i, B_{i+1})$:
+     - `sum_{B_i} = sum(P_i) + sum(B_{i+1})`
+     - `hash_{B_i} = SHA256(hash(P_i) || hash(B_{i+1}) || bytes_8(sum(P_i)) || bytes_8(sum(B_{i+1})))`
+3. The final bagged root is $B_1$. If the MMR is empty (size 0), the root has `hash = SHA256(b"")` and `sum = 0`.
+
+#### Stack-Based Construction Algorithm
+
+An elegant and standard way to dynamically construct the MMR and track heights without complex index calculations is to use a stack of peak roots:
+
+1. Maintain an empty list `peaks` acting as a stack of current peak nodes, where each element is represented as `(node, height)`.
+2. When appending a new leaf with hash `H` and value `v`:
+   - Create a new peak at height 0: `new_peak = (hash: H, sum: v)` and `height = 0`.
+   - Push `(new_peak, height)` onto the `peaks` stack.
+   - While `len(peaks) >= 2` and the `height` of the top element matches the `height` of the second element from the top (`peaks[-1].height == peaks[-2].height`):
+     - Pop the right child: `(R_node, R_height) = peaks.pop()`
+     - Pop the left child: `(L_node, L_height) = peaks.pop()`
+     - Compute the parent node:
+       - `sum_P = L_node.sum + R_node.sum`
+       - `hash_P = SHA256(L_node.hash || R_node.hash || bytes_8(L_node.sum) || bytes_8(R_node.sum))`
+     - Let `P_node = (hash: hash_P, sum: sum_P)` and `P_height = L_height + 1`.
+     - Push `(P_node, P_height)` back onto the `peaks` stack.
+3. After all leaves are appended, the remaining nodes in the `peaks` stack (ordered from left to right) represent the current forest of MMR peaks.
+
+### 4. Append-Only Consistency Verification
+
+To verify that MMR $M$ (of size $m$) is a valid append-only extension of MMR $N$ (of size $n$, where $m > n$), an auditor compares their peak lists. Standard MMR consistency proofs verify that the peaks of the old MMR $N$ are preserved and deterministically folded into the peaks of the new MMR $M$ as new elements are added. This ensures that no past leaf can be modified or deleted without invalidating the extension proof.
 
 ---
 
@@ -72,30 +108,30 @@ For siblings `L = (hash_L, sum_L)` and `R = (hash_R, sum_R)` at level `d`:
 Every epoch interval (e.g., 24 hours), the mint constructs and signs an Epoch Manifest:
 
 1. **Sort Keysets:** Normalize all active unexpired `keyset_id` strings to lowercase hexadecimal representation, and then sort them alphabetically (lexicographically by their ASCII values).
-2. **Commitment Data:** Prepend the 32-byte binary `previous_global_digest` of the previous epoch (for the first epoch, this MUST be 32 bytes of zeros `0x00...00`). Then concatenate the UTF-8 lowercase `keyset_id`, 32-byte binary `root_issued_hash`, and 32-byte binary `root_spent_hash` for each keyset sequentially.
+2. **Commitment Data:** Prepend the 32-byte binary `previous_global_digest` of the previous epoch (for the first epoch, this MUST be 32 bytes of zeros `0x00...00`). Then concatenate the UTF-8 lowercase `keyset_id`, 8-byte big-endian `issued_mmr_size`, 32-byte binary `issued_mmr_root_hash`, 8-byte big-endian `spent_mmr_size`, and 32-byte binary `spent_mmr_root_hash` for each keyset sequentially.
 3. **Global Digest:** Compute `SHA256(commitment_data)`.
 4. **OTS Submission & Upgrading:**
    - Submit the **Global Digest** to OpenTimestamps (OTS) calendar servers to obtain an initial _pending_ (incomplete) receipt.
    - **Mint Upgrade Burden:** The mint MUST monitor the calendar server, upgrade the pending `.ots` receipt to an _anchored_ (completed) state once the transaction has been confirmed on the Bitcoin blockchain, and republish the fully upgraded, offline-verifiable `.ots` receipt alongside the manifest.
 5. **Manifest Message:** Construct a colon-separated UTF-8 string:
-   `"{keyset_id}:{epoch_index}:{timestamp}:{previous_global_digest}:{root_issued_hash}:{root_issued_sum}:{root_spent_hash}:{root_spent_sum}:{outstanding_balance}"`
+   `"{keyset_id}:{epoch_index}:{timestamp}:{previous_global_digest}:{issued_mmr_size}:{issued_mmr_root_hash}:{issued_mmr_root_sum}:{spent_mmr_size}:{spent_mmr_root_hash}:{spent_mmr_root_sum}:{outstanding_balance}"`
    where:
    - `keyset_id` MUST be a lowercase hexadecimal string.
    - `timestamp` MUST be serialized as an RFC 3339 string with second precision, without fractional seconds, and strictly using uppercase `Z` for the UTC timezone (e.g., `2026-06-11T12:00:00Z`).
    - `previous_global_digest` MUST be serialized as a 64-character lowercase hexadecimal string.
-   - `root_issued_hash` and `root_spent_hash` MUST be serialized as 64-character lowercase hexadecimal strings.
+   - `issued_mmr_root_hash` and `spent_mmr_root_hash` MUST be serialized as 64-character lowercase hexadecimal strings.
 6. **Signing:** Sign the message with a BIP-340 Schnorr signature using the mint's master NUT-06 private key signing the SHA256 digest of this serialized manifest string. Note that this signature is over the manifest metadata only and **excludes** the `ots_receipt` to allow upgrading the receipt without changing the signature or causing equivocation false-positives.
 7. **Publish:** Store and publish the signed manifest, signatures, and OTS receipts.
 
 ---
 
-## Compact Bitmasked Sibling Proofs
+## sum-MMR Inclusion Proof Structure
 
-To minimize proof size, default empty sibling nodes are omitted. Instead, the mint returns a 256-bit bitmask where the `d`-th bit indicates if the sibling at level `d` is non-empty (`1`) or empty (`0`, to be replaced by the precomputed default empty node).
+To minimize verification overhead on clients, sum-MMR inclusion proofs provide the minimal sibling path and peak forest necessary to reconstruct the single bagged commitment:
 
-The `compact_mask` MUST be serialized as a 66-character lowercase hexadecimal string, starting with `0x` followed by exactly 64 lowercase hexadecimal characters representing the 256-bit bitmask (big-endian, where the MSB is bit 255).
-
-For detailed examples and test vectors, see the [test vectors][tests].
+1. **Leaf Index:** The sequential 0-based insertion index of the leaf.
+2. **Sibling Path:** A list of `(hash, sum, is_left)` sibling nodes traversed from the leaf up to its local mountain peak.
+3. **Peaks:** The list of all peak roots `(hash, sum)` of the MMR forest at that epoch (of size $N$).
 
 ---
 
@@ -115,8 +151,12 @@ For detailed examples and test vectors, see the [test vectors][tests].
   "timestamp": "2026-06-11T12:00:00Z",
   "previous_global_digest": "0000000000000000000000000000000000000000000000000000000000000000",
   "signing_pubkey": "f3dd0e40dd3d888301b3b47aede737b6f9451ab451dfc05a1ae023ab4235b4dd",
-  "root_issued": { "hash": "8f3c...", "sum": 1000000 },
-  "root_spent": { "hash": "4d1a...", "sum": 450000 },
+  "issued_mmr_size": 125000,
+  "issued_mmr_root_hash": "8f3c...",
+  "issued_mmr_root_sum": 1000000,
+  "spent_mmr_size": 52000,
+  "spent_mmr_root_hash": "4d1a...",
+  "spent_mmr_root_sum": 450000,
   "outstanding_balance": 550000,
   "ots_receipt": "<hex_encoded_ots_file_content>",
   "mint_signature": "<hex_encoded_signature>"
@@ -141,10 +181,14 @@ For detailed examples and test vectors, see the [test vectors][tests].
   "proofs": [
     {
       "item": "02b1a...",
-      "index": "8a31...",
+      "leaf_index": 45012,
       "value": 1000,
-      "compact_mask": "0x301a...",
-      "siblings": [{ "hash": "b4a1...", "sum": 500 }]
+      "sibling_path": [
+        { "hash": "b4a1...", "sum": 500, "is_left": true }
+      ],
+      "peaks": [
+        { "hash": "f29a...", "sum": 20000 }
+      ]
     }
   ]
 }
@@ -223,33 +267,53 @@ Verify the BIP-340 Schnorr signature `mint_signature` against the mint's master 
 4. **Parse Height:** Decode the Bitcoin block height (serialized as a VarInt) immediately following the tag.
 5. **Confirm Block Timestamp:** Check via an independent explorer (e.g., `https://mempool.space/api/...`) that the block height exists and has sufficient confirmations. Furthermore, verify that the Bitcoin block's timestamp is within a reasonable tolerance window (e.g., within 4 hours) of the manifest `timestamp`, rather than requiring an exact match.
 
-### Step 3: Validate Issued Path Walks
+### Step 3: Validate MMR Append-Only Consistency
+
+To ensure the mint does not modify or delete historical entries from an epoch to another:
+1. Compare this epoch's `previous_global_digest` against the previous epoch's global digest (or against the digest cached by the wallet at its last audit). Treat a mismatch as an audit failure.
+2. Verify that the new epoch's MMR roots (`issued_mmr` and `spent_mmr`) are valid append-only extensions of the previous epoch's roots. This can be verified using an MMR consistency proof or by checking that the peaks of the old MMR are consistently preserved and merged in the new MMR peaks.
+
+### Step 4: Validate Issued sum-MMR Sibling Walks
 
 For each held active token:
 
 1. Reconstruct the unsigned blinded message `B_` (BDHKE: `B_ = Y + rG`; BLS: `B_ = r * Y`).
-2. Leaf index `I = SHA256(bytes(B_))` parsed as a big-endian integer.
-3. Walk up the 256 levels:
-   - For `d in [0, 255]`:
-     - If the `d`-th bit is `1`, pop the next sibling from the proof's `siblings`.
-     - If `0`, use default empty node `(default_hash[d], 0)`.
-     - Compute the parent node `(hash, sum)` at level `d+1`.
-4. Ensure the final root matches `root_issued`.
+2. Compute the leaf node:
+   - `current_hash = SHA256(bytes(B_))`
+   - `current_sum = token_value`
+3. Walk up the sibling path:
+   - For each sibling in `sibling_path`:
+     - If `sibling.is_left == true`:
+       - `current_hash = SHA256(sibling.hash || current_hash || bytes_8(sibling.sum) || bytes_8(current_sum))`
+       - `current_sum = sibling.sum + current_sum`
+     - If `sibling.is_left == false`:
+       - `current_hash = SHA256(current_hash || sibling.hash || bytes_8(current_sum) || bytes_8(sibling.sum))`
+       - `current_sum = current_sum + sibling.sum`
+4. Ensure the resulting `(current_hash, current_sum)` is present as one of the peak roots in the `peaks` array of the proof.
+5. Perform Peak Bagging on `peaks` from right to left:
+   - Let the bagged accumulator $B_k = P_k$ (the rightmost peak).
+   - For each peak $P_i$ from right to left ($i = k-1$ down to 1):
+     - `sum_{B_i} = sum(P_i) + sum(B_{i+1})`
+     - `hash_{B_i} = SHA256(hash(P_i) || hash(B_{i+1}) || bytes_8(sum(P_i)) || bytes_8(sum(B_{i+1})))`
+   - Verify that the final bagged peak root $B_1$ matches the `issued_mmr_root_hash` and `issued_mmr_root_sum` in the Epoch Manifest.
 
-### Step 4: Validate Spent Path Walks
+### Step 5: Validate Spent sum-MMR Sibling Walks
 
 For spent tokens (history):
 
 1. Compute `Y = hash_to_curve(secret)`.
-2. Leaf index `I = SHA256(bytes(Y))` parsed as a big-endian integer.
-3. Walk up the tree and verify matching `root_spent`.
+2. Compute the leaf node:
+   - `current_hash = SHA256(bytes(Y))`
+   - `current_sum = spent_value`
+3. Walk up the sibling path, find the calculated peak in `peaks`, and perform Peak Bagging as specified in Step 4.
+4. Verify that the final bagged peak root matches `spent_mmr_root_hash` and `spent_mmr_root_sum` in the Epoch Manifest.
 
-### Step 5: Verify Liabilities Equation
+### Step 6: Verify Liabilities Equation
 
 Ensure:
 
 ```
-outstanding_balance == root_issued_sum - root_spent_sum
+outstanding_balance == issued_mmr_root_sum - spent_mmr_root_sum
 ```
 
 ---
@@ -287,11 +351,15 @@ If verification fails, the wallet generates a **Fraud Challenge**—a self-conta
       "r": "9f1d..." // Only required for "spent"
     }
   },
-  "index": "8a31...",
+  "leaf_index": 45012,
   "claimed_value": 1000,
   "actual_value": 0,
-  "compact_mask": "0x...",
-  "siblings": [{ "hash": "...", "sum": 0 }]
+  "sibling_path": [
+    { "hash": "...", "sum": 0, "is_left": true }
+  ],
+  "peaks": [
+    { "hash": "...", "sum": 0 }
+  ]
 }
 ```
 
