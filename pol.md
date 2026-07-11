@@ -322,47 +322,164 @@ outstanding_balance == issued_mmr_root_sum - spent_mmr_root_sum
 
 ---
 
-## Cryptographic Fraud Challenge
+## Cryptographic Fraud Challenges & Mint Responses
 
-If verification fails, the wallet generates a **Fraud Challenge**—a self-contained JSON document proving perjury.
+When a client or auditor detects a verification failure, they can generate a **Fraud Challenge**—a self-contained cryptographic proof of mint perjury. To prevent malicious clients from publishing false challenges to slander an honest mint, every challenge must be falsifiable. The mint can refute any false challenge by publishing a corresponding cryptographic **Defense/Response**.
 
-- **BDHKE (Keyset Version <= v2):** Includes the Discrete Logarithm Equality (DLEQ) proof `{e, s}` (issued) or `{e, s, r}` (spent) to allow third-party verification.
-- **BLS (Keyset Version >= v3):** No DLEQ proof is required; the BLS signature (`C'` or `C`) can be verified directly against the keyset-amount public key.
+### Note on Spent-Side Inflation & Keyset Rotations
 
-### Challenge JSON Schema
+A naive threat model might suggest that a malicious mint could fabricate fake spent leaves (by appending random curve points `Y` to the Spent MMR) to artificially deflate its proven outstanding liabilities. However, because the mint owns the private signing keys for its keysets, a malicious mint can always generate valid ecash signatures (`C'`) for themselves, and then "validly" spend this self-signed fake ecash. Because the mint holds the preimages/secrets for these spends, a preimage/spend verification challenge is futile and cannot prevent this behavior.
 
-```json
-{
-  "challenge_type": "pol_fraud_proof",
-  "keyset_id": "009a6154b71113b7",
-  "keyset_version": 2,
-  "epoch_index": 1,
-  "manifest": { "...": "..." },
-  "pol_receipt": {
-    "target_epoch": 1,
-    "signature": "<hex_encoded_signature>"
-  },
-  "proof_type": "issued | spent",
-  "leaf_data": {
-    "B_hex": "02b1a...", // Required for "issued"
-    "C_prime_hex": "038a1...", // Required for "issued"
-    "Y_hex": "02b1a...", // Required for "spent"
-    "C_hex": "038a1...", // Required for "spent"
-    "dleq": {
-      // Required if keyset_version <= 2
-      "e": "8a31...",
-      "s": "4b2c...",
-      "r": "9f1d..." // Only required for "spent"
+Instead, spent-side inflation is caught naturally by the **append-only nature of the MMR** and **keyset rotations/deactivations**:
+
+1. **Append-Only Immutability:** Once a leaf is appended to either MMR, it is permanent and cannot be deleted. If the mint fabricates a spend, that spent leaf is locked into history forever.
+2. **Keyset Rotation:** Eventually, keysets are deactivated/expired. Once deactivated, no more new ecash can be issued or spent under that keyset.
+3. **Redemption Wind-Down:** As genuine users redeem their remaining ecash, the outstanding balance must mathematically wind down to 0. If the mint inflated the Spent MMR (claiming more ecash was spent than was actually issued to real users), the genuine outstanding tokens remaining in circulation will eventually exceed the _claimed_ remaining liabilities (or the claimed liabilities will become negative/insufficient to cover the real ecash redemptions). Because the mint cannot retroactively delete or rewrite their historical MMR leaves, they will be caught when they cannot honor valid redemptions or when their outstanding balance equation breaks.
+
+As a result, there are four recognized categories of Fraud Challenges, detailed below.
+
+---
+
+### 1. Leaf Omission or Value Mismatch (`leaf_omission_or_mismatch`)
+
+- **Description:** A client holds a valid, signed transactional PoL receipt promising inclusion of a leaf in epoch `E` (or earlier), but the leaf is either missing from the public MMR for epoch `E` (or later), or is present with an incorrect value (sum).
+- **Challenge Schema:**
+
+  ```json
+  {
+    "challenge_type": "leaf_omission_or_mismatch",
+    "keyset_id": "009a6154b71113b7",
+    "epoch_index": 12,
+    "pol_receipt": {
+      "target_epoch": 12,
+      "signature": "<hex_encoded_signature>"
+    },
+    "leaf_type": "issued | spent",
+    "leaf_data": {
+      "item_hex": "02b1a03e1b10a23429fa221087e53f19001b97ad89498a44b93b3f23a851121df4",
+      "value": 1000
     }
-  },
-  "leaf_index": 45012,
-  "claimed_value": 1000,
-  "actual_value": 0,
-  "sibling_path": [{ "hash": "...", "sum": 0, "is_left": true }],
-  "peaks": [{ "hash": "...", "sum": 0 }]
-}
-```
+  }
+  ```
 
-The `pol_receipt` (signed by the keyset-amount private key) proves the mint promised inclusion in the specified epoch, while the verified signature on the leaf data proves the note was legitimately issued or spent.
+  - `pol_receipt.signature` must be a valid signature under the keyset-amount public key corresponding to `leaf_data.value` (denomination) over the domain-separated receipt message (`"Cashu_PoL_Receipt_Issued:..."` or `"Cashu_PoL_Receipt_Spent:..."` for the specified `target_epoch`).
+
+- **Response Schema:**
+  ```json
+  {
+    "response_type": "leaf_omission_or_mismatch_response",
+    "keyset_id": "009a6154b71113b7",
+    "epoch_index": 12,
+    "leaf_type": "issued | spent",
+    "proof": {
+      "item": "02b1a03e1b10a23429fa221087e53f19001b97ad89498a44b93b3f23a851121df4",
+      "leaf_index": 45012,
+      "value": 1000,
+      "sibling_path": [{ "hash": "b4a1df...", "sum": 500, "is_left": true }],
+      "peaks": [{ "hash": "f29a2c...", "sum": 20000 }]
+    }
+  }
+  ```
+- **Mint's Defense / Response & Verification:**
+  - **If the mint is NOT in the wrong:** The mint must publish the above response containing the valid sum-MMR inclusion proof for the challenged `item` at `epoch_index` with the correct `value`.
+  - **Verification:** Third parties verify that the inclusion proof walk computes up to one of the mountain peaks, and that the peaks recursively peak-bagged from right-to-left match the manifest's `issued_mmr_root_hash` / `spent_mmr_root_hash` and sum. If it verifies, the challenge is refuted.
+
+---
+
+### 2. History Rewriting or Append-Only Violation (`append_only_violation`)
+
+- **Description:** The mint has modified, deleted, or reordered past leaves. This changes the internal hashes/sums of the tree, violating the strict append-only prefix preservation property.
+- **Challenge Schema:**
+  The challenger presents two signed epoch manifests along with two valid inclusion proofs for the exact same `leaf_index` showing a mismatch.
+
+  ```json
+  {
+    "challenge_type": "append_only_violation",
+    "keyset_id": "009a6154b71113b7",
+    "epoch_index_1": 11,
+    "epoch_index_2": 12,
+    "leaf_index": 45012,
+    "proof_1": {
+      "item": "02b1a...",
+      "value": 1000,
+      "sibling_path": [{ "hash": "b4a1...", "sum": 500, "is_left": true }],
+      "peaks": [{ "hash": "f29a...", "sum": 20000 }]
+    },
+    "proof_2": {
+      "item": "02b1a...",
+      "value": 500,
+      "sibling_path": [{ "hash": "9c1a...", "sum": 100, "is_left": true }],
+      "peaks": [{ "hash": "3d2a...", "sum": 25000 }]
+    }
+  }
+  ```
+
+  - Here, `proof_1` is valid for the manifest at `epoch_index_1`, and `proof_2` is valid for the manifest at `epoch_index_2`. However, either the leaf value changed (e.g., from `1000` to `500`), the item changed, or the sibling paths do not satisfy prefix preservation.
+
+- **Mint's Defense / Response:**
+  - There is **no valid response** if the challenger's manifests are signed by the mint and both inclusion proofs verify against those manifests. The mint is proven fraudulent.
+  - **If the mint is NOT in the wrong:** The mint can only refute the challenge by demonstrating that one of the presented inclusion proofs is mathematically invalid (i.e., it does not correctly hash up to the peaks of that epoch's signed manifest) or that the manifest signatures are forged.
+
+---
+
+### 3. Manifest Equivocation (`manifest_equivocation`)
+
+- **Description:** The mint has published two different, conflicting versions of the epoch manifest for the same keyset and epoch index (e.g., to hide liabilities from one group of users while showing them to another).
+- **Challenge Schema:**
+  The challenger presents two distinct, validly signed epoch manifests with the same `keyset_id` and `epoch_index` (or timestamp) but different roots or sizes.
+  ```json
+  {
+    "challenge_type": "manifest_equivocation",
+    "keyset_id": "009a6154b71113b7",
+    "epoch_index": 12,
+    "manifest_a": {
+      "timestamp": "2026-06-11T12:00:00Z",
+      "issued_mmr_root_hash": "8f3c...",
+      "mint_signature": "<signature_a>"
+    },
+    "manifest_b": {
+      "timestamp": "2026-06-11T12:00:00Z",
+      "issued_mmr_root_hash": "9a2b...",
+      "mint_signature": "<signature_b>"
+    }
+  }
+  ```
+- **Mint's Defense / Response:**
+  - There is **no valid response** or defense. Any signed equivocation is definitive proof of malicious behavior.
+
+---
+
+### 4. sum-MMR Consistency Violation (`sum_mmr_consistency_violation`)
+
+- **Description:** An auditor challenges the mint to prove that the sum-MMR tree at epoch `E_2` is a valid append-only extension of the tree at `E_1` (`E_2 > E_1`). Unlike Challenge 2 (`append_only_violation`), this is an interactive, zero-knowledge challenge that enables third-party watchtowers to audit the tree's historical integrity without holding or revealing private client tokens.
+- **Challenge Schema:**
+  The challenger presents the two validly signed epoch manifests for `E_1` and `E_2`. The burden of proving consistency is placed entirely on the mint.
+  ```json
+  {
+    "challenge_type": "sum_mmr_consistency_violation",
+    "keyset_id": "009a6154b71113b7",
+    "epoch_index_1": 11,
+    "epoch_index_2": 12,
+    "tree_type": "issued | spent"
+  }
+  ```
+- **Response Schema:**
+  ```json
+  {
+    "response_type": "sum_mmr_consistency_response",
+    "keyset_id": "009a6154b71113b7",
+    "epoch_index_1": 11,
+    "epoch_index_2": 12,
+    "tree_type": "issued | spent",
+    "consistency_proof": {
+      "old_size": 125000,
+      "new_size": 126500,
+      "proof_hashes": [{ "hash": "8f3c...", "sum": 1000000, "height": 3 }]
+    }
+  }
+  ```
+- **Mint's Defense / Response & Verification:**
+  - **If the mint is NOT in the wrong:** The mint must respond to the challenge by publishing the **correct, valid MMR consistency proof** specified in the response schema (consisting of the list of sibling/peak proof hashes, sums, and heights) that mathematically merges the peaks of epoch `E_1` and the new elements to produce the peaks of epoch `E_2`.
+  - **Verification:** Third parties verify the mint's published consistency proof against the root hashes and sums in the two signed manifests. If the proof successfully validates the deterministic transition, the challenge is refuted and proven false. If the mint is silent or fails to provide a mathematically verifying consistency proof within a reasonable window, the challenge is sustained and the mint is proven fraudulent.
 
 [tests]: tests/pol-tests.md
