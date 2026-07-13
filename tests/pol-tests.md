@@ -217,7 +217,7 @@ The colon-separated UTF-8 string to sign (which excludes the `ots_receipt` and i
 
 - **Message SHA-256 Digest:** `faaafafdc99bf27b8ba4d9b52d7ed5cd29d61c4a19ff65f8d4aaf49f6b964480`
 - **Auxiliary Random Data (`aux_rand`):** `b777e0270e6f6bd9302268a253ffda221ce9257a6e13349e198169745c45d72e`
-- **BIP-340 Schnorr Signature (`mint_signature`):** `f2720ae3c1eb13600acee4ee5694df89f12a51c32c171b52d71543f75534c197b2e98246828c41d85c31ea89fbed842df4b9622a6557899fb357aa4057920322`
+- **BIP-340 Schnorr Signature (`mint_signature`):** `1230455cc16742a62e3e54c64a4a8ba68ef1e13d7f45a8d51cb2875227f3b79e20582ae7a4765b493f10ed92b56e08b4b736f2a6b3c00e88cac2a2f51a16c78a`
 
 ---
 
