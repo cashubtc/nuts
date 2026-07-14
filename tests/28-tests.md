@@ -36,6 +36,27 @@ The following P2BK proof shows the receiver's public key (P) blinded in the `dat
 }
 ```
 
+### Example P2BK HTLC proof
+
+The following HTLC proof shows the receiver's public key (P) blinded at slot `1` in the `pubkeys` tag, and blinded again at slot `2` in the `refund` tag (for illustration). The `data` tag holds the hash lock, so it occupies slot `0`, but it is **not** blinded, as it is not a key.
+
+The hash lock is the matching pair from the NUT-14 examples (preimage: `0000000000000000000000000000000000000000000000000000000000000001`).
+
+```json
+{
+  "amount": 64,
+  "C": "0270aba098c920adafa1ce75acefb06d8cc541ef80270f70cc7b66375b789ed9be",
+  "id": "009a1f293253e41e",
+  "secret": "[\"HTLC\",{\"nonce\":\"8b1f18aa85a2787903cfdc776fde0b8555bdb126eea02b05cd84de06a4f4b551\",\"data\":\"ec4916dd28fc4c10d78e287ca5d9cc51ee1ae73cbfde08c6b37324cbfaac8bc5\",\"tags\":[[\"pubkeys\",\"0352fb6d93360b7c2538eedf3c861f32ea5883fceec9f3e573d9d84377420da838\"],[\"locktime\",\"1689418329\"],[\"refund\",\"03667361ca925065dcafea0a705ba49e75bdd7975751fcc933e05953463c79fff1\"]]}]",
+  "dleq": {
+    "s": "bd6ed079b954151898cadac38c3b8d3371c20d67e8c5f06af3cee4152ac317b4",
+    "e": "9ec5b6f2095a8dc7d052a00e0bb050ac95e633e702575630cfd43cb58592d2a1",
+    "r": "e8349cf88e5a9f025f0072bf8a2db48d394bad9f7be3d8023f9ee90de1c1924d"
+  },
+  "p2pk_e": "02a8cda4cf448bfce9a9e46e588c06ea1780fcb94e3bbdf3277f42995d403a8b0c"
+}
+```
+
 ### Shared Secret (Zx)
 
 The unique shared secret between sender and receiver is: `x(e·p·G) = x(e·P) = x(p·E)`:
