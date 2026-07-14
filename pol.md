@@ -426,26 +426,43 @@ As a result, there are four recognized categories of Fraud Challenges, detailed 
 
 - **Description:** The mint has published two different, conflicting versions of the epoch manifest for the same keyset and epoch index (e.g., to hide liabilities from one group of users while showing them to another).
 - **Challenge Schema:**
-  The challenger presents two distinct, validly signed epoch manifests with the same `keyset_id` and `epoch_index` (or timestamp) but different roots or sizes.
+  The challenger presents two complete, distinct, validly signed epoch manifests with the same `keyset_id` and `epoch_index` but any difference in their signed content. Each manifest MUST include every field in the serialized manifest message so that third parties can reconstruct its signed digest.
   ```json
   {
     "challenge_type": "manifest_equivocation",
-    "keyset_id": "009a6154b71113b7",
-    "epoch_index": 12,
     "manifest_a": {
+      "keyset_id": "009a6154b71113b7",
+      "epoch_index": 12,
       "timestamp": "2026-06-11T12:00:00Z",
+      "previous_global_digest": "4b8e...",
+      "issued_mmr_size": 45013,
       "issued_mmr_root_hash": "8f3c...",
+      "issued_mmr_root_sum": 25000,
+      "spent_mmr_size": 12001,
+      "spent_mmr_root_hash": "7d4e...",
+      "spent_mmr_root_sum": 9000,
+      "outstanding_balance": 16000,
       "mint_signature": "<signature_a>"
     },
     "manifest_b": {
+      "keyset_id": "009a6154b71113b7",
+      "epoch_index": 12,
       "timestamp": "2026-06-11T12:00:00Z",
+      "previous_global_digest": "4b8e...",
+      "issued_mmr_size": 45013,
       "issued_mmr_root_hash": "9a2b...",
+      "issued_mmr_root_sum": 24000,
+      "spent_mmr_size": 12001,
+      "spent_mmr_root_hash": "7d4e...",
+      "spent_mmr_root_sum": 9000,
+      "outstanding_balance": 15000,
       "mint_signature": "<signature_b>"
     }
   }
   ```
 - **Mint's Defense / Response:**
-  - There is **no valid response** or defense. Any signed equivocation is definitive proof of malicious behavior.
+  - Third parties serialize each manifest as specified in Epoch Manifests, compute each SHA256 digest, and verify both BIP-340 signatures against the mint's master NUT-06 public key. They then confirm that the manifests have the same `keyset_id` and `epoch_index` but differ in at least one signed field.
+  - There is **no valid response** or defense when both signatures verify. Any signed equivocation is definitive proof of malicious behavior.
 
 ---
 
