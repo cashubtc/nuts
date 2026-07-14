@@ -110,7 +110,7 @@ To verify that MMR M (of size m) is a valid append-only extension of MMR N (of s
 
 Every epoch interval (e.g., 24 hours), the mint constructs and signs an Epoch Manifest:
 
-1. **Sort Keysets:** Normalize all active unexpired `keyset_id` strings to lowercase hexadecimal representation, and then sort them alphabetically (lexicographically by their ASCII values).
+1. **Sort Keysets:** Normalize all unexpired `keyset_id` strings (both active and inactive) to lowercase hexadecimal representation, and then sort them alphabetically (lexicographically by their ASCII values).
 2. **Commitment Data:** Prepend the 32-byte binary `previous_global_digest` of the previous epoch (for the first epoch, this MUST be 32 bytes of zeros `0x00...00`). Then concatenate the UTF-8 lowercase `keyset_id`, 8-byte big-endian `issued_mmr_size`, 32-byte binary `issued_mmr_root_hash`, 8-byte big-endian `spent_mmr_size`, and 32-byte binary `spent_mmr_root_hash` for each keyset sequentially.
 3. **Global Digest:** Compute `SHA256(commitment_data)`.
 4. **OTS Submission & Upgrading:**
@@ -124,7 +124,7 @@ Every epoch interval (e.g., 24 hours), the mint constructs and signs an Epoch Ma
    - `previous_global_digest` MUST be serialized as a 64-character lowercase hexadecimal string.
    - `issued_mmr_root_hash` and `spent_mmr_root_hash` MUST be serialized as 64-character lowercase hexadecimal strings.
 6. **Signing:** Sign the message with a BIP-340 Schnorr signature using the mint's master NUT-06 private key signing the SHA256 digest of this serialized manifest string. Note that this signature is over the manifest metadata only and **excludes** the `ots_receipt` to allow upgrading the receipt without changing the signature or causing equivocation false-positives.
-7. **Publish:** Store and publish the signed manifest, signatures, and OTS receipts.
+7. **Publish:** Store and publish the signed manifests, signatures, OTS receipts, `global_digest`, and the ordered `epoch_keysets` array used to construct `commitment_data`. Each entry in `epoch_keysets` MUST contain the `keyset_id`, `issued_mmr_size`, `issued_mmr_root_hash`, `spent_mmr_size`, and `spent_mmr_root_hash`; the array MUST contain every unexpired keyset exactly once and match the corresponding signed manifests. This lets verifiers reconstruct the exact Global Digest preimage.
 
 ---
 
@@ -135,6 +135,8 @@ To minimize verification overhead on clients, sum-MMR inclusion proofs provide t
 1. **Leaf Index:** The sequential 0-based insertion index of the leaf.
 2. **Sibling Path:** A list of `(hash, sum, is_left)` sibling nodes traversed from the leaf up to its local mountain peak.
 3. **Peaks:** The list of all peak roots `(hash, sum)` of the MMR forest at that epoch (of size N).
+
+The `leaf_index` is not trusted metadata. A verifier MUST derive it from the proof. Derive the ordered peak heights from the set bits of the MMR leaf count N (highest to lowest). If the sibling path has length h, it MUST terminate at the unique peak of height h. For each sibling at path level j, starting with j = 0 at the leaf, `is_left = true` means the current node is the right child and contributes 2^j to its local offset; `is_left = false` contributes 0. The sum of that local offset and the widths of all preceding peaks MUST equal `leaf_index`.
 
 ---
 
@@ -161,6 +163,16 @@ To minimize verification overhead on clients, sum-MMR inclusion proofs provide t
   "spent_mmr_root_hash": "4d1a...",
   "spent_mmr_root_sum": 450000,
   "outstanding_balance": 550000,
+  "global_digest": "7c6d...",
+  "epoch_keysets": [
+    {
+      "keyset_id": "009a6154b71113b7",
+      "issued_mmr_size": 125000,
+      "issued_mmr_root_hash": "8f3c...",
+      "spent_mmr_size": 52000,
+      "spent_mmr_root_hash": "4d1a..."
+    }
+  ],
   "ots_receipt": "<hex_encoded_ots_file_content>",
   "mint_signature": "<hex_encoded_signature>"
 }
@@ -260,11 +272,11 @@ Verify the BIP-340 Schnorr signature `mint_signature` against the mint's master 
 
 ### Step 2: Validate OpenTimestamps Attestation
 
-1. **Verify or Upgrade Receipt:** The verifier retrieves the `ots_receipt`. If the receipt contains a pending tag (`0x00 0x06`) and has remained unconfirmed/pending after a maximum timeout bound (MUST NOT be more than 24 hours from the manifest `timestamp`), the verifier MUST treat it as an **audit failure**, rather than waiting indefinitely.
-2. **Upgrade Proof (if pending):** If the receipt is still pending but within the timeout window, the verifier can attempt to fetch the Merkle path by posting the `ots_receipt` to a calendar upgrade endpoint (e.g., `https://alice.btc.calendar.opentimestamps.org/upgrade`). Note, however, that a properly functioning mint carries the upgrade burden and should publish already upgraded, offline-verifiable receipts.
-3. **Scan for Block:** Find block header attestation tag `0x00 0x05` (`A_BLOCKHEADER`).
-4. **Parse Height:** Decode the Bitcoin block height (serialized as a VarInt) immediately following the tag.
-5. **Confirm Block Timestamp:** Check via an independent explorer (e.g., `https://mempool.space/api/...`) that the block height exists and has sufficient confirmations. Furthermore, verify that the Bitcoin block's timestamp is within a reasonable tolerance window (e.g., within 4 hours) of the manifest `timestamp`, rather than requiring an exact match.
+1. **Reconstruct the Global Digest:** Reconstruct `commitment_data` from `previous_global_digest` and the published, ordered `epoch_keysets` array exactly as specified in Epoch Manifests. Compute its SHA256 hash, require it to equal the published `global_digest`, and require each entry to match its corresponding signed keyset manifest.
+2. **Verify or Upgrade Receipt:** Deserialize the `ots_receipt` and require its starting digest to equal the reconstructed Global Digest. If the receipt contains a pending attestation tag (`0x83dfe30d2ef90c8e`) and has remained unconfirmed/pending after a maximum timeout bound (MUST NOT be more than 24 hours from the manifest `timestamp`), the verifier MUST treat it as an **audit failure**, rather than waiting indefinitely.
+3. **Upgrade Proof (if pending):** If the receipt is still pending but within the timeout window, the verifier can attempt to fetch the Merkle path by posting the `ots_receipt` to a calendar upgrade endpoint (e.g., `https://alice.btc.calendar.opentimestamps.org/upgrade`). Note, however, that a properly functioning mint carries the upgrade burden and should publish already upgraded, offline-verifiable receipts.
+4. **Execute and Verify the Proof:** Using a conforming OpenTimestamps implementation, execute every append, prepend, and hashing operation from the starting digest to a Bitcoin block-header attestation (`0x0588960d73d71901`). Decode its block height, obtain that block from an independently validated Bitcoin node, and require the operation result to match the block's committed Merkle root. Merely finding an attestation tag and a real block at the claimed height is insufficient.
+5. **Confirm Block Timestamp:** Require the independently validated block to have sufficient confirmations. Furthermore, verify that the Bitcoin block's timestamp is within a reasonable tolerance window (e.g., within 4 hours) of the manifest `timestamp`, rather than requiring an exact match.
 
 ### Step 3: Validate MMR Append-Only Consistency
 
@@ -294,7 +306,8 @@ For each held active token:
        - `current_hash = SHA256(current_hash || sibling.hash || bytes_8(current_sum) || bytes_8(sibling.sum))`
        - `current_sum = current_sum + sibling.sum`
 4. Ensure the resulting `(current_hash, current_sum)` is present as one of the peak roots in the `peaks` array of the proof.
-5. Perform Peak Bagging on `peaks` from right to left:
+5. Derive the leaf position from the peak heights and `is_left` bits as specified in the sum-MMR Inclusion Proof Structure, and require it to equal `leaf_index`.
+6. Perform Peak Bagging on `peaks` from right to left:
    - Let the bagged accumulator B_k = P_k (the rightmost peak).
    - For each peak P_i from right to left (i = k-1 down to 1):
      - `sum_B_i = sum(P_i) + sum(B_i+1)`
@@ -333,7 +346,7 @@ A naive threat model might suggest that a malicious mint could fabricate fake sp
 Instead, spent-side inflation is caught naturally by the **append-only nature of the MMR** and **keyset rotations/deactivations**:
 
 1. **Append-Only Immutability:** Once a leaf is appended to either MMR, it is permanent and cannot be deleted. If the mint fabricates a spend, that spent leaf is locked into history forever.
-2. **Keyset Rotation:** Eventually, keysets are deactivated/expired. Once deactivated, no more new ecash can be issued or spent under that keyset.
+2. **Keyset Rotation:** Eventually, keysets are deactivated and later expire. Once deactivated, no new ecash can be issued under that keyset, but existing ecash can still be spent until expiry. Once expired, no ecash can be issued or spent under that keyset.
 3. **Redemption Wind-Down:** As genuine users redeem their remaining ecash, the outstanding balance must mathematically wind down to 0. If the mint inflated the Spent MMR (claiming more ecash was spent than was actually issued to real users), the genuine outstanding tokens remaining in circulation will eventually exceed the _claimed_ remaining liabilities (or the claimed liabilities will become negative/insufficient to cover the real ecash redemptions). Because the mint cannot retroactively delete or rewrite their historical MMR leaves, they will be caught when they cannot honor valid redemptions or when their outstanding balance equation breaks.
 
 As a result, there are four recognized categories of Fraud Challenges, detailed below.
@@ -390,7 +403,7 @@ As a result, there are four recognized categories of Fraud Challenges, detailed 
 
 - **Description:** The mint has modified, deleted, or reordered past leaves. This changes the internal hashes/sums of the tree, violating the strict append-only prefix preservation property.
 - **Challenge Schema:**
-  The challenger presents two signed epoch manifests along with two valid inclusion proofs for the exact same `leaf_index` showing a mismatch.
+  The challenger presents two signed epoch manifests along with two valid inclusion proofs whose proof-derived positions are the exact same `leaf_index`, showing a mismatch.
 
   ```json
   {
@@ -414,7 +427,7 @@ As a result, there are four recognized categories of Fraud Challenges, detailed 
   }
   ```
 
-  - Here, `proof_1` is valid for the manifest at `epoch_index_1`, and `proof_2` is valid for the manifest at `epoch_index_2`. However, either the leaf value changed (e.g., from `1000` to `500`), the item changed, or the sibling paths do not satisfy prefix preservation.
+  - Before comparing the proofs, the verifier MUST independently derive each leaf position from its sibling path and peak layout as specified in the sum-MMR Inclusion Proof Structure and reject the challenge unless both derived positions equal the claimed `leaf_index`. Here, `proof_1` is valid for the manifest at `epoch_index_1`, and `proof_2` is valid for the manifest at `epoch_index_2`. However, either the leaf value changed (e.g., from `1000` to `500`), the item changed, or the sibling paths do not satisfy prefix preservation.
 
 - **Mint's Defense / Response:**
   - There is **no valid response** if the challenger's manifests are signed by the mint and both inclusion proofs verify against those manifests. The mint is proven fraudulent.
@@ -497,6 +510,6 @@ As a result, there are four recognized categories of Fraud Challenges, detailed 
   ```
 - **Mint's Defense / Response & Verification:**
   - **If the mint is NOT in the wrong:** The mint must respond to the challenge by publishing the **correct, valid MMR consistency proof** specified in the response schema (consisting of the list of sibling/peak proof hashes, sums, and heights) that mathematically merges the peaks of epoch `E_1` and the new elements to produce the peaks of epoch `E_2`.
-  - **Verification:** Third parties verify the mint's published consistency proof against the root hashes and sums in the two signed manifests. If the proof successfully validates the deterministic transition, the challenge is refuted and proven false. If the mint is silent or fails to provide a mathematically verifying consistency proof within a reasonable window, the challenge is sustained and the mint is proven fraudulent.
+  - **Verification:** Third parties verify the mint's published consistency proof against the root hashes and sums in the two signed manifests. If the proof successfully validates the deterministic transition, the challenge is refuted and proven false. Challenge discovery, notification, and response deadlines are coordination-policy concerns outside this NUT. Silence alone is not cryptographic proof of fraud; each third-party auditor decides whether a non-response is actionable under its published policy and only after the mint has acknowledged or otherwise verifiably received the challenge.
 
 [tests]: tests/pol-tests.md
