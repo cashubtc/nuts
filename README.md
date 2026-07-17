@@ -41,9 +41,9 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [23][23] | Payment Method: BOLT11            | [Nutshell][py], [cashu-ts][ts], [cdk], [Cashu.me][cashume], [Minibits], [Sovran][sovran]              | [Nutshell][py], [cdk-mintd], [nutmix] |
 | [24][24] | HTTP 402 Payment Required         | -                                                                                                     | -                                     |
 | [25][25] | Payment Method: BOLT12            | [cdk], [cashu-ts][ts]                                                                                 | [cdk-mintd]                           |
-| [26][26] | Payment Request Bech32m Encoding  | [cdk], [cashu-ts][ts], [Sovran][sovran]                                                               | -                                     |
+| [26][26] | Payment Request Bech32m Encoding  | [Nutshell][py], [cdk], [cashu-ts][ts], [Sovran][sovran]                                               | -                                     |
 | [27][27] | Nostr Mint Backup                 | [Cashu.me][cashume], [cdk]                                                                            | -                                     |
-| [28][28] | Pay to Blinded Key (P2BK)         | [cdk], [cashu-ts][ts]                                                                                 | -                                     |
+| [28][28] | Pay to Blinded Key (P2BK)         | [Nutshell][py], [cdk], [cashu-ts][ts]                                                                 | -                                     |
 | [29][29] | Batched Mint                      | [cdk], [cashu-ts][ts]                                                                                 | [Nutshell][py], [cdk-mintd]           |
 | [30][30] | Payment Method: Onchain           | [cdk], [cashu-ts][ts], [Cashu.me][cashume]                                                            | [cdk-mintd]                           |
 
