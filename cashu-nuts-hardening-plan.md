@@ -55,6 +55,7 @@ This plan makes that authorization **mandatory for all v3 spends**, not an optio
 4. **Scoped break:** **keyset version `02` (BLS v3) only.** Legacy keysets keep current bearer semantics until migrated by swap into v3.
 5. **Token UX preserved:** Alice can still send tokens to Carol as a bearer package; the package must carry enough key material for Carol to later produce spend signatures (`secret_private`).
 6. **Incremental reviewability:** land normative text in small steps.
+7. **Minimal, not maximal, spec surface (the coal):** solve the security gap with **as few lines of normative change as possible**. Prefer one shared rule over rewrites in every NUT; delete conflicting text rather than leave dual paths; avoid new abstractions, endpoints, or field names when an existing one can be reused or retargeted; no essay-length motivation in normative NUTs. Every step should ask: *can this be a pointer + a MUST, or does it need a new section?*
 
 ### Non-goals (this plan)
 
@@ -133,13 +134,19 @@ Each step is meant to be reviewable on its own. Later steps must not redefine ea
 
 ---
 
-### Step 0 — Normative “signed request” foundation
+### Step 0 — Normative "signed request" foundation
 
 **Summary**  
-Add a single normative definition for: (a) which v3 fields count as ownership keys; (b) JCS strip algorithm; (c) BIP340 verification domain; (d) per-input `SIG_ALL` requirement; (e) applicability matrix (swap / melt / mint / BAT). Prefer a short dedicated subsection of `NUT-00`, or a new small NUT referenced by the others.
+Add a single, **short** normative definition for: (a) ownership keys for v3; (b) JCS strip; (c) BIP340 domain; (d) per-input spend auth; (e) mint-quote auth message. One place later NUTs point at — not a parallel treatise.
+
+**Minimal-surface bias**  
+- Prefer a tight NUT (or NUT-00 section) that is **reference-only** from 03/04/05/11 — later steps are ideally "MUST authenticate per NUT-31" plus deletion of old concat text, not copy-paste.
+- Do not restate full P2PK/HTLC locktime rules here.
+- Do not invent new witness types if `P2PKWitness` fits.
+- Motivation: a few sentences max in the NUT; depth stays in this plan doc.
 
 **Rationale**  
-Today NUT-11 swap concat, NUT-11 melt concat, and NUT-20 quote∥B_* are people are three incompatible “what did I sign?” answers. Every new quote method or fee field forces another special case. JCS of the request body (minus authentication fields) auto-covers future extensions without rewriting aggregation rules. Centralizing this avoids drift when Steps 2–7 land.
+Today NUT-11 swap concat, NUT-11 melt concat, and NUT-20 quote||B_* are three incompatible "what did I sign?" answers. One JCS rule + deep-omit kills all three and future quote-field special cases — fewer total lines than extending each concat.
 
 **Notes / double-check**
 
@@ -509,6 +516,7 @@ Do not merge Step 4 before Stepˊ 0 is stable — NUT-11 will delete large conca
 
 ## 11. Next action
 
-1. Lock O1/O7 if desired (DST + NUT-00 vs new NUT).
-2. Implement **Step 0** normative text for review.
+1. Lock O1/O7 if desired (DST + NUT-00 vs new NUT) with **minimal-line** preference in mind (one short foundation doc > scattered edits).
+2. Implement **Step 0** as the shortest normative text that later steps can mostly pointer-delete against.
 3. Proceed step-by-step without bundling NUT-11 rewrite into the foundation PR.
+4. When editing any NUT: measure success partly by **net lines** — prefer delete-old-concat + one MUST link over additive dual specifications.
