@@ -111,7 +111,7 @@ To verify that MMR M (of size m) is a valid append-only extension of MMR N (of s
 Every epoch interval (e.g., 24 hours), the mint constructs and signs an Epoch Manifest:
 
 1. **Sort Keysets:** Normalize all unexpired `keyset_id` strings (both active and inactive) to lowercase hexadecimal representation, and then sort them alphabetically (lexicographically by their ASCII values).
-2. **Commitment Data:** Prepend the 32-byte binary `previous_global_digest` of the previous epoch (for the first epoch, this MUST be 32 bytes of zeros `0x00...00`). Then concatenate the UTF-8 lowercase `keyset_id`, 8-byte big-endian `issued_mmr_size`, 32-byte binary `issued_mmr_root_hash`, 8-byte big-endian `issued_mmr_root_sum`, 8-byte big-endian `spent_mmr_size`, 32-byte binary `spent_mmr_root_hash`, and 8-byte big-endian `spent_mmr_root_sum` for each keyset sequentially.
+2. **Commitment Data:** Prepend the 32-byte binary `previous_global_digest` of the previous epoch (for the first epoch, this MUST be 32 bytes of zeros `0x0000000000000000000000000000000000000000000000000000000000000000`). Then concatenate the UTF-8 lowercase `keyset_id`, 8-byte big-endian `issued_mmr_size`, 32-byte binary `issued_mmr_root_hash`, 8-byte big-endian `issued_mmr_root_sum`, 8-byte big-endian `spent_mmr_size`, 32-byte binary `spent_mmr_root_hash`, and 8-byte big-endian `spent_mmr_root_sum` for each keyset sequentially.
 3. **Global Digest:** Compute `SHA256(commitment_data)`.
 4. **OTS Submission & Upgrading:**
    - Submit the **Global Digest** to OpenTimestamps (OTS) calendar servers to obtain an initial _pending_ (incomplete) receipt.
@@ -157,21 +157,21 @@ The `leaf_index` is not trusted metadata. A verifier MUST derive it from the pro
   "previous_global_digest": "0000000000000000000000000000000000000000000000000000000000000000",
   "signing_pubkey": "f3dd0e40dd3d888301b3b47aede737b6f9451ab451dfc05a1ae023ab4235b4dd",
   "issued_mmr_size": 125000,
-  "issued_mmr_root_hash": "8f3c...",
+  "issued_mmr_root_hash": "8f3c45d51e9bb2a50c25a40b89f460ccd8b120de84929ee29502e7c99184f60f",
   "issued_mmr_root_sum": 1000000,
   "spent_mmr_size": 52000,
-  "spent_mmr_root_hash": "4d1a...",
+  "spent_mmr_root_hash": "4d1a7d72e8f498b52f751c69e1579f11ebba3f497c6a92fbb784eef0bd47fd44",
   "spent_mmr_root_sum": 450000,
   "outstanding_balance": 550000,
-  "global_digest": "7c6d...",
+  "global_digest": "7c6d52b91aa6a155f9e24c8e05c38c5bde6635a56d8c42d8296553f9f879c732",
   "epoch_keysets": [
     {
       "keyset_id": "009a6154b71113b7",
       "issued_mmr_size": 125000,
-      "issued_mmr_root_hash": "8f3c...",
+      "issued_mmr_root_hash": "8f3c45d51e9bb2a50c25a40b89f460ccd8b120de84929ee29502e7c99184f60f",
       "issued_mmr_root_sum": 1000000,
       "spent_mmr_size": 52000,
-      "spent_mmr_root_hash": "4d1a...",
+      "spent_mmr_root_hash": "4d1a7d72e8f498b52f751c69e1579f11ebba3f497c6a92fbb784eef0bd47fd44",
       "spent_mmr_root_sum": 450000
     }
   ],
@@ -188,7 +188,11 @@ The `leaf_index` is not trusted metadata. A verifier MUST derive it from the pro
 - **Request Body:**
 
 ```json
-{ "blinded_messages": ["02b1a..."] }
+{
+  "blinded_messages": [
+    "02b1a03e1b10a23429fa221087e53f19001b97ad89498a44b93b3f23a851121df4"
+  ]
+}
 ```
 
 - **Response:**
@@ -197,11 +201,22 @@ The `leaf_index` is not trusted metadata. A verifier MUST derive it from the pro
 {
   "proofs": [
     {
-      "item": "02b1a...",
+      "item": "02b1a03e1b10a23429fa221087e53f19001b97ad89498a44b93b3f23a851121df4",
       "leaf_index": 45012,
       "value": 1000,
-      "sibling_path": [{ "hash": "b4a1...", "sum": 500, "is_left": true }],
-      "peaks": [{ "hash": "f29a...", "sum": 20000 }]
+      "sibling_path": [
+        {
+          "hash": "b4a1df64d7d3cbfe8f0e59b2e41f47a90d5e8b26f04b3cf26d264eed55edf21b",
+          "sum": 500,
+          "is_left": true
+        }
+      ],
+      "peaks": [
+        {
+          "hash": "f29a2cfeabdd677e8216c72e26f58007ac45e41b34db44d876ba7f7f25709125",
+          "sum": 20000
+        }
+      ]
     }
   ]
 }
@@ -215,7 +230,7 @@ The `leaf_index` is not trusted metadata. A verifier MUST derive it from the pro
 - **Request Body:**
 
 ```json
-{ "ys": ["02b1a..."] }
+{ "ys": ["02b1a03e1b10a23429fa221087e53f19001b97ad89498a44b93b3f23a851121df4"] }
 ```
 
 - **Response:** Same format as `/proofs/issued` with the `Y` point hex string in the `item` field.
@@ -390,8 +405,19 @@ As a result, there are four recognized categories of Fraud Challenges, detailed 
       "item": "02b1a03e1b10a23429fa221087e53f19001b97ad89498a44b93b3f23a851121df4",
       "leaf_index": 45012,
       "value": 1000,
-      "sibling_path": [{ "hash": "b4a1df...", "sum": 500, "is_left": true }],
-      "peaks": [{ "hash": "f29a2c...", "sum": 20000 }]
+      "sibling_path": [
+        {
+          "hash": "b4a1df64d7d3cbfe8f0e59b2e41f47a90d5e8b26f04b3cf26d264eed55edf21b",
+          "sum": 500,
+          "is_left": true
+        }
+      ],
+      "peaks": [
+        {
+          "hash": "f29a2cfeabdd677e8216c72e26f58007ac45e41b34db44d876ba7f7f25709125",
+          "sum": 20000
+        }
+      ]
     }
   }
   ```
@@ -415,16 +441,38 @@ As a result, there are four recognized categories of Fraud Challenges, detailed 
     "epoch_index_2": 12,
     "leaf_index": 45012,
     "proof_1": {
-      "item": "02b1a...",
+      "item": "02b1a03e1b10a23429fa221087e53f19001b97ad89498a44b93b3f23a851121df4",
       "value": 1000,
-      "sibling_path": [{ "hash": "b4a1...", "sum": 500, "is_left": true }],
-      "peaks": [{ "hash": "f29a...", "sum": 20000 }]
+      "sibling_path": [
+        {
+          "hash": "b4a1df64d7d3cbfe8f0e59b2e41f47a90d5e8b26f04b3cf26d264eed55edf21b",
+          "sum": 500,
+          "is_left": true
+        }
+      ],
+      "peaks": [
+        {
+          "hash": "f29a2cfeabdd677e8216c72e26f58007ac45e41b34db44d876ba7f7f25709125",
+          "sum": 20000
+        }
+      ]
     },
     "proof_2": {
-      "item": "02b1a...",
+      "item": "02b1a03e1b10a23429fa221087e53f19001b97ad89498a44b93b3f23a851121df4",
       "value": 500,
-      "sibling_path": [{ "hash": "9c1a...", "sum": 100, "is_left": true }],
-      "peaks": [{ "hash": "3d2a...", "sum": 25000 }]
+      "sibling_path": [
+        {
+          "hash": "9c1ae83721fa4035bd51f2aa0799d9b93f17603a5ea1a7d946446f295c6d3d0e",
+          "sum": 100,
+          "is_left": true
+        }
+      ],
+      "peaks": [
+        {
+          "hash": "3d2a865c3b17894d0e429730880fe92d6445da54c694f05417f7c9de7f58ca3b",
+          "sum": 25000
+        }
+      ]
     }
   }
   ```
@@ -449,12 +497,12 @@ As a result, there are four recognized categories of Fraud Challenges, detailed 
       "keyset_id": "009a6154b71113b7",
       "epoch_index": 12,
       "timestamp": "2026-06-11T12:00:00Z",
-      "previous_global_digest": "4b8e...",
+      "previous_global_digest": "4b8e39cd3c008a6f5da0ea6c22946250086c7c53298f8d33b4f7a178e121ddd8",
       "issued_mmr_size": 45013,
-      "issued_mmr_root_hash": "8f3c...",
+      "issued_mmr_root_hash": "8f3c45d51e9bb2a50c25a40b89f460ccd8b120de84929ee29502e7c99184f60f",
       "issued_mmr_root_sum": 25000,
       "spent_mmr_size": 12001,
-      "spent_mmr_root_hash": "7d4e...",
+      "spent_mmr_root_hash": "7d4e277fc585b942a22314ff992cb9d4413da734183b7b5f669e5b38d5bd73bf",
       "spent_mmr_root_sum": 9000,
       "outstanding_balance": 16000,
       "mint_signature": "<signature_a>"
@@ -463,12 +511,12 @@ As a result, there are four recognized categories of Fraud Challenges, detailed 
       "keyset_id": "009a6154b71113b7",
       "epoch_index": 12,
       "timestamp": "2026-06-11T12:00:00Z",
-      "previous_global_digest": "4b8e...",
+      "previous_global_digest": "4b8e39cd3c008a6f5da0ea6c22946250086c7c53298f8d33b4f7a178e121ddd8",
       "issued_mmr_size": 45013,
-      "issued_mmr_root_hash": "9a2b...",
+      "issued_mmr_root_hash": "9a2b72d9d43fa53e05c27f4d9f296dc1912a819c33302fda106b40cfa4985f1e",
       "issued_mmr_root_sum": 24000,
       "spent_mmr_size": 12001,
-      "spent_mmr_root_hash": "7d4e...",
+      "spent_mmr_root_hash": "7d4e277fc585b942a22314ff992cb9d4413da734183b7b5f669e5b38d5bd73bf",
       "spent_mmr_root_sum": 9000,
       "outstanding_balance": 15000,
       "mint_signature": "<signature_b>"
@@ -506,7 +554,13 @@ As a result, there are four recognized categories of Fraud Challenges, detailed 
     "consistency_proof": {
       "old_size": 125000,
       "new_size": 126500,
-      "proof_hashes": [{ "hash": "8f3c...", "sum": 1000000, "height": 3 }]
+      "proof_hashes": [
+        {
+          "hash": "8f3c45d51e9bb2a50c25a40b89f460ccd8b120de84929ee29502e7c99184f60f",
+          "sum": 1000000,
+          "height": 3
+        }
+      ]
     }
   }
   ```

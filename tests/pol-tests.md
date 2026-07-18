@@ -43,7 +43,7 @@ This test vector uses two leaf nodes, representing a sum-MMR of size 2. These tw
 
 ### Sibling Inclusion Proofs
 
-#### Proof for `02b1a03e...` (Index 0)
+#### Proof for `02b1a03e1b10a23429fa221087e53f19001b97ad89498a44b93b3f23a851121df4` (Index 0)
 
 - **Leaf Index:** 0
 - **Sibling Path:**
@@ -66,7 +66,7 @@ This test vector uses two leaf nodes, representing a sum-MMR of size 2. These tw
   ]
   ```
 
-#### Proof for `02c3a506...` (Index 1)
+#### Proof for `02c3a50646bc1a1fef3da21973b064eb6897de58231c5f3e2730bf18361592394a` (Index 1)
 
 - **Leaf Index:** 1
 - **Sibling Path:**
@@ -110,7 +110,7 @@ This test vector uses three leaf nodes, representing a sum-MMR of size 3.
 
 ### Sibling Inclusion Proofs
 
-#### Proof for `02b1a03e...` (Index 0)
+#### Proof for `02b1a03e1b10a23429fa221087e53f19001b97ad89498a44b93b3f23a851121df4` (Index 0)
 
 - **Leaf Index:** 0
 - **Sibling Path:**
@@ -137,7 +137,7 @@ This test vector uses three leaf nodes, representing a sum-MMR of size 3.
   ]
   ```
 
-#### Proof for `02c3a506...` (Index 1)
+#### Proof for `02c3a50646bc1a1fef3da21973b064eb6897de58231c5f3e2730bf18361592394a` (Index 1)
 
 - **Leaf Index:** 1
 - **Sibling Path:**
@@ -164,7 +164,7 @@ This test vector uses three leaf nodes, representing a sum-MMR of size 3.
   ]
   ```
 
-#### Proof for `03c0029b...` (Index 2)
+#### Proof for `03c0029b38423f03b6d203a55e2d6778035740e40dd3d888301b3b47aede737b6f` (Index 2)
 
 - **Leaf Index:** 2
 - **Sibling Path:** `[]`
