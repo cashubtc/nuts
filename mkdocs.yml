@@ -68,7 +68,15 @@ nav:
           - NUT-19 - Cached Responses: 19.md
           - NUT-20 - Signature on Mint Quote: 20.md
           - NUT-21 - Clear authentication: 21.md
-          - NUT-22 - Blind authentication: 22.md          
+          - NUT-22 - Blind authentication: 22.md
+          - "NUT-23 - Payment Method: BOLT11": 23.md
+          - NUT-24 - HTTP 402 Payment Required: 24.md
+          - "NUT-25 - Payment Method: BOLT12": 25.md
+          - NUT-26 - Payment Request Bech32m Encoding: 26.md
+          - NUT-27 - Nostr Mint Backup: 27.md
+          - NUT-28 - Pay to Blinded Key (P2BK): 28.md
+          - NUT-29 - Batched Mint: 29.md
+          - "NUT-30 - Payment Method: Onchain": 30.md
           # Add more optional NUTs here
 plugins:
   - search
