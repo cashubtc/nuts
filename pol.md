@@ -111,7 +111,7 @@ To verify that MMR M (of size m) is a valid append-only extension of MMR N (of s
 Every epoch interval (e.g., 24 hours), the mint constructs and signs an Epoch Manifest:
 
 1. **Sort Keysets:** Normalize all unexpired `keyset_id` strings (both active and inactive) to lowercase hexadecimal representation, and then sort them alphabetically (lexicographically by their ASCII values).
-2. **Commitment Data:** Prepend the 32-byte binary `previous_global_digest` of the previous epoch (for the first epoch, this MUST be 32 bytes of zeros `0x00...00`). Then concatenate the UTF-8 lowercase `keyset_id`, 8-byte big-endian `issued_mmr_size`, 32-byte binary `issued_mmr_root_hash`, 8-byte big-endian `spent_mmr_size`, and 32-byte binary `spent_mmr_root_hash` for each keyset sequentially.
+2. **Commitment Data:** Prepend the 32-byte binary `previous_global_digest` of the previous epoch (for the first epoch, this MUST be 32 bytes of zeros `0x00...00`). Then concatenate the UTF-8 lowercase `keyset_id`, 8-byte big-endian `issued_mmr_size`, 32-byte binary `issued_mmr_root_hash`, 8-byte big-endian `issued_mmr_root_sum`, 8-byte big-endian `spent_mmr_size`, 32-byte binary `spent_mmr_root_hash`, and 8-byte big-endian `spent_mmr_root_sum` for each keyset sequentially.
 3. **Global Digest:** Compute `SHA256(commitment_data)`.
 4. **OTS Submission & Upgrading:**
    - Submit the **Global Digest** to OpenTimestamps (OTS) calendar servers to obtain an initial _pending_ (incomplete) receipt.
@@ -124,7 +124,7 @@ Every epoch interval (e.g., 24 hours), the mint constructs and signs an Epoch Ma
    - `previous_global_digest` MUST be serialized as a 64-character lowercase hexadecimal string.
    - `issued_mmr_root_hash` and `spent_mmr_root_hash` MUST be serialized as 64-character lowercase hexadecimal strings.
 6. **Signing:** Sign the message with a BIP-340 Schnorr signature using the mint's master NUT-06 private key signing the SHA256 digest of this serialized manifest string. Note that this signature is over the manifest metadata only and **excludes** the `ots_receipt` to allow upgrading the receipt without changing the signature or causing equivocation false-positives.
-7. **Publish:** Store and publish the signed manifests, signatures, OTS receipts, `global_digest`, and the ordered `epoch_keysets` array used to construct `commitment_data`. Each entry in `epoch_keysets` MUST contain the `keyset_id`, `issued_mmr_size`, `issued_mmr_root_hash`, `spent_mmr_size`, and `spent_mmr_root_hash`; the array MUST contain every unexpired keyset exactly once and match the corresponding signed manifests. This lets verifiers reconstruct the exact Global Digest preimage.
+7. **Publish:** Store and publish the signed manifests, signatures, OTS receipts, `global_digest`, and the ordered `epoch_keysets` array used to construct `commitment_data`. Each entry in `epoch_keysets` MUST contain the `keyset_id`, `issued_mmr_size`, `issued_mmr_root_hash`, `issued_mmr_root_sum`, `spent_mmr_size`, `spent_mmr_root_hash`, and `spent_mmr_root_sum`; the array MUST contain every unexpired keyset exactly once and match the corresponding signed manifests. This lets verifiers reconstruct the exact Global Digest preimage.
 
 ---
 
@@ -169,8 +169,10 @@ The `leaf_index` is not trusted metadata. A verifier MUST derive it from the pro
       "keyset_id": "009a6154b71113b7",
       "issued_mmr_size": 125000,
       "issued_mmr_root_hash": "8f3c...",
+      "issued_mmr_root_sum": 1000000,
       "spent_mmr_size": 52000,
-      "spent_mmr_root_hash": "4d1a..."
+      "spent_mmr_root_hash": "4d1a...",
+      "spent_mmr_root_sum": 450000
     }
   ],
   "ots_receipt": "<hex_encoded_ots_file_content>",
