@@ -8,7 +8,7 @@
 
 This document extends [NUT-XX: Proof of Liabilities][pol] with Bitcoin-native collateral and permissionless slashing.
 
-A participating mint locks bitcoin in a recursive covenant called the **PoL bond**. The covenant carries the latest Proof of Liabilities epoch commitment and permits the bonded funds to move only through protocol-defined state transitions. A mint can advance the bond by publishing a new PoL epoch, complete a controlled wind-down after its liabilities reach zero, or lose the entire bond to the first challenger who proves a supported PoL violation.
+A participating mint locks bitcoin in a recursive covenant called the **PoL bond**. The covenant carries the latest Proof of Liabilities epoch commitment and permits the bonded funds to move only through protocol-defined state transitions. A mint can advance the bond by publishing a new PoL epoch, close after every committed redemption window ends, or lose the entire bond to the first challenger who proves a supported PoL violation.
 
 Version 1 intentionally awards the complete bonded amount, less transaction fees, to the first successful challenger. Holder recovery, proportional distribution, and bounded challenger rewards are outside this document.
 
@@ -90,18 +90,19 @@ bond_id = SHA256(
 
 Each deployment MUST commit to the following parameters in `program_hash`:
 
-| Name                  | Type   | Meaning                                                        |
-| :-------------------- | :----- | :------------------------------------------------------------- |
-| `NETWORK`             | string | Bitcoin network identifier                                     |
-| `CHALLENGE_PERIOD`    | uint32 | Blocks between epoch publication and finalization              |
-| `RESPONSE_PERIOD`     | uint32 | Blocks allowed for a mint response                             |
-| `WIND_DOWN_PERIOD`    | uint32 | Blocks between zero liabilities and withdrawal                 |
-| `MAX_KEYSETS`         | uint16 | Maximum keysets committed by one epoch                         |
-| `MAX_MMR_HEIGHT`      | uint8  | Maximum accepted inclusion or consistency proof height         |
-| `MAX_CHALLENGE_BYTES` | uint32 | Maximum canonical challenge size                               |
-| `MAX_RESPONSE_BYTES`  | uint32 | Maximum canonical response size                                |
-| `MIN_CHALLENGE_BOND`  | uint64 | Minimum anti-spam input, or zero if challenge bonds are unused |
-| `CONTRACT_VERSION`    | uint16 | Bonded PoL program version                                     |
+| Name                      | Type   | Meaning                                                        |
+| :------------------------ | :----- | :------------------------------------------------------------- |
+| `NETWORK`                 | string | Bitcoin network identifier                                     |
+| `CHALLENGE_PERIOD`        | uint32 | Blocks between epoch publication and finalization              |
+| `RESPONSE_PERIOD`         | uint32 | Blocks allowed for a mint response                             |
+| `MIN_EPOCH_BLOCKS`        | uint32 | Minimum blocks between finalized epochs                        |
+| `WITHDRAWAL_DELAY_PERIOD` | uint32 | Blocks between completed closing and bond withdrawal           |
+| `MAX_KEYSETS`             | uint16 | Maximum keysets committed by one epoch                         |
+| `MAX_MMR_HEIGHT`          | uint8  | Maximum accepted inclusion or consistency proof height         |
+| `MAX_CHALLENGE_BYTES`     | uint32 | Maximum canonical challenge size                               |
+| `MAX_RESPONSE_BYTES`      | uint32 | Maximum canonical response size                                |
+| `MIN_CHALLENGE_BOND`      | uint64 | Minimum anti-spam input, or zero if challenge bonds are unused |
+| `CONTRACT_VERSION`        | uint16 | Bonded PoL program version                                     |
 
 `MAX_MMR_HEIGHT` MUST NOT exceed 63. Therefore a single committed sum-MMR cannot contain more than `2^63 - 1` leaves.
 
@@ -137,7 +138,8 @@ program_hash = SHA256(
     || network
     || challenge_period_u32
     || response_period_u32
-    || wind_down_period_u32
+    || min_epoch_blocks_u32
+    || withdrawal_delay_period_u32
     || max_keysets_u16
     || max_mmr_height_u8
     || max_challenge_bytes_u32
@@ -155,12 +157,12 @@ program_hash = SHA256(
 
 The state tag is one of:
 
-| Value | State        |
-| :---- | :----------- |
-| `0`   | `ACTIVE`     |
-| `1`   | `PENDING`    |
-| `2`   | `CHALLENGED` |
-| `3`   | `WIND_DOWN`  |
+| Value | State              |
+| :---- | :----------------- |
+| `0`   | `ACTIVE`           |
+| `1`   | `PENDING`          |
+| `2`   | `CHALLENGED`       |
+| `3`   | `WITHDRAWAL_DELAY` |
 
 There is no recursive `SLASHED` state. Slashing consumes the bond and pays it to the committed slash destination.
 
@@ -178,6 +180,7 @@ BondCommon {
     state_tag: uint8,
     state_sequence: uint64,
     active_epoch: EpochCommitment,
+    closing_epoch: optional<uint64>,
     epoch_history_mmr_root: bytes32,
     epoch_history_mmr_size: uint64
 }
@@ -196,13 +199,14 @@ EpochCommitment {
     epoch_index: uint64,
     global_digest: bytes32,
     previous_global_digest: bytes32,
-    epoch_keysets_root: bytes32,
+    pol_keysets_root: bytes32,
+    bonded_keysets_root: bytes32,
     epoch_keysets_count: uint16,
     total_outstanding_balance: uint64
 }
 ```
 
-`epoch_keysets_root` is the root of a binary Merkle tree whose leaves are sorted lexicographically by lowercase hexadecimal `keyset_id` and encoded as:
+`pol_keysets_root` is the NUT-XX `keyset_merkle_root`. `bonded_keysets_root` commits to the same sorted keysets plus their Bonded-PoL-only expiry schedule. Its leaves encode:
 
 ```text
 KeysetCommitment {
@@ -215,33 +219,25 @@ KeysetCommitment {
     spent_mmr_root_sum: uint64,
     active: bool,
     deactivation_epoch: optional<uint64>,
+    redemption_end_epoch: uint64,
     outstanding_balance: uint64
 }
 ```
 
-The keyset leaf hash is the base NUT-XX keyset leaf:
+The bonded keyset leaf hash wraps the base NUT-XX leaf hash:
 
 ```text
 SHA256(
-    "Cashu_PoL_Keyset_Leaf_v1"
-    || bytes_2(len(utf8(keyset_id)))
-    || utf8(keyset_id)
-    || bytes_8(issued_mmr_size)
-    || issued_mmr_root_hash
-    || bytes_8(issued_mmr_root_sum)
-    || bytes_8(spent_mmr_size)
-    || spent_mmr_root_hash
-    || bytes_8(spent_mmr_root_sum)
-    || bytes_1(active)
-    || bytes_1(has_deactivation_epoch)
-    [|| bytes_8(deactivation_epoch)]
+    "Cashu_Bonded_PoL_Keyset_v1"
+    || nut_xx_keyset_leaf_hash
+    || bytes_8(redemption_end_epoch)
 )
 ```
 
 Merkle parents are:
 
 ```text
-SHA256("Cashu_PoL_Keyset_Node_v1" || left || right)
+SHA256("Cashu_Bonded_PoL_Keyset_Node_v1" || left || right)
 ```
 
 When a level has an odd node count, its final node is duplicated. An empty list is forbidden. `epoch_keysets_count` MUST be between 1 and `MAX_KEYSETS`, inclusive.
@@ -283,10 +279,10 @@ ChallengedState {
 
 The `challenger_script_pubkey` MUST be a standard script under the consensus and relay policy active when the challenge transaction is confirmed. It MUST NOT be changeable by a response or slashing transaction.
 
-### 6.5 Wind-Down State
+### 6.5 Withdrawal-Delay State
 
 ```text
-WindDownState {
+WithdrawalDelayState {
     common: BondCommon,
     mint_withdrawal_script_pubkey: bytes
 }
@@ -340,6 +336,8 @@ proposed_epoch.epoch_index == active_epoch.epoch_index + 1
 proposed_epoch.previous_global_digest == active_epoch.global_digest
 ```
 
+The active bond output MUST have aged by at least `MIN_EPOCH_BLOCKS`. The publication input MUST set `nSequence >= MIN_EPOCH_BLOCKS`, and the publication leaf MUST enforce `<MIN_EPOCH_BLOCKS> OP_CHECKSEQUENCEVERIFY`. This prevents the mint from accelerating epoch-based lifecycle deadlines.
+
 The covenant MUST verify every proposed keyset manifest signature, reconstruct `global_digest`, and verify the sorted keyset commitment root, every keyset sum, and the total outstanding balance. The proposed keyset list MUST contain every unexpired keyset exactly once, as required by NUT-XX.
 
 For every keyset present in both epochs, the publication witness MUST contain one NUT-XX consistency proof for the issued MMR and one for the spent MMR. The covenant MUST execute the NUT-XX consistency algorithm and require each proof to resolve exactly from the active epoch's size, root, and sum to the proposed epoch's size, root, and sum.
@@ -355,11 +353,21 @@ new.spent_mmr_size >= old.spent_mmr_size
 
 For every keyset, the transition MUST additionally enforce:
 
-1. A newly appearing keyset has `deactivation_epoch = null` or `deactivation_epoch > proposed_epoch.epoch_index`.
+1. A newly appearing keyset has `deactivation_epoch > proposed_epoch.epoch_index`.
 2. An existing keyset's `deactivation_epoch` is unchanged.
 3. `active` cannot change from false to true.
 4. If the old keyset is inactive, the new issued MMR is exactly equal to the old issued MMR.
 5. If `deactivation_epoch` is non-null and `proposed_epoch.epoch_index >= deactivation_epoch`, the new keyset is inactive.
+
+A bonded keyset MUST have non-null `deactivation_epoch` and MUST commit at birth to:
+
+```text
+birth_epoch < deactivation_epoch < redemption_end_epoch
+```
+
+`redemption_end_epoch` is immutable. The mint MUST accept redemption through the epoch immediately preceding it. In every epoch at or after `redemption_end_epoch`, both the issued and spent MMRs MUST equal their state at `redemption_end_epoch`; any residual outstanding balance is an expired liability and does not prevent bond withdrawal.
+
+If `closing_epoch` is set, the proposed epoch MUST contain exactly the same keyset IDs as the active epoch, every keyset MUST be inactive, and no issued MMR may change. Spent MMRs continue through each keyset's redemption window.
 
 Inactivity prohibits issuance but does not prohibit redemption. The spent MMR of an inactive, unexpired keyset MAY grow and MUST pass the same mandatory consistency proof as every other MMR transition. These checks make lifecycle consistency a validity condition of the epoch transition rather than an optimistic challenge.
 
@@ -420,21 +428,34 @@ For a response-based challenge, anyone may execute the slash transition after th
 
 For a self-contained challenge, the implementation MAY combine challenge and slash into a single transaction if the entire success predicate is verified atomically and the payout destination is constrained by that transaction.
 
-### 8.7 Begin Wind-Down: `ACTIVE_TO_WIND_DOWN`
+### 8.7 Begin Closing: `ACTIVE_TO_ACTIVE`
 
-The mint may begin wind-down only if:
+The mint may announce closing from `ACTIVE`. The recursive successor remains `ACTIVE` and sets:
 
 ```text
-active_epoch.total_outstanding_balance == 0
+closing_epoch = active_epoch.epoch_index
 ```
 
-The withdrawal destination is committed at this transition.
+Before closing, `closing_epoch` MUST be null. Once set, it is immutable. Closing forbids new keysets and requires all keysets to become issuance-inactive in the next published epoch. Epoch publication continues so redemptions extend the spent MMRs.
 
-### 8.8 Withdraw: `WIND_DOWN_TO_MINT`
+### 8.8 Enter Withdrawal Delay: `ACTIVE_TO_WITHDRAWAL_DELAY`
 
-The bond may be paid to `mint_withdrawal_script_pubkey` after the wind-down output has aged by at least `WIND_DOWN_PERIOD` blocks. The withdrawal input MUST set `nSequence >= WIND_DOWN_PERIOD`, and the withdrawal leaf MUST enforce `<WIND_DOWN_PERIOD> OP_CHECKSEQUENCEVERIFY`.
+The mint may enter `WITHDRAWAL_DELAY` only if:
 
-A conforming implementation MUST permit challenges against the final active epoch throughout `WIND_DOWN_PERIOD`. A challenge confirmed during wind-down replaces the wind-down state with `CHALLENGED` and cancels withdrawal unless the challenge is refuted.
+```text
+closing_epoch != null
+active_epoch.epoch_index >= max(redemption_end_epoch)
+all keysets are inactive
+all keyset IDs and lifecycle declarations are unchanged since closing_epoch
+```
+
+The covenant MUST verify that both MMRs are frozen for every keyset whose redemption window ended. `total_outstanding_balance` MAY remain nonzero; it records expired, unredeemed ecash. The withdrawal destination is committed at this transition.
+
+### 8.9 Withdraw: `WITHDRAWAL_DELAY_TO_MINT`
+
+The bond may be paid to `mint_withdrawal_script_pubkey` after the withdrawal-delay output has aged by at least `WITHDRAWAL_DELAY_PERIOD` blocks. The withdrawal input MUST set `nSequence >= WITHDRAWAL_DELAY_PERIOD`, and the withdrawal leaf MUST enforce `<WITHDRAWAL_DELAY_PERIOD> OP_CHECKSEQUENCEVERIFY`.
+
+A conforming implementation MUST permit challenges against the final active epoch throughout `WITHDRAWAL_DELAY_PERIOD`. A challenge confirmed during this delay replaces the state with `CHALLENGED` and cancels withdrawal unless the challenge is refuted. After refutation, the mint must enter a new full withdrawal delay.
 
 ---
 
@@ -563,7 +584,8 @@ A bonded mint MUST add the following setting to `GET /v1/info`:
       "active_epoch": 12,
       "challenge_period": 144,
       "response_period": 144,
-      "wind_down_period": 2016
+      "min_epoch_blocks": 6,
+      "withdrawal_delay_period": 2016
     }
   }
 }
@@ -673,8 +695,8 @@ I5. A response-based challenge can slash after its relative delay when no
 
 I6. The slash destination cannot change after challenge initiation.
 
-I7. The bond cannot return to the mint until committed liabilities are
-    zero and the wind-down challenge period has expired.
+I7. The bond cannot return to the mint until every committed redemption
+    window and the final withdrawal challenge period have expired.
 
 I8. For competing valid spends, Bitcoin confirmation order determines
     the unique successor or payout.

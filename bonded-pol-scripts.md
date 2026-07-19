@@ -10,6 +10,8 @@ This document gives a concrete covenant construction for [Bonded Proof of Liabil
 
 The scripts are **not valid on Bitcoin today**. They combine draft opcodes with explicitly assumed operations that have no assigned consensus semantics. The pseudocode is intended to be compiled after equivalent covenant and arithmetic primitives are activated.
 
+The notation is a compiler-neutral typed stack-machine language modeled on Bitcoin Tapscript's Forth-like execution model. Named variables, structs, loops, functions, and `if` statements are specification macros. A compiler MUST lower them to bounded stack operations and statically unroll every loop; they are not proposed Bitcoin Script syntax.
+
 The construction uses:
 
 - BIP-443 `OP_CHECKCONTRACTVERIFY` (`OP_CCV`) for state-carrying P2TR outputs and amount preservation.
@@ -89,7 +91,7 @@ OP_SIZEVERIFY
 
 ```
 
-Challenge, response, and wind-down periods use the existing BIP-112 `OP_CHECKSEQUENCEVERIFY`. The keyset aggregate is a Merkle tree, so every covenant hash preimage is fixed-size and fits below the stack-element limit; streaming SHA-256 is not required.
+Epoch cadence, challenge, response, and withdrawal delays use the existing BIP-112 `OP_CHECKSEQUENCEVERIFY`. The keyset aggregate is a Merkle tree, so every covenant hash preimage is fixed-size and fits below the stack-element limit; streaming SHA-256 is not required.
 
 All uint64 operands and intermediate results are assumed to be less than `2^64`. A witness outside this protocol domain is invalid.
 
@@ -156,6 +158,8 @@ common =
     || state_tag_u8
     || state_sequence_u64
     || active_epoch_hash_32
+    || has_closing_epoch_u8
+    [|| closing_epoch_u64]
     || epoch_history_mmr_root_32
     || epoch_history_mmr_size_u64
 ```
@@ -186,7 +190,7 @@ CHALLENGED body =
     || challenge_hash_32
     || challenger_xonly_pubkey_32
 
-WIND_DOWN body =
+WITHDRAWAL_DELAY body =
     common
     || mint_withdrawal_xonly_pubkey_32
 ```
@@ -208,9 +212,10 @@ L4  slash_timeout
 L5  slash_equivocation
 L6  slash_append_only
 L7  slash_rotation_violation
-L8  begin_wind_down
-L9  cancel_wind_down_with_challenge
-L10 withdraw_after_wind_down
+L8  begin_closing
+L9  enter_withdrawal_delay
+L10 cancel_withdrawal_delay_with_challenge
+L11 withdraw_after_delay
 ```
 
 The tree SHOULD place common cooperative leaves near the root:
@@ -253,13 +258,19 @@ old_state.program_hash PROGRAM_HASH OP_EQUALVERIFY
 ### 6.2 Verify Recursive Successor
 
 ```text
-macro VERIFY_SUCCESSOR(old, new):
+macro VERIFY_SUCCESSOR(old, new, allow_closing_init=false):
     EQ(new.contract_version, old.contract_version)
     EQ(new.program_hash, old.program_hash)
     EQ(new.bond_id, old.bond_id)
     EQ(new.genesis_nonce, old.genesis_nonce)
     EQ(new.mint_pubkey, old.mint_pubkey)
     ASSERT(new.state_sequence == old.state_sequence + 1)
+
+    if allow_closing_init:
+        ASSERT(old.closing_epoch == null)
+        ASSERT(new.closing_epoch == old.active_epoch.epoch_index)
+    else:
+        ASSERT(new.closing_epoch == old.closing_epoch)
 
     new_state_hash = HASH256(
         "Cashu_Bonded_PoL_State_v1",
@@ -296,20 +307,33 @@ macro VERIFY_EPOCH(epoch, keysets[], signatures[]):
             message_hash = SHA256(canonical_nut_xx_manifest_message(k, epoch))
             ASSERT(CSFS(signatures[i], message_hash, mint_pubkey))
 
-            leaf[i] = SHA256(
+            pol_leaf[i] = SHA256(
                 "Cashu_PoL_Keyset_Leaf_v1"
                 || canonical_nut_xx_keyset_leaf(k)
             )
 
+            bonded_leaf[i] = SHA256(
+                "Cashu_Bonded_PoL_Keyset_v1"
+                || pol_leaf[i]
+                || U64BE(k.redemption_end_epoch)
+            )
+
     ASSERT(total == epoch.total_outstanding_balance)
-    ASSERT(MERKLEIZE_DUPLICATE_LAST(leaf[]) == epoch.epoch_keysets_root)
+    ASSERT(
+        MERKLEIZE_POL_KEYSETS(pol_leaf[])
+        == epoch.pol_keysets_root
+    )
+    ASSERT(
+        MERKLEIZE_BONDED_KEYSETS(bonded_leaf[])
+        == epoch.bonded_keysets_root
+    )
     ASSERT(
         SHA256(
             "Cashu_PoL_Epoch_v1"
             || epoch.previous_global_digest
             || U64BE(epoch.epoch_index)
             || U16BE(len(keysets))
-            || epoch.epoch_keysets_root
+            || epoch.pol_keysets_root
         ) == epoch.global_digest
     )
     ASSERT(HASH_EPOCH(epoch) == supplied_epoch_hash)
@@ -452,6 +476,11 @@ Script:
 ```text
 VERIFY_CURRENT_STATE(old)
 ASSERT(old.state_tag == ACTIVE)
+
+<MIN_EPOCH_BLOCKS>
+OP_CHECKSEQUENCEVERIFY
+OP_DROP
+
 VERIFY_EPOCH(old_epoch, old_keysets, old_signatures)
 VERIFY_EPOCH(proposed_epoch, proposed_keysets, proposed_signatures)
 
@@ -493,25 +522,51 @@ for i in 0 .. MAX_KEYSETS-1:               # statically unrolled
                 == old_keyset.deactivation_epoch
             )
             ASSERT(old_keyset.active || !new_keyset.active)
+            ASSERT(
+                new_keyset.redemption_end_epoch
+                == old_keyset.redemption_end_epoch
+            )
 
             if !old_keyset.active:
                 # Issuance is locked, but spent_tree remains appendable
-                # until final_expiry so outstanding ecash can be redeemed.
+                # until redemption_end_epoch so outstanding ecash can be redeemed.
                 ASSERT(
                     new_keyset.issued_tree
                     == old_keyset.issued_tree
                 )
+
+            if proposed_epoch.epoch_index
+               >= new_keyset.redemption_end_epoch:
+                ASSERT(
+                    new_keyset.issued_tree
+                    == old_keyset.issued_tree
+                )
+                ASSERT(
+                    new_keyset.spent_tree
+                    == old_keyset.spent_tree
+                )
         else:
             ASSERT(
-                new_keyset.deactivation_epoch == null
-                || new_keyset.deactivation_epoch
-                   > proposed_epoch.epoch_index
+                proposed_epoch.epoch_index
+                < new_keyset.deactivation_epoch
+            )
+            ASSERT(
+                new_keyset.deactivation_epoch
+                < new_keyset.redemption_end_epoch
             )
 
         if new_keyset.deactivation_epoch != null:
             if proposed_epoch.epoch_index
                >= new_keyset.deactivation_epoch:
                 ASSERT(!new_keyset.active)
+
+        if old.closing_epoch != null:
+            ASSERT(old_keyset exists)
+            ASSERT(!new_keyset.active)
+            ASSERT(
+                new_keyset.issued_tree
+                == old_keyset.issued_tree
+            )
 
 ASSERT(proposed_epoch.epoch_index == old_epoch.epoch_index + 1)
 ASSERT(proposed_epoch.previous_global_digest == old_epoch.global_digest)
@@ -529,6 +584,7 @@ ASSERT(
 
 new.state_tag = PENDING
 new.proposed_epoch_hash = HASH_EPOCH(proposed_epoch)
+new.closing_epoch = old.closing_epoch
 
 ASSERT(CHECKSIG(mint_transaction_signature, old.mint_pubkey))
 VERIFY_SUCCESSOR(old, new)
@@ -558,7 +614,7 @@ Anyone may supply this witness. No signature is required.
 
 ```text
 VERIFY_CURRENT_STATE(old)
-ASSERT(old.state_tag == PENDING || old.state_tag == WIND_DOWN)
+ASSERT(old.state_tag == PENDING || old.state_tag == WITHDRAWAL_DELAY)
 
 challenge_hash = SHA256(
     "Cashu_Bonded_PoL_Challenge_v1"
@@ -663,7 +719,7 @@ Script:
 
 ```text
 VERIFY_CURRENT_STATE(old)
-ASSERT(old.state_tag == PENDING || old.state_tag == WIND_DOWN)
+ASSERT(old.state_tag == PENDING || old.state_tag == WITHDRAWAL_DELAY)
 
 msg_a = SHA256(canonical_nut_xx_manifest_message(manifest_a))
 msg_b = SHA256(canonical_nut_xx_manifest_message(manifest_b))
@@ -684,7 +740,7 @@ PAY_FULL_BOND_TO_P2TR(challenger_xonly_pubkey)
 
 ```text
 VERIFY_CURRENT_STATE(old)
-ASSERT(old.state_tag == PENDING || old.state_tag == WIND_DOWN)
+ASSERT(old.state_tag == PENDING || old.state_tag == WITHDRAWAL_DELAY)
 ASSERT(epoch_1 and epoch_2 are included in authenticated bond history)
 ASSERT(epoch_1.index < epoch_2.index)
 
@@ -707,7 +763,7 @@ PAY_FULL_BOND_TO_P2TR(challenger_xonly_pubkey)
 
 ```text
 VERIFY_CURRENT_STATE(old)
-ASSERT(old.state_tag == PENDING || old.state_tag == WIND_DOWN)
+ASSERT(old.state_tag == PENDING || old.state_tag == WITHDRAWAL_DELAY)
 
 ASSERT(VERIFY_MANIFEST_SIGNATURE(manifest_a, old.mint_pubkey))
 ASSERT(manifest_a.keyset_id == baseline.keyset_id)
@@ -750,38 +806,62 @@ PAY_FULL_BOND_TO_P2TR(challenger_xonly_pubkey)
 
 For two-manifest variants, `manifest_b.keyset_id` MUST equal `manifest_a.keyset_id`. At least one non-violating lifecycle baseline for that keyset MUST be authenticated by bond history; the violating signed manifest need not have passed `publish_epoch`.
 
-### 7.9 `L8 begin_wind_down`
+### 7.9 `L8 begin_closing`
 
 ```text
 VERIFY_CURRENT_STATE(old)
 ASSERT(old.state_tag == ACTIVE)
-ASSERT(active_epoch.total_outstanding_balance == 0)
+ASSERT(old.closing_epoch == null)
 ASSERT(CHECKSIG(mint_transaction_signature, old.mint_pubkey))
 
-new.state_tag = WIND_DOWN
+new.state_tag = ACTIVE
+new.closing_epoch = old.active_epoch.epoch_index
+VERIFY_SUCCESSOR(old, new, allow_closing_init=true)
+```
+
+### 7.10 `L9 enter_withdrawal_delay`
+
+```text
+VERIFY_CURRENT_STATE(old)
+ASSERT(old.state_tag == ACTIVE)
+ASSERT(old.closing_epoch != null)
+ASSERT(CHECKSIG(mint_transaction_signature, old.mint_pubkey))
+
+for each keyset in active_epoch:
+    ASSERT(!keyset.active)
+    ASSERT(
+        active_epoch.epoch_index
+        >= keyset.redemption_end_epoch
+    )
+    ASSERT(keyset lifecycle declaration is unchanged since closing)
+    ASSERT(keyset issued and spent trees are frozen at redemption end)
+
+new.state_tag = WITHDRAWAL_DELAY
 new.mint_withdrawal_xonly_pubkey = witness.mint_withdrawal_xonly_pubkey
 
 VERIFY_SUCCESSOR(old, new)
 ```
 
-### 7.10 `L9 cancel_wind_down_with_challenge`
+Residual `outstanding_balance` is permitted and remains committed as expired liability.
 
-This leaf is the wind-down equivalent of `L2`. It verifies the leaf-challenge opening predicate and creates `CHALLENGED`. After a successful refutation, the state returns to `ACTIVE`; the mint must begin a new full wind-down period.
+### 7.11 `L10 cancel_withdrawal_delay_with_challenge`
 
-### 7.11 `L10 withdraw_after_wind_down`
+This leaf is the withdrawal-delay equivalent of `L2`. It verifies the leaf-challenge opening predicate and creates `CHALLENGED`. After a successful refutation, the state returns to closing `ACTIVE`; the mint must enter a new full withdrawal delay.
+
+### 7.12 `L11 withdraw_after_delay`
 
 ```text
 VERIFY_CURRENT_STATE(old)
-ASSERT(old.state_tag == WIND_DOWN)
+ASSERT(old.state_tag == WITHDRAWAL_DELAY)
 
-<WIND_DOWN_PERIOD>
+<WITHDRAWAL_DELAY_PERIOD>
 OP_CHECKSEQUENCEVERIFY
 OP_DROP
 
 PAY_FULL_BOND_TO_P2TR(old.mint_withdrawal_xonly_pubkey)
 ```
 
-No mint signature is required because the withdrawal key was committed when wind-down began and the complete challenge period has elapsed.
+No mint signature is required because the withdrawal key was committed when the delay began and the complete challenge period has elapsed.
 
 ---
 
@@ -811,10 +891,9 @@ These equalities follow from BIP-443 full residual-value preservation. All trans
 
 ## 9. Remaining Blocking Definitions
 
-This script profile is concrete about covenant transitions, but two dependencies must be completed before bytecode can be produced:
+This script profile is concrete about covenant transitions, but one dependency must be completed before bytecode can be produced:
 
-1. **Keyset expiry:** Base Cashu expiry uses time-oriented semantics. Bonded consensus needs an unambiguous covenant-verifiable rule or must require expired keysets to remain committed indefinitely.
-2. **64-bit opcode proposal:** The arithmetic operations in Section 2.2 need consensus encodings, resource limits, and numeric rules.
+1. **64-bit opcode proposal:** The arithmetic operations in Section 2.2 need consensus encodings, resource limits, and numeric rules.
 
 Until these are fixed, any claimed final Tapscript bytecode would hide protocol choices rather than implement this specification.
 
@@ -828,8 +907,9 @@ An executable prototype SHOULD first implement this reduced tree on a Bitcoin-li
 publish_epoch
 finalize_epoch
 slash_equivocation
-begin_wind_down
-withdraw_after_wind_down
+begin_closing
+enter_withdrawal_delay
+withdraw_after_delay
 ```
 
 This reduced tree exercises:
