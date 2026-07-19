@@ -52,7 +52,7 @@ Bonded PoL assumes a future Bitcoin covenant environment with semantics equivale
 8. **Timelocks:** A script can enforce relative block delays with `OP_CHECKSEQUENCEVERIFY`.
 9. **Bounded proof execution:** A script can verify inclusion and consistency proofs whose maximum lengths are fixed by this document.
 
-An implementation MAY realize these semantics using state-carrying covenants, transaction introspection, `OP_CAT`, arbitrary-message signature verification, BitVM-style optimistic computation, or another consensus-enforced construction.
+An implementation MAY realize these semantics using state-carrying covenants, transaction introspection, `OP_CAT`, and arbitrary-message signature verification.
 
 Template-only covenants are conforming only if their precommitted transaction graph implements every state transition and bound defined here. No trusted adjudicator or discretionary signer may decide whether a challenge succeeds.
 
