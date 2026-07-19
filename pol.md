@@ -90,24 +90,42 @@ To verify that MMR `M` extends MMR `N`, where `m > n`, use either:
 Each epoch, the mint constructs and signs a manifest:
 
 1. **Sort keysets:** Lowercase and lexicographically sort all unexpired hexadecimal `keyset_id` values, active or inactive.
-2. **Build commitment data:** It MUST start with the previous 32-byte `global_digest`, using 32 zero bytes for the first epoch. Append this tuple for each sorted keyset:
+2. **Hash keyset leaves:** For each sorted keyset, compute:
    ```
-   utf8(keyset_id)
-   || bytes_8(issued_mmr_size) || issued_mmr_root_hash || bytes_8(issued_mmr_root_sum)
-   || bytes_8(spent_mmr_size)  || spent_mmr_root_hash  || bytes_8(spent_mmr_root_sum)
+   SHA256(
+     utf8("Cashu_PoL_Keyset_Leaf_v1")
+     || bytes_2(len(utf8(keyset_id))) || utf8(keyset_id)
+     || bytes_8(issued_mmr_size) || issued_mmr_root_hash || bytes_8(issued_mmr_root_sum)
+     || bytes_8(spent_mmr_size)  || spent_mmr_root_hash  || bytes_8(spent_mmr_root_sum)
+   )
    ```
-   Integer encodings are big-endian; hashes are 32-byte binary values.
-3. **Global digest:** Compute `SHA256(commitment_data)`.
-4. **OTS receipt:** Submit the digest to OTS calendars. The mint MUST upgrade the pending receipt after Bitcoin confirmation and publish the offline-verifiable receipt with the manifest.
-5. **Manifest message:** Construct this colon-separated UTF-8 string:
+   Length and integer encodings are big-endian; hashes are 32-byte binary values.
+3. **Build the keyset Merkle root:** Build a binary Merkle tree over the ordered leaf hashes. Compute each parent as:
+   ```
+   SHA256(utf8("Cashu_PoL_Keyset_Node_v1") || left_hash || right_hash)
+   ```
+   If a level contains an odd number of hashes, duplicate its final hash before computing the next level. A single leaf is its own root. The empty keyset root is `SHA256(utf8("Cashu_PoL_Keyset_Empty_v1"))`.
+4. **Global digest:** Compute:
+   ```
+   SHA256(
+     utf8("Cashu_PoL_Epoch_v1")
+     || previous_global_digest
+     || bytes_8(epoch_index)
+     || bytes_2(keyset_count)
+     || keyset_merkle_root
+   )
+   ```
+   `previous_global_digest` is 32 zero bytes for the first epoch. `keyset_count` MUST fit in uint16.
+5. **OTS receipt:** Submit the digest to OTS calendars. The mint MUST upgrade the pending receipt after Bitcoin confirmation and publish the offline-verifiable receipt with the manifest.
+6. **Manifest message:** Construct this colon-separated UTF-8 string:
    `"{keyset_id}:{epoch_index}:{timestamp}:{previous_global_digest}:{issued_mmr_size}:{issued_mmr_root_hash}:{issued_mmr_root_sum}:{spent_mmr_size}:{spent_mmr_root_hash}:{spent_mmr_root_sum}:{outstanding_balance}"`
    where:
    - `keyset_id` MUST be a lowercase hexadecimal string.
    - `timestamp` MUST use RFC 3339 UTC with second precision, no fraction, and uppercase `Z` (for example, `2026-06-11T12:00:00Z`).
    - `previous_global_digest` MUST be serialized as a 64-character lowercase hexadecimal string.
    - `issued_mmr_root_hash` and `spent_mmr_root_hash` MUST be serialized as 64-character lowercase hexadecimal strings.
-6. **Sign:** BIP-340 Schnorr-sign `SHA256(message)` with the mint's master NUT-06 key. The message excludes `ots_receipt`, allowing receipt upgrades without changing the signature.
-7. **Publish:** Publish the manifests, signatures, OTS receipts, `global_digest`, and ordered `epoch_keysets` used for `commitment_data`. Each entry MUST contain `keyset_id`, `issued_mmr_size`, `issued_mmr_root_hash`, `issued_mmr_root_sum`, `spent_mmr_size`, `spent_mmr_root_hash`, and `spent_mmr_root_sum`. The array MUST contain every unexpired keyset exactly once and match the signed manifests.
+7. **Sign:** BIP-340 Schnorr-sign `SHA256(message)` with the mint's master NUT-06 key. The message excludes `ots_receipt`, allowing receipt upgrades without changing the signature.
+8. **Publish:** Publish the manifests, signatures, OTS receipts, `global_digest`, `keyset_merkle_root`, and the ordered `epoch_keysets` used to build the Merkle tree. Each entry MUST contain `keyset_id`, `issued_mmr_size`, `issued_mmr_root_hash`, `issued_mmr_root_sum`, `spent_mmr_size`, `spent_mmr_root_hash`, and `spent_mmr_root_sum`. The array MUST contain every unexpired keyset exactly once and match the signed manifests.
 
 ---
 
@@ -146,7 +164,8 @@ The verifier MUST derive, not trust, `leaf_index`. Derive peak heights from the 
   "spent_mmr_root_hash": "4d1a7d72e8f498b52f751c69e1579f11ebba3f497c6a92fbb784eef0bd47fd44",
   "spent_mmr_root_sum": 450000,
   "outstanding_balance": 550000,
-  "global_digest": "7c6d52b91aa6a155f9e24c8e05c38c5bde6635a56d8c42d8296553f9f879c732",
+  "global_digest": "943dc551ab13a14a62ff519ad9a41cba00b1b6aa307f63661aa94fec8d27c4cf",
+  "keyset_merkle_root": "e1b392d375f5edf0bb6d8502b93a0a06b0489dd6a2d4752015e6e6d7fe4ad0c7",
   "epoch_keysets": [
     {
       "keyset_id": "009a6154b71113b7",
@@ -269,7 +288,7 @@ Verify `mint_signature` against the mint's master `signing_pubkey` from `/v1/inf
 
 ### Step 2: Validate OpenTimestamps Attestation
 
-1. Rebuild `commitment_data`; require its SHA256 to equal `global_digest` and every `epoch_keysets` entry to match its signed manifest.
+1. Rebuild every keyset leaf and the ordered Merkle tree; require its root to equal `keyset_merkle_root`. Rebuild `global_digest` from the previous digest, epoch index, keyset count, and Merkle root. Require every `epoch_keysets` entry to match its signed manifest.
 2. Deserialize `ots_receipt` and require its starting digest to equal `global_digest`. The pending-receipt timeout MUST NOT exceed 24 hours from the manifest `timestamp`; exceeding it MUST be an audit failure. The pending tag is `0x83dfe30d2ef90c8e`.
 3. Within that window, a verifier can request an upgrade from an OTS calendar. The mint remains responsible for publishing an upgraded, offline-verifiable receipt.
 4. With a conforming OTS implementation, execute every operation through the Bitcoin block-header attestation (`0x0588960d73d71901`). Using an independently validated node, require the result to match the block's committed Merkle root. An attestation tag and block height alone are insufficient.

@@ -188,6 +188,38 @@ This test vector uses three leaf nodes, representing a sum-MMR of size 3.
 
 The mint periodically aggregates the roots for all keysets, creates a deterministic global digest, obtains an OpenTimestamps (OTS) receipt, and signs an epoch manifest.
 
+### Keyset Merkle Commitment
+
+For the single keyset in this vector, the canonical keyset leaf preimage is:
+
+```text
+utf8("Cashu_PoL_Keyset_Leaf_v1")
+|| 0010
+|| utf8("009a6154b71113b7")
+|| 0000000000000003
+|| 2518b42edfff24ecc53c8897d1860783d1d26c41d61c378fe612cddeed877040
+|| 0000000000000352
+|| 0000000000000000
+|| e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+|| 0000000000000000
+```
+
+- **Keyset Leaf Hash:** `e9232d22b0c4c6c4561b7c47b5c953dd5563322de1777afd751ad87fb989d27c`
+- **Keyset Merkle Root:** `e9232d22b0c4c6c4561b7c47b5c953dd5563322de1777afd751ad87fb989d27c`
+- **Empty Keyset Merkle Root:** `66b7de363bb498c9cf01f2997ec7f658b8734dd8bb5e959ea240c9ea9a951180`
+
+The global digest preimage is:
+
+```text
+utf8("Cashu_PoL_Epoch_v1")
+|| 0000000000000000000000000000000000000000000000000000000000000000
+|| 0000000000000001
+|| 0001
+|| e9232d22b0c4c6c4561b7c47b5c953dd5563322de1777afd751ad87fb989d27c
+```
+
+- **Global Digest:** `347be6a99f618dd46284dc52317cc71c79bc1ad614a8c26b5fa879d0b195c7d2`
+
 ### Keys and Metadata
 
 - **Master Private Key (`seckey`):** `371b3102088ee8fa21744920b996fa717417631271730ad34269646465998245`
