@@ -47,7 +47,7 @@ Bonded PoL assumes a future Bitcoin covenant environment with semantics equivale
 1. **Recursive state:** A script can require a successor output to execute the same program while committing to dynamically computed state.
 2. **Input state access:** A script can read or verify the state committed by the current bond input.
 3. **Output introspection:** A script can constrain successor output scripts, committed state, values, and positions.
-4. **Value preservation:** A script can require the bond value, less an explicitly bounded fee, to be preserved or paid to a specified output.
+4. **Value preservation:** A script can require the complete bond value to be preserved or paid to a specified output; external inputs pay fees.
 5. **Arbitrary-message signatures:** A script can verify the BIP-340 signatures used by manifests and PoL receipts rather than only transaction signatures.
 6. **Hash composition:** A script can construct and SHA-256 hash the byte strings required by NUT-388.
 7. **Bounded arithmetic:** A script can safely add, subtract, compare, and serialize unsigned 64-bit sums.
@@ -101,6 +101,8 @@ Each deployment MUST commit to the following parameters in `program_hash`:
 | `WITHDRAWAL_DELAY_PERIOD` | uint32 | Blocks between completed closing and bond withdrawal           |
 | `MAX_KEYSETS`             | uint16 | Maximum keysets committed by one epoch                         |
 | `MAX_AMOUNT_KEYS`         | uint16 | Maximum denomination keys committed by one keyset              |
+| `MAX_UNIT_BYTES`          | uint16 | Maximum UTF-8 byte length of the immutable bond unit           |
+| `MAX_TRANSACTION_ITEMS`   | uint16 | Maximum inputs or outputs accepted by a covenant transition    |
 | `MAX_MMR_HEIGHT`          | uint8  | Maximum accepted inclusion or consistency proof height         |
 | `MAX_CHALLENGE_BYTES`     | uint32 | Maximum canonical challenge size                               |
 | `MAX_RESPONSE_BYTES`      | uint32 | Maximum canonical response size                                |
@@ -108,6 +110,8 @@ Each deployment MUST commit to the following parameters in `program_hash`:
 | `CONTRACT_VERSION`        | uint16 | Bonded PoL program version                                     |
 
 `MAX_MMR_HEIGHT` MUST NOT exceed 63. Therefore a single committed sum-MMR cannot contain more than `2^63 - 1` leaves. `MAX_AMOUNT_KEY_HEIGHT` is the compile-time constant `ceil(log2(MAX_AMOUNT_KEYS))` and bounds every amount-key proof.
+
+Version 1 requires `MIN_CHALLENGE_BOND = 0`. A future version may define an atomic challenger-bond contract; merely requiring an unrelated extra input is not sufficient.
 
 All delays are relative block counts enforced with input `nSequence` and `OP_CHECKSEQUENCEVERIFY`. Timestamps, median-time-past, wall-clock time, and PoL epoch timestamps MUST NOT determine challenge or response expiry.
 
@@ -138,21 +142,138 @@ All domain separators in this document are literal UTF-8 bytes without a termina
 program_hash = SHA256(
     "Cashu_Bonded_PoL_Program_v1"
     || contract_version_u16
-    || network
+    || bytes_2(len(network)) || network
+    || bytes_2(len(unit)) || unit
     || challenge_period_u32
     || response_period_u32
     || min_epoch_blocks_u32
     || withdrawal_delay_period_u32
     || max_keysets_u16
+    || max_amount_keys_u16
+    || max_unit_bytes_u16
+    || max_transaction_items_u16
     || max_mmr_height_u8
     || max_challenge_bytes_u32
     || max_response_bytes_u32
     || min_challenge_bond_u64
+    || bytes_1(receipt_signature_scheme)
+    || opcode_profile_hash
     || verifier_program_hash
 )
 ```
 
-`verifier_program_hash` commits to the exact consensus-executed implementation of all predicates in this document.
+`opcode_profile_hash` commits to the activated opcode numbers and exact consensus semantics used by the compiler. `verifier_program_hash` commits to the compiled Tapleaf templates with the `PROGRAM_HASH` literal replaced by a distinguished 32-byte placeholder, plus their leaf versions and canonical tree layout. The final scripts instantiate that placeholder with `program_hash`; this normalization avoids a circular hash definition. Both hashes are 32 bytes. Version 1 fixes `receipt_signature_scheme = 0` and `MIN_CHALLENGE_BOND = 0`. Implementations MUST reproduce this preimage byte-for-byte and reject a state whose `program_hash` differs.
+
+### 5.2 Canonical Proof and Witness Types
+
+All lists use a committed logical length plus fixed deployment-sized slots. Every disabled slot MUST be the empty byte string.
+
+```text
+MerkleOpening {
+    leaf_index: uint16,
+    leaf_count: uint16,
+    path_len: uint8,
+    siblings[MAX_KEYSET_HEIGHT]: bytes32
+}
+
+HistoryOpening {
+    leaf_index: uint64,
+    peak_index: uint8,
+    path_len: uint8,
+    siblings[MAX_HISTORY_HEIGHT]: {
+        hash: bytes32,
+        is_left: bool
+    },
+    peaks[MAX_HISTORY_HEIGHT + 1]: {
+        height: uint8,
+        hash: bytes32
+    }
+}
+
+EpochReference {
+    kind: uint8, // 0 = active, 1 = proposed, 2 = history
+    history_proof: optional<HistoryOpening>
+}
+
+AmountKeyEntry {
+    amount: uint64,
+    pubkey_compressed: bytes33
+}
+
+EpochKeysetSlot {
+    commitment: KeysetCommitment,
+    timestamp: bytes20
+}
+
+SignedManifest {
+    epoch: EpochCommitment,
+    keyset: KeysetCommitment,
+    timestamp: bytes20,
+    signature: bytes64
+}
+```
+
+In array pseudocode, an `EpochKeysetSlot` exposes its `commitment` fields directly (for example `slot.unit`) while `slot.timestamp` remains witness metadata excluded from the keyset leaf.
+
+`MAX_KEYSET_HEIGHT = ceil(log2(MAX_KEYSETS))`, `MAX_AMOUNT_KEY_HEIGHT = ceil(log2(MAX_AMOUNT_KEYS))`, and `MAX_HISTORY_HEIGHT = MAX_MMR_HEIGHT`. An active or proposed `EpochReference` MUST have no history proof. A historical reference MUST pass the history-MMR inclusion algorithm and cannot be supplied with a caller-chosen root.
+
+### 5.3 Leaf Witness Schemas
+
+Every leaf begins with the complete canonical old state and ends with its script and control block. Between them, the logical witnesses are:
+
+```text
+L0  = old_epoch, old_keysets[MAX_KEYSETS], old_signatures[MAX_KEYSETS],
+      proposed_epoch, proposed_keysets[MAX_KEYSETS],
+      proposed_signatures[MAX_KEYSETS],
+      new_amount_key_sets[MAX_KEYSETS][MAX_AMOUNT_KEYS],
+      issued_consistency_proofs[MAX_KEYSETS],
+      spent_consistency_proofs[MAX_KEYSETS], history_append_proof,
+      mint_transaction_signature
+
+L1  = new_active_state
+
+L2  = target_epoch, target_keyset, target_keyset_opening,
+      leaf_challenge, amount_key_proof, challenger_xonly_pubkey,
+      challenger_transaction_signature, new_challenged_state
+
+L3  = leaf_challenge, target_epoch, target_keyset,
+      target_keyset_opening, inclusion_response, new_active_state
+
+L4  = timeout payout transaction fields
+
+L5  = manifest_a, manifest_b, committed_selector,
+      committed_epoch_reference, committed_keyset_opening,
+      challenger_xonly_pubkey, challenger_transaction_signature
+
+L6  = epoch_1, epoch_1_reference, keyset_1, keyset_1_opening,
+      epoch_2, epoch_2_reference, keyset_2, keyset_2_opening,
+      tree_kind, inclusion_proof_1, inclusion_proof_2,
+      challenger_xonly_pubkey, challenger_transaction_signature
+
+L7  = baseline_epoch, baseline_reference, baseline_keyset,
+      baseline_keyset_opening, violation_kind, manifest_a,
+      optional_manifest_b, challenger_xonly_pubkey,
+      challenger_transaction_signature
+
+L8  = active_epoch, mint_transaction_signature, new_active_state
+
+L9  = active_epoch, active_keysets[MAX_KEYSETS],
+      active_signatures[MAX_KEYSETS], mint_withdrawal_xonly_pubkey,
+      mint_transaction_signature, new_withdrawal_delay_state
+
+L10 = target_epoch, target_keyset, target_keyset_opening,
+      leaf_challenge, amount_key_proof, challenger_xonly_pubkey,
+      challenger_transaction_signature, new_challenged_state
+
+L11 = withdrawal payout transaction fields
+
+L12 = initial_epoch, initial_keysets[MAX_KEYSETS],
+      initial_signatures[MAX_KEYSETS],
+      initial_amount_key_sets[MAX_KEYSETS][MAX_AMOUNT_KEYS],
+      mint_transaction_signature, new_active_state
+```
+
+Each logical list has an explicit length. Signatures and proofs at index `i` apply only to keyset slot `i`. Optional values use the canonical presence byte. A leaf MUST reject extra data in disabled slots, incorrect list lengths, or a witness exceeding its committed byte bound.
 
 ---
 
@@ -166,6 +287,7 @@ The state tag is one of:
 | `1`   | `PENDING`          |
 | `2`   | `CHALLENGED`       |
 | `3`   | `WITHDRAWAL_DELAY` |
+| `4`   | `UNINITIALIZED`    |
 
 There is no recursive `SLASHED` state. Slashing consumes the bond and pays it to the committed slash destination.
 
@@ -180,6 +302,7 @@ BondCommon {
     bond_id: bytes32,
     genesis_nonce: bytes32,
     mint_pubkey: bytes32,
+    unit: bytes,
     state_tag: uint8,
     state_sequence: uint64,
     active_epoch: EpochCommitment,
@@ -191,9 +314,20 @@ BondCommon {
 
 `mint_pubkey` is the x-only NUT-06 master public key used to verify PoL manifests.
 
+`unit` is a non-empty canonical lowercase UTF-8 NUT-02 unit identifier no longer than `MAX_UNIT_BYTES`. It is immutable for the bond's lifetime. A mint creates a separate bond for every unit.
+
 `state_sequence` MUST increase by exactly one in every recursive transition. It prevents two semantically different successor states from claiming the same covenant sequence.
 
-`epoch_history_mmr_root` commits to every previously finalized `EpochCommitment` hash in ascending epoch order. Publication appends the prior active epoch before proposing its successor. Challenges that reference an older epoch MUST prove it against this history root. The history MMR uses ordinary SHA-256 nodes without sums and the same post-order peak construction used by NUT-388.
+`epoch_history_mmr_root` commits to every previously finalized `EpochCommitment` hash in ascending epoch order. Publication appends the prior active epoch before proposing its successor. Challenges that reference an older epoch MUST prove it against this history root. The history MMR is sum-free and uses:
+
+```text
+empty = SHA256("Cashu_Bonded_PoL_History_Empty_v1")
+leaf  = SHA256("Cashu_Bonded_PoL_History_Leaf_v1" || epoch_hash)
+node  = SHA256("Cashu_Bonded_PoL_History_Node_v1" || left || right)
+bag   = SHA256("Cashu_Bonded_PoL_History_Bag_v1" || left_peak || bagged_right)
+```
+
+Peaks use the same descending-height and right-to-left bagging order as NUT-388. Historical references MUST execute the bounded inclusion algorithm in the companion scripts.
 
 ### 6.2 Epoch Commitment
 
@@ -204,16 +338,21 @@ EpochCommitment {
     previous_global_digest: bytes32,
     pol_keysets_root: bytes32,
     bonded_keysets_root: bytes32,
-    epoch_keysets_count: uint16,
+    pol_keysets_count: uint16,
+    bonded_keysets_count: uint16,
     total_outstanding_balance: uint64
 }
 ```
 
-`pol_keysets_root` is the NUT-388 `keyset_merkle_root`. `bonded_keysets_root` commits to the same sorted keysets plus their Bonded-PoL-only expiry schedule. Its leaves encode:
+`pol_keysets_root` is the complete all-unit NUT-388 `keyset_merkle_root`. `bonded_keysets_root` filters that authenticated ordered list to entries whose signed `unit` equals `BondCommon.unit`, then commits to those keysets plus their Bonded-PoL-only metadata and expiry schedule. Its leaves encode:
 
 ```text
 KeysetCommitment {
     keyset_id: bytes,
+    unit: bytes,
+    input_fee_ppk: uint64,
+    final_expiry: optional<uint64>,
+    receipt_signature_scheme: uint8,
     issued_mmr_size: uint64,
     issued_mmr_root_hash: bytes32,
     issued_mmr_root_sum: uint64,
@@ -234,22 +373,28 @@ The bonded keyset leaf hash wraps the base NUT-388 leaf hash:
 SHA256(
     "Cashu_Bonded_PoL_Keyset_v1"
     || nut_388_keyset_leaf_hash
+    || bytes_8(input_fee_ppk)
+    || bytes_1(has_final_expiry) [|| bytes_8(final_expiry)]
+    || bytes_1(receipt_signature_scheme)
     || amount_keys_root
     || bytes_8(redemption_end_epoch)
 )
 ```
 
-`amount_keys_root` commits to the x-only BIP-340 public key authorized to sign PoL receipts for every denomination in the keyset. Construct its leaves in strictly increasing numeric `amount` order:
+Version 1 defines `receipt_signature_scheme = 0` as BIP-340 and rejects every other value. This intentionally excludes BLS receipt keys.
+
+`amount_keys_root` commits to the compressed secp256k1 public key authorized to sign PoL receipts for every denomination in the keyset. Construct its leaves in strictly increasing numeric `amount` order:
 
 ```text
 SHA256(
     "Cashu_Bonded_PoL_Amount_Key_v1"
+    || bytes_2(len(unit)) || unit
     || bytes_8(amount)
-    || amount_pubkey_xonly
+    || amount_pubkey_compressed
 )
 ```
 
-`amount_pubkey_xonly` is exactly 32 bytes. Amount-key Merkle parents are `SHA256("Cashu_Bonded_PoL_Amount_Key_Node_v1" || left || right)`. Odd final nodes are duplicated at every level. A keyset MUST commit at least one and at most `MAX_AMOUNT_KEYS` unique denominations. `amount_keys_root` is fixed at keyset birth and MUST remain unchanged in every later epoch.
+`amount_pubkey_compressed` is exactly 33 bytes and starts with `0x02` or `0x03`; BIP-340 verification uses its final 32 bytes as the x-only key. Amount-key Merkle parents are `SHA256("Cashu_Bonded_PoL_Amount_Key_Node_v1" || left || right)`. Odd final nodes are duplicated at every level. A keyset MUST commit at least one and at most `MAX_AMOUNT_KEYS` unique denominations. `unit`, metadata, signature scheme, and `amount_keys_root` are fixed at keyset birth and MUST remain unchanged in every later epoch.
 
 Merkle parents are:
 
@@ -257,16 +402,16 @@ Merkle parents are:
 SHA256("Cashu_Bonded_PoL_Keyset_Node_v1" || left || right)
 ```
 
-When a level has an odd node count, its final node is duplicated. An empty list is forbidden. `epoch_keysets_count` MUST be between 1 and `MAX_KEYSETS`, inclusive.
+When a level has an odd node count, its final node is duplicated. `pol_keysets_count` covers the complete NUT-388 epoch across all units and MUST be between 1 and `MAX_KEYSETS`. `bonded_keysets_count` counts exactly those entries whose signed `unit` equals the bond unit and MUST also be nonzero. `bonded_keysets_root` contains that complete same-unit subsequence in global order. Other-unit keysets remain authenticated by `pol_keysets_root` but do not contribute to bonded liabilities or lifecycle enforcement.
 
 The covenant MUST verify that:
 
 ```text
 total_outstanding_balance
-    == sum(keyset.outstanding_balance for every committed keyset)
+    == sum(keyset.outstanding_balance for every same-unit bonded keyset)
 ```
 
-and for each keyset:
+and for each keyset in the full NUT-388 epoch:
 
 ```text
 keyset.outstanding_balance
@@ -290,18 +435,18 @@ ChallengedState {
     disputed_epoch: EpochCommitment,
     challenge_type: uint8,
     challenge_hash: bytes32,
-    challenger_script_pubkey: bytes
+    challenger_xonly_pubkey: bytes32
 }
 ```
 
-The `challenger_script_pubkey` MUST be a standard script under the consensus and relay policy active when the challenge transaction is confirmed. It MUST NOT be changeable by a response or slashing transaction.
+The terminal payout is the key-path P2TR output `OP_1 <challenger_xonly_pubkey>`. The key MUST NOT be changeable by a response or slashing transaction.
 
 ### 6.5 Withdrawal-Delay State
 
 ```text
 WithdrawalDelayState {
     common: BondCommon,
-    mint_withdrawal_script_pubkey: bytes
+    mint_withdrawal_xonly_pubkey: bytes32
 }
 ```
 
@@ -316,9 +461,10 @@ Every recursive transition MUST enforce:
 3. The successor executes the same `program_hash` and commits to the required next state.
 4. The successor value equals `input_bond_value`.
 5. No output other than the successor may receive value from the bond input, except an explicitly constrained fee mechanism.
-6. `bond_id`, `genesis_nonce`, `mint_pubkey`, `contract_version`, and `program_hash` are unchanged.
+6. `bond_id`, `genesis_nonce`, `mint_pubkey`, `unit`, `contract_version`, and `program_hash` are unchanged.
 7. `state_sequence` increases by exactly one.
 8. The covenant has no unilateral mint key path that bypasses these transitions.
+9. Every common field not named as mutable by the selected transition is byte-for-byte unchanged. `PUBLISH` alone may append exactly one history leaf; `FINALIZE` and `REFUTE` alone may replace `active_epoch`; `BEGIN_CLOSING` alone may initialize `closing_epoch`.
 
 External inputs MAY fund transaction fees. Implementations SHOULD use an exogenous fee input or fee-anchor output so repeated state transitions do not materially reduce the bond.
 
@@ -328,11 +474,14 @@ External inputs MAY fund transaction fees. Implementations SHOULD use an exogeno
 
 ### 8.1 Deposit: `CREATE_BOND`
 
-The initial deposit creates an `ACTIVE` bond with:
+Because an output script does not execute when the output is created, the funding transaction MUST create an `UNINITIALIZED` bond with:
 
 ```text
 state_sequence = 0
-active_epoch = the latest finalized NUT-388 epoch
+active_epoch_hash = 32 zero bytes
+closing_epoch = null
+epoch_history_mmr_root = SHA256("Cashu_Bonded_PoL_History_Empty_v1")
+epoch_history_mmr_size = 0
 bond_id = SHA256(
     "Cashu_Bonded_PoL_Bond_Id_v1"
     || mint_pubkey
@@ -340,7 +489,9 @@ bond_id = SHA256(
 )
 ```
 
-The initial epoch MUST pass the manifest, keyset-root, sum, and signature checks defined in Sections 5 and 6. A zero-history bootstrap epoch MAY use 32 zero bytes for both global digest fields and zero-sized MMRs.
+`INITIALIZE_BOND` is the only leaf available to `UNINITIALIZED`. It verifies the mint transaction signature, immutable unit, complete initial epoch, every manifest signature, every bonded keyset leaf, and every full amount-key list before producing `ACTIVE` with `state_sequence = 1`. The history remains canonically empty; the first later publication appends the initial active epoch. No wallet may recognize an uninitialized output as a live bond.
+
+The initial NUT-388 epoch need not contain empty liability MMRs. Existing keysets are treated as born into the bond at that epoch, and their amount-key roots and lifecycle declarations become immutable at initialization.
 
 The mint MUST publish the confirmed `bond_id`, bond value, `program_hash`, and full decoded state through `/v1/info`.
 
@@ -371,11 +522,12 @@ new.spent_mmr_size >= old.spent_mmr_size
 For every keyset, the transition MUST additionally enforce:
 
 1. A newly appearing keyset has `deactivation_epoch > proposed_epoch.epoch_index`.
-2. An existing keyset's `deactivation_epoch` is unchanged.
-3. An existing keyset's `amount_keys_root` is unchanged. A newly appearing keyset supplies its complete, strictly amount-sorted public-key list so the covenant can reconstruct and verify the committed root.
-4. `active` cannot change from false to true.
-5. If the old keyset is inactive, the new issued MMR is exactly equal to the old issued MMR.
-6. If `proposed_epoch.epoch_index >= deactivation_epoch`, the new keyset is inactive.
+2. Every keyset has `unit == bond.unit` and `receipt_signature_scheme == 0`.
+3. An existing keyset's `unit`, `input_fee_ppk`, `final_expiry`, `receipt_signature_scheme`, `deactivation_epoch`, and `amount_keys_root` are unchanged.
+4. A newly appearing keyset supplies its complete, strictly amount-sorted compressed public-key list so the covenant can reconstruct and verify the committed root.
+5. `active` cannot change from false to true.
+6. If the old keyset is inactive, the new issued MMR is exactly equal to the old issued MMR.
+7. If `proposed_epoch.epoch_index >= deactivation_epoch`, the new keyset is inactive.
 
 A bonded keyset inherits the required base-PoL `deactivation_epoch` and MUST commit at birth to:
 
@@ -383,7 +535,7 @@ A bonded keyset inherits the required base-PoL `deactivation_epoch` and MUST com
 birth_epoch < deactivation_epoch < redemption_end_epoch
 ```
 
-`redemption_end_epoch` is immutable. The mint MUST accept redemption through the epoch immediately preceding it. In every epoch at or after `redemption_end_epoch`, both the issued and spent MMRs MUST equal their state at `redemption_end_epoch`; any residual outstanding balance is an expired liability and does not prevent bond withdrawal.
+`redemption_end_epoch` is immutable. The mint MUST accept redemption through the epoch immediately preceding it. In every epoch at or after `redemption_end_epoch`, both the issued and spent MMRs MUST equal their state at `redemption_end_epoch`; any residual outstanding balance is an expired liability and does not prevent bond withdrawal. `final_expiry` is committed NUT-02 metadata but is not interpreted by Bitcoin Script; wallets MUST reject a bonded lifecycle whose epoch-based redemption window is inconsistent with their policy for the advertised wall-clock expiry.
 
 If `closing_epoch` is set, the proposed epoch MUST contain exactly the same keyset IDs as the active epoch, every keyset MUST be inactive, and no issued MMR may change. Spent MMRs continue through each keyset's redemption window.
 
@@ -414,9 +566,7 @@ SHA256("Cashu_Bonded_PoL_Challenge_v1" || canonical(challenge))
     == challenge_hash
 ```
 
-If `MIN_CHALLENGE_BOND > 0`, the transaction MUST include a separate challenger-controlled input of at least that value and lock it under the challenge-resolution rules. The challenge bond is not part of the PoL bond.
-
-The slash destination is committed at this transition. Copying a later challenge witness cannot redirect the payout.
+The challenger MUST provide a BIP-342 transaction signature under the x-only payout key. The signature proves control of that key and commits to the `CHALLENGED` successor output. It prevents mutation of that exact transaction but does not stop an observer from constructing a distinct valid transaction from copied public evidence and a different key; confirmation order implements the intentional first-challenger rule.
 
 ### 8.5 Refute: `CHALLENGED_TO_ACTIVE`
 
@@ -436,7 +586,7 @@ An invalid response cannot spend the challenged output.
 A successful slash consumes the PoL bond without a recursive successor and creates exactly one bond-funded payout:
 
 ```text
-slash_output.script_pubkey == challenger_script_pubkey
+slash_output.script_pubkey == P2TR(challenger_xonly_pubkey)
 slash_output.value == input_bond_value
 ```
 
@@ -471,7 +621,7 @@ The covenant MUST verify that both MMRs are frozen for every keyset whose redemp
 
 ### 8.9 Withdraw: `WITHDRAWAL_DELAY_TO_MINT`
 
-The bond may be paid to `mint_withdrawal_script_pubkey` after the withdrawal-delay output has aged by at least `WITHDRAWAL_DELAY_PERIOD` blocks. The withdrawal input MUST set `nSequence >= WITHDRAWAL_DELAY_PERIOD`, and the withdrawal leaf MUST enforce `<WITHDRAWAL_DELAY_PERIOD> OP_CHECKSEQUENCEVERIFY`.
+The bond may be paid to `P2TR(mint_withdrawal_xonly_pubkey)` after the withdrawal-delay output has aged by at least `WITHDRAWAL_DELAY_PERIOD` blocks. The withdrawal input MUST set `nSequence >= WITHDRAWAL_DELAY_PERIOD`, and the withdrawal leaf MUST enforce `<WITHDRAWAL_DELAY_PERIOD> OP_CHECKSEQUENCEVERIFY`.
 
 A conforming implementation MUST permit challenges against the final active epoch throughout `WITHDRAWAL_DELAY_PERIOD`. A challenge confirmed during this delay replaces the state with `CHALLENGED` and cancels withdrawal unless the challenge is refuted. After refutation, the mint must enter a new full withdrawal delay.
 
@@ -502,7 +652,7 @@ LeafChallenge {
     target_epoch: uint64,
     receipt_target_epoch: uint64,
     receipt_signature: bytes,
-    amount_pubkey_xonly: bytes32,
+    amount_pubkey_compressed: bytes33,
     leaf_type: uint8,             // 0 = issued, 1 = spent
     item: bytes33,
     value: uint64
@@ -578,7 +728,7 @@ The covenant MUST:
 1. Verify every supplied manifest under `mint_pubkey`.
 2. Prove the baseline keyset commitment against authenticated bond history.
 3. Require all manifests to identify the same keyset.
-4. Evaluate exactly one of `reactivation`, `issuance_after_lock`, `deactivation_overrun`, or `declaration_drift` as defined by NUT-388.
+4. Evaluate exactly one of `reactivation`, `issuance_after_lock`, `deactivation_overrun`, or `declaration_drift` as defined by NUT-388, including unit drift.
 
 The violating manifest need not have entered a bonded epoch. Signing a contradictory lifecycle statement for a keyset governed by the bond is sufficient. If the selected predicate succeeds, the challenge transaction MAY slash atomically.
 
@@ -605,26 +755,31 @@ A bonded mint MUST add the following setting to `GET /v1/info`:
 ```json
 {
   "nuts": {
-    "XX-B": {
+    "388-B": {
       "supported": true,
-      "network": "mainnet",
-      "bond_outpoint": "<txid>:<vout>",
-      "bond_value": 100000000,
-      "program_hash": "<32-byte-lowercase-hex>",
-      "contract_version": 1,
-      "state": "ACTIVE",
-      "state_sequence": 42,
-      "active_epoch": 12,
-      "challenge_period": 144,
-      "response_period": 144,
-      "min_epoch_blocks": 6,
-      "withdrawal_delay_period": 2016
+      "bonds": [
+        {
+          "network": "mainnet",
+          "unit": "sat",
+          "bond_outpoint": "<txid>:<vout>",
+          "bond_value": 100000000,
+          "program_hash": "<32-byte-lowercase-hex>",
+          "contract_version": 1,
+          "state": "ACTIVE",
+          "state_sequence": 42,
+          "active_epoch": 12,
+          "challenge_period": 144,
+          "response_period": 144,
+          "min_epoch_blocks": 6,
+          "withdrawal_delay_period": 2016
+        }
+      ]
     }
   }
 }
 ```
 
-Clients MUST verify these values against the confirmed bond output. The HTTP response is discovery metadata, not an authority.
+Each array entry represents exactly one immutable unit. Clients MUST verify these values against the confirmed bond output. The HTTP response is discovery metadata, not an authority.
 
 The mint SHOULD provide:
 
@@ -666,9 +821,9 @@ The protocol requires at least one economically motivated watcher to detect and 
 
 ### 13.1 First-Challenger Payout
 
-Version 1 awards the full bond to the first confirmed successful challenger. This creates intentional competition and may cause witness copying, fee races, private relay use, and miner extractable value.
+Version 1 awards the full bond to the first confirmed successful challenger. This creates intentional competition, fee races, private relay use, and miner extractable value.
 
-Committing `challenger_script_pubkey` when entering `CHALLENGED` prevents later witness copying from changing the payout for response-based challenges. Atomic self-contained challenges remain susceptible to transaction copying unless the challenge proof commits to the payout script or the covenant otherwise binds proof authorization to that script.
+Every challenge transaction requires a BIP-342 signature under its payout key. For response-based challenges, the signature commits to the successor containing that key. For atomic challenges, it commits directly to the covenant-checked terminal payout. A third party cannot mutate that signed transaction, but may copy public evidence into a distinct competing transaction paying another key. This is a deliberate consequence of the version-1 first-confirmed-challenger policy, not an authorization bypass.
 
 These consequences are accepted in version 1.
 
@@ -706,6 +861,10 @@ The covenant is the final adjudicator. A defect can make honest collateral unspe
 
 The mint MUST NOT unilaterally migrate the bond to a new verifier. An upgrade requires a transition explicitly authorized by the current program and MUST provide a full challenge window before the new program becomes active.
 
+### 13.9 Consensus and Resource Gate
+
+This proposal does not assign opcode numbers or claim deployability under current Bitcoin limits. Before deployment, the compiler MUST bind the precise opcode semantics in `opcode_profile_hash`, statically unroll all loops, and prove for every Tapleaf that script bytes, witness bytes, stack items, stack-element bytes, validation cost, and signature checks remain within the activated consensus limits. The resulting leaf scripts, tree, compiler version, and resource report are committed by `verifier_program_hash`. A parameter set that exceeds any limit is invalid, even if its logical pseudocode is correct.
+
 ---
 
 ## 14. Protocol Invariants
@@ -715,11 +874,11 @@ A conforming implementation MUST preserve all of the following:
 ```text
 I1. The mint cannot spend the bond outside the covenant state machine.
 
-I2. Every active epoch was either the initial epoch or passed through
-    a full pending challenge period.
+I2. Every active epoch was either validated by INITIALIZE_BOND or passed
+    through a full pending challenge period.
 
-I3. Every recursive successor preserves the program, identity, and
-    bond value except for a bounded fee.
+I3. Every recursive successor preserves the program, identity, immutable
+    unit, and complete bond value. Fees are exogenous.
 
 I4. A successful fraud predicate can pay the bond without mint consent.
 
@@ -733,6 +892,14 @@ I7. The bond cannot return to the mint until every committed redemption
 
 I8. For competing valid spends, Bitcoin confirmation order determines
     the unique successor or payout.
+
+I9. Every receipt key is proven against the immutable amount-key root of
+    a keyset opened from an authenticated epoch of the same bond unit.
+
+I10. Every field not explicitly mutable in a transition is unchanged.
+
+I11. Every atomic or response-based challenge payout is authorized by a
+     transaction signature under the covenant-checked challenger key.
 ```
 
 ---
