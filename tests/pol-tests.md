@@ -1,6 +1,6 @@
 # Proof of Liabilities (PoL) Test Vectors
 
-This document provides test vectors for verifying implementations of the Proof of Liabilities (PoL) specification (NUT-XX), including Merkle Mountain Range with Sums (sum-MMR) computations, right-to-left peak bagging, and epoch manifest BIP-340 Schnorr signing.
+This document provides test vectors for verifying implementations of the Proof of Liabilities (PoL) specification (NUT-388), including Merkle Mountain Range with Sums (sum-MMR) computations, right-to-left peak bagging, and epoch manifest BIP-340 Schnorr signing.
 
 ---
 

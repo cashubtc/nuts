@@ -1,6 +1,6 @@
 # Bonded PoL Reference Scripts
 
-`experimental` `companion to NUT-XX-B`
+`experimental` `companion to NUT-388-B`
 
 ---
 
@@ -168,7 +168,7 @@ function decimal(n):
 ```
 
 ```text
-function canonical_nut_xx_manifest_message(k, epoch):
+function canonical_nut_388_manifest_message(k, epoch):
     return utf8(hex(k.keyset_id)) || ":"
         || decimal(epoch.epoch_index) || ":"
         || k.timestamp || ":"
@@ -183,7 +183,7 @@ function canonical_nut_xx_manifest_message(k, epoch):
         || BOOL_TEXT(k.active) || ":"
         || decimal(k.deactivation_epoch)
 
-function canonical_nut_xx_keyset_leaf(k):
+function canonical_nut_388_keyset_leaf(k):
     return U16BE(len(k.keyset_id)) || k.keyset_id
         || U64BE(k.issued_tree.size)
         || k.issued_tree.root_hash
@@ -195,7 +195,7 @@ function canonical_nut_xx_keyset_leaf(k):
         || U64BE(k.deactivation_epoch)
 
 function canonical_signed_fields(m):
-    return canonical_nut_xx_manifest_message(m.keyset, m.epoch)
+    return canonical_nut_388_manifest_message(m.keyset, m.epoch)
 
 function HASH_EPOCH(epoch):
     return SHA256(
@@ -210,7 +210,7 @@ function HASH_CHALLENGE(challenge):
     )
 
 function VERIFY_MANIFEST_SIGNATURE(manifest, mint_pubkey):
-    message = canonical_nut_xx_manifest_message(
+    message = canonical_nut_388_manifest_message(
         manifest.keyset,
         manifest.epoch
     )
@@ -527,7 +527,7 @@ common =
     || epoch_history_mmr_size_u64
 ```
 
-`active_epoch_hash` commits to the full `EpochCommitment` defined by NUT-XX-B:
+`active_epoch_hash` commits to the full `EpochCommitment` defined by NUT-388-B:
 
 ```text
 active_epoch_hash = SHA256(
@@ -667,12 +667,12 @@ macro VERIFY_EPOCH(epoch, keysets[], signatures[]):
             )
             total = OP_U64ADD(total, k.outstanding_balance)
 
-            message_hash = SHA256(canonical_nut_xx_manifest_message(k, epoch))
+            message_hash = SHA256(canonical_nut_388_manifest_message(k, epoch))
             ASSERT(CSFS(signatures[i], message_hash, mint_pubkey))
 
             pol_leaf[i] = SHA256(
                 "Cashu_PoL_Keyset_Leaf_v1"
-                || canonical_nut_xx_keyset_leaf(k)
+                || canonical_nut_388_keyset_leaf(k)
             )
 
             bonded_leaf[i] = SHA256(
@@ -802,7 +802,7 @@ macro VERIFY_CONSISTENCY(old_tree, new_tree, proof):
     ASSERT(BAG(stack) == (new_tree.root_hash, new_tree.root_sum))
 ```
 
-`DECOMPOSE_ALIGNED_RANGE(n, m)` starts at `cursor = n`, repeatedly selects the largest height `h` for which `2^h <= m - cursor` and `cursor mod 2^h == 0`, emits `h`, and advances `cursor` by `2^h`. Its output is derived inside the script and MUST NOT be accepted from the witness. The implementation MUST reproduce the vectors in NUT-XX.
+`DECOMPOSE_ALIGNED_RANGE(n, m)` starts at `cursor = n`, repeatedly selects the largest height `h` for which `2^h <= m - cursor` and `cursor mod 2^h == 0`, emits `h`, and advances `cursor` by `2^h`. Its output is derived inside the script and MUST NOT be accepted from the witness. The implementation MUST reproduce the vectors in NUT-388.
 
 ---
 
@@ -1082,8 +1082,8 @@ Script:
 VERIFY_CURRENT_STATE(old)
 ASSERT(old.state_tag == PENDING || old.state_tag == WITHDRAWAL_DELAY)
 
-msg_a = SHA256(canonical_nut_xx_manifest_message(manifest_a))
-msg_b = SHA256(canonical_nut_xx_manifest_message(manifest_b))
+msg_a = SHA256(canonical_nut_388_manifest_message(manifest_a))
+msg_b = SHA256(canonical_nut_388_manifest_message(manifest_b))
 
 ASSERT(CSFS(signature_a, msg_a, old.mint_pubkey))
 ASSERT(CSFS(signature_b, msg_b, old.mint_pubkey))

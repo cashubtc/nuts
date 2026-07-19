@@ -1,12 +1,14 @@
-# NUT-XX-B: Bonded Proof of Liabilities
+# NUT-388-B: Bonded Proof of Liabilities
 
 `optional` `experimental`
+
+> **Draft identifier:** `388` is the base proposal's pull-request number and MUST be replaced with the NUT number assigned when that proposal is merged.
 
 ---
 
 ## Abstract
 
-This document extends [NUT-XX: Proof of Liabilities][pol] with Bitcoin-native collateral and permissionless slashing.
+This document extends [NUT-388: Proof of Liabilities][pol] with Bitcoin-native collateral and permissionless slashing.
 
 A participating mint locks bitcoin in a recursive covenant called the **PoL bond**. The covenant carries the latest Proof of Liabilities epoch commitment and permits the bonded funds to move only through protocol-defined state transitions. A mint can advance the bond by publishing a new PoL epoch, close after every committed redemption window ends, or lose the entire bond to the first challenger who proves a supported PoL violation.
 
@@ -21,7 +23,7 @@ This document specifies:
 1. The covenant capabilities required by Bonded PoL.
 2. The state committed by a PoL bond output.
 3. Epoch publication, finalization, challenge, slashing, and withdrawal transitions.
-4. On-chain prevention of MMR consistency and lifecycle violations, plus resolution of the other fraud challenges defined by [NUT-XX][pol].
+4. On-chain prevention of MMR consistency and lifecycle violations, plus resolution of the other fraud challenges defined by [NUT-388][pol].
 5. Canonical commitments and relative delays required for consensus-enforced adjudication.
 
 This document does not specify:
@@ -47,7 +49,7 @@ Bonded PoL assumes a future Bitcoin covenant environment with semantics equivale
 3. **Output introspection:** A script can constrain successor output scripts, committed state, values, and positions.
 4. **Value preservation:** A script can require the bond value, less an explicitly bounded fee, to be preserved or paid to a specified output.
 5. **Arbitrary-message signatures:** A script can verify the BIP-340 signatures used by manifests and PoL receipts rather than only transaction signatures.
-6. **Hash composition:** A script can construct and SHA-256 hash the byte strings required by NUT-XX.
+6. **Hash composition:** A script can construct and SHA-256 hash the byte strings required by NUT-388.
 7. **Bounded arithmetic:** A script can safely add, subtract, compare, and serialize unsigned 64-bit sums.
 8. **Timelocks:** A script can enforce relative block delays with `OP_CHECKSEQUENCEVERIFY`.
 9. **Bounded proof execution:** A script can verify inclusion and consistency proofs whose maximum lengths are fixed by this document.
@@ -190,7 +192,7 @@ BondCommon {
 
 `state_sequence` MUST increase by exactly one in every recursive transition. It prevents two semantically different successor states from claiming the same covenant sequence.
 
-`epoch_history_mmr_root` commits to every previously finalized `EpochCommitment` hash in ascending epoch order. Publication appends the prior active epoch before proposing its successor. Challenges that reference an older epoch MUST prove it against this history root. The history MMR uses ordinary SHA-256 nodes without sums and the same post-order peak construction used by NUT-XX.
+`epoch_history_mmr_root` commits to every previously finalized `EpochCommitment` hash in ascending epoch order. Publication appends the prior active epoch before proposing its successor. Challenges that reference an older epoch MUST prove it against this history root. The history MMR uses ordinary SHA-256 nodes without sums and the same post-order peak construction used by NUT-388.
 
 ### 6.2 Epoch Commitment
 
@@ -206,7 +208,7 @@ EpochCommitment {
 }
 ```
 
-`pol_keysets_root` is the NUT-XX `keyset_merkle_root`. `bonded_keysets_root` commits to the same sorted keysets plus their Bonded-PoL-only expiry schedule. Its leaves encode:
+`pol_keysets_root` is the NUT-388 `keyset_merkle_root`. `bonded_keysets_root` commits to the same sorted keysets plus their Bonded-PoL-only expiry schedule. Its leaves encode:
 
 ```text
 KeysetCommitment {
@@ -224,12 +226,12 @@ KeysetCommitment {
 }
 ```
 
-The bonded keyset leaf hash wraps the base NUT-XX leaf hash:
+The bonded keyset leaf hash wraps the base NUT-388 leaf hash:
 
 ```text
 SHA256(
     "Cashu_Bonded_PoL_Keyset_v1"
-    || nut_xx_keyset_leaf_hash
+    || nut_388_keyset_leaf_hash
     || bytes_8(redemption_end_epoch)
 )
 ```
@@ -315,7 +317,7 @@ The initial deposit creates an `ACTIVE` bond with:
 
 ```text
 state_sequence = 0
-active_epoch = the latest finalized NUT-XX epoch
+active_epoch = the latest finalized NUT-388 epoch
 bond_id = SHA256(
     "Cashu_Bonded_PoL_Bond_Id_v1"
     || mint_pubkey
@@ -338,9 +340,9 @@ proposed_epoch.previous_global_digest == active_epoch.global_digest
 
 The active bond output MUST have aged by at least `MIN_EPOCH_BLOCKS`. The publication input MUST set `nSequence >= MIN_EPOCH_BLOCKS`, and the publication leaf MUST enforce `<MIN_EPOCH_BLOCKS> OP_CHECKSEQUENCEVERIFY`. This prevents the mint from accelerating epoch-based lifecycle deadlines.
 
-The covenant MUST verify every proposed keyset manifest signature, reconstruct `global_digest`, and verify the sorted keyset commitment root, every keyset sum, and the total outstanding balance. The proposed keyset list MUST contain every unexpired keyset exactly once, as required by NUT-XX.
+The covenant MUST verify every proposed keyset manifest signature, reconstruct `global_digest`, and verify the sorted keyset commitment root, every keyset sum, and the total outstanding balance. The proposed keyset list MUST contain every unexpired keyset exactly once, as required by NUT-388.
 
-For every keyset present in both epochs, the publication witness MUST contain one NUT-XX consistency proof for the issued MMR and one for the spent MMR. The covenant MUST execute the NUT-XX consistency algorithm and require each proof to resolve exactly from the active epoch's size, root, and sum to the proposed epoch's size, root, and sum.
+For every keyset present in both epochs, the publication witness MUST contain one NUT-388 consistency proof for the issued MMR and one for the spent MMR. The covenant MUST execute the NUT-388 consistency algorithm and require each proof to resolve exactly from the active epoch's size, root, and sum to the proposed epoch's size, root, and sum.
 
 For a keyset that first appears in the proposed epoch, both consistency proofs MUST use the canonical empty MMR as their old state. Consequently, all issuance and spending recorded before the keyset's first bonded epoch is still committed as an append from an empty history.
 
@@ -494,7 +496,7 @@ The covenant MUST verify:
 
 1. The target epoch is committed by the bond and is not earlier than `receipt_target_epoch`.
 2. The receipt signature is valid under the applicable keyset-amount public key.
-3. The receipt domain and message exactly match NUT-XX.
+3. The receipt domain and message exactly match NUT-388.
 4. The referenced keyset exists in the target epoch.
 
 The mint refutes the challenge with an inclusion proof resolving `item` and `value` to the applicable issued or spent MMR root.
@@ -521,7 +523,7 @@ If all predicates succeed, the challenge transaction MAY slash atomically.
 
 This is a self-contained challenge.
 
-The challenge contains two canonical NUT-XX manifests with signatures. It succeeds if:
+The challenge contains two canonical NUT-388 manifests with signatures. It succeeds if:
 
 ```text
 VerifyManifestSignature(manifest_a, mint_pubkey)
@@ -538,14 +540,14 @@ If all predicates succeed, the challenge transaction MAY slash atomically.
 
 ### 9.4 Keyset Rotation Violation
 
-This is a self-contained challenge. The challenger supplies a lifecycle baseline manifest committed by the bond plus one or two signed manifests satisfying a NUT-XX `rotation_violation` predicate.
+This is a self-contained challenge. The challenger supplies a lifecycle baseline manifest committed by the bond plus one or two signed manifests satisfying a NUT-388 `rotation_violation` predicate.
 
 The covenant MUST:
 
 1. Verify every supplied manifest under `mint_pubkey`.
 2. Prove the baseline keyset commitment against authenticated bond history.
 3. Require all manifests to identify the same keyset.
-4. Evaluate exactly one of `reactivation`, `issuance_after_lock`, `deactivation_overrun`, or `declaration_drift` as defined by NUT-XX.
+4. Evaluate exactly one of `reactivation`, `issuance_after_lock`, `deactivation_overrun`, or `declaration_drift` as defined by NUT-388.
 
 The violating manifest need not have entered a bonded epoch. Signing a contradictory lifecycle statement for a keyset governed by the bond is sufficient. If the selected predicate succeeds, the challenge transaction MAY slash atomically.
 

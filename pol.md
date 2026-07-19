@@ -1,6 +1,8 @@
-# NUT-XX: Proof of Liabilities
+# NUT-388: Proof of Liabilities
 
 `optional`
+
+> **Draft identifier:** `388` is the proposal's pull-request number and MUST be replaced with the NUT number assigned when the proposal is merged.
 
 ---
 
