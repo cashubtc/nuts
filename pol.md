@@ -78,10 +78,45 @@ Maintain a stack of `(node, height)` peaks:
 
 ### 4. Append-Only Consistency Verification
 
-To verify that MMR `M` extends MMR `N`, where `m > n`, use either:
+To verify that MMR `M` extends MMR `N`, where `m > n`, use either the consistency proof below or the sibling-path prefix check.
 
-1. **MMR consistency proof:** Prove that `N`'s peaks are preserved and folded into `M`.
-2. **Sibling-path prefix check:** Re-request an inclusion proof in a later epoch and require the old sibling path to prefix the new one.
+#### Consistency Proof
+
+A consistency proof contains:
+
+1. `old_size = n` and `new_size = m`.
+2. `old_peaks`: every peak of `N`, from left to right, as `(hash, sum, height)`.
+3. `appended_subtrees`: the roots of the deterministic decomposition of leaf range `[n, m)`, from left to right, as `(hash, sum, height)`.
+
+The deterministic decomposition of `[n, m)` is computed as follows:
+
+```text
+cursor = n
+while cursor < m:
+    choose the largest h such that:
+        2^h <= m - cursor
+        and cursor mod 2^h == 0
+    emit (cursor, h)
+    cursor += 2^h
+```
+
+Each emitted `(cursor, h)` identifies a complete, aligned subtree covering leaves `[cursor, cursor + 2^h)`. The proof supplies only that subtree's root hash and sum. The number, order, and heights of the supplied roots are derived from `n` and `m` and MUST NOT be trusted from the proof.
+
+Verify the proof as follows:
+
+1. Require `old_size` and `new_size` to equal the applicable manifest MMR sizes and require `0 <= n < m < 2^63`.
+2. Derive `N`'s expected peak heights from the set bits of `n`, highest first. Require `old_peaks` to contain exactly one node for each expected height, in that order, with no extra nodes.
+3. Bag `old_peaks` right to left. Require the result to equal `N`'s manifest root hash and root sum. For `n = 0`, require an empty `old_peaks` list and the empty MMR root.
+4. Derive the expected appended subtree heights with the decomposition algorithm above. Require `appended_subtrees` to have exactly those heights in exactly that order.
+5. Initialize a stack with `old_peaks`. For each appended subtree, push `(node, height)`. While the top two stack entries have equal height, pop right then left, compute `Parent(left, right)`, and push it at height `h + 1`.
+6. Derive `M`'s expected peak heights from the set bits of `m`, highest first. Require the final stack to have exactly those heights in that order.
+7. Bag the final stack right to left and require the result to equal `M`'s manifest root hash and root sum.
+
+This proves that every old peak is preserved unchanged and that only complete subtrees covering the appended suffix are folded into it. The appended subtree roots need no leaf-level proofs: consistency constrains preservation of the old prefix, while the later manifest commits to the contents of the appended suffix.
+
+#### Sibling-Path Prefix Check
+
+As a client-specific alternative, re-request an inclusion proof in a later epoch and require the old sibling path to prefix the new one as specified under Verification Protocol.
 
 ---
 
@@ -90,24 +125,61 @@ To verify that MMR `M` extends MMR `N`, where `m > n`, use either:
 Each epoch, the mint constructs and signs a manifest:
 
 1. **Sort keysets:** Lowercase and lexicographically sort all unexpired hexadecimal `keyset_id` values, active or inactive.
-2. **Build commitment data:** It MUST start with the previous 32-byte `global_digest`, using 32 zero bytes for the first epoch. Append this tuple for each sorted keyset:
+2. **Hash keyset leaves:** For each sorted keyset, compute:
    ```
-   utf8(keyset_id)
-   || bytes_8(issued_mmr_size) || issued_mmr_root_hash || bytes_8(issued_mmr_root_sum)
-   || bytes_8(spent_mmr_size)  || spent_mmr_root_hash  || bytes_8(spent_mmr_root_sum)
+   SHA256(
+     utf8("Cashu_PoL_Keyset_Leaf_v1")
+     || bytes_2(len(utf8(keyset_id))) || utf8(keyset_id)
+     || bytes_8(issued_mmr_size) || issued_mmr_root_hash || bytes_8(issued_mmr_root_sum)
+     || bytes_8(spent_mmr_size)  || spent_mmr_root_hash  || bytes_8(spent_mmr_root_sum)
+     || bytes_1(active)
+     || bytes_8(deactivation_epoch)
+   )
    ```
-   Integer encodings are big-endian; hashes are 32-byte binary values.
-3. **Global digest:** Compute `SHA256(commitment_data)`.
-4. **OTS receipt:** Submit the digest to OTS calendars. The mint MUST upgrade the pending receipt after Bitcoin confirmation and publish the offline-verifiable receipt with the manifest.
-5. **Manifest message:** Construct this colon-separated UTF-8 string:
-   `"{keyset_id}:{epoch_index}:{timestamp}:{previous_global_digest}:{issued_mmr_size}:{issued_mmr_root_hash}:{issued_mmr_root_sum}:{spent_mmr_size}:{spent_mmr_root_hash}:{spent_mmr_root_sum}:{outstanding_balance}"`
+   Length and integer encodings are big-endian; hashes are 32-byte binary values. `active` is `0x01` for true or `0x00` for false. `deactivation_epoch` is a mandatory uint64 epoch index.
+3. **Build the keyset Merkle root:** Build a binary Merkle tree over the ordered leaf hashes. Compute each parent as:
+   ```
+   SHA256(utf8("Cashu_PoL_Keyset_Node_v1") || left_hash || right_hash)
+   ```
+   If a level contains an odd number of hashes, duplicate its final hash before computing the next level. A single leaf is its own root. The empty keyset root is `SHA256(utf8("Cashu_PoL_Keyset_Empty_v1"))`.
+4. **Global digest:** Compute:
+   ```
+   SHA256(
+     utf8("Cashu_PoL_Epoch_v1")
+     || previous_global_digest
+     || bytes_8(epoch_index)
+     || bytes_2(keyset_count)
+     || keyset_merkle_root
+   )
+   ```
+   `previous_global_digest` is 32 zero bytes for the first epoch. `keyset_count` MUST fit in uint16.
+5. **OTS receipt:** Submit the digest to OTS calendars. The mint MUST upgrade the pending receipt after Bitcoin confirmation and publish the offline-verifiable receipt with the manifest.
+6. **Manifest message:** Construct this colon-separated UTF-8 string:
+   `"{keyset_id}:{epoch_index}:{timestamp}:{previous_global_digest}:{issued_mmr_size}:{issued_mmr_root_hash}:{issued_mmr_root_sum}:{spent_mmr_size}:{spent_mmr_root_hash}:{spent_mmr_root_sum}:{outstanding_balance}:{active}:{deactivation_epoch}"`
    where:
    - `keyset_id` MUST be a lowercase hexadecimal string.
    - `timestamp` MUST use RFC 3339 UTC with second precision, no fraction, and uppercase `Z` (for example, `2026-06-11T12:00:00Z`).
    - `previous_global_digest` MUST be serialized as a 64-character lowercase hexadecimal string.
    - `issued_mmr_root_hash` and `spent_mmr_root_hash` MUST be serialized as 64-character lowercase hexadecimal strings.
-6. **Sign:** BIP-340 Schnorr-sign `SHA256(message)` with the mint's master NUT-06 key. The message excludes `ots_receipt`, allowing receipt upgrades without changing the signature.
-7. **Publish:** Publish the manifests, signatures, OTS receipts, `global_digest`, and ordered `epoch_keysets` used for `commitment_data`. Each entry MUST contain `keyset_id`, `issued_mmr_size`, `issued_mmr_root_hash`, `issued_mmr_root_sum`, `spent_mmr_size`, `spent_mmr_root_hash`, and `spent_mmr_root_sum`. The array MUST contain every unexpired keyset exactly once and match the signed manifests.
+   - `active` MUST be the literal lowercase string `true` or `false`, reflecting the NUT-02 state at epoch close.
+   - `deactivation_epoch` MUST be the canonical unsigned decimal epoch index without leading zeros.
+7. **Sign:** BIP-340 Schnorr-sign `SHA256(message)` with the mint's master NUT-06 key. The message excludes `ots_receipt`, allowing receipt upgrades without changing the signature.
+8. **Publish:** Publish the manifests, signatures, OTS receipts, `global_digest`, `keyset_merkle_root`, and the ordered `epoch_keysets` used to build the Merkle tree. Each entry MUST contain `keyset_id`, `issued_mmr_size`, `issued_mmr_root_hash`, `issued_mmr_root_sum`, `spent_mmr_size`, `spent_mmr_root_hash`, `spent_mmr_root_sum`, `active`, and `deactivation_epoch`. The array MUST contain every unexpired keyset exactly once and match the signed manifests.
+
+### Keyset Lifecycle Commitments
+
+The redemption wind-down that exposes spent-side inflation begins only after a keyset stops issuing. Each keyset therefore commits to its lifecycle under these rules:
+
+1. **Birth:** A keyset is born in the first epoch whose `epoch_keysets` contains it. A mint adopting this NUT mid-life treats its first committed epoch as the birth of every existing keyset.
+2. **Single Declaration:** `deactivation_epoch` is REQUIRED, MUST be set in the keyset's first manifest, MUST be greater than the birth epoch, and MUST remain identical in every later manifest.
+3. **Monotonic Status:** After any manifest contains `active: false`, every later manifest for that keyset MUST also contain `active: false`.
+4. **Issued MMR Freeze:** The lock epoch is the first epoch containing `active: false`. From that epoch onward, `issued_mmr_size`, `issued_mmr_root_hash`, and `issued_mmr_root_sum` MUST remain unchanged. The lock-epoch manifest may include issuance performed earlier in that epoch before deactivation.
+5. **Epoch Deadline:** A keyset MUST be `active: false` in every manifest whose `epoch_index` is greater than or equal to its `deactivation_epoch`.
+6. **Early Deactivation:** `deactivation_epoch` is an upper bound. The mint MAY deactivate the keyset in an earlier epoch.
+
+`active: false` closes the keyset for issuance only. Existing ecash remains redeemable until `final_expiry`; therefore the spent MMR MAY and ordinarily will continue growing after the lock epoch. Every such change remains subject to append-only consistency verification. The spent MMR freezes only when the keyset reaches `final_expiry` and redemptions are no longer accepted.
+
+Wallets SHOULD treat an unacceptably distant `deactivation_epoch` as providing no useful committed rotation schedule. Verifiers SHOULD cross-check `/v1/keysets`: after a keyset first appears, it MUST occur in every epoch closed before its NUT-02 `final_expiry`. A newly offered keyset may be absent from the latest already-closed epoch, and an expired keyset may remain listed for historical compatibility.
 
 ---
 
@@ -146,7 +218,10 @@ The verifier MUST derive, not trust, `leaf_index`. Derive peak heights from the 
   "spent_mmr_root_hash": "4d1a7d72e8f498b52f751c69e1579f11ebba3f497c6a92fbb784eef0bd47fd44",
   "spent_mmr_root_sum": 450000,
   "outstanding_balance": 550000,
-  "global_digest": "7c6d52b91aa6a155f9e24c8e05c38c5bde6635a56d8c42d8296553f9f879c732",
+  "active": true,
+  "deactivation_epoch": 12,
+  "global_digest": "ec53f808f2885ff4fe74f0abebd2e216173cc784ec472213a81b2ae4723aa3b4",
+  "keyset_merkle_root": "ddb1201da3139b338edf4be15104c48b34065d8d4a10e206df314870aea23256",
   "epoch_keysets": [
     {
       "keyset_id": "009a6154b71113b7",
@@ -155,7 +230,9 @@ The verifier MUST derive, not trust, `leaf_index`. Derive peak heights from the 
       "issued_mmr_root_sum": 1000000,
       "spent_mmr_size": 52000,
       "spent_mmr_root_hash": "4d1a7d72e8f498b52f751c69e1579f11ebba3f497c6a92fbb784eef0bd47fd44",
-      "spent_mmr_root_sum": 450000
+      "spent_mmr_root_sum": 450000,
+      "active": true,
+      "deactivation_epoch": 12
     }
   ],
   "ots_receipt": "<hex_encoded_ots_file_content>",
@@ -269,7 +346,7 @@ Verify `mint_signature` against the mint's master `signing_pubkey` from `/v1/inf
 
 ### Step 2: Validate OpenTimestamps Attestation
 
-1. Rebuild `commitment_data`; require its SHA256 to equal `global_digest` and every `epoch_keysets` entry to match its signed manifest.
+1. Rebuild every keyset leaf and the ordered Merkle tree; require its root to equal `keyset_merkle_root`. Rebuild `global_digest` from the previous digest, epoch index, keyset count, and Merkle root. Require every `epoch_keysets` entry to match its signed manifest.
 2. Deserialize `ots_receipt` and require its starting digest to equal `global_digest`. The pending-receipt timeout MUST NOT exceed 24 hours from the manifest `timestamp`; exceeding it MUST be an audit failure. The pending tag is `0x83dfe30d2ef90c8e`.
 3. Within that window, a verifier can request an upgrade from an OTS calendar. The mint remains responsible for publishing an upgraded, offline-verifiable receipt.
 4. With a conforming OTS implementation, execute every operation through the Bitcoin block-header attestation (`0x0588960d73d71901`). Using an independently validated node, require the result to match the block's committed Merkle root. An attestation tag and block height alone are insufficient.
@@ -283,6 +360,12 @@ Verify `mint_signature` against the mint's master `signing_pubkey` from `/v1/inf
    - Let `k` be the length of the sibling path of the previous proof. The first `k` elements of the new proof's `sibling_path` MUST match the old proof's `sibling_path` exactly (in node hash, sum, and `is_left` positional boolean).
    - Later entries represent subsequent higher merges.
    - A prefix mismatch is an audit failure. Auditors can instead use standard MMR consistency proofs.
+3. For each keyset's signed manifest history:
+   - `deactivation_epoch` MUST remain identical to its first declaration.
+   - `active` MUST never return to `true` after becoming `false`.
+   - From the first `active: false` manifest, the issued MMR size, root hash, and root sum MUST remain unchanged.
+   - A manifest at or after its `deactivation_epoch` MUST contain `active: false`.
+   - Any violation is an audit failure and supplies evidence for `rotation_violation`.
 
 ### Step 4: Validate Issued sum-MMR Sibling Walks
 
@@ -326,7 +409,7 @@ A mint can issue ecash to itself and spend it with valid secrets, so preimage ch
 2. A deactivated keyset permits spends but no issuance; an expired keyset permits neither.
 3. During wind-down, inflated spends make valid redemptions exceed claimed liabilities or break the balance equation.
 
-The protocol defines four challenge types.
+The protocol defines five challenge types.
 
 ---
 
@@ -459,6 +542,8 @@ The protocol defines four challenge types.
       "spent_mmr_root_hash": "7d4e277fc585b942a22314ff992cb9d4413da734183b7b5f669e5b38d5bd73bf",
       "spent_mmr_root_sum": 9000,
       "outstanding_balance": 16000,
+      "active": true,
+      "deactivation_epoch": 20,
       "mint_signature": "<signature_a>"
     },
     "manifest_b": {
@@ -473,6 +558,8 @@ The protocol defines four challenge types.
       "spent_mmr_root_hash": "7d4e277fc585b942a22314ff992cb9d4413da734183b7b5f669e5b38d5bd73bf",
       "spent_mmr_root_sum": 9000,
       "outstanding_balance": 15000,
+      "active": true,
+      "deactivation_epoch": 20,
       "mint_signature": "<signature_b>"
     }
   }
@@ -503,18 +590,55 @@ The protocol defines four challenge types.
     "epoch_index_2": 12,
     "tree_type": "issued | spent",
     "consistency_proof": {
-      "old_size": 125000,
-      "new_size": 126500,
-      "proof_hashes": [
+      "old_size": 3,
+      "new_size": 4,
+      "old_peaks": [
         {
-          "hash": "8f3c45d51e9bb2a50c25a40b89f460ccd8b120de84929ee29502e7c99184f60f",
-          "sum": 1000000,
-          "height": 3
+          "hash": "90e8e647a08f35b5b24653ab52e5d27a2deddb05d1e54d5d21777ef02036b29f",
+          "sum": 350,
+          "height": 1
+        },
+        {
+          "hash": "95b7ec67b1f85ca98781f08fc4613559820b99f178707b29c8ebb4577aca5f40",
+          "sum": 500,
+          "height": 0
+        }
+      ],
+      "appended_subtrees": [
+        {
+          "hash": "e1577700e127f1ce6e20a4efc2d96a986979c755d9ab559af6b1755eb3f3220e",
+          "sum": 1000,
+          "height": 0
         }
       ]
     }
   }
   ```
-- **Response:** The mint refutes the challenge with a consistency proof that derives `E_2` from `E_1` and verifies against both manifests' roots and sums. Discovery and response deadlines are outside this NUT; silence is not cryptographic proof of fraud.
+- **Response:** The mint refutes the challenge with a consistency proof that passes the algorithm under Append-Only Consistency Verification and resolves exactly to both manifests' sizes, roots, and sums. Discovery and response deadlines are outside this NUT; silence is not cryptographic proof of fraud.
+
+---
+
+### 5. Keyset Rotation Violation (`rotation_violation`)
+
+- **Description:** The mint reactivated a locked keyset, issued after lock, remained active at or after its committed deactivation epoch, or changed its deactivation declaration. Each variant is proven entirely by signed manifests; challengers need not hold or reveal ecash.
+- **Challenge Schema:**
+
+  ```json
+  {
+    "challenge_type": "rotation_violation",
+    "keyset_id": "009a6154b71113b7",
+    "violation_kind": "reactivation | issuance_after_lock | deactivation_overrun | declaration_drift",
+    "manifest_a": { "...": "all signed manifest fields" },
+    "manifest_b": { "...": "all signed manifest fields, or omitted" }
+  }
+  ```
+
+  Every supplied manifest MUST contain all fields of the serialized manifest message and a valid `mint_signature`. Evidence is defined per kind:
+  - `reactivation`: `manifest_a.epoch_index < manifest_b.epoch_index`, `manifest_a.active` is false, and `manifest_b.active` is true.
+  - `issuance_after_lock`: `manifest_a.active` is false and a later `manifest_b` differs in issued MMR size, root hash, or root sum.
+  - `deactivation_overrun`: `manifest_a.active` is true and `manifest_a.epoch_index >= manifest_a.deactivation_epoch`. `manifest_b` is omitted.
+  - `declaration_drift`: the manifests are for different epochs of the same keyset and contain different `deactivation_epoch` values. Conflicting declarations for the same epoch use `manifest_equivocation` instead.
+
+- **Response:** Verify every supplied manifest under the mint's NUT-06 master key, then evaluate the selected predicate. If the signatures and predicate verify, the challenge succeeds and has no cryptographic refutation. The mint can refute it only by showing that a supplied signature or required predicate is invalid.
 
 [tests]: tests/pol-tests.md
