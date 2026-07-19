@@ -114,6 +114,369 @@ CCV_NEXT(data)     data 0 0 -1 CCV_OUT_FULL OP_CCV
 
 All macros MUST expand to bounded, loop-free Tapscript. Iteration over MMR paths and keysets is statically unrolled to the deployment maxima.
 
+### 2.4 Function and Macro Registry
+
+Every callable name used below is defined in this document. Names beginning with `OP_` are consensus operations defined in Sections 2.1 and 2.2 or existing BIP-342 opcodes. The following notation functions are compiler intrinsics:
+
+```text
+function SHA256(parts...):
+    return HASH256(parts...)
+
+function len(x):
+    return x.length
+
+function SUM_VALUES(values):
+    total = 0
+    for i in 0 .. MAX_TRANSACTION_ITEMS-1:
+        if i < len(values):
+            total = OP_U64ADD(total, values[i].value)
+    return total
+
+function CSFS(sig, message, key):
+    return sig message key OP_CHECKSIGFROMSTACK
+
+function CHECKSIG(sig, key):
+    return sig key OP_CHECKSIG
+
+function utf8(ascii_literal):
+    return ascii_literal.bytes
+
+function hex(bytes):
+    out = []
+    for i in 0 .. len(bytes)-1:
+        APPEND(out, HEX_DIGIT(bytes[i] >> 4))
+        APPEND(out, HEX_DIGIT(bytes[i] & 15))
+    return out
+
+function HEX_DIGIT(n):
+    ASSERT(0 <= n && n < 16)
+    if n < 10:
+        return 0x30 + n
+    return 0x61 + (n - 10)
+
+function decimal(n):
+    if n == 0:
+        return 0x30
+    reversed = []
+    while n > 0:
+        APPEND(reversed, 0x30 + (n mod 10))
+        n = n / 10
+    out = []
+    for i in len(reversed)-1 .. 0 descending:
+        APPEND(out, reversed[i])
+    return out
+```
+
+```text
+function canonical_nut_xx_manifest_message(k, epoch):
+    return utf8(hex(k.keyset_id)) || ":"
+        || decimal(epoch.epoch_index) || ":"
+        || k.timestamp || ":"
+        || hex(epoch.previous_global_digest) || ":"
+        || decimal(k.issued_tree.size) || ":"
+        || hex(k.issued_tree.root_hash) || ":"
+        || decimal(k.issued_tree.root_sum) || ":"
+        || decimal(k.spent_tree.size) || ":"
+        || hex(k.spent_tree.root_hash) || ":"
+        || decimal(k.spent_tree.root_sum) || ":"
+        || decimal(k.outstanding_balance) || ":"
+        || BOOL_TEXT(k.active) || ":"
+        || decimal(k.deactivation_epoch)
+
+function canonical_nut_xx_keyset_leaf(k):
+    return U16BE(len(k.keyset_id)) || k.keyset_id
+        || U64BE(k.issued_tree.size)
+        || k.issued_tree.root_hash
+        || U64BE(k.issued_tree.root_sum)
+        || U64BE(k.spent_tree.size)
+        || k.spent_tree.root_hash
+        || U64BE(k.spent_tree.root_sum)
+        || BOOL_BYTE(k.active)
+        || U64BE(k.deactivation_epoch)
+
+function canonical_signed_fields(m):
+    return canonical_nut_xx_manifest_message(m.keyset, m.epoch)
+
+function HASH_EPOCH(epoch):
+    return SHA256(
+        "Cashu_Bonded_PoL_Epoch_v1"
+        || CANONICAL_EPOCH(epoch)
+    )
+
+function HASH_CHALLENGE(challenge):
+    return SHA256(
+        "Cashu_Bonded_PoL_Challenge_v1"
+        || CANONICAL_CHALLENGE(challenge)
+    )
+
+function VERIFY_MANIFEST_SIGNATURE(manifest, mint_pubkey):
+    message = canonical_nut_xx_manifest_message(
+        manifest.keyset,
+        manifest.epoch
+    )
+    return CSFS(manifest.signature, SHA256(message), mint_pubkey)
+
+function BOOL_BYTE(value):
+    if value:
+        return 0x01
+    return 0x00
+
+function BOOL_TEXT(value):
+    if value:
+        return utf8("true")
+    return utf8("false")
+
+function CANONICAL_EPOCH(e):
+    return U64BE(e.epoch_index)
+        || e.global_digest
+        || e.previous_global_digest
+        || e.pol_keysets_root
+        || e.bonded_keysets_root
+        || U16BE(e.epoch_keysets_count)
+        || U64BE(e.total_outstanding_balance)
+
+function CANONICAL_CHALLENGE(c):
+    return U16BE(len(c.keyset_id)) || c.keyset_id
+        || U64BE(c.target_epoch)
+        || U64BE(c.receipt_target_epoch)
+        || U16BE(len(c.receipt_signature)) || c.receipt_signature
+        || c.leaf_type
+        || c.item
+        || U64BE(c.value)
+
+function CANONICAL_STATE(s):
+    out = U16BE(s.contract_version)
+        || s.program_hash || s.bond_id || s.genesis_nonce || s.mint_pubkey
+        || s.state_tag || U64BE(s.state_sequence) || s.active_epoch_hash
+    if s.closing_epoch == NONE:
+        out = out || 0x00
+    else:
+        out = out || 0x01 || U64BE(s.closing_epoch)
+    out = out || s.epoch_history_mmr_root
+        || U64BE(s.epoch_history_mmr_size)
+    if s.state_tag == PENDING:
+        return out || s.proposed_epoch_hash
+    if s.state_tag == CHALLENGED:
+        return out || s.disputed_epoch_hash || s.challenge_type
+            || s.challenge_hash || s.challenger_xonly_pubkey
+    if s.state_tag == WITHDRAWAL_DELAY:
+        return out || s.mint_withdrawal_xonly_pubkey
+    ASSERT(s.state_tag == ACTIVE)
+    return out
+```
+
+The bounded collection helpers are:
+
+```text
+function FIND_BY_ID(keysets, id):
+    found = NONE
+    for i in 0 .. MAX_KEYSETS-1:
+        if i < len(keysets) && keysets[i].keyset_id == id:
+            ASSERT(found == NONE)
+            found = keysets[i]
+    return found
+
+function MERKLEIZE(leaves, node_domain, empty_domain):
+    if len(leaves) == 0:
+        return SHA256(empty_domain)
+    level = leaves
+    while len(level) > 1:
+        next = []
+        for i in 0 .. MAX_KEYSETS-1 step 2:
+            if i < len(level):
+                left = level[i]
+                if i + 1 < len(level):
+                    right = level[i + 1]
+                else:
+                    right = left
+                APPEND(next, SHA256(node_domain || left || right))
+        level = next
+    return level[0]
+
+function MERKLEIZE_POL_KEYSETS(leaves):
+    return MERKLEIZE(
+        leaves,
+        "Cashu_PoL_Keyset_Node_v1",
+        "Cashu_PoL_Keyset_Empty_v1"
+    )
+
+function MERKLEIZE_BONDED_KEYSETS(leaves):
+    return MERKLEIZE(
+        leaves,
+        "Cashu_Bonded_PoL_Keyset_Node_v1",
+        "Cashu_Bonded_PoL_Keyset_Empty_v1"
+    )
+
+function SET_BIT_HEIGHTS_DESCENDING(n):
+    heights = []
+    for h in MAX_MMR_HEIGHT .. 0 descending:
+        if ((n >> h) & 1) == 1:
+            APPEND(heights, h)
+    return heights
+
+function STACK_HEIGHTS(stack):
+    heights = []
+    for i in 0 .. MAX_MMR_HEIGHT:
+        if i < len(stack):
+            APPEND(heights, stack[i].height)
+    return heights
+
+function DECOMPOSE_ALIGNED_RANGE(n, m):
+    heights = []
+    cursor = n
+    while cursor < m:
+        selected = NONE
+        for h in MAX_MMR_HEIGHT .. 0 descending:
+            if selected == NONE
+               && (1 << h) <= m - cursor
+               && cursor mod (1 << h) == 0:
+                selected = h
+        ASSERT(selected != NONE)
+        APPEND(heights, selected)
+        cursor = cursor + (1 << selected)
+    return heights
+```
+
+The MMR helpers operate on ordered `(height, hash, sum)` peaks:
+
+```text
+function APPEND(list, value):
+    ASSERT(len(list) < list.capacity)
+    list[len(list)] = value
+    list.length = len(list) + 1
+
+function BAG(peaks):
+    return BAG_PEAKS_RIGHT_TO_LEFT(peaks)
+
+function BAG_PEAKS_RIGHT_TO_LEFT(peaks):
+    ASSERT(len(peaks) > 0)
+    acc = rightmost peak
+    for peak in peaks from second-rightmost to leftmost:
+        acc.hash = SHA256(
+            "Cashu_PoL_Bag_v1"
+            || peak.hash || acc.hash
+            || U64BE(peak.sum) || U64BE(acc.sum)
+        )
+        acc.sum = OP_U64ADD(peak.sum, acc.sum)
+    return (acc.hash, acc.sum)
+
+function DERIVE_INDEX(tree_size, proof, local_offset):
+    heights = SET_BIT_HEIGHTS_DESCENDING(tree_size)
+    ASSERT(proof.peak_index < len(heights))
+    ASSERT(proof.path_len == heights[proof.peak_index])
+    preceding = 0
+    for i in 0 .. MAX_MMR_HEIGHT:
+        if i < proof.peak_index:
+            preceding = OP_U64ADD(preceding, 1 << heights[i])
+    ASSERT(local_offset < (1 << heights[proof.peak_index]))
+    return OP_U64ADD(preceding, local_offset)
+
+function PATH_PREFIX(earlier, later):
+    if earlier.path_len > later.path_len:
+        return false
+    result = true
+    for i in 0 .. MAX_MMR_HEIGHT-1:
+        if i < earlier.path_len:
+            result = result
+                && earlier[i].hash == later[i].hash
+                && earlier[i].sum == later[i].sum
+                && earlier[i].is_left == later[i].is_left
+    return result
+```
+
+Receipt verification is defined as:
+
+```text
+function VERIFY_RECEIPT(
+    sig,
+    leaf_type,
+    item,
+    value,
+    target_epoch,
+    amount_pubkey,
+    authenticated_keyset
+):
+    if leaf_type == ISSUED:
+        message = "Cashu_PoL_Receipt_Issued:" || hex(item)
+                  || ":" || decimal(target_epoch)
+    else if leaf_type == SPENT:
+        message = "Cashu_PoL_Receipt_Spent:" || hex(item)
+                  || ":" || decimal(target_epoch)
+    else:
+        FAIL
+    ASSERT(authenticated_keyset.amount_keys[value] == amount_pubkey)
+    ASSERT(CSFS(sig, SHA256(utf8(message)), amount_pubkey))
+```
+
+History and payout helpers are:
+
+```text
+function BAG_HISTORY(peaks):
+    ASSERT(len(peaks) > 0)
+    acc = peaks[len(peaks) - 1].hash
+    for i in len(peaks) - 2 .. 0 descending:
+        acc = SHA256(
+            "Cashu_Bonded_PoL_History_Bag_v1"
+            || peaks[i].hash || acc
+        )
+    return acc
+
+function REMOVE_LAST(list):
+    ASSERT(len(list) > 0)
+    value = list[len(list) - 1]
+    list.length = len(list) - 1
+    return value
+
+function APPEND_HISTORY(old_root, old_size, epoch_hash, proof):
+    heights = SET_BIT_HEIGHTS_DESCENDING(old_size)
+    ASSERT(len(proof.old_peaks) == len(heights))
+    for i in 0 .. MAX_MMR_HEIGHT:
+        if i < len(proof.old_peaks):
+            ASSERT(proof.old_peaks[i].height == heights[i])
+    if old_size == 0:
+        ASSERT(old_root == SHA256("Cashu_Bonded_PoL_History_Empty_v1"))
+    else:
+        ASSERT(BAG_HISTORY(proof.old_peaks) == old_root)
+    stack = proof.old_peaks
+    APPEND(stack, {
+        height: 0,
+        hash: SHA256("Cashu_Bonded_PoL_History_Leaf_v1" || epoch_hash)
+    })
+    while len(stack) >= 2
+          && stack[len(stack)-2].height == stack[len(stack)-1].height:
+        right = REMOVE_LAST(stack)
+        left = REMOVE_LAST(stack)
+        APPEND(stack, {
+            height: left.height + 1,
+            hash: SHA256(
+                "Cashu_Bonded_PoL_History_Node_v1"
+                || left.hash || right.hash
+            )
+        })
+    return (BAG_HISTORY(stack), OP_U64ADD(old_size, 1))
+
+macro PAY_FULL_BOND_TO_P2TR(recipient_xonly_pubkey):
+    ASSERT(len(recipient_xonly_pubkey) == 32)
+    ASSERT(OP_OUTPUTCOUNT >= 1)
+    <> 0 recipient_xonly_pubkey <> CCV_OUT_FULL
+    OP_CHECKCONTRACTVERIFY
+
+function P2TR(xonly_pubkey):
+    ASSERT(len(xonly_pubkey) == 32)
+    return 0x5120 || xonly_pubkey
+
+function BondProgram(state_hash):
+    ASSERT(len(state_hash) == 32)
+    data_key = DataTweak(BIP341_NUMS_KEY, state_hash)
+    output_key = TapTweak(data_key, bonded_pol_taptree_root)
+    return 0x5120 || output_key
+
+intrinsic DataTweak(key, data) = BIP443.DataTweak
+intrinsic TapTweak(key, taptree_root) = BIP341.TapTweak
+```
+
+`hex`, `decimal`, and `utf8` are canonical encoders: lowercase hexadecimal without a prefix, unsigned decimal without leading zeros, and UTF-8 bytes respectively. `NONE` is the unique absent-entry sentinel and cannot be supplied as an enabled keyset.
+
 ---
 
 ## 3. Contract Output
@@ -242,7 +605,7 @@ Every leaf begins with:
 macro VERIFY_CURRENT_STATE(canonical_old_state):
     old_state_hash = HASH256(
         "Cashu_Bonded_PoL_State_v1",
-        canonical_old_state
+        CANONICAL_STATE(canonical_old_state)
     )
     CCV_INPUT(old_state_hash)
 ```
@@ -274,7 +637,7 @@ macro VERIFY_SUCCESSOR(old, new, allow_closing_init=false):
 
     new_state_hash = HASH256(
         "Cashu_Bonded_PoL_State_v1",
-        canonical(new)
+        CANONICAL_STATE(new)
     )
 
     CCV_NEXT(new_state_hash)
@@ -420,13 +783,13 @@ macro VERIFY_CONSISTENCY(old_tree, new_tree, proof):
         if i < proof.appended_subtrees.len:
             subtree = proof.appended_subtrees[i]
             ASSERT(subtree.height == expected_append_heights[i])
-            stack.push(subtree)
+            APPEND(stack, subtree)
 
             for j in 0 .. MAX_MMR_HEIGHT-1: # statically unrolled
                 if stack.len >= 2 && stack[-2].height == stack[-1].height:
-                    right = stack.pop()
-                    left = stack.pop()
-                    stack.push({
+                    right = REMOVE_LAST(stack)
+                    left = REMOVE_LAST(stack)
+                    APPEND(stack, {
                         hash: SHA256(
                             left.hash || right.hash
                             || U64BE(left.sum) || U64BE(right.sum)
@@ -615,10 +978,7 @@ Anyone may supply this witness. No signature is required.
 VERIFY_CURRENT_STATE(old)
 ASSERT(old.state_tag == PENDING)
 
-challenge_hash = SHA256(
-    "Cashu_Bonded_PoL_Challenge_v1"
-    || canonical(leaf_challenge)
-)
+challenge_hash = HASH_CHALLENGE(leaf_challenge)
 
 VERIFY_RECEIPT(
     leaf_challenge.receipt_signature,
@@ -626,11 +986,12 @@ VERIFY_RECEIPT(
     leaf_challenge.item,
     leaf_challenge.value,
     leaf_challenge.receipt_target_epoch,
-    keyset_amount_pubkey
+    keyset_amount_pubkey,
+    target_keyset
 )
 
 ASSERT(leaf_challenge.target_epoch >= leaf_challenge.receipt_target_epoch)
-ASSERT(keyset commitment is included in old.proposed_epoch_hash)
+ASSERT(target_keyset commitment is included in old.proposed_epoch_hash)
 
 new.state_tag = CHALLENGED
 new.disputed_epoch_hash = old.proposed_epoch_hash
@@ -852,10 +1213,7 @@ VERIFY_CURRENT_STATE(old)
 ASSERT(old.state_tag == WITHDRAWAL_DELAY)
 ASSERT(old.closing_epoch != null)
 
-challenge_hash = SHA256(
-    "Cashu_Bonded_PoL_Challenge_v1"
-    || canonical(leaf_challenge)
-)
+challenge_hash = HASH_CHALLENGE(leaf_challenge)
 
 VERIFY_RECEIPT(
     leaf_challenge.receipt_signature,
@@ -863,12 +1221,13 @@ VERIFY_RECEIPT(
     leaf_challenge.item,
     leaf_challenge.value,
     leaf_challenge.receipt_target_epoch,
-    keyset_amount_pubkey
+    keyset_amount_pubkey,
+    target_keyset
 )
 
 ASSERT(leaf_challenge.target_epoch >= leaf_challenge.receipt_target_epoch)
 ASSERT(
-    keyset commitment is included in old.active_epoch_hash
+    target_keyset commitment is included in old.active_epoch_hash
 )
 ASSERT(len(witness.challenger_xonly_pubkey) == 32)
 
@@ -910,7 +1269,7 @@ Every transition uses one of two output templates.
 ```text
 output[0].value     == bond_input.value
 output[0].script    == BondProgram(new_state_hash)
-sum(other outputs) <= sum(external inputs)
+SUM_VALUES(other_outputs) <= SUM_VALUES(external_inputs)
 ```
 
 ### 8.2 Terminal Payout
@@ -918,7 +1277,7 @@ sum(other outputs) <= sum(external inputs)
 ```text
 output[0].value     == bond_input.value
 output[0].script    == P2TR(committed_recipient_key)
-sum(other outputs) <= sum(external inputs)
+SUM_VALUES(other_outputs) <= SUM_VALUES(external_inputs)
 ```
 
 These equalities follow from BIP-443 full residual-value preservation. All transaction fees are exogenous.
