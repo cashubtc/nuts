@@ -100,13 +100,14 @@ Each deployment MUST commit to the following parameters in `program_hash`:
 | `MIN_EPOCH_BLOCKS`        | uint32 | Minimum blocks between finalized epochs                        |
 | `WITHDRAWAL_DELAY_PERIOD` | uint32 | Blocks between completed closing and bond withdrawal           |
 | `MAX_KEYSETS`             | uint16 | Maximum keysets committed by one epoch                         |
+| `MAX_AMOUNT_KEYS`         | uint16 | Maximum denomination keys committed by one keyset              |
 | `MAX_MMR_HEIGHT`          | uint8  | Maximum accepted inclusion or consistency proof height         |
 | `MAX_CHALLENGE_BYTES`     | uint32 | Maximum canonical challenge size                               |
 | `MAX_RESPONSE_BYTES`      | uint32 | Maximum canonical response size                                |
 | `MIN_CHALLENGE_BOND`      | uint64 | Minimum anti-spam input, or zero if challenge bonds are unused |
 | `CONTRACT_VERSION`        | uint16 | Bonded PoL program version                                     |
 
-`MAX_MMR_HEIGHT` MUST NOT exceed 63. Therefore a single committed sum-MMR cannot contain more than `2^63 - 1` leaves.
+`MAX_MMR_HEIGHT` MUST NOT exceed 63. Therefore a single committed sum-MMR cannot contain more than `2^63 - 1` leaves. `MAX_AMOUNT_KEY_HEIGHT` is the compile-time constant `ceil(log2(MAX_AMOUNT_KEYS))` and bounds every amount-key proof.
 
 All delays are relative block counts enforced with input `nSequence` and `OP_CHECKSEQUENCEVERIFY`. Timestamps, median-time-past, wall-clock time, and PoL epoch timestamps MUST NOT determine challenge or response expiry.
 
@@ -221,6 +222,7 @@ KeysetCommitment {
     spent_mmr_root_sum: uint64,
     active: bool,
     deactivation_epoch: uint64,
+    amount_keys_root: bytes32,
     redemption_end_epoch: uint64,
     outstanding_balance: uint64
 }
@@ -232,9 +234,22 @@ The bonded keyset leaf hash wraps the base NUT-388 leaf hash:
 SHA256(
     "Cashu_Bonded_PoL_Keyset_v1"
     || nut_388_keyset_leaf_hash
+    || amount_keys_root
     || bytes_8(redemption_end_epoch)
 )
 ```
+
+`amount_keys_root` commits to the x-only BIP-340 public key authorized to sign PoL receipts for every denomination in the keyset. Construct its leaves in strictly increasing numeric `amount` order:
+
+```text
+SHA256(
+    "Cashu_Bonded_PoL_Amount_Key_v1"
+    || bytes_8(amount)
+    || amount_pubkey_xonly
+)
+```
+
+`amount_pubkey_xonly` is exactly 32 bytes. Amount-key Merkle parents are `SHA256("Cashu_Bonded_PoL_Amount_Key_Node_v1" || left || right)`. Odd final nodes are duplicated at every level. A keyset MUST commit at least one and at most `MAX_AMOUNT_KEYS` unique denominations. `amount_keys_root` is fixed at keyset birth and MUST remain unchanged in every later epoch.
 
 Merkle parents are:
 
@@ -357,9 +372,10 @@ For every keyset, the transition MUST additionally enforce:
 
 1. A newly appearing keyset has `deactivation_epoch > proposed_epoch.epoch_index`.
 2. An existing keyset's `deactivation_epoch` is unchanged.
-3. `active` cannot change from false to true.
-4. If the old keyset is inactive, the new issued MMR is exactly equal to the old issued MMR.
-5. If `proposed_epoch.epoch_index >= deactivation_epoch`, the new keyset is inactive.
+3. An existing keyset's `amount_keys_root` is unchanged. A newly appearing keyset supplies its complete, strictly amount-sorted public-key list so the covenant can reconstruct and verify the committed root.
+4. `active` cannot change from false to true.
+5. If the old keyset is inactive, the new issued MMR is exactly equal to the old issued MMR.
+6. If `proposed_epoch.epoch_index >= deactivation_epoch`, the new keyset is inactive.
 
 A bonded keyset inherits the required base-PoL `deactivation_epoch` and MUST commit at birth to:
 
@@ -486,18 +502,33 @@ LeafChallenge {
     target_epoch: uint64,
     receipt_target_epoch: uint64,
     receipt_signature: bytes,
+    amount_pubkey_xonly: bytes32,
     leaf_type: uint8,             // 0 = issued, 1 = spent
     item: bytes33,
     value: uint64
 }
 ```
 
+The opening witness additionally contains:
+
+```text
+AmountKeyProof {
+    leaf_index: uint16,
+    leaf_count: uint16,
+    path_len: uint8,
+    siblings[MAX_AMOUNT_KEY_HEIGHT]: bytes32
+}
+```
+
+`leaf_index` is the index of `value` in the strictly increasing denomination order. For an odd final node at any level, the proof supplies the current hash itself as the duplicated sibling. The covenant derives the required path length from `leaf_count`, rejects non-canonical disabled slots, and reconstructs `amount_keys_root` before checking the receipt signature.
+
 The covenant MUST verify:
 
 1. The target epoch is committed by the bond and is not earlier than `receipt_target_epoch`.
-2. The receipt signature is valid under the applicable keyset-amount public key.
-3. The receipt domain and message exactly match NUT-388.
-4. The referenced keyset exists in the target epoch.
+2. The supplied amount public key and denomination have a valid Merkle inclusion proof against the referenced keyset's committed `amount_keys_root`.
+3. The receipt signature is valid under that authenticated amount public key.
+4. The receipt domain and message exactly match NUT-388.
+5. The referenced keyset exists in the target epoch.
 
 The mint refutes the challenge with an inclusion proof resolving `item` and `value` to the applicable issued or spent MMR root.
 

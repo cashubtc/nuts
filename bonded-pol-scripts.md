@@ -240,6 +240,7 @@ function CANONICAL_CHALLENGE(c):
         || U64BE(c.target_epoch)
         || U64BE(c.receipt_target_epoch)
         || U16BE(len(c.receipt_signature)) || c.receipt_signature
+        || c.amount_pubkey_xonly
         || c.leaf_type
         || c.item
         || U64BE(c.value)
@@ -276,13 +277,13 @@ function FIND_BY_ID(keysets, id):
             found = keysets[i]
     return found
 
-function MERKLEIZE(leaves, node_domain, empty_domain):
+function MERKLEIZE(leaves, node_domain, empty_domain, max_items):
     if len(leaves) == 0:
         return SHA256(empty_domain)
     level = leaves
     while len(level) > 1:
         next = []
-        for i in 0 .. MAX_KEYSETS-1 step 2:
+        for i in 0 .. max_items-1 step 2:
             if i < len(level):
                 left = level[i]
                 if i + 1 < len(level):
@@ -297,15 +298,79 @@ function MERKLEIZE_POL_KEYSETS(leaves):
     return MERKLEIZE(
         leaves,
         "Cashu_PoL_Keyset_Node_v1",
-        "Cashu_PoL_Keyset_Empty_v1"
+        "Cashu_PoL_Keyset_Empty_v1",
+        MAX_KEYSETS
     )
 
 function MERKLEIZE_BONDED_KEYSETS(leaves):
     return MERKLEIZE(
         leaves,
         "Cashu_Bonded_PoL_Keyset_Node_v1",
-        "Cashu_Bonded_PoL_Keyset_Empty_v1"
+        "Cashu_Bonded_PoL_Keyset_Empty_v1",
+        MAX_KEYSETS
     )
+
+function VERIFY_AMOUNT_KEYS_ROOT(keys, committed_root):
+    ASSERT(1 <= len(keys) && len(keys) <= MAX_AMOUNT_KEYS)
+    leaves = []
+    for i in 0 .. MAX_AMOUNT_KEYS-1:
+        if i < len(keys):
+            if i > 0:
+                ASSERT(keys[i-1].amount < keys[i].amount)
+            ASSERT(len(keys[i].pubkey_xonly) == 32)
+            APPEND(leaves, SHA256(
+                "Cashu_Bonded_PoL_Amount_Key_v1"
+                || U64BE(keys[i].amount)
+                || keys[i].pubkey_xonly
+            ))
+    root = MERKLEIZE(
+        leaves,
+        "Cashu_Bonded_PoL_Amount_Key_Node_v1",
+        "Cashu_Bonded_PoL_Amount_Key_Empty_v1",
+        MAX_AMOUNT_KEYS
+    )
+    return root == committed_root
+
+function VERIFY_AMOUNT_KEY(amount, pubkey, proof, committed_root):
+    ASSERT(len(pubkey) == 32)
+    ASSERT(1 <= proof.leaf_count && proof.leaf_count <= MAX_AMOUNT_KEYS)
+    ASSERT(proof.leaf_index < proof.leaf_count)
+    ASSERT(proof.path_len == CEIL_LOG2(proof.leaf_count))
+    current = SHA256(
+        "Cashu_Bonded_PoL_Amount_Key_v1"
+        || U64BE(amount)
+        || pubkey
+    )
+    width = proof.leaf_count
+    index = proof.leaf_index
+    for level in 0 .. MAX_AMOUNT_KEY_HEIGHT-1:
+        if level < proof.path_len:
+            sibling = proof.siblings[level]
+            if index == width - 1 && width mod 2 == 1:
+                ASSERT(sibling == current)
+            if index mod 2 == 0:
+                current = SHA256(
+                    "Cashu_Bonded_PoL_Amount_Key_Node_v1"
+                    || current || sibling
+                )
+            else:
+                current = SHA256(
+                    "Cashu_Bonded_PoL_Amount_Key_Node_v1"
+                    || sibling || current
+                )
+            index = index / 2
+            width = (width + 1) / 2
+    ASSERT(width == 1 && index == 0)
+    return current == committed_root
+
+function CEIL_LOG2(n):
+    ASSERT(1 <= n && n <= MAX_AMOUNT_KEYS)
+    result = 0
+    width = 1
+    while width < n:
+        width = width << 1
+        result = result + 1
+    return result
 
 function SET_BIT_HEIGHTS_DESCENDING(n):
     heights = []
@@ -393,8 +458,7 @@ function VERIFY_RECEIPT(
     item,
     value,
     target_epoch,
-    amount_pubkey,
-    authenticated_keyset
+    amount_pubkey
 ):
     if leaf_type == ISSUED:
         message = "Cashu_PoL_Receipt_Issued:" || hex(item)
@@ -404,7 +468,6 @@ function VERIFY_RECEIPT(
                   || ":" || decimal(target_epoch)
     else:
         FAIL
-    ASSERT(authenticated_keyset.amount_keys[value] == amount_pubkey)
     ASSERT(CSFS(sig, SHA256(utf8(message)), amount_pubkey))
 ```
 
@@ -678,6 +741,7 @@ macro VERIFY_EPOCH(epoch, keysets[], signatures[]):
             bonded_leaf[i] = SHA256(
                 "Cashu_Bonded_PoL_Keyset_v1"
                 || pol_leaf[i]
+                || k.amount_keys_root
                 || U64BE(k.redemption_end_epoch)
             )
 
@@ -826,6 +890,7 @@ old_active_state_fields
 old_epoch_fields
 proposed_epoch_fields
 proposed_keyset_slots[MAX_KEYSETS]
+new_amount_key_sets[MAX_KEYSETS][MAX_AMOUNT_KEYS]
 manifest_signatures[MAX_KEYSETS]
 issued_consistency_proofs[MAX_KEYSETS]
 spent_consistency_proofs[MAX_KEYSETS]
@@ -880,6 +945,7 @@ for i in 0 .. MAX_KEYSETS-1:               # statically unrolled
             )
 
         if old_keyset exists:
+            ASSERT(new_amount_key_sets[i] is empty)
             ASSERT(
                 new_keyset.deactivation_epoch
                 == old_keyset.deactivation_epoch
@@ -888,6 +954,10 @@ for i in 0 .. MAX_KEYSETS-1:               # statically unrolled
             ASSERT(
                 new_keyset.redemption_end_epoch
                 == old_keyset.redemption_end_epoch
+            )
+            ASSERT(
+                new_keyset.amount_keys_root
+                == old_keyset.amount_keys_root
             )
 
             if !old_keyset.active:
@@ -909,6 +979,10 @@ for i in 0 .. MAX_KEYSETS-1:               # statically unrolled
                     == old_keyset.spent_tree
                 )
         else:
+            ASSERT(VERIFY_AMOUNT_KEYS_ROOT(
+                new_amount_key_sets[i],
+                new_keyset.amount_keys_root
+            ))
             ASSERT(
                 proposed_epoch.epoch_index
                 < new_keyset.deactivation_epoch
@@ -979,6 +1053,14 @@ VERIFY_CURRENT_STATE(old)
 ASSERT(old.state_tag == PENDING)
 
 challenge_hash = HASH_CHALLENGE(leaf_challenge)
+ASSERT(target_keyset commitment is included in old.proposed_epoch_hash)
+
+ASSERT(VERIFY_AMOUNT_KEY(
+    leaf_challenge.value,
+    leaf_challenge.amount_pubkey_xonly,
+    amount_key_proof,
+    target_keyset.amount_keys_root
+))
 
 VERIFY_RECEIPT(
     leaf_challenge.receipt_signature,
@@ -986,12 +1068,10 @@ VERIFY_RECEIPT(
     leaf_challenge.item,
     leaf_challenge.value,
     leaf_challenge.receipt_target_epoch,
-    keyset_amount_pubkey,
-    target_keyset
+    leaf_challenge.amount_pubkey_xonly
 )
 
 ASSERT(leaf_challenge.target_epoch >= leaf_challenge.receipt_target_epoch)
-ASSERT(target_keyset commitment is included in old.proposed_epoch_hash)
 
 new.state_tag = CHALLENGED
 new.disputed_epoch_hash = old.proposed_epoch_hash
@@ -1214,6 +1294,16 @@ ASSERT(old.state_tag == WITHDRAWAL_DELAY)
 ASSERT(old.closing_epoch != null)
 
 challenge_hash = HASH_CHALLENGE(leaf_challenge)
+ASSERT(
+    target_keyset commitment is included in old.active_epoch_hash
+)
+
+ASSERT(VERIFY_AMOUNT_KEY(
+    leaf_challenge.value,
+    leaf_challenge.amount_pubkey_xonly,
+    amount_key_proof,
+    target_keyset.amount_keys_root
+))
 
 VERIFY_RECEIPT(
     leaf_challenge.receipt_signature,
@@ -1221,14 +1311,10 @@ VERIFY_RECEIPT(
     leaf_challenge.item,
     leaf_challenge.value,
     leaf_challenge.receipt_target_epoch,
-    keyset_amount_pubkey,
-    target_keyset
+    leaf_challenge.amount_pubkey_xonly
 )
 
 ASSERT(leaf_challenge.target_epoch >= leaf_challenge.receipt_target_epoch)
-ASSERT(
-    target_keyset commitment is included in old.active_epoch_hash
-)
 ASSERT(len(witness.challenger_xonly_pubkey) == 32)
 
 new.state_tag = CHALLENGED
