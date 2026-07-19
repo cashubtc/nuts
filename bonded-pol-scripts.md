@@ -555,10 +555,9 @@ for i in 0 .. MAX_KEYSETS-1:               # statically unrolled
                 < new_keyset.redemption_end_epoch
             )
 
-        if new_keyset.deactivation_epoch != null:
-            if proposed_epoch.epoch_index
-               >= new_keyset.deactivation_epoch:
-                ASSERT(!new_keyset.active)
+        if proposed_epoch.epoch_index
+           >= new_keyset.deactivation_epoch:
+            ASSERT(!new_keyset.active)
 
         if old.closing_epoch != null:
             ASSERT(old_keyset exists)
@@ -783,7 +782,6 @@ else if violation_kind == ISSUANCE_AFTER_LOCK:
     )
 
 else if violation_kind == DEACTIVATION_OVERRUN:
-    ASSERT(manifest_a.deactivation_epoch != null)
     ASSERT(manifest_a.active)
     ASSERT(
         manifest_a.epoch_index

@@ -218,7 +218,7 @@ KeysetCommitment {
     spent_mmr_root_hash: bytes32,
     spent_mmr_root_sum: uint64,
     active: bool,
-    deactivation_epoch: optional<uint64>,
+    deactivation_epoch: uint64,
     redemption_end_epoch: uint64,
     outstanding_balance: uint64
 }
@@ -357,9 +357,9 @@ For every keyset, the transition MUST additionally enforce:
 2. An existing keyset's `deactivation_epoch` is unchanged.
 3. `active` cannot change from false to true.
 4. If the old keyset is inactive, the new issued MMR is exactly equal to the old issued MMR.
-5. If `deactivation_epoch` is non-null and `proposed_epoch.epoch_index >= deactivation_epoch`, the new keyset is inactive.
+5. If `proposed_epoch.epoch_index >= deactivation_epoch`, the new keyset is inactive.
 
-A bonded keyset MUST have non-null `deactivation_epoch` and MUST commit at birth to:
+A bonded keyset inherits the required base-PoL `deactivation_epoch` and MUST commit at birth to:
 
 ```text
 birth_epoch < deactivation_epoch < redemption_end_epoch
