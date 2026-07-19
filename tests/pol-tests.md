@@ -182,6 +182,55 @@ This test vector uses three leaf nodes, representing a sum-MMR of size 3.
   ]
   ```
 
+### Consistency Proof from 3 to 4 Leaves
+
+Append this fourth leaf with value `1000`:
+
+| Blinded Message B\_ (33-Byte Compressed Pubkey Hex)                  | Value | Hash                                                               | Leaf Index |
+| :------------------------------------------------------------------- | :---- | :----------------------------------------------------------------- | :--------- |
+| `021111111111111111111111111111111111111111111111111111111111111111` | 1000  | `e1577700e127f1ce6e20a4efc2d96a986979c755d9ab559af6b1755eb3f3220e` | 3          |
+
+For `[n, m) = [3, 4)`, the deterministic appended-range decomposition contains one aligned height-0 subtree. The consistency proof is:
+
+```json
+{
+  "old_size": 3,
+  "new_size": 4,
+  "old_peaks": [
+    {
+      "hash": "90e8e647a08f35b5b24653ab52e5d27a2deddb05d1e54d5d21777ef02036b29f",
+      "sum": 350,
+      "height": 1
+    },
+    {
+      "hash": "95b7ec67b1f85ca98781f08fc4613559820b99f178707b29c8ebb4577aca5f40",
+      "sum": 500,
+      "height": 0
+    }
+  ],
+  "appended_subtrees": [
+    {
+      "hash": "e1577700e127f1ce6e20a4efc2d96a986979c755d9ab559af6b1755eb3f3220e",
+      "sum": 1000,
+      "height": 0
+    }
+  ]
+}
+```
+
+Verification proceeds as follows:
+
+1. Bagging the two old peaks reproduces the 3-leaf root `2518b42edfff24ecc53c8897d1860783d1d26c41d61c378fe612cddeed877040` with sum `850`.
+2. Push the appended height-0 node. It merges with the old height-0 peak to produce height-1 node `(197e3fd28f9b41840f7fa83cd78d0cd40436925fadeb6a87f0d89bf41a810f30, 1500)`.
+3. That node merges with the old height-1 peak to produce the single height-2 peak.
+
+The expected 4-leaf MMR is:
+
+- **Root Hash:** `52bab3d1d98672c800ec1b86b360e18b738be260c1d1a2f4108998b336bc56d6`
+- **Root Sum:** `1850`
+
+Changing either old peak, the appended subtree, any sum, or any height MUST make the proof fail against at least one committed root or the deterministic height sequence.
+
 ---
 
 ## 4. Epoch Manifest Signatures

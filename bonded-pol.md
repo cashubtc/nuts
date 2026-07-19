@@ -21,7 +21,7 @@ This document specifies:
 1. The covenant capabilities required by Bonded PoL.
 2. The state committed by a PoL bond output.
 3. Epoch publication, finalization, challenge, slashing, and withdrawal transitions.
-4. On-chain resolution of the four fraud challenges defined by [NUT-XX][pol].
+4. On-chain prevention of MMR consistency violations and resolution of the other three fraud challenges defined by [NUT-XX][pol].
 5. Canonical commitments and relative delays required for consensus-enforced adjudication.
 
 This document does not specify:
@@ -337,7 +337,11 @@ proposed_epoch.previous_global_digest == active_epoch.global_digest
 
 The covenant MUST verify every proposed keyset manifest signature, reconstruct `global_digest`, and verify the sorted keyset commitment root, every keyset sum, and the total outstanding balance. The proposed keyset list MUST contain every unexpired keyset exactly once, as required by NUT-XX.
 
-For every keyset present in both epochs:
+For every keyset present in both epochs, the publication witness MUST contain one NUT-XX consistency proof for the issued MMR and one for the spent MMR. The covenant MUST execute the NUT-XX consistency algorithm and require each proof to resolve exactly from the active epoch's size, root, and sum to the proposed epoch's size, root, and sum.
+
+For a keyset that first appears in the proposed epoch, both consistency proofs MUST use the canonical empty MMR as their old state. Consequently, all issuance and spending recorded before the keyset's first bonded epoch is still committed as an append from an empty history.
+
+The transition MUST reject any proposed epoch unless every issued and spent MMR passes consistency verification. The size inequalities below are necessary but not sufficient:
 
 ```text
 new.issued_mmr_size >= old.issued_mmr_size
@@ -423,12 +427,11 @@ A conforming implementation MUST permit challenges against the final active epoc
 
 Challenge identifiers are:
 
-| Value | Challenge                       |
-| :---- | :------------------------------ |
-| `0`   | `leaf_omission_or_mismatch`     |
-| `1`   | `append_only_violation`         |
-| `2`   | `manifest_equivocation`         |
-| `3`   | `sum_mmr_consistency_violation` |
+| Value | Challenge                   |
+| :---- | :-------------------------- |
+| `0`   | `leaf_omission_or_mismatch` |
+| `1`   | `append_only_violation`     |
+| `2`   | `manifest_equivocation`     |
 
 All referenced epoch and keyset commitments MUST be proven against the covenant state or one of its ancestor states. A caller-supplied root that was never committed by the bond is invalid.
 
@@ -495,27 +498,6 @@ VerifyManifestSignature(manifest_a, mint_pubkey)
 At least one manifest MUST match a keyset commitment contained in a bond-committed epoch. This prevents unrelated signatures made before the bond existed from being used unless the bond adopted the corresponding history.
 
 If all predicates succeed, the challenge transaction MAY slash atomically.
-
-### 9.4 sum-MMR Consistency Violation
-
-This is a response-based challenge.
-
-The challenge identifies:
-
-```text
-ConsistencyChallenge {
-    keyset_id: bytes,
-    epoch_index_1: uint64,
-    epoch_index_2: uint64,
-    tree_type: uint8             // 0 = issued, 1 = spent
-}
-```
-
-Both epochs MUST be committed by the bond and `epoch_index_2` MUST be greater than `epoch_index_1`.
-
-The mint refutes the challenge with a bounded MMR consistency proof demonstrating that the later root and sum extend the earlier root and sum. The proof MUST conform to `MAX_MMR_HEIGHT` and resolve exactly to both committed states.
-
-If no valid response spends the challenged output during `RESPONSE_PERIOD`, the bond is slashable.
 
 ---
 

@@ -78,10 +78,45 @@ Maintain a stack of `(node, height)` peaks:
 
 ### 4. Append-Only Consistency Verification
 
-To verify that MMR `M` extends MMR `N`, where `m > n`, use either:
+To verify that MMR `M` extends MMR `N`, where `m > n`, use either the consistency proof below or the sibling-path prefix check.
 
-1. **MMR consistency proof:** Prove that `N`'s peaks are preserved and folded into `M`.
-2. **Sibling-path prefix check:** Re-request an inclusion proof in a later epoch and require the old sibling path to prefix the new one.
+#### Consistency Proof
+
+A consistency proof contains:
+
+1. `old_size = n` and `new_size = m`.
+2. `old_peaks`: every peak of `N`, from left to right, as `(hash, sum, height)`.
+3. `appended_subtrees`: the roots of the deterministic decomposition of leaf range `[n, m)`, from left to right, as `(hash, sum, height)`.
+
+The deterministic decomposition of `[n, m)` is computed as follows:
+
+```text
+cursor = n
+while cursor < m:
+    choose the largest h such that:
+        2^h <= m - cursor
+        and cursor mod 2^h == 0
+    emit (cursor, h)
+    cursor += 2^h
+```
+
+Each emitted `(cursor, h)` identifies a complete, aligned subtree covering leaves `[cursor, cursor + 2^h)`. The proof supplies only that subtree's root hash and sum. The number, order, and heights of the supplied roots are derived from `n` and `m` and MUST NOT be trusted from the proof.
+
+Verify the proof as follows:
+
+1. Require `old_size` and `new_size` to equal the applicable manifest MMR sizes and require `0 <= n < m < 2^63`.
+2. Derive `N`'s expected peak heights from the set bits of `n`, highest first. Require `old_peaks` to contain exactly one node for each expected height, in that order, with no extra nodes.
+3. Bag `old_peaks` right to left. Require the result to equal `N`'s manifest root hash and root sum. For `n = 0`, require an empty `old_peaks` list and the empty MMR root.
+4. Derive the expected appended subtree heights with the decomposition algorithm above. Require `appended_subtrees` to have exactly those heights in exactly that order.
+5. Initialize a stack with `old_peaks`. For each appended subtree, push `(node, height)`. While the top two stack entries have equal height, pop right then left, compute `Parent(left, right)`, and push it at height `h + 1`.
+6. Derive `M`'s expected peak heights from the set bits of `m`, highest first. Require the final stack to have exactly those heights in that order.
+7. Bag the final stack right to left and require the result to equal `M`'s manifest root hash and root sum.
+
+This proves that every old peak is preserved unchanged and that only complete subtrees covering the appended suffix are folded into it. The appended subtree roots need no leaf-level proofs: consistency constrains preservation of the old prefix, while the later manifest commits to the contents of the appended suffix.
+
+#### Sibling-Path Prefix Check
+
+As a client-specific alternative, re-request an inclusion proof in a later epoch and require the old sibling path to prefix the new one as specified under Verification Protocol.
 
 ---
 
@@ -522,18 +557,30 @@ The protocol defines four challenge types.
     "epoch_index_2": 12,
     "tree_type": "issued | spent",
     "consistency_proof": {
-      "old_size": 125000,
-      "new_size": 126500,
-      "proof_hashes": [
+      "old_size": 3,
+      "new_size": 4,
+      "old_peaks": [
         {
-          "hash": "8f3c45d51e9bb2a50c25a40b89f460ccd8b120de84929ee29502e7c99184f60f",
-          "sum": 1000000,
-          "height": 3
+          "hash": "90e8e647a08f35b5b24653ab52e5d27a2deddb05d1e54d5d21777ef02036b29f",
+          "sum": 350,
+          "height": 1
+        },
+        {
+          "hash": "95b7ec67b1f85ca98781f08fc4613559820b99f178707b29c8ebb4577aca5f40",
+          "sum": 500,
+          "height": 0
+        }
+      ],
+      "appended_subtrees": [
+        {
+          "hash": "e1577700e127f1ce6e20a4efc2d96a986979c755d9ab559af6b1755eb3f3220e",
+          "sum": 1000,
+          "height": 0
         }
       ]
     }
   }
   ```
-- **Response:** The mint refutes the challenge with a consistency proof that derives `E_2` from `E_1` and verifies against both manifests' roots and sums. Discovery and response deadlines are outside this NUT; silence is not cryptographic proof of fraud.
+- **Response:** The mint refutes the challenge with a consistency proof that passes the algorithm under Append-Only Consistency Verification and resolves exactly to both manifests' sizes, roots, and sums. Discovery and response deadlines are outside this NUT; silence is not cryptographic proof of fraud.
 
 [tests]: tests/pol-tests.md

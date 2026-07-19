@@ -203,15 +203,13 @@ The bond Taproot tree contains these leaves:
 L0  publish_epoch
 L1  finalize_epoch
 L2  open_leaf_challenge
-L3  open_consistency_challenge
-L4  refute_leaf_challenge
-L5  refute_consistency_challenge
-L6  slash_timeout
-L7  slash_equivocation
-L8  slash_append_only
-L9  begin_wind_down
-L10 cancel_wind_down_with_challenge
-L11 withdraw_after_wind_down
+L3  refute_leaf_challenge
+L4  slash_timeout
+L5  slash_equivocation
+L6  slash_append_only
+L7  begin_wind_down
+L8  cancel_wind_down_with_challenge
+L9  withdraw_after_wind_down
 ```
 
 The tree SHOULD place common cooperative leaves near the root:
@@ -361,15 +359,62 @@ Every unused path and peak slot MUST be empty. This prevents alternative witness
 
 ```text
 macro VERIFY_CONSISTENCY(old_tree, new_tree, proof):
-    ASSERT(old_tree.size <= new_tree.size)
-    ASSERT(proof.len <= MAX_MMR_HEIGHT + 1)
-    old_peaks = DERIVE_OLD_PEAKS(old_tree.size, proof)
-    ASSERT(BAG(old_peaks) == (old_tree.root_hash, old_tree.root_sum))
-    new_peaks = APPEND_PROOF_SUBTREES(old_peaks, proof, new_tree.size)
-    ASSERT(BAG(new_peaks) == (new_tree.root_hash, new_tree.root_sum))
+    n = old_tree.size
+    m = new_tree.size
+    ASSERT(0 <= n < m < 2^63)
+
+    expected_old_heights = SET_BIT_HEIGHTS_DESCENDING(n)
+    ASSERT(proof.old_peaks.len == len(expected_old_heights))
+
+    for i in 0 .. MAX_MMR_HEIGHT-1:       # statically unrolled
+        if i < proof.old_peaks.len:
+            ASSERT(proof.old_peaks[i].height == expected_old_heights[i])
+
+    if n == 0:
+        ASSERT(proof.old_peaks.len == 0)
+        ASSERT(old_tree == EMPTY_MMR)
+    else:
+        ASSERT(
+            BAG(proof.old_peaks)
+            == (old_tree.root_hash, old_tree.root_sum)
+        )
+
+    expected_append_heights = DECOMPOSE_ALIGNED_RANGE(n, m)
+    ASSERT(
+        proof.appended_subtrees.len
+        == len(expected_append_heights)
+    )
+    ASSERT(
+        proof.appended_subtrees.len
+        <= 2 * MAX_MMR_HEIGHT + 1
+    )
+
+    stack = proof.old_peaks
+
+    for i in 0 .. 2 * MAX_MMR_HEIGHT:      # statically unrolled
+        if i < proof.appended_subtrees.len:
+            subtree = proof.appended_subtrees[i]
+            ASSERT(subtree.height == expected_append_heights[i])
+            stack.push(subtree)
+
+            for j in 0 .. MAX_MMR_HEIGHT-1: # statically unrolled
+                if stack.len >= 2 && stack[-2].height == stack[-1].height:
+                    right = stack.pop()
+                    left = stack.pop()
+                    stack.push({
+                        hash: SHA256(
+                            left.hash || right.hash
+                            || U64BE(left.sum) || U64BE(right.sum)
+                        ),
+                        sum: OP_U64ADD(left.sum, right.sum),
+                        height: left.height + 1
+                    })
+
+    ASSERT(STACK_HEIGHTS(stack) == SET_BIT_HEIGHTS_DESCENDING(m))
+    ASSERT(BAG(stack) == (new_tree.root_hash, new_tree.root_sum))
 ```
 
-`DERIVE_OLD_PEAKS` and `APPEND_PROOF_SUBTREES` MUST use the exact consistency algorithm and test vectors adopted by NUT-XX. Until NUT-XX defines that proof algorithm beyond its abstract response schema, `L5 refute_consistency_challenge` cannot be compiled. This is a blocking dependency, not an implementation choice.
+`DECOMPOSE_ALIGNED_RANGE(n, m)` starts at `cursor = n`, repeatedly selects the largest height `h` for which `2^h <= m - cursor` and `cursor mod 2^h == 0`, emits `h`, and advances `cursor` by `2^h`. Its output is derived inside the script and MUST NOT be accepted from the witness. The implementation MUST reproduce the vectors in NUT-XX.
 
 ---
 
@@ -394,6 +439,8 @@ old_epoch_fields
 proposed_epoch_fields
 proposed_keyset_slots[MAX_KEYSETS]
 manifest_signatures[MAX_KEYSETS]
+issued_consistency_proofs[MAX_KEYSETS]
+spent_consistency_proofs[MAX_KEYSETS]
 mint_transaction_signature
 L0_script
 control_block
@@ -406,6 +453,38 @@ VERIFY_CURRENT_STATE(old)
 ASSERT(old.state_tag == ACTIVE)
 VERIFY_EPOCH(old_epoch, old_keysets, old_signatures)
 VERIFY_EPOCH(proposed_epoch, proposed_keysets, proposed_signatures)
+
+for i in 0 .. MAX_KEYSETS-1:               # statically unrolled
+    if i < len(proposed_keysets):
+        new_keyset = proposed_keysets[i]
+        old_keyset = FIND_BY_ID(old_keysets, new_keyset.keyset_id)
+
+        if old_keyset exists:
+            old_issued = old_keyset.issued_tree
+            old_spent = old_keyset.spent_tree
+        else:
+            old_issued = EMPTY_MMR
+            old_spent = EMPTY_MMR
+
+        if old_issued.size == new_keyset.issued_tree.size:
+            ASSERT(old_issued == new_keyset.issued_tree)
+            ASSERT(issued_consistency_proofs[i] is empty)
+        else:
+            VERIFY_CONSISTENCY(
+                old_issued,
+                new_keyset.issued_tree,
+                issued_consistency_proofs[i]
+            )
+
+        if old_spent.size == new_keyset.spent_tree.size:
+            ASSERT(old_spent == new_keyset.spent_tree)
+            ASSERT(spent_consistency_proofs[i] is empty)
+        else:
+            VERIFY_CONSISTENCY(
+                old_spent,
+                new_keyset.spent_tree,
+                spent_consistency_proofs[i]
+            )
 
 ASSERT(proposed_epoch.epoch_index == old_epoch.epoch_index + 1)
 ASSERT(proposed_epoch.previous_global_digest == old_epoch.global_digest)
@@ -481,27 +560,7 @@ VERIFY_SUCCESSOR(old, new)
 
 The challenger key MUST be exactly 32 bytes. If challenge bonds are enabled, their script is a separate input contract and is not checked by the PoL bond leaf.
 
-### 7.4 `L3 open_consistency_challenge`
-
-```text
-VERIFY_CURRENT_STATE(old)
-ASSERT(old.state_tag == PENDING || old.state_tag == WIND_DOWN)
-ASSERT(epoch_1 is in authenticated bond ancestry)
-ASSERT(epoch_2 == old disputed epoch)
-ASSERT(epoch_1.index < epoch_2.index)
-ASSERT(tree_type == ISSUED || tree_type == SPENT)
-
-new.state_tag = CHALLENGED
-new.challenge_type = SUM_MMR_CONSISTENCY_VIOLATION
-new.challenge_hash = HASH_CHALLENGE(consistency_challenge)
-new.challenger_xonly_pubkey = witness.challenger_xonly_pubkey
-
-VERIFY_SUCCESSOR(old, new)
-```
-
-`epoch_1` ancestry is demonstrated by the authenticated epoch-history MMR carried in every state. Publication appends the prior active epoch hash to this MMR. The challenge witness supplies its inclusion proof.
-
-### 7.5 `L4 refute_leaf_challenge`
+### 7.4 `L3 refute_leaf_challenge`
 
 ```text
 VERIFY_CURRENT_STATE(old)
@@ -523,22 +582,7 @@ VERIFY_SUCCESSOR(old, new)
 
 The successful response needs no mint signature; possession of a valid inclusion proof is sufficient.
 
-### 7.6 `L5 refute_consistency_challenge`
-
-```text
-VERIFY_CURRENT_STATE(old)
-ASSERT(old.state_tag == CHALLENGED)
-ASSERT(old.challenge_type == SUM_MMR_CONSISTENCY_VIOLATION)
-ASSERT(HASH_CHALLENGE(challenge) == old.challenge_hash)
-
-VERIFY_CONSISTENCY(old_tree, new_tree, response.consistency_proof)
-
-new.state_tag = ACTIVE
-new.active_epoch_hash = old.disputed_epoch_hash
-VERIFY_SUCCESSOR(old, new)
-```
-
-### 7.7 `L6 slash_timeout`
+### 7.5 `L4 slash_timeout`
 
 Transaction:
 
@@ -571,7 +615,7 @@ OP_CHECKCONTRACTVERIFY
 
 No recursive output is created. BIP-443 full-value preservation sends the entire bond to output `0`. Fees cannot be taken from the bond.
 
-### 7.8 `L7 slash_equivocation`
+### 7.6 `L5 slash_equivocation`
 
 This leaf performs an atomic challenge and slash.
 
@@ -584,7 +628,7 @@ signature_a
 manifest_b_fields
 signature_b
 challenger_xonly_pubkey
-L7_script
+L5_script
 control_block
 ```
 
@@ -607,9 +651,9 @@ ASSERT(one manifest is included in authenticated bond history)
 PAY_FULL_BOND_TO_P2TR(challenger_xonly_pubkey)
 ```
 
-`PAY_FULL_BOND_TO_P2TR` expands to the same `OP_CCV` sequence used by `L6`. Because the challenger key and proof are in the same spending witness, a copied transaction cannot redirect the payout without changing the covenant-checked output.
+`PAY_FULL_BOND_TO_P2TR` expands to the same `OP_CCV` sequence used by `L4`. Because the challenger key and proof are in the same spending witness, a copied transaction cannot redirect the payout without changing the covenant-checked output.
 
-### 7.9 `L8 slash_append_only`
+### 7.7 `L6 slash_append_only`
 
 ```text
 VERIFY_CURRENT_STATE(old)
@@ -632,7 +676,7 @@ PAY_FULL_BOND_TO_P2TR(challenger_xonly_pubkey)
 
 `PATH_PREFIX` compares hash, sum, and `is_left` for every enabled slot of the earlier path.
 
-### 7.10 `L9 begin_wind_down`
+### 7.8 `L7 begin_wind_down`
 
 ```text
 VERIFY_CURRENT_STATE(old)
@@ -646,11 +690,11 @@ new.mint_withdrawal_xonly_pubkey = witness.mint_withdrawal_xonly_pubkey
 VERIFY_SUCCESSOR(old, new)
 ```
 
-### 7.11 `L10 cancel_wind_down_with_challenge`
+### 7.9 `L8 cancel_wind_down_with_challenge`
 
-This leaf is the wind-down equivalent of `L2` or `L3`. It verifies the selected challenge-opening predicate and creates `CHALLENGED`. After a successful refutation, the state returns to `ACTIVE`; the mint must begin a new full wind-down period.
+This leaf is the wind-down equivalent of `L2`. It verifies the leaf-challenge opening predicate and creates `CHALLENGED`. After a successful refutation, the state returns to `ACTIVE`; the mint must begin a new full wind-down period.
 
-### 7.12 `L11 withdraw_after_wind_down`
+### 7.10 `L9 withdraw_after_wind_down`
 
 ```text
 VERIFY_CURRENT_STATE(old)
@@ -693,11 +737,10 @@ These equalities follow from BIP-443 full residual-value preservation. All trans
 
 ## 9. Remaining Blocking Definitions
 
-This script profile is concrete about covenant transitions, but three dependencies must be completed before bytecode can be produced:
+This script profile is concrete about covenant transitions, but two dependencies must be completed before bytecode can be produced:
 
-1. **MMR consistency algorithm:** NUT-XX currently gives a response shape but does not define the exact algorithm mapping `proof_hashes` to old and new peak forests.
-2. **Keyset expiry:** Base Cashu expiry uses time-oriented semantics. Bonded consensus needs an unambiguous covenant-verifiable rule or must require expired keysets to remain committed indefinitely.
-3. **64-bit opcode proposal:** The arithmetic operations in Section 2.2 need consensus encodings, resource limits, and numeric rules.
+1. **Keyset expiry:** Base Cashu expiry uses time-oriented semantics. Bonded consensus needs an unambiguous covenant-verifiable rule or must require expired keysets to remain committed indefinitely.
+2. **64-bit opcode proposal:** The arithmetic operations in Section 2.2 need consensus encodings, resource limits, and numeric rules.
 
 Until these are fixed, any claimed final Tapscript bytecode would hide protocol choices rather than implement this specification.
 
@@ -715,15 +758,15 @@ begin_wind_down
 withdraw_after_wind_down
 ```
 
-Manifest equivocation is the best first end-to-end test because it exercises:
+This reduced tree exercises:
 
 - Recursive state with `OP_CCV`.
 - Arbitrary-message signatures with `OP_CSFS`.
 - Canonical message construction with `OP_CAT`.
 - Permissionless terminal payout.
-- No unresolved MMR consistency algorithm.
+- Mandatory issued and spent MMR consistency verification during publication.
 
-The leaf-omission and consistency paths SHOULD be added only after their bounded proof verifiers have independent test vectors.
+The leaf-omission challenge path SHOULD be added after its bounded inclusion-proof verifier has independent test vectors.
 
 [bip-347]: https://bips.dev/347/
 [bip-348]: https://bips.dev/348/
