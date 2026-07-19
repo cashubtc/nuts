@@ -613,7 +613,7 @@ Anyone may supply this witness. No signature is required.
 
 ```text
 VERIFY_CURRENT_STATE(old)
-ASSERT(old.state_tag == PENDING || old.state_tag == WITHDRAWAL_DELAY)
+ASSERT(old.state_tag == PENDING)
 
 challenge_hash = SHA256(
     "Cashu_Bonded_PoL_Challenge_v1"
@@ -630,9 +630,10 @@ VERIFY_RECEIPT(
 )
 
 ASSERT(leaf_challenge.target_epoch >= leaf_challenge.receipt_target_epoch)
-ASSERT(keyset commitment is included in disputed_epoch_hash)
+ASSERT(keyset commitment is included in old.proposed_epoch_hash)
 
 new.state_tag = CHALLENGED
+new.disputed_epoch_hash = old.proposed_epoch_hash
 new.challenge_type = LEAF_OMISSION_OR_MISMATCH
 new.challenge_hash = challenge_hash
 new.challenger_xonly_pubkey = witness.challenger_xonly_pubkey
@@ -845,6 +846,43 @@ Residual `outstanding_balance` is permitted and remains committed as expired lia
 ### 7.11 `L10 cancel_withdrawal_delay_with_challenge`
 
 This leaf is the withdrawal-delay equivalent of `L2`. It verifies the leaf-challenge opening predicate and creates `CHALLENGED`. After a successful refutation, the state returns to closing `ACTIVE`; the mint must enter a new full withdrawal delay.
+
+```text
+VERIFY_CURRENT_STATE(old)
+ASSERT(old.state_tag == WITHDRAWAL_DELAY)
+ASSERT(old.closing_epoch != null)
+
+challenge_hash = SHA256(
+    "Cashu_Bonded_PoL_Challenge_v1"
+    || canonical(leaf_challenge)
+)
+
+VERIFY_RECEIPT(
+    leaf_challenge.receipt_signature,
+    leaf_challenge.leaf_type,
+    leaf_challenge.item,
+    leaf_challenge.value,
+    leaf_challenge.receipt_target_epoch,
+    keyset_amount_pubkey
+)
+
+ASSERT(leaf_challenge.target_epoch >= leaf_challenge.receipt_target_epoch)
+ASSERT(
+    keyset commitment is included in old.active_epoch_hash
+)
+ASSERT(len(witness.challenger_xonly_pubkey) == 32)
+
+new.state_tag = CHALLENGED
+new.active_epoch_hash = old.active_epoch_hash
+new.disputed_epoch_hash = old.active_epoch_hash
+new.challenge_type = LEAF_OMISSION_OR_MISMATCH
+new.challenge_hash = challenge_hash
+new.challenger_xonly_pubkey = witness.challenger_xonly_pubkey
+
+VERIFY_SUCCESSOR(old, new)
+```
+
+The transition removes the `WITHDRAWAL_DELAY` body, including its committed withdrawal key. If `L3` refutes the challenge, its successor is closing `ACTIVE`, not `WITHDRAWAL_DELAY`. Consequently `L11` is unavailable until the mint executes `L9` again, commits a withdrawal key again, and the new output ages for the complete `WITHDRAWAL_DELAY_PERIOD`.
 
 ### 7.12 `L11 withdraw_after_delay`
 
