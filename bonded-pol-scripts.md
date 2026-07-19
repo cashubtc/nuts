@@ -207,9 +207,10 @@ L3  refute_leaf_challenge
 L4  slash_timeout
 L5  slash_equivocation
 L6  slash_append_only
-L7  begin_wind_down
-L8  cancel_wind_down_with_challenge
-L9  withdraw_after_wind_down
+L7  slash_rotation_violation
+L8  begin_wind_down
+L9  cancel_wind_down_with_challenge
+L10 withdraw_after_wind_down
 ```
 
 The tree SHOULD place common cooperative leaves near the root:
@@ -486,6 +487,30 @@ for i in 0 .. MAX_KEYSETS-1:               # statically unrolled
                 spent_consistency_proofs[i]
             )
 
+        if old_keyset exists:
+            ASSERT(
+                new_keyset.deactivation_epoch
+                == old_keyset.deactivation_epoch
+            )
+            ASSERT(old_keyset.active || !new_keyset.active)
+
+            if !old_keyset.active:
+                ASSERT(
+                    new_keyset.issued_tree
+                    == old_keyset.issued_tree
+                )
+        else:
+            ASSERT(
+                new_keyset.deactivation_epoch == null
+                || new_keyset.deactivation_epoch
+                   > proposed_epoch.epoch_index
+            )
+
+        if new_keyset.deactivation_epoch != null:
+            if proposed_epoch.epoch_index
+               >= new_keyset.deactivation_epoch:
+                ASSERT(!new_keyset.active)
+
 ASSERT(proposed_epoch.epoch_index == old_epoch.epoch_index + 1)
 ASSERT(proposed_epoch.previous_global_digest == old_epoch.global_digest)
 ASSERT(
@@ -676,7 +701,54 @@ PAY_FULL_BOND_TO_P2TR(challenger_xonly_pubkey)
 
 `PATH_PREFIX` compares hash, sum, and `is_left` for every enabled slot of the earlier path.
 
-### 7.8 `L7 begin_wind_down`
+### 7.8 `L7 slash_rotation_violation`
+
+```text
+VERIFY_CURRENT_STATE(old)
+ASSERT(old.state_tag == PENDING || old.state_tag == WIND_DOWN)
+
+ASSERT(VERIFY_MANIFEST_SIGNATURE(manifest_a, old.mint_pubkey))
+ASSERT(manifest_a.keyset_id == baseline.keyset_id)
+ASSERT(baseline is included in authenticated bond history)
+
+if violation_kind == REACTIVATION:
+    ASSERT(VERIFY_MANIFEST_SIGNATURE(manifest_b, old.mint_pubkey))
+    ASSERT(manifest_a.epoch_index < manifest_b.epoch_index)
+    ASSERT(!manifest_a.active && manifest_b.active)
+
+else if violation_kind == ISSUANCE_AFTER_LOCK:
+    ASSERT(VERIFY_MANIFEST_SIGNATURE(manifest_b, old.mint_pubkey))
+    ASSERT(manifest_a.epoch_index < manifest_b.epoch_index)
+    ASSERT(!manifest_a.active)
+    ASSERT(
+        manifest_a.issued_tree != manifest_b.issued_tree
+    )
+
+else if violation_kind == DEACTIVATION_OVERRUN:
+    ASSERT(manifest_a.deactivation_epoch != null)
+    ASSERT(manifest_a.active)
+    ASSERT(
+        manifest_a.epoch_index
+        >= manifest_a.deactivation_epoch
+    )
+
+else if violation_kind == DECLARATION_DRIFT:
+    ASSERT(VERIFY_MANIFEST_SIGNATURE(manifest_b, old.mint_pubkey))
+    ASSERT(manifest_a.epoch_index != manifest_b.epoch_index)
+    ASSERT(
+        manifest_a.deactivation_epoch
+        != manifest_b.deactivation_epoch
+    )
+
+else:
+    FAIL
+
+PAY_FULL_BOND_TO_P2TR(challenger_xonly_pubkey)
+```
+
+For two-manifest variants, `manifest_b.keyset_id` MUST equal `manifest_a.keyset_id`. At least one non-violating lifecycle baseline for that keyset MUST be authenticated by bond history; the violating signed manifest need not have passed `publish_epoch`.
+
+### 7.9 `L8 begin_wind_down`
 
 ```text
 VERIFY_CURRENT_STATE(old)
@@ -690,11 +762,11 @@ new.mint_withdrawal_xonly_pubkey = witness.mint_withdrawal_xonly_pubkey
 VERIFY_SUCCESSOR(old, new)
 ```
 
-### 7.9 `L8 cancel_wind_down_with_challenge`
+### 7.10 `L9 cancel_wind_down_with_challenge`
 
 This leaf is the wind-down equivalent of `L2`. It verifies the leaf-challenge opening predicate and creates `CHALLENGED`. After a successful refutation, the state returns to `ACTIVE`; the mint must begin a new full wind-down period.
 
-### 7.10 `L9 withdraw_after_wind_down`
+### 7.11 `L10 withdraw_after_wind_down`
 
 ```text
 VERIFY_CURRENT_STATE(old)

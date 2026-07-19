@@ -21,7 +21,7 @@ This document specifies:
 1. The covenant capabilities required by Bonded PoL.
 2. The state committed by a PoL bond output.
 3. Epoch publication, finalization, challenge, slashing, and withdrawal transitions.
-4. On-chain prevention of MMR consistency violations and resolution of the other three fraud challenges defined by [NUT-XX][pol].
+4. On-chain prevention of MMR consistency and lifecycle violations, plus resolution of the other fraud challenges defined by [NUT-XX][pol].
 5. Canonical commitments and relative delays required for consensus-enforced adjudication.
 
 This document does not specify:
@@ -213,6 +213,8 @@ KeysetCommitment {
     spent_mmr_size: uint64,
     spent_mmr_root_hash: bytes32,
     spent_mmr_root_sum: uint64,
+    active: bool,
+    deactivation_epoch: optional<uint64>,
     outstanding_balance: uint64
 }
 ```
@@ -230,6 +232,9 @@ SHA256(
     || bytes_8(spent_mmr_size)
     || spent_mmr_root_hash
     || bytes_8(spent_mmr_root_sum)
+    || bytes_1(active)
+    || bytes_1(has_deactivation_epoch)
+    [|| bytes_8(deactivation_epoch)]
 )
 ```
 
@@ -348,6 +353,16 @@ new.issued_mmr_size >= old.issued_mmr_size
 new.spent_mmr_size >= old.spent_mmr_size
 ```
 
+For every keyset, the transition MUST additionally enforce:
+
+1. A newly appearing keyset has `deactivation_epoch = null` or `deactivation_epoch > proposed_epoch.epoch_index`.
+2. An existing keyset's `deactivation_epoch` is unchanged.
+3. `active` cannot change from false to true.
+4. If the old keyset is inactive, the new issued MMR is exactly equal to the old issued MMR.
+5. If `deactivation_epoch` is non-null and `proposed_epoch.epoch_index >= deactivation_epoch`, the new keyset is inactive.
+
+These checks make lifecycle consistency a validity condition of the epoch transition rather than an optimistic challenge.
+
 A keyset may disappear only under a deterministic expiry rule fixed by `verifier_program_hash`. A deployment MAY instead require expired keysets to remain committed indefinitely.
 
 ### 8.3 Finalize: `PENDING_TO_ACTIVE`
@@ -432,6 +447,7 @@ Challenge identifiers are:
 | `0`   | `leaf_omission_or_mismatch` |
 | `1`   | `append_only_violation`     |
 | `2`   | `manifest_equivocation`     |
+| `3`   | `rotation_violation`        |
 
 All referenced epoch and keyset commitments MUST be proven against the covenant state or one of its ancestor states. A caller-supplied root that was never committed by the bond is invalid.
 
@@ -498,6 +514,19 @@ VerifyManifestSignature(manifest_a, mint_pubkey)
 At least one manifest MUST match a keyset commitment contained in a bond-committed epoch. This prevents unrelated signatures made before the bond existed from being used unless the bond adopted the corresponding history.
 
 If all predicates succeed, the challenge transaction MAY slash atomically.
+
+### 9.4 Keyset Rotation Violation
+
+This is a self-contained challenge. The challenger supplies a lifecycle baseline manifest committed by the bond plus one or two signed manifests satisfying a NUT-XX `rotation_violation` predicate.
+
+The covenant MUST:
+
+1. Verify every supplied manifest under `mint_pubkey`.
+2. Prove the baseline keyset commitment against authenticated bond history.
+3. Require all manifests to identify the same keyset.
+4. Evaluate exactly one of `reactivation`, `issuance_after_lock`, `deactivation_overrun`, or `declaration_drift` as defined by NUT-XX.
+
+The violating manifest need not have entered a bonded epoch. Signing a contradictory lifecycle statement for a keyset governed by the bond is sufficient. If the selected predicate succeeds, the challenge transaction MAY slash atomically.
 
 ---
 
