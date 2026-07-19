@@ -340,7 +340,7 @@ These independent histories exercise every `rotation_violation` predicate. All s
 
 ### 6.1 Clean Early Deactivation
 
-Epoch 1 declares `deactivation_epoch: 12`. Epoch 2 deactivates early, freezes the issued MMR, and grows only the spent MMR.
+Epoch 1 declares `deactivation_epoch: 12`. Epoch 2 deactivates early, freezes the issued MMR, and grows the spent MMR from size 0 to size 1 as existing ecash is redeemed. This is the expected post-deactivation behavior.
 
 ```text
 009a6154b71113b7:2:2026-06-12T12:00:00Z:1111111111111111111111111111111111111111111111111111111111111111:3:2518b42edfff24ecc53c8897d1860783d1d26c41d61c378fe612cddeed877040:850:1:6711094bb65007f6313a7c2edc4833378ef715aaf8f62ce0f9478c591dba1e85:100:750:false:12

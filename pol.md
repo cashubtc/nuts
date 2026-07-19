@@ -177,6 +177,8 @@ The redemption wind-down that exposes spent-side inflation begins only after a k
 5. **Epoch Deadline:** A keyset MUST be `active: false` in every manifest whose `epoch_index` is greater than or equal to its non-null `deactivation_epoch`.
 6. **Early Deactivation:** `deactivation_epoch` is an upper bound. The mint MAY deactivate the keyset in an earlier epoch.
 
+`active: false` closes the keyset for issuance only. Existing ecash remains redeemable until `final_expiry`; therefore the spent MMR MAY and ordinarily will continue growing after the lock epoch. Every such change remains subject to append-only consistency verification. The spent MMR freezes only when the keyset reaches `final_expiry` and redemptions are no longer accepted.
+
 Wallets SHOULD treat a null or unacceptably distant `deactivation_epoch` as providing no committed rotation schedule. Verifiers SHOULD cross-check `/v1/keysets`: after a keyset first appears, it MUST occur in every epoch closed before its NUT-02 `final_expiry`. A newly offered keyset may be absent from the latest already-closed epoch, and an expired keyset may remain listed for historical compatibility.
 
 ---

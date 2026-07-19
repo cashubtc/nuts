@@ -495,6 +495,8 @@ for i in 0 .. MAX_KEYSETS-1:               # statically unrolled
             ASSERT(old_keyset.active || !new_keyset.active)
 
             if !old_keyset.active:
+                # Issuance is locked, but spent_tree remains appendable
+                # until final_expiry so outstanding ecash can be redeemed.
                 ASSERT(
                     new_keyset.issued_tree
                     == old_keyset.issued_tree

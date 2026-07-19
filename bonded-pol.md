@@ -361,7 +361,7 @@ For every keyset, the transition MUST additionally enforce:
 4. If the old keyset is inactive, the new issued MMR is exactly equal to the old issued MMR.
 5. If `deactivation_epoch` is non-null and `proposed_epoch.epoch_index >= deactivation_epoch`, the new keyset is inactive.
 
-These checks make lifecycle consistency a validity condition of the epoch transition rather than an optimistic challenge.
+Inactivity prohibits issuance but does not prohibit redemption. The spent MMR of an inactive, unexpired keyset MAY grow and MUST pass the same mandatory consistency proof as every other MMR transition. These checks make lifecycle consistency a validity condition of the epoch transition rather than an optimistic challenge.
 
 A keyset may disappear only under a deterministic expiry rule fixed by `verifier_program_hash`. A deployment MAY instead require expired keysets to remain committed indefinitely.
 
