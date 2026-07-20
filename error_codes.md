@@ -32,6 +32,8 @@
 | 20007 | Quote is expired                                | [NUT-04][04], [NUT-05][05]                             |
 | 20008 | Signature for mint request invalid              | [NUT-20][20]                                           |
 | 20009 | Pubkey required for mint quote                  | [NUT-20][20]                                           |
+| 20010 | Offer ticket is unknown or expired              | [NUT-XX][xx]                                           |
+| 20011 | Offer ticket has already been claimed           | [NUT-XX][xx]                                           |
 | 30001 | Endpoint requires clear auth                    | [NUT-21][21]                                           |
 | 30002 | Clear authentication failed                     | [NUT-21][21]                                           |
 | 31001 | Endpoint requires blind auth                    | [NUT-22][22]                                           |
@@ -56,3 +58,4 @@
 [21]: 21.md
 [22]: 22.md
 [29]: 29.md
+[xx]: xx.md
