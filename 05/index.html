@@ -757,6 +757,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#custom-payment-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Payment Methods
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Custom Payment Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#melt-quote" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Melt Quote
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#adding-new-payment-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1389,16 +1417,20 @@
 <p>Depending on the payment method, the request structure may vary, but all methods will include at minimum:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span>
+<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="w">   </span><span class="c1">// Optional</span>
 <span class="w">  </span><span class="c1">// Additional method-specific fields will be required</span>
 <span class="p">}</span>
 </code></pre></div>
 
+<p><code>amount</code> is a common optional field; method-specific NUTs make it required or ignore it as needed (e.g. NUT-30 requires <code>amount</code> for onchain melts).</p>
 <p>The mint <code>Bob</code> responds with a quote that includes some common fields for all methods:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// UUID v7</span>
+<span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;fee_reserve&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span><span class="w">     </span><span class="c1">// Optional</span>
 <span class="w">  </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">STATE</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span>
@@ -1406,7 +1438,15 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p>Where <code>quote</code> is the quote ID string in UUID v7 format with all 74 variable bits generated by a CSPRNG, <code>amount</code> and <code>unit</code> the amount and unit that need to be provided, <code>method</code> is the payment method of the quote, and <code>expiry</code> is the Unix timestamp until which the melt quote is valid.</p>
+<p>Where</p>
+<ul>
+<li><code>quote</code> is the quote ID string in UUID v7 format with all 74 variable bits generated by a CSPRNG</li>
+<li><code>request</code> is the method-specific payment routing target</li>
+<li><code>amount</code> and <code>unit</code> the amount and unit that need to be provided</li>
+<li><code>fee_reserve</code> is the additional fee reserve for using the method (the wallet provides proofs covering at least <code>amount + fee_reserve + fee</code>, where <code>fee</code> is the keyset input fee per <a href="../02/">NUT-02</a>)</li>
+<li><code>method</code> is the payment method of the quote</li>
+<li><code>expiry</code> is the Unix timestamp until which the melt quote is valid.</li>
+</ul>
 <p><code>state</code> is an enum string field with possible values <code>"UNPAID"</code>, <code>"PENDING"</code>, <code>"PAID"</code>:</p>
 <ul>
 <li><code>"UNPAID"</code> means that the request has not been paid yet.</li>
@@ -1524,6 +1564,11 @@ For methods that involve external payments (like Lightning), a synchronous call 
 <span class="p">}</span>
 </code></pre></div>
 
+<h2 id="custom-payment-methods">Custom Payment Methods<a class="headerlink" href="#custom-payment-methods" title="Permanent link">&para;</a></h2>
+<p>Payment methods not specified in a dedicated NUT can be supported as custom payment methods. See <a href="../04/">NUT-04</a> for the custom method identifier definition and general conventions.</p>
+<h3 id="melt-quote">Melt Quote<a class="headerlink" href="#melt-quote" title="Permanent link">&para;</a></h3>
+<p>For a custom <code>{method}</code>, the wallet sends a request following the common melt quote request format (see <a href="#general-flow">General Flow</a>). The <code>request</code> field is the method-specific payment target (e.g., a bank account identifier, an on-chain address, a payment processor reference). <code>unit</code> is the unit the wallet would like to pay with.</p>
+<p>The mint responds with the common melt quote response format, using the standard <code>state</code> values (<code>"UNPAID"</code>, <code>"PENDING"</code>, <code>"PAID"</code>). Method-specific fields are defined by the method-specific NUT.</p>
 <h2 id="adding-new-payment-methods">Adding New Payment Methods<a class="headerlink" href="#adding-new-payment-methods" title="Permanent link">&para;</a></h2>
 <p>To add a new payment method (e.g., BOLT12), implement the following:</p>
 <ol>

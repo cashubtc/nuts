@@ -651,6 +651,45 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#custom-payment-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Payment Methods
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Custom Payment Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mint-quote" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mint Quote
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-specific-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method-Specific Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#adding-new-payment-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1319,16 +1358,22 @@
 
 <p>Depending on the payment method, the request structure may vary, but all methods will include at minimum:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span>
+<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span><span class="w">        </span><span class="c1">// Optional</span>
+<span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span><span class="w">   </span><span class="c1">// Optional</span>
+<span class="w">  </span><span class="nt">&quot;pubkey&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="w">         </span><span class="c1">// Optional, NUT-20</span>
 <span class="w">  </span><span class="c1">// Additional method-specific fields may be required</span>
 <span class="p">}</span>
 </code></pre></div>
 
+<p><code>amount</code>, <code>description</code> and <code>pubkey</code> are common optional fields; method-specific NUTs make them required or ignore them as needed (e.g. NUT-23 requires <code>amount</code>, NUT-20 defines <code>pubkey</code>).</p>
 <p>The mint <code>Bob</code> responds with a quote that includes some common fields for all methods:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// UUID v7</span>
 <span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w">  </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pubkey&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span><span class="w">             </span><span class="c1">// Optional</span>
 <span class="w">  </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;amount_paid&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;amount_issued&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
@@ -1342,6 +1387,7 @@
 <li><code>quote</code> is the quote ID in <a href="https://www.rfc-editor.org/rfc/rfc9562">UUIDv7</a> format</li>
 <li><code>request</code> is the payment request for the quote</li>
 <li><code>unit</code> corresponds to the value provided in the request</li>
+<li><code>expiry</code> is the Unix timestamp until which the quote is valid (<code>null</code> if it does not expire)</li>
 <li><code>method</code> is the payment method of the quote</li>
 <li><code>amount_paid</code> is the total amount that has been paid to the mint for this quote, denominated in <code>unit</code></li>
 <li><code>amount_issued</code> is the total amount of ecash that has been issued for this quote, denominated in <code>unit</code></li>
@@ -1380,6 +1426,14 @@
 </code></pre></div>
 
 <p>where <code>signatures</code> is an array of blind signatures on the outputs.</p>
+<h2 id="custom-payment-methods">Custom Payment Methods<a class="headerlink" href="#custom-payment-methods" title="Permanent link">&para;</a></h2>
+<p>Payment methods not specified in a dedicated NUT can be supported as custom payment methods. A custom payment method is identified by a lowercase string <code>{method}</code> (e.g., <code>paypal</code>, <code>stripe</code>, <code>onchain-payment-processor</code>). The <code>{method}</code> string <strong>MUST</strong> contain only ASCII alphanumeric characters, hyphens (<code>-</code>), and underscores (<code>_</code>), and <strong>MUST</strong> be non-empty.</p>
+<h3 id="mint-quote">Mint Quote<a class="headerlink" href="#mint-quote" title="Permanent link">&para;</a></h3>
+<p>For a custom <code>{method}</code>, the wallet sends a request following the common mint quote request format (see <a href="#general-flow">General Flow</a>). Method-specific fields (e.g., an <code>amount</code> of tokens to mint, a <code>description</code>, or a <code>pubkey</code> for <a href="../20/">NUT-20</a> locks) are defined by the method-specific NUT.</p>
+<p>The mint responds with the common mint quote response format and <strong>MUST</strong> include the <code>amount_paid</code>, <code>amount_issued</code> and <code>updated_at</code> accounting fields. The <code>request</code> field contains the method-specific payment request (e.g., a payment URL, an on-chain address, an account identifier). Additional method-specific fields are defined by the method-specific NUT.</p>
+<h3 id="method-specific-fields">Method-Specific Fields<a class="headerlink" href="#method-specific-fields" title="Permanent link">&para;</a></h3>
+<p>Custom payment methods <strong>MAY</strong> include additional fields in requests and responses. Implementations <strong>MUST</strong> ignore unrecognized fields to preserve forward compatibility. When a custom method gains widespread adoption, its fields <strong>MAY</strong> be formalized in a dedicated NUT.</p>
+<p>Custom payment methods <strong>MAY</strong> include extra fields that the mint forwards to a third party payment processor without validation.</p>
 <h2 id="adding-new-payment-methods">Adding New Payment Methods<a class="headerlink" href="#adding-new-payment-methods" title="Permanent link">&para;</a></h2>
 <p>To add a new payment method (e.g., BOLT12), implement the following:</p>
 <ol>
