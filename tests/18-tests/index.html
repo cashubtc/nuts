@@ -1155,7 +1155,7 @@
 </code></pre></div>
 
 <p>Encoded (CBOR serialized to base64url):</p>
-<div class="codehilite"><pre><span></span><code>creqApWF0gaNhdGVub3N0cmFheKlucHJvZmlsZTFxeTI4d3VtbjhnaGo3dW45ZDNzaGp0bnl2OWtoMnVld2Q5aHN6OW1od2RlbjV0ZTB3ZmprY2N0ZTljdXJ4dmVuOWVlaHFjdHJ2NWhzenJ0aHdkZW41dGUwZGVoaHh0bnZkYWtxcWd5ZGFxeTdjdXJrNDM5eWtwdGt5c3Y3dWRoZGh1NjhzdWNtMjk1YWtxZWZkZWhrZjBkNDk1Y3d1bmw1YWeBgmFuYjE3YWloYjdhOTAxNzZhYQphdWNzYXRhbYF4Imh0dHBzOi8vbm9mZWVzLnRlc3RudXQuY2FzaHUuc3BhY2U=
+<div class="codehilite"><pre><span></span><code>creqApWF0gaNhdGVub3N0cmFheKlucHJvZmlsZTFxcXNnbTZxZmEzYzhkdHoyZnZ6aHZmcWVhY213bTBlNTBwZTNrNXRmbXZwamptbjB2ajdtMnRncHozbWh4dWU2OXVoaHlldHZ2OXVqdWVycGQ0Nmh4dG5mZHVxM3dhbW53dmF6N3RtanY0a3h6N2Z3OHFlbnh2ZXd3ZGN4emNtOTl1cXM2YW1ud3Zhejd0bXdkYWVqdW1yMGRzNGxqaDduYWeBgmFuYjE3YWloYjdhOTAxNzZhYQphdWNzYXRhbYF3aHR0cHM6Ly84MzMzLnNwYWNlOjMzMzg
 </code></pre></div>
 
 <h3 id="complete-payment-request">Complete Payment Request<a class="headerlink" href="#complete-payment-request" title="Permanent link">&para;</a></h3>
@@ -1259,6 +1259,22 @@
 
 <p>Encoded:</p>
 <div class="codehilite"><pre><span></span><code>creqApWFpaGM5ZTQ1ZDJhYWEZAfRhdWNzYXRhbYF4GGh0dHBzOi8vbWludC5leGFtcGxlLmNvbWVudXQxMKNha2RQMlBLYWR4QjAyYzNiNWJiMjdlMzYxNDU3YzkyZDkzZDc4ZGQ3M2QzZDUzNzMyMTEwYjJjZmU4YjUwZmJjMGFiYzYxNWU5YzMzMWF0gYJndGltZW91dGQzNjAw
+</code></pre></div>
+
+<h3 id="preferred-mint-list-with-supported-methods">Preferred Mint List with Supported Methods<a class="headerlink" href="#preferred-mint-list-with-supported-methods" title="Permanent link">&para;</a></h3>
+<p>A payment request specifying a preferred mint list with <code>mp</code> set to <code>true</code> and the supported payment methods (<code>sm</code>). <code>bolt12</code> carries a per-method fee (<code>mf</code>) that applies to payments from non-preferred mints.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;preferred_fee_methods&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint.example.com&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;mp&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;sm&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">&quot;mn&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bolt11&quot;</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;mn&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bolt12&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;mf&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">}]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Encoded:</p>
+<div class="codehilite"><pre><span></span><code>creqApmFpdXByZWZlcnJlZF9mZWVfbWV0aG9kc2FhGGRhdWNzYXRhbYF4GGh0dHBzOi8vbWludC5leGFtcGxlLmNvbWJtcPVic22CoWJtbmZib2x0MTGiYm1uZmJvbHQxMmJtZgU=
 </code></pre></div>
 
 

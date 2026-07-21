@@ -1159,6 +1159,7 @@ Implementations SHOULD output uppercase Bech32m strings for optimal QR code comp
 <li><strong>Length</strong> (2 bytes, big-endian): Length of value in bytes</li>
 <li><strong>Value</strong> (variable): Field data</li>
 </ul>
+<p>Fields of type <code>u64</code> are encoded as fixed 8-byte big-endian values.</p>
 <h3 id="top-level-tlv-tags">Top-Level TLV Tags<a class="headerlink" href="#top-level-tlv-tags" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -1217,6 +1218,18 @@ Implementations SHOULD output uppercase Bech32m strings for optimal QR code comp
 <td>nut10</td>
 <td>sub-TLV</td>
 <td>NUT-10 spending conditions (corresponds to <code>nut10</code> in JSON)</td>
+</tr>
+<tr>
+<td>0x09</td>
+<td>mint_preferred</td>
+<td>u8</td>
+<td>Mint list strictness flag: 0=false, 1=true; defaults to 0 if absent (corresponds to <code>mp</code> in JSON)</td>
+</tr>
+<tr>
+<td>0x0a</td>
+<td>supported_method</td>
+<td>sub-TLV</td>
+<td>Supported payment method with optional fee (repeatable, corresponds to <code>sm</code> in JSON)</td>
 </tr>
 </tbody>
 </table>
@@ -1386,6 +1399,33 @@ If no transport is specified (tag 0x07 is absent), the payment is assumed to be 
 </tbody>
 </table>
 <p>Additional kind values may be defined in future NUT specifications. Unknown kind values SHOULD be preserved when re-encoding but MAY be ignored during validation.</p>
+<h3 id="supported-method-sub-tlv-tag-0x0a">Supported Method Sub-TLV (Tag 0x0a)<a class="headerlink" href="#supported-method-sub-tlv-tag-0x0a" title="Permanent link">&para;</a></h3>
+<p>Each supported method is encoded as a nested TLV structure. The tag is repeatable, one sub-TLV per method, decoding to the <code>sm</code> array in JSON:</p>
+<table>
+<thead>
+<tr>
+<th>Sub-Tag</th>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x01</td>
+<td>method</td>
+<td>string</td>
+<td>Method name, e.g. <code>"bolt11"</code> (corresponds to <code>mn</code> in JSON)</td>
+</tr>
+<tr>
+<td>0x02</td>
+<td>fee</td>
+<td>u64</td>
+<td>Optional per-method fee; absent = 0 (corresponds to <code>mf</code> in JSON)</td>
+</tr>
+</tbody>
+</table>
+<p>When the per-method fee applies and how much the payer owes is defined in <a href="../18/">NUT-18</a>.</p>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <p>This is an example payment request expressed as JSON:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>

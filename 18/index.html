@@ -1052,6 +1052,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#mint-list" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mint list
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-payment-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported payment methods
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#input-fees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Input fees
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#locking-conditions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1343,6 +1376,8 @@
 <span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;s&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">bool</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">Array</span><span class="p">[</span><span class="err">s</span><span class="kc">tr</span><span class="p">]</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;mp&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">bool</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;sm&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">Array</span><span class="p">[</span><span class="err">Suppor</span><span class="kc">te</span><span class="err">dMe</span><span class="kc">t</span><span class="err">hod</span><span class="p">]</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;d&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">Array</span><span class="p">[</span><span class="err">Tra</span><span class="kc">ns</span><span class="err">por</span><span class="kc">t</span><span class="p">]</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;nut10&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">NUT</span><span class="mi">10</span><span class="err">Op</span><span class="kc">t</span><span class="err">io</span><span class="kc">n</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="p">,</span>
@@ -1352,14 +1387,39 @@
 <p>Here, the fields are</p>
 <ul>
 <li><code>i</code>: Payment id to be included in the payment payload</li>
-<li><code>a</code>: The amount of the requested payment</li>
-<li><code>u</code>: The unit of the requested payment (MUST be set if <code>a</code> is set)</li>
+<li><code>a</code>: The amount of the requested payment, net of input fees (see <a href="#input-fees">Input fees</a>)</li>
+<li><code>u</code>: The unit of the requested payment (MUST be set if <code>a</code> or <code>sm</code> is set)</li>
 <li><code>s</code>: Whether the payment request is for single use</li>
-<li><code>m</code>: A set of mints from which the payment is requested</li>
+<li><code>m</code>: The mint list from which payment will be accepted</li>
+<li><code>mp</code>: Whether the mint list is advisory (<code>true</code>) or strict (<code>false</code> or omitted)</li>
+<li><code>sm</code>: A list of <code>SupportedMethod</code> entries (e.g. <code>"bolt11"</code>, <code>"bolt12"</code>, <code>"onchain"</code>) that the payee will accept, each with an optional per-method fee</li>
 <li><code>d</code>: A human readable description that the sending wallet will display after scanning the request</li>
 <li><code>t</code>: The method of <code>Transport</code> chosen to transmit the payment (can be multiple, sorted by preference)</li>
 <li><code>nut10</code>: The required <a href="../10/">NUT-10</a> locking condition</li>
 </ul>
+<h2 id="mint-list">Mint list<a class="headerlink" href="#mint-list" title="Permanent link">&para;</a></h2>
+<p>A Payment Request containing a mint list <code>m</code> describes the mints the receiver accepts payments from or prefers.</p>
+<p>If <code>m</code> is set and <code>mp</code> is not present, or is <code>false</code>, the mint list is strict: the sender MUST only send proofs from these mints, and the receiver SHOULD ignore payments sent from other mints.</p>
+<p>If <code>m</code> is set and <code>mp</code> is <code>true</code>, the mint list is preferred: the receiver accepts payments from other mints, but the payer SHOULD use a mint in <code>m</code> when possible.</p>
+<p>If <code>m</code> is not set, <code>mp</code> SHOULD be ignored.</p>
+<h2 id="supported-payment-methods">Supported payment methods<a class="headerlink" href="#supported-payment-methods" title="Permanent link">&para;</a></h2>
+<p>If <code>sm</code> is set, the payer MUST send ecash from a mint that supports melting the request unit (see <a href="../05/">NUT-05</a>) via at least one of the listed payment methods. Each <code>SupportedMethod</code> is defined as:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mn&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;mf&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">i</span><span class="kc">nt</span><span class="w"> </span><span class="err">&lt;op</span><span class="kc">t</span><span class="err">io</span><span class="kc">nal</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// omitted = 0</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<ul>
+<li><code>mn</code>: the method name (e.g. <code>"bolt11"</code>, <code>"bolt12"</code>, <code>"onchain"</code>)</li>
+<li><code>mf</code>: additional fee, in the request unit, that compensates the receiver for melting out via this method</li>
+</ul>
+<p>The per-method fee applies only to payments the receiver may need to melt out of: those from a mint outside <code>m</code>, or from any mint if <code>m</code> is not set. Payments from a mint in <code>m</code> carry no per-method fee.</p>
+<p>When a fee applies, the payer owes the lowest <code>mf</code> among the listed methods their mint supports, and MUST add it to the requested amount. For example, if the request lists <code>bolt11</code> (no fee) and <code>onchain</code> (<code>mf</code> = 50), a mint supporting both owes nothing, while an onchain-only mint owes 50.</p>
+<h2 id="input-fees">Input fees<a class="headerlink" href="#input-fees" title="Permanent link">&para;</a></h2>
+<p>Received proofs cost the receiver an input fee when they are later swapped or melted (see <a href="../02/">NUT-02</a>). The requested amount is therefore net of input fees: the payer MUST select proofs such that</p>
+<p><code>sum(proofs) - input_fee(proofs) &gt;= a + mf (where applicable)</code></p>
+<p>with <code>input_fee</code> computed from the sending mint's keyset <code>input_fee_ppk</code> values as described in <a href="../02/">NUT-02</a>. This protects the receiver from dust proof sets that are expensive to redeem (e.g. 1000 x 1 sat proofs at 250 ppk would cost the receiver 250 sats to swap).</p>
 <h2 id="locking-conditions">Locking conditions<a class="headerlink" href="#locking-conditions" title="Permanent link">&para;</a></h2>
 <p>The payment request can include <em>optional</em> locking conditions the payee requires from the payer. For example, the payee might require a P2PK-locked token so that they can receive payments offline.</p>
 <p>The <code>nut10</code> field specifies the payee's requested locking condition as a <code>NUT10Option</code> object. Its elements are derived from NUT-10's <a href="../10/#well-known-secret">well-known secret</a>. The <code>NUT10Option</code> is defined as follows:</p>
@@ -1446,7 +1506,7 @@ The transport can be empty! If the transport is empty, we implicitly assume that
 <span class="p">}</span>
 </code></pre></div>
 
-<p>This payment request serializes to (see <a href="https://cbor.nemo157.com/#type=hex&amp;value=a3617482a261694800ffd48b8f5ecf80617081a36161016173784061636331323433356537623834383463336366313835303134393231386166393066373136613532626634613565643334376534386563633133663737333838616358210244538319de485d55bed3b29a642bee5879375ab9e7a620e11e48ba482421f3cfa261694800ad268c4d1f5826617082a3616102617378403133323364336434373037613538616432653233616461346539663166343966356135623461633762373038656230643631663733386634383330376538656561635821023456aa110d84b4ac747aebd82c3b005aca50bf457ebd5737a4414fac3ae7d94da36161016173784035366263626362623763633634303662336661356435376432313734663465666638623434303262313736393236643361353764336333646362623539643537616358210273129c5719e599379a974a626363c333c56cafc0e6d01abe46d5808280789c63616d75687474703a2f2f6c6f63616c686f73743a33333338617563736174">here</a>):</p>
+<p>This payment request serializes to:</p>
 <div class="codehilite"><pre><span></span><code><span class="nv">creqApWF0gaNhdGVub3N0cmFheKlucHJvZmlsZTFxeTI4d3VtbjhnaGo3dW45ZDNzaGp0bnl2OWtoMnVld2Q5aHN6OW1od2RlbjV0ZTB3ZmprY2N0ZTljdXJ4dmVuOWVlaHFjdHJ2NWhzenJ0aHdkZW41dGUwZGVoaHh0bnZkYWtxcWd5ZGFxeTdjdXJrNDM5eWtwdGt5c3Y3dWRoZGh1NjhzdWNtMjk1YWtxZWZkZWhrZjBkNDk1Y3d1bmw1YWeBgmFuYjE3YWloYjdhOTAxNzZhYQphdWNzYXRhbYF4Imh0dHBzOi8vbm9mZWVzLnRlc3RudXQuY2FzaHUuc3BhY2U</span><span class="o">=</span>
 </code></pre></div>
 
