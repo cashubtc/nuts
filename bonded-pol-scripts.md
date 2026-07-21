@@ -114,6 +114,7 @@ All uint64 operands and intermediate results are assumed to be less than `2^64`.
 
 ```text
 ZERO32                    = 32 zero bytes
+EMPTY_MMR                 = { size: 0, root_hash: SHA256(empty bytes), root_sum: 0 }
 EMPTY_HISTORY_ROOT        = SHA256("Cashu_Bonded_PoL_History_Empty_v1")
 BIP340_SCHEME             = 0
 ACTIVE                    = 0
@@ -231,7 +232,8 @@ function decimal(n):
 
 ```text
 function canonical_nut_388_manifest_message(k, epoch, timestamp):
-    return utf8(hex(k.keyset_id)) || ":" || k.unit || ":"
+    # keyset_id is canonical lowercase hexadecimal UTF-8, as in NUT-388.
+    return k.keyset_id || ":" || k.unit || ":"
         || decimal(epoch.epoch_index) || ":"
         || timestamp || ":"
         || hex(epoch.previous_global_digest) || ":"
@@ -328,6 +330,7 @@ function COMPUTE_PROGRAM_HASH(p):
         || U32BE(p.max_challenge_bytes)
         || U32BE(p.max_response_bytes)
         || U64BE(p.min_challenge_bond)
+        || U64BE(p.challenger_bounty)
         || p.receipt_signature_scheme
         || p.opcode_profile_hash
         || p.verifier_program_hash
@@ -342,6 +345,7 @@ function CANONICAL_EPOCH(e):
         || U16BE(e.pol_keysets_count)
         || U16BE(e.bonded_keysets_count)
         || U64BE(e.total_outstanding_balance)
+        || e.global_epoch_signature
 
 function CANONICAL_CHALLENGE(c):
     return U16BE(len(c.keyset_id)) || c.keyset_id
@@ -364,11 +368,18 @@ function CANONICAL_STATE(s):
         out = out || 0x01 || U64BE(s.closing_epoch)
     out = out || s.epoch_history_mmr_root
         || U64BE(s.epoch_history_mmr_size)
+    if s.state_tag == UNINITIALIZED:
+        ASSERT(s.active_epoch_hash == ZERO32)
+        ASSERT(s.closing_epoch == NONE)
+        ASSERT(s.epoch_history_mmr_root == EMPTY_HISTORY_ROOT)
+        ASSERT(s.epoch_history_mmr_size == 0)
+        return out
     if s.state_tag == PENDING:
         return out || s.proposed_epoch_hash
     if s.state_tag == CHALLENGED:
         return out || s.disputed_epoch_hash || s.challenge_type
             || s.challenge_hash || s.challenger_xonly_pubkey
+            || s.challenge_origin
     if s.state_tag == WITHDRAWAL_DELAY:
         return out || s.mint_withdrawal_xonly_pubkey
     ASSERT(s.state_tag == ACTIVE)
@@ -597,9 +608,9 @@ function BAG_PEAKS_RIGHT_TO_LEFT(peaks):
     ASSERT(len(peaks) > 0)
     acc = rightmost peak
     for peak in peaks from second-rightmost to leftmost:
+        # NUT-388 bags peaks with the ordinary parent function.
         acc.hash = SHA256(
-            "Cashu_PoL_Bag_v1"
-            || peak.hash || acc.hash
+            peak.hash || acc.hash
             || U64BE(peak.sum) || U64BE(acc.sum)
         )
         acc.sum = OP_U64ADD(peak.sum, acc.sum)
@@ -616,16 +627,16 @@ function DERIVE_INDEX(tree_size, proof, local_offset):
     ASSERT(local_offset < (1 << heights[proof.peak_index]))
     return OP_U64ADD(preceding, local_offset)
 
-function PATH_PREFIX(earlier, later):
-    if earlier.path_len > later.path_len:
+function PATH_PREFIX(earlier_path, earlier_len, later_path, later_len):
+    if earlier_len > later_len:
         return false
     result = true
     for i in 0 .. MAX_MMR_HEIGHT-1:
-        if i < earlier.path_len:
+        if i < earlier_len:
             result = result
-                && earlier[i].hash == later[i].hash
-                && earlier[i].sum == later[i].sum
-                && earlier[i].is_left == later[i].is_left
+                && earlier_path[i].hash == later_path[i].hash
+                && earlier_path[i].sum == later_path[i].sum
+                && earlier_path[i].is_left == later_path[i].is_left
     return result
 ```
 
@@ -744,8 +755,11 @@ function VERIFY_EPOCH_REFERENCE(epoch, reference, state):
     if reference.kind == ACTIVE_REFERENCE:
         return HASH_EPOCH(epoch) == state.active_epoch_hash
     if reference.kind == PROPOSED_REFERENCE:
-        return state.state_tag == PENDING
-            && HASH_EPOCH(epoch) == state.proposed_epoch_hash
+        if state.state_tag == PENDING:
+            return HASH_EPOCH(epoch) == state.proposed_epoch_hash
+        return state.state_tag == CHALLENGED
+            && state.challenge_origin == PENDING
+            && HASH_EPOCH(epoch) == state.disputed_epoch_hash
     if reference.kind == HISTORY_REFERENCE:
         return VERIFY_HISTORY_EPOCH_OPENING(
             epoch,
@@ -760,6 +774,25 @@ macro PAY_FULL_BOND_TO_P2TR(recipient_xonly_pubkey):
     ASSERT(OP_OUTPUTCOUNT >= 1)
     <> 0 recipient_xonly_pubkey <> CCV_OUT_FULL
     OP_CHECKCONTRACTVERIFY
+
+macro PAY_SLASH_BOUNTY_AND_BURN(recipient_xonly_pubkey):
+    ASSERT(len(recipient_xonly_pubkey) == 32)
+    ASSERT(OP_OUTPUTCOUNT >= 2)
+    ASSERT(output[0].script == P2TR(recipient_xonly_pubkey))
+    ASSERT(output[0].value == CHALLENGER_BOUNTY)
+    ASSERT(output[1].script == CANONICAL_UNSPENDABLE_SCRIPT)
+    ASSERT(output[1].value == BOND_INPUT_VALUE - CHALLENGER_BOUNTY)
+    ASSERT(EXACTLY_ONE_MATCHING_OUTPUT(output[0]))
+    ASSERT(EXACTLY_ONE_MATCHING_OUTPUT(output[1]))
+    ASSERT(SUM_VALUES(output[2:]) <= SUM_VALUES(external_inputs))
+
+macro VERIFY_CHALLENGE_BOND(challenge_bond_input, challenged_bond_outpoint):
+    ASSERT(challenge_bond_input.value >= MIN_CHALLENGE_BOND)
+    ASSERT(challenge_bond_input.contract.challenge_id == challenged_bond_outpoint)
+    ASSERT(challenge_bond_input.contract.refutation_destination
+           == P2TR(old.mint_pubkey))
+    ASSERT(challenge_bond_input.contract.timeout_destination
+           == P2TR(witness.challenger_xonly_pubkey))
 
 function P2TR(xonly_pubkey):
     ASSERT(len(xonly_pubkey) == 32)
@@ -952,7 +985,14 @@ macro VERIFY_SUCCESSOR(old, new, transition_kind):
         EQ(new.epoch_history_mmr_root, old.epoch_history_mmr_root)
         EQ(new.epoch_history_mmr_size, old.epoch_history_mmr_size)
     else if transition_kind == REFUTE_TRANSITION:
-        EQ(new.active_epoch_hash, old.disputed_epoch_hash)
+        if old.challenge_origin == PENDING:
+            ASSERT(new.state_tag == PENDING)
+            EQ(new.active_epoch_hash, old.active_epoch_hash)
+            EQ(new.proposed_epoch_hash, old.disputed_epoch_hash)
+        else:
+            ASSERT(old.challenge_origin == WITHDRAWAL_DELAY)
+            ASSERT(new.state_tag == ACTIVE)
+            EQ(new.active_epoch_hash, old.active_epoch_hash)
         EQ(new.closing_epoch, old.closing_epoch)
         EQ(new.epoch_history_mmr_root, old.epoch_history_mmr_root)
         EQ(new.epoch_history_mmr_size, old.epoch_history_mmr_size)
@@ -989,14 +1029,17 @@ macro VERIFY_SUCCESSOR(old, new, transition_kind):
     CCV_NEXT(new_state_hash)
 ```
 
-Because `CCV_NEXT` uses full-value preservation, the recursive output receives the entire bond input. External inputs pay fees.
+`CCV_NEXT` establishes the BIP-443 residual minimum. The committed exact-value and complete-output introspection profile additionally proves equality and uniqueness. External inputs pay fees.
 
 ### 6.3 Verify Epoch Commitment
 
 `VERIFY_EPOCH` receives every keyset commitment, its manifest signature, and the ordered list required to reconstruct the epoch.
 
 ```text
-macro VERIFY_EPOCH(epoch, keysets[], signatures[], mint_pubkey, bond_unit):
+macro VERIFY_EPOCH(
+    epoch, keysets[], signatures[], mint_pubkey, bond_unit,
+    network, bond_id, program_hash
+):
     ASSERT(1 <= len(keysets) <= MAX_KEYSETS)
     ASSERT(len(signatures) == len(keysets))
     ASSERT(STRICTLY_SORTED_POL_KEYSETS(keysets))
@@ -1035,6 +1078,7 @@ macro VERIFY_EPOCH(epoch, keysets[], signatures[], mint_pubkey, bond_unit):
                     || OPTIONAL_U64(k.final_expiry)
                     || k.receipt_signature_scheme
                     || k.amount_keys_root
+                    || U64BE(k.birth_epoch)
                     || U64BE(k.redemption_end_epoch)
                 ))
 
@@ -1059,6 +1103,15 @@ macro VERIFY_EPOCH(epoch, keysets[], signatures[], mint_pubkey, bond_unit):
             || epoch.pol_keysets_root
         ) == epoch.global_digest
     )
+    global_message = SHA256(
+        "Cashu_Bonded_PoL_Global_Epoch_v1"
+        || network || mint_pubkey || bond_id || program_hash
+        || U64BE(epoch.epoch_index)
+        || epoch.previous_global_digest
+        || U16BE(epoch.pol_keysets_count)
+        || epoch.pol_keysets_root
+    )
+    ASSERT(CSFS(epoch.global_epoch_signature, global_message, mint_pubkey))
 ```
 
 An implementation MUST compile `keysets[]` as a length plus `MAX_KEYSETS` fixed witness slots. Disabled slots contribute no leaf and MUST contain empty byte strings.
@@ -1068,7 +1121,14 @@ An implementation MUST compile `keysets[]` as a length plus `MAX_KEYSETS` fixed 
 ```text
 macro VERIFY_INCLUSION(item, value, proof, committed_tree):
     ASSERT(proof.path_len <= MAX_MMR_HEIGHT)
-    ASSERT(proof.peak_count <= MAX_MMR_HEIGHT + 1)
+    expected_heights = SET_BIT_HEIGHTS_DESCENDING(committed_tree.size)
+    ASSERT(proof.peak_count == len(expected_heights))
+    ASSERT(proof.peak_index < proof.peak_count)
+    ASSERT(proof.path_len == expected_heights[proof.peak_index])
+
+    for i in 0 .. MAX_MMR_HEIGHT:         # statically unrolled
+        if i < proof.peak_count:
+            ASSERT(proof.peaks[i].height == expected_heights[i])
 
     current_hash = SHA256(item)
     current_sum = value
@@ -1092,7 +1152,8 @@ macro VERIFY_INCLUSION(item, value, proof, committed_tree):
                 )
                 current_sum = OP_U64ADD(current_sum, sibling.sum)
 
-    ASSERT((current_hash, current_sum) appears exactly once in proof.peaks)
+    ASSERT(proof.peaks[proof.peak_index].hash == current_hash)
+    ASSERT(proof.peaks[proof.peak_index].sum == current_sum)
     ASSERT(DERIVE_INDEX(committed_tree.size, proof, local_offset) == proof.leaf_index)
 
     bagged = BAG_PEAKS_RIGHT_TO_LEFT(proof.peaks)
@@ -1101,6 +1162,8 @@ macro VERIFY_INCLUSION(item, value, proof, committed_tree):
 ```
 
 Every unused path and peak slot MUST be empty. This prevents alternative witness encodings from bypassing the length bounds.
+
+Conformance tests MUST reject omitted, extra, reordered, and pre-bagged peaks; a computed peak placed at the wrong index; a wrong `peak_index`; nonempty disabled slots; and equal hashes paired with different sums. They MUST also include the seven-leaf adversarial case with canonical heights `[2, 1, 0]`: a path that reaches `P1` and then folds `P0` into it MUST NOT be accepted as a leaf under `P2`.
 
 ### 6.5 Verify MMR Consistency
 
@@ -1209,14 +1272,14 @@ VERIFY_EPOCH(
     old_keysets,
     old_signatures,
     old.mint_pubkey,
-    old.unit
+    old.unit, NETWORK, old.bond_id, old.program_hash
 )
 VERIFY_EPOCH(
     proposed_epoch,
     proposed_keysets,
     proposed_signatures,
     old.mint_pubkey,
-    old.unit
+    old.unit, NETWORK, old.bond_id, old.program_hash
 )
 ASSERT(HASH_EPOCH(old_epoch) == old.active_epoch_hash)
 
@@ -1242,6 +1305,9 @@ for i in 0 .. MAX_KEYSETS-1:               # statically unrolled
         else:
             old_issued = EMPTY_MMR
             old_spent = EMPTY_MMR
+            ASSERT(new_keyset.birth_epoch == proposed_epoch.epoch_index)
+            ASSERT(new_keyset.issued_tree == EMPTY_MMR)
+            ASSERT(new_keyset.spent_tree == EMPTY_MMR)
 
         if old_issued.size == new_keyset.issued_tree.size:
             ASSERT(old_issued == new_keyset.issued_tree)
@@ -1279,6 +1345,7 @@ for i in 0 .. MAX_KEYSETS-1:               # statically unrolled
                 == old_keyset.amount_keys_root
             )
             ASSERT(new_keyset.unit == old_keyset.unit)
+            ASSERT(new_keyset.birth_epoch == old_keyset.birth_epoch)
             ASSERT(new_keyset.input_fee_ppk == old_keyset.input_fee_ppk)
             ASSERT(new_keyset.final_expiry == old_keyset.final_expiry)
             ASSERT(
@@ -1394,6 +1461,7 @@ Anyone may supply this witness. No signature is required.
 ```text
 VERIFY_CURRENT_STATE(old)
 ASSERT(old.state_tag == PENDING)
+VERIFY_CHALLENGE_BOND(challenge_bond_input, CURRENT_BOND_OUTPOINT)
 
 challenge_hash = HASH_CHALLENGE(leaf_challenge)
 ASSERT(target_epoch.epoch_index == leaf_challenge.target_epoch)
@@ -1433,11 +1501,12 @@ new.disputed_epoch_hash = old.proposed_epoch_hash
 new.challenge_type = LEAF_OMISSION_OR_MISMATCH
 new.challenge_hash = challenge_hash
 new.challenger_xonly_pubkey = witness.challenger_xonly_pubkey
+new.challenge_origin = PENDING
 
 VERIFY_SUCCESSOR(old, new, OPEN_CHALLENGE_TRANSITION)
 ```
 
-The challenger key MUST be exactly 32 bytes. If challenge bonds are enabled, their script is a separate input contract and is not checked by the PoL bond leaf.
+The challenger key MUST be exactly 32 bytes. The challenge bond is a separate input contract, but the PoL bond leaf verifies its value, outpoint binding, challenger destination, and refutation destination atomically.
 
 ### 7.4 `L3 refute_leaf_challenge`
 
@@ -1463,8 +1532,14 @@ VERIFY_INCLUSION(
     SELECT_TARGET_TREE(target_keyset, leaf_challenge.leaf_type)
 )
 
-new.state_tag = ACTIVE
-new.active_epoch_hash = old.disputed_epoch_hash
+if old.challenge_origin == PENDING:
+    new.state_tag = PENDING
+    new.active_epoch_hash = old.active_epoch_hash
+    new.proposed_epoch_hash = old.disputed_epoch_hash
+else:
+    ASSERT(old.challenge_origin == WITHDRAWAL_DELAY)
+    new.state_tag = ACTIVE
+    new.active_epoch_hash = old.active_epoch_hash
 VERIFY_SUCCESSOR(old, new, REFUTE_TRANSITION)
 ```
 
@@ -1472,13 +1547,15 @@ The successful response needs no mint signature; possession of a valid inclusion
 
 ### 7.5 `L4 slash_timeout`
 
-Transaction:
+Transaction (all outputs are inspected):
 
 ```text
 input[0]  CHALLENGED bond
 input[1+] optional fee inputs
-output[0] P2TR(challenger_xonly_pubkey), full input[0] value
-output[1+] fee change funded only by input[1+]
+output[0] P2TR(challenger_xonly_pubkey), CHALLENGER_BOUNTY
+output[1] canonical unspendable script,
+          input[0] value - CHALLENGER_BOUNTY
+output[2+] fee change funded only by input[1+]
 ```
 
 Script:
@@ -1491,17 +1568,10 @@ ASSERT(old.state_tag == CHALLENGED)
 OP_CHECKSEQUENCEVERIFY
 OP_DROP
 
-OP_OUTPUTCOUNT 1 OP_GREATERTHANOREQUAL OP_VERIFY
-
-<>                         # no embedded data
-0                          # output index 0
-old.challenger_xonly_pubkey
-<>                         # no taptree; key-path P2TR
-CCV_OUT_FULL
-OP_CHECKCONTRACTVERIFY
+PAY_SLASH_BOUNTY_AND_BURN(old.challenger_xonly_pubkey)
 ```
 
-No recursive output is created. BIP-443 full-value preservation sends the entire bond to output `0`. Fees cannot be taken from the bond.
+No recursive output is created. `PAY_SLASH_BOUNTY_AND_BURN` uses exact value and complete-output introspection: it requires one `CHALLENGER_BOUNTY` P2TR output, burns the exact remainder, rejects every duplicate/matching terminal output, and proves that any other outputs are funded exclusively by external inputs. BIP-443 minimum-amount semantics alone do not implement this macro.
 
 ### 7.6 `L5 slash_equivocation`
 
@@ -1511,11 +1581,14 @@ Witness:
 
 ```text
 old_state_fields
-manifest_a_fields
-signature_a
-manifest_b_fields
-signature_b
+equivocation_kind
+signed_object_a
+signed_object_b
+committed_selector
+committed_epoch_reference
+optional_committed_keyset_opening
 challenger_xonly_pubkey
+challenger_transaction_signature
 L5_script
 control_block
 ```
@@ -1524,49 +1597,70 @@ Script:
 
 ```text
 VERIFY_CURRENT_STATE(old)
-ASSERT(old.state_tag == PENDING || old.state_tag == WITHDRAWAL_DELAY)
+ASSERT(old.state_tag == PENDING || old.state_tag == CHALLENGED
+       || old.state_tag == WITHDRAWAL_DELAY)
 
-ASSERT(VERIFY_MANIFEST_SIGNATURE(manifest_a, old.mint_pubkey))
-ASSERT(VERIFY_MANIFEST_SIGNATURE(manifest_b, old.mint_pubkey))
-ASSERT(manifest_a.keyset.keyset_id == manifest_b.keyset.keyset_id)
-ASSERT(manifest_a.epoch.epoch_index == manifest_b.epoch.epoch_index)
-ASSERT(
-    canonical_signed_fields(manifest_a)
-    != canonical_signed_fields(manifest_b)
-)
+if equivocation_kind == KEYSET_MANIFEST:
+    manifest_a = signed_object_a
+    manifest_b = signed_object_b
+    ASSERT(VERIFY_MANIFEST_SIGNATURE(manifest_a, old.mint_pubkey))
+    ASSERT(VERIFY_MANIFEST_SIGNATURE(manifest_b, old.mint_pubkey))
+    ASSERT(manifest_a.keyset.keyset_id == manifest_b.keyset.keyset_id)
+    ASSERT(manifest_a.epoch.epoch_index == manifest_b.epoch.epoch_index)
+    ASSERT(canonical_signed_fields(manifest_a)
+           != canonical_signed_fields(manifest_b))
+else:
+    ASSERT(equivocation_kind == GLOBAL_EPOCH)
+    global_a = signed_object_a
+    global_b = signed_object_b
+    ASSERT(global_a.network == NETWORK && global_b.network == NETWORK)
+    ASSERT(global_a.bond_id == old.bond_id && global_b.bond_id == old.bond_id)
+    ASSERT(global_a.program_hash == old.program_hash
+           && global_b.program_hash == old.program_hash)
+    ASSERT(global_a.epoch_index == global_b.epoch_index)
+    ASSERT(VERIFY_GLOBAL_EPOCH_SIGNATURE(global_a, old.mint_pubkey))
+    ASSERT(VERIFY_GLOBAL_EPOCH_SIGNATURE(global_b, old.mint_pubkey))
+    ASSERT(CANONICAL_GLOBAL_EPOCH(global_a)
+           != CANONICAL_GLOBAL_EPOCH(global_b))
 
 if committed_selector == A:
-    committed_manifest = manifest_a
+    committed_object = signed_object_a
 else:
     ASSERT(committed_selector == B)
-    committed_manifest = manifest_b
+    committed_object = signed_object_b
 
-ASSERT(VERIFY_EPOCH_REFERENCE(
-    committed_manifest.epoch,
-    committed_epoch_reference,
-    old
-))
-ASSERT(VERIFY_KEYSET_OPENING(
-    committed_manifest.epoch,
-    committed_manifest.keyset,
-    committed_keyset_opening,
-    HASH_EPOCH(committed_manifest.epoch)
-))
+if equivocation_kind == KEYSET_MANIFEST:
+    ASSERT(VERIFY_EPOCH_REFERENCE(
+        committed_object.epoch, committed_epoch_reference, old
+    ))
+    ASSERT(VERIFY_KEYSET_OPENING(
+        committed_object.epoch,
+        committed_object.keyset,
+        committed_keyset_opening,
+        HASH_EPOCH(committed_object.epoch)
+    ))
+else:
+    ASSERT(VERIFY_EPOCH_REFERENCE(
+        committed_object.epoch_commitment,
+        committed_epoch_reference,
+        old
+    ))
 
 ASSERT(CHECKSIG(challenger_transaction_signature, challenger_xonly_pubkey))
-PAY_FULL_BOND_TO_P2TR(challenger_xonly_pubkey)
+PAY_SLASH_BOUNTY_AND_BURN(challenger_xonly_pubkey)
 ```
 
-`PAY_FULL_BOND_TO_P2TR` expands to the same `OP_CCV` sequence used by `L4`. The BIP-342 challenger signature commits to the complete transaction and proves control of its payout key. Public evidence remains copyable into a distinct competing transaction under the intentional first-confirmed-challenger rule.
+The BIP-342 challenger signature commits to the complete transaction and proves control of its bounded bounty key. Public evidence remains copyable into a distinct competing transaction, but the remainder is burned regardless of who wins.
 
 ### 7.7 `L6 slash_append_only`
 
 ```text
 VERIFY_CURRENT_STATE(old)
-ASSERT(old.state_tag == PENDING || old.state_tag == WITHDRAWAL_DELAY)
+ASSERT(old.state_tag == PENDING || old.state_tag == CHALLENGED
+       || old.state_tag == WITHDRAWAL_DELAY)
 ASSERT(VERIFY_EPOCH_REFERENCE(epoch_1, epoch_1_reference, old))
 ASSERT(VERIFY_EPOCH_REFERENCE(epoch_2, epoch_2_reference, old))
-ASSERT(epoch_1.index < epoch_2.index)
+ASSERT(epoch_1.epoch_index < epoch_2.epoch_index)
 ASSERT(VERIFY_KEYSET_OPENING(
     epoch_1,
     keyset_1,
@@ -1592,11 +1686,14 @@ ASSERT(proof_1.leaf_index == proof_2.leaf_index)
 violation =
     item_1 != item_2
     || value_1 != value_2
-    || !PATH_PREFIX(proof_1.path, proof_2.path)
+    || !PATH_PREFIX(
+        proof_1.path, proof_1.path_len,
+        proof_2.path, proof_2.path_len
+    )
 
 ASSERT(violation)
 ASSERT(CHECKSIG(challenger_transaction_signature, challenger_xonly_pubkey))
-PAY_FULL_BOND_TO_P2TR(challenger_xonly_pubkey)
+PAY_SLASH_BOUNTY_AND_BURN(challenger_xonly_pubkey)
 ```
 
 `PATH_PREFIX` compares hash, sum, and `is_left` for every enabled slot of the earlier path.
@@ -1605,10 +1702,14 @@ PAY_FULL_BOND_TO_P2TR(challenger_xonly_pubkey)
 
 ```text
 VERIFY_CURRENT_STATE(old)
-ASSERT(old.state_tag == PENDING || old.state_tag == WITHDRAWAL_DELAY)
+ASSERT(old.state_tag == PENDING || old.state_tag == CHALLENGED
+       || old.state_tag == WITHDRAWAL_DELAY)
 
-ASSERT(VERIFY_MANIFEST_SIGNATURE(manifest_a, old.mint_pubkey))
+ASSERT(VERIFY_BONDED_LIFECYCLE_STATEMENT(
+    manifest_a, NETWORK, old.bond_id, old.program_hash, old.mint_pubkey
+))
 ASSERT(manifest_a.keyset.keyset_id == baseline.keyset_id)
+ASSERT(manifest_a.epoch.epoch_index >= baseline.birth_epoch)
 ASSERT(VERIFY_EPOCH_REFERENCE(baseline_epoch, baseline_reference, old))
 ASSERT(VERIFY_KEYSET_OPENING(
     baseline_epoch,
@@ -1618,12 +1719,17 @@ ASSERT(VERIFY_KEYSET_OPENING(
 ))
 
 if violation_kind == REACTIVATION:
-    ASSERT(VERIFY_MANIFEST_SIGNATURE(manifest_b, old.mint_pubkey))
+    ASSERT(VERIFY_BONDED_LIFECYCLE_STATEMENT(
+        manifest_b, NETWORK, old.bond_id, old.program_hash, old.mint_pubkey
+    ))
+    ASSERT(manifest_b.epoch.epoch_index >= baseline.birth_epoch)
     ASSERT(manifest_a.epoch.epoch_index < manifest_b.epoch.epoch_index)
     ASSERT(!manifest_a.keyset.active && manifest_b.keyset.active)
 
 else if violation_kind == ISSUANCE_AFTER_LOCK:
-    ASSERT(VERIFY_MANIFEST_SIGNATURE(manifest_b, old.mint_pubkey))
+    ASSERT(VERIFY_BONDED_LIFECYCLE_STATEMENT(
+        manifest_b, NETWORK, old.bond_id, old.program_hash, old.mint_pubkey
+    ))
     ASSERT(manifest_a.epoch.epoch_index < manifest_b.epoch.epoch_index)
     ASSERT(!manifest_a.keyset.active)
     ASSERT(
@@ -1638,7 +1744,9 @@ else if violation_kind == DEACTIVATION_OVERRUN:
     )
 
 else if violation_kind == DECLARATION_DRIFT:
-    ASSERT(VERIFY_MANIFEST_SIGNATURE(manifest_b, old.mint_pubkey))
+    ASSERT(VERIFY_BONDED_LIFECYCLE_STATEMENT(
+        manifest_b, NETWORK, old.bond_id, old.program_hash, old.mint_pubkey
+    ))
     ASSERT(manifest_a.epoch.epoch_index != manifest_b.epoch.epoch_index)
     ASSERT(
         manifest_a.keyset.unit != manifest_b.keyset.unit
@@ -1649,11 +1757,16 @@ else if violation_kind == DECLARATION_DRIFT:
 else:
     FAIL
 
+ASSERT(manifest_a.epoch.epoch_index >= baseline.birth_epoch)
+if manifest_b != NONE:
+    ASSERT(manifest_b.keyset.keyset_id == manifest_a.keyset.keyset_id)
+    ASSERT(manifest_b.epoch.epoch_index >= baseline.birth_epoch)
+
 ASSERT(CHECKSIG(challenger_transaction_signature, challenger_xonly_pubkey))
-PAY_FULL_BOND_TO_P2TR(challenger_xonly_pubkey)
+PAY_SLASH_BOUNTY_AND_BURN(challenger_xonly_pubkey)
 ```
 
-For two-manifest variants, `manifest_b.keyset.keyset_id` MUST equal `manifest_a.keyset.keyset_id`. At least one non-violating lifecycle baseline for that keyset MUST be authenticated by bond history; the violating signed manifest need not have passed `publish_epoch`.
+`VERIFY_BONDED_LIFECYCLE_STATEMENT` verifies a master signature over the canonical NUT-388 manifest plus `NETWORK`, `bond_id`, `program_hash`, `keyset_id`, and the authenticated `birth_epoch`. For two-statement variants, `manifest_b.keyset.keyset_id` MUST equal `manifest_a.keyset.keyset_id`. Both epoch indices MUST be at least the baseline birth epoch. At least one non-violating lifecycle baseline for that keyset MUST be authenticated by bond history; the violating signed statement need not have passed `publish_epoch`.
 
 ### 7.9 `L8 begin_closing`
 
@@ -1682,7 +1795,7 @@ VERIFY_EPOCH(
     active_keysets,
     active_signatures,
     old.mint_pubkey,
-    old.unit
+    old.unit, NETWORK, old.bond_id, old.program_hash
 )
 
 for i in 0 .. MAX_KEYSETS-1:
@@ -1711,6 +1824,7 @@ This leaf is the withdrawal-delay equivalent of `L2`. It verifies the leaf-chall
 ```text
 VERIFY_CURRENT_STATE(old)
 ASSERT(old.state_tag == WITHDRAWAL_DELAY)
+VERIFY_CHALLENGE_BOND(challenge_bond_input, CURRENT_BOND_OUTPOINT)
 ASSERT(old.closing_epoch != null)
 
 challenge_hash = HASH_CHALLENGE(leaf_challenge)
@@ -1753,6 +1867,7 @@ new.disputed_epoch_hash = old.active_epoch_hash
 new.challenge_type = LEAF_OMISSION_OR_MISMATCH
 new.challenge_hash = challenge_hash
 new.challenger_xonly_pubkey = witness.challenger_xonly_pubkey
+new.challenge_origin = WITHDRAWAL_DELAY
 
 VERIFY_SUCCESSOR(old, new, OPEN_CHALLENGE_TRANSITION)
 ```
@@ -1783,13 +1898,17 @@ VERIFY_CURRENT_STATE(old)
 ASSERT(old.state_tag == UNINITIALIZED)
 ASSERT(VALID_UNIT(old.unit))
 ASSERT(CHECKSIG(mint_transaction_signature, old.mint_pubkey))
+ASSERT(old.bond_id == SHA256(
+    "Cashu_Bonded_PoL_Bond_Id_v1"
+    || old.mint_pubkey || old.genesis_nonce
+))
 
 VERIFY_EPOCH(
     initial_epoch,
     initial_keysets,
     initial_signatures,
     old.mint_pubkey,
-    old.unit
+    old.unit, NETWORK, old.bond_id, old.program_hash
 )
 
 for i in 0 .. MAX_KEYSETS-1:
@@ -1799,6 +1918,7 @@ for i in 0 .. MAX_KEYSETS-1:
             ASSERT(IS_EMPTY(initial_amount_key_sets[i]))
             continue
         ASSERT(keyset.receipt_signature_scheme == BIP340_SCHEME)
+        ASSERT(keyset.birth_epoch == initial_epoch.epoch_index)
         ASSERT(VERIFY_AMOUNT_KEYS_ROOT(
             old.unit,
             initial_amount_key_sets[i],
@@ -1835,15 +1955,19 @@ output[0].script    == BondProgram(new_state_hash)
 SUM_VALUES(other_outputs) <= SUM_VALUES(external_inputs)
 ```
 
-### 8.2 Terminal Payout
+The implementation MUST inspect every output and require that exactly one output has `BondProgram(new_state_hash)`. Exact equality and uniqueness require the committed introspection profile; they do not follow from BIP-443's residual minimum.
+
+### 8.2 Terminal Slash
 
 ```text
-output[0].value     == bond_input.value
+output[0].value     == CHALLENGER_BOUNTY
 output[0].script    == P2TR(committed_recipient_key)
-SUM_VALUES(other_outputs) <= SUM_VALUES(external_inputs)
+output[1].value     == bond_input.value - CHALLENGER_BOUNTY
+output[1].script    == CANONICAL_UNSPENDABLE_SCRIPT
+SUM_VALUES(outputs[2:]) <= SUM_VALUES(external_inputs)
 ```
 
-These equalities follow from BIP-443 full residual-value preservation. All transaction fees are exogenous.
+Every equality and the absence of another matching successor or terminal output is checked with exact complete-output introspection. All transaction fees are exogenous.
 
 ---
 
