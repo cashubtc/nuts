@@ -38,6 +38,15 @@
 | 31002 | Blind authentication failed                     | [NUT-22][22]                                           |
 | 31003 | Maximum BAT mint amount exceeded                | [NUT-22][22]                                           |
 | 31004 | BAT mint rate limit exceeded                    | [NUT-22][22]                                           |
+| 15001 | Unsupported or malformed `PAY_TO_UNLOCK` condition      | [NUT-Exchange][exchange] |
+| 15002 | `swap_id` mismatch across participants                   | [NUT-Exchange][exchange] |
+| 15003 | Receive-output commitment (`H_recv`) mismatch            | [NUT-Exchange][exchange] |
+| 15004 | Offer/receive keyset relationship violated               | [NUT-Exchange][exchange] |
+| 15005 | Exchange settlement submitted after `expiry`             | [NUT-Exchange][exchange] |
+| 15006 | Refund submitted before `expiry`                         | [NUT-Exchange][exchange] |
+| 15007 | Refund signature missing or invalid                      | [NUT-Exchange][exchange] |
+| 15009 | Exchange request exceeds advertised limits               | [NUT-Exchange][exchange] |
+| 15010 | Conflicting request for `swap_id` or input (idempotency) | [NUT-Exchange][exchange] |
 
 [00]: 00.md
 [01]: 01.md
@@ -56,3 +65,4 @@
 [21]: 21.md
 [22]: 22.md
 [29]: 29.md
+[exchange]: exchange.md
