@@ -62,7 +62,7 @@ here. Two mitigations bound the added trust:
    This is incidental verifiability, not a published audit log.
 2. **Anonymity makes betrayal indiscriminate.** Fresh `swap_id`, refund key,
    proof secret, and output secret per authorization carry no stable owner
-   identity, so the mint cannot *selectively* betray a user. It can still censor,
+   identity, so the mint cannot _selectively_ betray a user. It can still censor,
    deny service, or betray an exchange wholesale — the same issuer trust NUT-11
    carries.
 
@@ -412,7 +412,7 @@ destination key would not give the same blind-issuance guarantee and would weake
 Cashu privacy.
 
 **Can a submitter or coordinator steal the funds?**
-No. (1) It receives only the *blinded* receive messages `B_`; without the
+No. (1) It receives only the _blinded_ receive messages `B_`; without the
 blinding factors it cannot unblind the returned signatures into spendable proofs,
 so it cannot steal what is received. (2) The input proofs it relays are locked by
 `PAY_TO_UNLOCK` to the owner's exact receive outputs, so it cannot redirect the
