@@ -62,7 +62,7 @@ atomic database commit**. No transparency or accountability layer is defined
 here. Two mitigations bound the added trust:
 
 1. **A violation is transcript-checkable.** Any party holding the full transcript
-   (inputs, conditions, output commitments, signatures) can prove the mint
+   (inputs, conditions, output commitments, signatures, expiry) can prove the mint
    accepted an exchange that violates a condition or a conservation rule. This
    is incidental verifiability, not a published audit log.
 2. **Anonymity makes betrayal indiscriminate.** Fresh per-authorization `nonce`,
@@ -118,6 +118,7 @@ carrying it authorizes one exact exchange (bilateral or N-party star).
     "tags": [
       ["offer_keyset", "<keyset_id>"],
       ["receive_keyset", "<keyset_id>"],
+      ["expiry", "<unix_seconds_str>"],
       ["refund", "<xonly_pubkey_hex>"]
     ]
   }
@@ -127,9 +128,13 @@ carrying it authorizes one exact exchange (bilateral or N-party star).
 - `data` is `H_recv`, the commitment to this participant's complete ordered
   receive-output list (see [Receive-output commitment](#receive-output-commitment)).
 - `offer_keyset` / `receive_keyset` bind the two asset classes. They MUST differ.
+- `expiry` is a unix timestamp checked against the mint clock. It is the binding
+  window of the commitment: settlement is valid only before it and refund only
+  after it (the two states never overlap). It MUST be set; a short window
+  (seconds to minutes) keeps a resting offer reliable without long lockup.
 - `refund` is a fresh x-only public key whose private half the owner retains. A
-  signature under it authorizes the reclaim path (see
-  [Refund](#refund)). It is the sole owner-authorization key and cannot be
+  signature under it authorizes the reclaim path (see [Refund](#refund)), valid
+  only after `expiry`. It is the sole owner-authorization key and cannot be
   omitted; see [Refund](#refund) for why.
 
 The condition answers one question:
@@ -138,7 +143,7 @@ The condition answers one question:
 > these blinded outputs of `receive_keyset`?
 
 Every proof contributed by one participant MUST carry the same `offer_keyset`,
-`receive_keyset`, `H_recv`, and `refund`. Across the exchange, the multiset of
+`receive_keyset`, `H_recv`, `expiry`, and `refund`. Across the exchange, the multiset of
 offered keysets MUST equal the multiset of received keysets — i.e. every asset
 class received by some participant is offered by some other participant. In the
 common star shape, one side offers class `X` and receives `Y`; the other side
@@ -210,15 +215,15 @@ OTC trade or a direct match). Both are online. Each participant:
 1. prepares blinded receive outputs for the agreed amount of the other class and
    computes `H_recv`;
 2. uses an ordinary [NUT-03][03] swap to convert its bearer proofs of its offered
-   class into `PAY_TO_UNLOCK` proofs committed to `H_recv`, choosing a fresh
-   `refund` key it retains;
+   class into `PAY_TO_UNLOCK` proofs committed to `H_recv`, choosing an `expiry`
+   and a fresh `refund` key it retains;
 3. verifies the [NUT-12][12] DLEQ proofs on the returned blind signatures and
    checks that the conditioned proofs encode the agreed terms;
 4. one participant assembles both participants' conditioned proofs and public
    receive `BlindedMessage` lists and POSTs `/v1/exchange`.
 
-If the request fails validation, no proof is spent; each participant refunds its
-own conditioned proofs and retries or walks away.
+If the request fails validation, no proof is spent; each participant reclaims its
+own conditioned proofs via refund after `expiry`, then retries or walks away.
 
 #### Coordinator-mediated swap
 
@@ -307,11 +312,13 @@ Before any mutation, the mint MUST verify all of the following:
     `input_fees_c = (sum(input_fee_ppk over inputs with id == c) + 999) // 1000`
     per [NUT-02][02]. Fees are computed and rounded **per class**, not globally.
     No additional operation fee is defined in v1.
+11. The request is submitted before the minimum `expiry` across all
+    participants' conditions (mint clock); an expired proof is not settellable.
 
 **Processing order.** The mint first canonicalizes the request and computes
 `request_digest`. If a committed response already exists for that digest, it is
 returned unchanged (idempotent retry) without re-running the rules below. Only
-otherwise are rules 1–10 applied, then the atomic commit. The mint MUST finish
+otherwise are rules 1–11 applied, then the atomic commit. The mint MUST finish
 validation before any expensive signing or durable mutation.
 
 #### Atomic commit
@@ -360,23 +367,30 @@ use an anonymity-preserving transport for recovery polling.
 
 ### Refund
 
-A `PAY_TO_UNLOCK` proof is spendable in exactly two ways:
+A `PAY_TO_UNLOCK` proof is spendable in exactly two ways, gated by the mint
+clock so the two states never overlap:
 
-- **Settlement** — as an input to a valid `/v1/exchange` request (rules above).
+- **Settlement** — as an input to a valid `/v1/exchange` request submitted
+  **before** the condition's `expiry` (rules above).
 - **Refund** — through an ordinary [NUT-03][03] swap to fresh outputs of the
-  offered asset class, authorized by a signature from the `refund` key. The swap
-  request MUST include, for each refunded input, a `Proof.witness` with a Schnorr
-  signature by the `refund` private key over
+  offered asset class, authorized by a signature from the `refund` key and
+  accepted only **after** `expiry`. The swap request MUST include, for each
+  refunded input, a `Proof.witness` with a Schnorr signature by the `refund`
+  private key over
   `refund_digest = tagged_hash("Cashu/PAY_TO_UNLOCK/refund", canonical_swap_request)`.
-  The mint verifies the signature under the condition's `refund` public key;
-  otherwise the refund is rejected. A refund is accepted **at any time**, so a
-  participant can abort a failed exchange or withdraw a resting order whenever it
-  chooses.
+  The mint verifies the current time is at or past the condition's `expiry` and
+  that the signature is valid under the condition's `refund` public key;
+  otherwise the refund is rejected. The mint MUST NOT accept a refund before
+  `expiry`, and MUST NOT accept an expired proof in a `/v1/exchange` settlement.
 
-Settlement and refund serialize on proof spentness: the first valid mint
-transaction to commit wins, and the loser's transaction is rejected without
-effect (no funds are stranded). This is the same single-spend arbitration NUT-11
-uses.
+The non-overlap is what makes a conditioned proof a *commitment*: once minted,
+the owner cannot retract it before `expiry`, so a counterparty can rely on the
+offer standing for the whole window. If refund were allowed at any time the
+owner would hold a free cancellation option — retracting whenever price turned
+against it — which is exactly the free-option locktime race this NUT removes.
+Binding-until-`expiry` eliminates that option; only the standard resting
+limit-order adverse selection (inherent to any order book) remains. A maker
+wanting flexibility chooses a short `expiry`.
 
 **Why the `refund` key is required.** A `PAY_TO_UNLOCK` proof is bearer and is
 not spendable in a normal `/v1/swap` — that lock is precisely what prevents a
@@ -388,12 +402,11 @@ conservation authorize it structurally — so the `refund` key is the sole
 owner-authorization key and cannot be omitted. A wallet MUST use a fresh refund
 key per authorization and MUST NOT share its private half.
 
-Order validity windows, stale-price protection, and similar operational policy
-are not defined here; they are the coordinator's concern (see
-[Coordinator and relay role](#coordinator-and-relay-role)). A participant that
-wants an authorization to lapse simply refunds it. A keyset's own
-[activation/expiry lifecycle][02] bounds how long any proof — conditioned or not
-— remains settellable.
+Liveness is preserved: a `/v1/exchange` that fails validation commits nothing
+(inputs stay unspent), and the owner reclaims its conditioned proofs via refund
+once `expiry` passes. A keyset's own [activation/expiry lifecycle][02] is a
+separate, coarse issuer-level bound and does not replace the per-authorization
+`expiry`.
 
 ### Fees
 
@@ -415,7 +428,8 @@ Support MUST be advertised through [NUT-06][06]:
     "max_participants": "<uint>",
     "max_inputs": "<uint>",
     "max_outputs": "<uint>",
-    "max_request_bytes": "<uint>"
+    "max_request_bytes": "<uint>",
+    "max_expiry_seconds": "<uint>"
   }
 }
 ```
@@ -511,11 +525,14 @@ so the refund path must be owner-gated by a signature or any holder could refund
 it to itself. Settlement needs no signature, so the refund key is the sole
 owner-authorization key.
 
-**Is there an expiry or validity window?**
-Not in this NUT. A proof is settellable until it is spent or refunded, and a
-participant withdraws an authorization simply by refunding it. Order validity and
-staleness are the coordinator's operational concern; a keyset's own lifecycle
-bounds how long any proof remains settellable.
+**Why is `expiry` required?**
+It is what makes a conditioned proof a commitment rather than a revocable offer.
+Settlement is valid only before `expiry` and refund only after, so the owner
+cannot retract during the window and a counterparty can rely on the offer
+standing. If refund were allowed at any time, the owner could retract whenever
+price turned against it — recreating the free-option locktime race this NUT
+removes. Choose a short `expiry` for flexibility; reclaim unconditionally after
+it.
 
 **Can this represent a partially fillable standing order?**
 Not in v1. A single-use proof has no mutable remaining allowance; standing orders
