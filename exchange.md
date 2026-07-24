@@ -1,6 +1,6 @@
 # NUT-Exchange: Atomic Multi-Asset Exchange
 
-`draft`
+`draft` (final NUT name, number, and NUT-10 `kind` are provisional)
 
 `optional`
 
@@ -14,9 +14,6 @@ and commit to exact blinded receive outputs of the other class. The mint spends
 every input and signs every output in a single database transaction, or changes
 nothing.
 
-This NUT transfers **existing typed assets only**. It does not create or destroy
-asset classes. Final NUT name, number, and NUT-10 `kind` are provisional.
-
 ## Premise
 
 ### The problem
@@ -27,13 +24,13 @@ exchange keys, commitments, signatures, mint requests, and claims. It exposes a
 free-option locktime race: the party holding the swap secret (the leader) picks
 when to trigger settlement inside the locktime window — completing only if price
 has moved in its favor, otherwise letting the swap lapse — a free American option
-on the locked rate. And a party matched against several counterparties starts
-several independent protocols; sequential execution puts several network paths
-on the critical path.
+on the locked rate. And a peer-to-peer swap cannot batch several independent
+swaps into one mint transaction: each must be settled separately.
 
 A Cashu mint already validates proof signatures, maintains spentness, and issues
 blind signatures. This NUT uses that existing authority as the atomic settlement
-layer, removing the interactive claim sequence entirely.
+layer, removing the interactive claim sequence and the locktime free option it
+creates.
 
 ### Model
 
@@ -44,15 +41,11 @@ settlement request and submitted to the mint. The mint validates every condition
 and conserves each asset class independently, then commits all input spends and
 all output signatures in one transaction — or changes nothing.
 
-This is the duty separation of a smart-contract exchange — independently enforced
-authorization, atomic asset transition — but the trust boundary is that of a
-Cashu mint, not a public blockchain.
-
 Two preparation patterns are supported: a **direct two-party swap** where both
 participants are online, and a **coordinator-mediated swap** where a relay
 assembles matched participants' material (see [Preparation](#preparation)). A
-coordinator or relay is **optional** and has no on-mint authority; see
-[Coordinator and relay role](#coordinator-and-relay-role).
+coordinator or relay is **optional** and has no on-mint authority: any holder of
+all the valid authorizations may submit a request.
 
 ### Trust boundary and anonymity
 
@@ -65,19 +58,20 @@ here. Two mitigations bound the added trust:
    (inputs, conditions, output commitments, signatures, expiry) can prove the mint
    accepted an exchange that violates a condition or a conservation rule. This
    is incidental verifiability, not a published audit log.
-2. **Anonymity makes betrayal indiscriminate.** Fresh per-authorization `nonce`,
-   refund key, proof secret, and output secret carry no stable owner identity,
-   so the mint cannot _selectively_ betray a user. It can still censor, deny
-   service, or betray an exchange wholesale — the same issuer trust NUT-11
-   carries.
+2. **Protocol fields carry no stable owner identity.** Fresh per-authorization
+   `nonce`, refund key, proof secret, and output secret prevent the mint from
+   performing _identity-selective_ betrayal from protocol fields alone. The mint
+   still sees asset classes, amounts, timing, and transport metadata, and may
+   still censor, deny service, or betray an exchange wholesale — the same issuer
+   trust NUT-11 carries.
 
 ### Scope
 
 Version 1 supports:
 
 - one mint;
-- two or more participants in one atomic exchange (a star: one party on one side,
-  one or more on the other — e.g. one taker against one or more makers);
+- two or more participants in one atomic two-class exchange (any N-vs-M shape,
+  e.g. one taker against one or more makers, or multiple makers on both sides);
 - exactly two existing asset classes, one offered per side;
 - exact, owner-precommitted blinded receive outputs;
 - per-asset-class conservation; and
@@ -86,10 +80,9 @@ Version 1 supports:
 Version 1 does **not** support: a coordinator as a required party; cross-mint
 settlement; general N-way cycles (A wants B, B wants C, C wants A) that would
 require a solver; partial fills of one authorization; a mutable remaining
-balance; a venue-selected price or amount range; asset creation or destruction;
-or public-consensus enforcement.
+balance; a venue-selected price or amount range; asset creation or destruction.
 
-Independent atomic exchanges are unrelated: a failure or retry of one never
+Separate `/v1/exchange` calls are independent: a failure or retry of one never
 rolls back another, since each is its own database transaction.
 
 ## Protocol
@@ -107,7 +100,7 @@ rolls back another, since each is its own database transaction.
 ### `PAY_TO_UNLOCK` condition
 
 A new [NUT-10][10] well-known secret `kind` named `PAY_TO_UNLOCK`. A proof
-carrying it authorizes one exact exchange (bilateral or N-party star).
+carrying it authorizes one exact exchange.
 
 ```json
 [
@@ -130,12 +123,12 @@ carrying it authorizes one exact exchange (bilateral or N-party star).
 - `offer_keyset` / `receive_keyset` bind the two asset classes. They MUST differ.
 - `expiry` is a unix timestamp checked against the mint clock. It is the binding
   window of the commitment: settlement is valid only before it and refund only
-  after it (the two states never overlap). It MUST be set; a short window
+  after it (the two states are mutually exclusive). It MUST be set; a short window
   (seconds to minutes) keeps a resting offer reliable without long lockup.
 - `refund` is a fresh x-only public key whose private half the owner retains. A
-  signature under it authorizes the reclaim path (see [Refund](#refund)), valid
-  only after `expiry`. It is the sole owner-authorization key and cannot be
-  omitted; see [Refund](#refund) for why.
+  signature under it authorizes the reclaim path, valid only after `expiry`. A
+  wallet MUST use a fresh refund key per authorization and MUST NOT share its
+  private half (see [Refund](#refund)).
 
 The condition answers one question:
 
@@ -143,11 +136,13 @@ The condition answers one question:
 > these blinded outputs of `receive_keyset`?
 
 Every proof contributed by one participant MUST carry the same `offer_keyset`,
-`receive_keyset`, `H_recv`, `expiry`, and `refund`. Across the exchange, the multiset of
-offered keysets MUST equal the multiset of received keysets — i.e. every asset
-class received by some participant is offered by some other participant. In the
-common star shape, one side offers class `X` and receives `Y`; the other side
-offers `Y` and receives `X`.
+`receive_keyset`, `H_recv`, `expiry`, and `refund`. Across the exchange, the set
+of `offer_keyset` values MUST equal the set of `receive_keyset` values — i.e.
+every asset class offered by some participant is received by some (other)
+participant, and vice versa. Per-class amount conservation is rule 10's job, so
+the count of participants on each side is unconstrained: 1-vs-N, N-vs-M, and
+N-vs-N are all valid two-class shapes. In the common shape, one side offers
+class `X` and receives `Y`; the other side offers `Y` and receives `X`.
 
 ### Receive-output commitment
 
@@ -162,8 +157,8 @@ The commitment is a BIP-340 tagged hash over the length-prefixed concatenation
 of entries in declared order. Each `entry_canonical` is the entry serialized with
 the [RFC 8785][rfc8785] JSON Canonicalization Scheme (JCS): UTF-8, object keys in
 lexicographic order, minimal number serialization, no insignificant whitespace.
-The length prefix is a 4-byte little-endian unsigned integer (output lists are
-not capped at 255):
+The length prefix is a 4-byte little-endian unsigned integer recording the
+**entry count** (not byte length; output lists are not capped at 255):
 
 ```
 recv_canonical = uint32_le(len) || entry[0]_canonical || ... || entry[n-1]_canonical
@@ -171,6 +166,8 @@ H_recv = tagged_hash("Cashu/PAY_TO_UNLOCK/recv", recv_canonical)
 ```
 
 where `tagged_hash(tag, msg) = SHA256(SHA256(tag) || SHA256(tag) || msg)`.
+Amounts are unsigned 64-bit integers; the mint MUST reject outputs whose amounts
+are not representable as u64.
 
 Duplicate entries, unknown fields, non-canonical encodings, and list-prefix
 matches MUST be rejected. A separate receive public key is not required: only the
@@ -184,6 +181,14 @@ needed to unblind the mint's signatures.
   serialized via [RFC 8785][rfc8785] JCS. Each `Proof` and `BlindedMessage` uses
   exactly the field set defined in [NUT-00][00]; unknown or extra fields MUST be
   rejected.
+- **Amounts**: encoded as JSON numbers per JCS, MUST be unsigned integers in
+  `[0, 2^64)`. The mint MUST use checked, non-wrapping arithmetic for all sums
+  in validation rule 10.
+- **`PAY_TO_UNLOCK` condition**: each of the four tags (`offer_keyset`,
+  `receive_keyset`, `expiry`, `refund`) MUST appear exactly once; unknown or
+  duplicate tags MUST be rejected. `expiry` is decimal unix seconds without
+  leading zeros or fractional part. Keyset IDs use their [NUT-02][02] canonical
+  form; the refund key is a BIP-340 x-only pubkey in hex.
 - **Participant order**: records are ordered by the lexicographically smallest
   `(keyset_id, secret)` among each participant's inputs. Proof secrets are unique
   across the whole request, so this is a strict total order even when several
@@ -228,29 +233,18 @@ own conditioned proofs via refund after `expiry`, then retries or walks away.
 #### Coordinator-mediated swap
 
 A matching engine pairs orders and a relay assembles and submits the settlement
-request. What a participant must know up front depends on its order type:
-
-- **Fill-or-Kill (FOK) taker — may go offline.** A FOK order has a single exact
-  fill amount, so the taker knows its receive amount at order placement. It
-  prepares its conditioned proofs then (steps 1–3 above), attaches them and its
-  public receive descriptors to the order, and disconnects. At match the relay
-  uses this pre-committed material; the taker later recovers its outputs via
-  [NUT-09][09].
-- **Makers and Fill-and-Kill (FAK) takers — must be online at match.** A resting
-  maker may be partially filled and a FAK taker's fill amount is unknown until
-  match, so neither knows its exact receive amount at preparation time. They
-  prepare conditioned proofs after a match is agreed (deriving receive amounts
-  from the matched terms) and hand them to the relay.
+request. Each participant prepares its conditioned proofs as in the two-party
+flow above. A participant that wants offline capability may prepare **multiple
+lots**, each a separate `PAY_TO_UNLOCK` authorization with its own `H_recv`, its
+own inputs, and its own `expiry`; each lot becomes its own participant record in
+`/v1/exchange`. The submitter includes only the lots it actually matches; unused
+lots remain unspent and are reclaimed by their owner via refund after their own
+`expiry`. A participant that has pre-committed sufficient lots to cover any
+acceptable match may disconnect before matching; a participant that prepares
+conditioned proofs only after a match is agreed must be online at match time.
 
 The relay assembles every matched participant's conditioned proofs and public
 receive descriptors into one `/v1/exchange` request and submits it.
-
-> **Blinding-budget lemma.** Blind issuance requires the recipient to supply —
-> and later unblind — its own `BlindedMessage` values, so a participant can
-> disconnect only if it has pre-committed outputs for its exact fill amount. This
-> is why only exact-fill (FOK) orders are offline-capable; partially fillable
-> orders would need a pre-committed pool of lot-granularity authorizations, which
-> is out of scope for v1.
 
 In both patterns the mint does not learn the condition during blind preparation;
 it first sees the plaintext condition at settlement or refund, as with other
@@ -287,12 +281,14 @@ curl -X POST https://mint.host:3338/v1/exchange \
 
 Before any mutation, the mint MUST verify all of the following:
 
-1. The request has two or more participant records. Advertised limits
-   (`max_participants`, `max_inputs`, `max_outputs`, `max_request_bytes`) MUST be
-   respected.
+1. The request has two or more participant records, each containing at least one
+   input and one output. Advertised limits (`max_participants`, `max_inputs`,
+   `max_outputs`, `max_request_bytes`) MUST be respected.
 2. Every proof is authentic, unspent, unique in the request, and signed by an
    active or still-spendable keyset.
-3. Every proof carries a supported, canonical `PAY_TO_UNLOCK` condition.
+3. Every proof carries a supported, canonical `PAY_TO_UNLOCK` condition (each of
+   the four tags appearing exactly once, no unknown tags; see [Canonical
+   encodings](#canonical-encodings)).
 4. No input proof is reused across records and every input is unique in the
    request.
 5. Each participant's inputs are all of that participant's `offer_keyset`.
@@ -302,18 +298,20 @@ Before any mutation, the mint MUST verify all of the following:
    participant's `receive_keyset`.
 8. Exactly two distinct keysets appear across all participants' `offer_keyset`
    and `receive_keyset` values, and every participant's `receive_keyset` differs
-   from its own `offer_keyset`. (Per-class amount conservation is rule 10; it does
-   not require equal participant counts per class, so a one-taker/multi-maker star
-   is valid.)
+   from its own `offer_keyset`. Per-class amount conservation (rule 10) does not
+   require equal participant counts per class, so any two-class shape is valid:
+   1-vs-N, N-vs-M, or N-vs-N.
 9. Every blinded output is unique, valid, uses an accepted keyset, and has not
    been signed before.
-10. For each asset class `c` independently, summed over all participants:
-    `sum(inputs_c) == sum(outputs_c) + input_fees_c`, where
+10. For each asset class `c` independently, summed over all participants with
+    checked, non-wrapping unsigned 64-bit arithmetic:
+    `sum(inputs_c) == sum(outputs_c) + input_fees_c`, where amounts are unsigned
+    64-bit integers and
     `input_fees_c = (sum(input_fee_ppk over inputs with id == c) + 999) // 1000`
     per [NUT-02][02]. Fees are computed and rounded **per class**, not globally.
     No additional operation fee is defined in v1.
 11. The request is submitted before the minimum `expiry` across all
-    participants' conditions (mint clock); an expired proof is not settellable.
+    participants' conditions (mint clock); an expired proof is not settleable.
 
 **Processing order.** The mint first canonicalizes the request and computes
 `request_digest`. If a committed response already exists for that digest, it is
@@ -352,55 +350,43 @@ input proof that already appears in a committed response under a conflicting
 
 ### Recovery
 
-Recovery does not depend on the submitter. Because each owner created and
-retained its receive `BlindedMessage` values, an owner can recover directly from
-the mint:
-
-1. Check its conditioned inputs with [NUT-07][07].
-2. If they are spent, send the known blinded messages to [NUT-09][09].
-3. The mint returns the signatures it already committed; the owner unblinds
-   locally.
-
-A wallet SHOULD retry [NUT-09][09] with bounded backoff when an input is spent
-but no response was received. Wallets seeking stronger metadata privacy SHOULD
-use an anonymity-preserving transport for recovery polling.
+Recovery is the direct [NUT-07][07]/[NUT-09][09] path, with one note: because
+each **owner** retained its own receive `BlindedMessage` values, the owner — not
+the submitter — recovers signatures from the mint and unblinds locally. A wallet
+SHOULD retry [NUT-09][09] with bounded backoff when an input is spent but no
+response was received. Wallets seeking stronger metadata privacy SHOULD use an
+anonymity-preserving transport for recovery polling.
 
 ### Refund
 
-A `PAY_TO_UNLOCK` proof is spendable in exactly two ways, gated by the mint
-clock so the two states never overlap:
+A `PAY_TO_UNLOCK` proof has two mutually exclusive spend paths selected by the
+mint clock:
 
-- **Settlement** — as an input to a valid `/v1/exchange` request submitted
-  **before** the condition's `expiry` (rules above).
-- **Refund** — through an ordinary [NUT-03][03] swap to fresh outputs of the
-  offered asset class, authorized by a signature from the `refund` key and
-  accepted only **after** `expiry`. The swap request MUST include, for each
-  refunded input, a `Proof.witness` with a Schnorr signature by the `refund`
+- **Before `expiry`**: only as an input to a valid `/v1/exchange` (rules above).
+- **At or after `expiry`**: only via an ordinary [NUT-03][03] swap to fresh
+  outputs of the offered asset class, where each refunded input carries a
+  `Proof.witness` containing a single BIP-340 Schnorr signature by the `refund`
   private key over
-  `refund_digest = tagged_hash("Cashu/PAY_TO_UNLOCK/refund", canonical_swap_request)`.
-  The mint verifies the current time is at or past the condition's `expiry` and
-  that the signature is valid under the condition's `refund` public key;
-  otherwise the refund is rejected. The mint MUST NOT accept a refund before
-  `expiry`, and MUST NOT accept an expired proof in a `/v1/exchange` settlement.
 
-The non-overlap is what makes a conditioned proof a *commitment*: once minted,
-the owner cannot retract it before `expiry`, so a counterparty can rely on the
-offer standing for the whole window. If refund were allowed at any time the
-owner would hold a free cancellation option — retracting whenever price turned
-against it — which is exactly the free-option locktime race this NUT removes.
-Binding-until-`expiry` eliminates that option; only the standard resting
-limit-order adverse selection (inherent to any order book) remains. A maker
-wanting flexibility chooses a short `expiry`.
+  ```
+  refund_digest = tagged_hash("Cashu/PAY_TO_UNLOCK/refund", canonical_swap_request)
+  ```
 
-**Why the `refund` key is required.** A `PAY_TO_UNLOCK` proof is bearer and is
-not spendable in a normal `/v1/swap` — that lock is precisely what prevents a
-relay or counterparty from redirecting its value. Because the proof is bearer,
-the refund path must be owner-gated: without a signature, any holder (the relay
-that assembles the request, or the counterparty) could refund it to its own
-outputs. Settlement needs no signature — the condition, `H_recv`, and per-class
-conservation authorize it structurally — so the `refund` key is the sole
-owner-authorization key and cannot be omitted. A wallet MUST use a fresh refund
-key per authorization and MUST NOT share its private half.
+  where `canonical_swap_request` is the [RFC 8785][rfc8785] JCS encoding of the
+  NUT-03 swap request object `{inputs, outputs}` (same canonicalization rule as
+  the settlement request). The mint verifies that the current time is at or past
+  the condition's `expiry`, that the signature is valid under the condition's
+  `refund` public key, and that the swap issues refund outputs in an **active
+  keyset of the same unit** as the condition's `offer_keyset` (not necessarily
+  the same keyset ID, since the original keyset may have been rotated and
+  [NUT-02][02] forbids new outputs from inactive keysets). Otherwise the refund
+  is rejected. The mint MUST NOT accept a refund before `expiry`, and MUST NOT
+  accept an expired proof in a `/v1/exchange` settlement.
+
+The proof is therefore committed until `expiry` — settlement is the only valid
+spend — and reclaimable by the owner afterwards — refund is the only valid spend.
+The `refund` signature owner-gates the reclaim path: without it, any holder of
+the bearer proof could refund it to itself.
 
 Liveness is preserved: a `/v1/exchange` that fails validation commits nothing
 (inputs stay unspent), and the owner reclaims its conditioned proofs via refund
@@ -434,41 +420,14 @@ Support MUST be advertised through [NUT-06][06]:
 }
 ```
 
-`max_participants` bounds `N` in one atomic exchange.
+`max_participants` bounds `N` in one atomic exchange. `max_expiry_seconds` bounds
+the lifetime of a `PAY_TO_UNLOCK` condition: the mint MUST reject any
+[NUT-03][03] swap that mints a `PAY_TO_UNLOCK` proof whose `expiry` exceeds the
+current mint clock plus `max_expiry_seconds`.
 
 A wallet MUST NOT create `PAY_TO_UNLOCK` proofs unless the mint advertises this
 NUT and suitable bounds. Specific error codes are defined in
 [error_codes.md](error_codes.md).
-
-## Coordinator and relay role
-
-A coordinator (or relay) is an **optional** deployment convenience used in the
-coordinator-mediated pattern: it assembles the participants' conditioned proofs
-and public receive descriptors and submits the settlement request on their
-behalf. It is never required for correctness or recovery, and it has no special
-on-mint role: any holder of all the valid authorizations may submit a request,
-because custody does not depend on who submits (see the FAQ). Participants that
-want a specific party to submit simply hand their authorizations only to that
-party over their chosen off-mint transport.
-
-Operational policy — order validity windows, stale-price handling, matching and
-batching rules, anti-spam deposits, reputation — lives entirely at the
-coordinator and is out of scope for this NUT. Recovery is always the direct
-[NUT-07][07]/[NUT-09][09] path, independent of any coordinator.
-
-## Resting-order optionality and relay discretion
-
-A resting order — whether an offline FOK taker's pre-committed proofs or an
-online maker's limit order waiting in a book — offers the market a free option:
-it is most likely to fill exactly when price has moved against it (adverse
-selection). This is the standard limit-order property of every order book, not a
-settlement-atomicity problem, and it is unrelated to the adaptor-sig locktime
-race this NUT removes. Separately, a relay has grouping and timing discretion
-over which pre-authorized proofs it assembles into a request and when it submits;
-it cannot redirect value or alter price (outputs and amounts are bound by
-`H_recv`), but it can choose match timing and pairing. Mitigations for both are
-order-book-level: batch auctions, validity windows enforced by the coordinator,
-post-only orders, and reputation. None is a theft or safety violation.
 
 ## FAQ
 
@@ -488,56 +447,6 @@ value to itself — it can only submit the one authorized exchange. (3) The only
 theft vector is the refund key; the owner keeps a fresh refund key per
 authorization and never shares its private half. A coordinator can therefore at
 worst delay notification or refuse to submit.
-
-**What if the response is withheld?**
-A withheld response can delay notification; it cannot redirect outputs, cannot
-make the submitter spend the resulting proofs (it lacks the output secrets), and
-cannot permanently deny a committed output while the mint complies with
-[NUT-09][09]. Withholding is bounded to a notification delay.
-
-**Can the mint link exchanges to an owner?**
-Not from condition fields: fresh per-authorization `nonce`, refund key, proof
-secret, and output secret carry no stable identity. The mint sees asset classes,
-amounts, and timing per settlement transaction. It cannot achieve
-identity-selective censorship from protocol fields alone.
-
-**When is an N-party (star) exchange useful?**
-An N-party atomic exchange commits one party on one side and one or more on the
-other in a single database transaction. A typical use case is a matching engine
-settling a taker's **Fill-or-Kill** (FOK) order against several makers: the
-engine assembles one request and the mint settles all legs or none, so the taker
-is never left with a partial fill because one maker's input was stale. General
-N-way cycles (A->B->C->A) that would require a solver are out of scope for v1;
-only star shapes (one side vs one or more of the other) are supported.
-
-**Can a participant go offline after placing an order?**
-Only for an exact-fill order. A Fill-or-Kill (FOK) taker knows its receive amount
-at order placement, so it can pre-commit its conditioned proofs and disconnect;
-the relay settles later and the taker recovers via [NUT-09][09]. A Fill-and-Kill
-(FAK) taker and a resting maker do not know their fill amount until matched, so
-they must be online at match to produce the exact receive outputs. (Blind
-issuance requires the recipient to pre-commit its exact outputs — see the
-blinding-budget lemma.)
-
-**Is a refund key really necessary?**
-Yes. See [Refund](#refund): a conditioned proof is bearer and not normal-spendable,
-so the refund path must be owner-gated by a signature or any holder could refund
-it to itself. Settlement needs no signature, so the refund key is the sole
-owner-authorization key.
-
-**Why is `expiry` required?**
-It is what makes a conditioned proof a commitment rather than a revocable offer.
-Settlement is valid only before `expiry` and refund only after, so the owner
-cannot retract during the window and a counterparty can rely on the offer
-standing. If refund were allowed at any time, the owner could retract whenever
-price turned against it — recreating the free-option locktime race this NUT
-removes. Choose a short `expiry` for flexibility; reclaim unconditionally after
-it.
-
-**Can this represent a partially fillable standing order?**
-Not in v1. A single-use proof has no mutable remaining allowance; standing orders
-need additional machinery (pre-split funding lots, successor-proof chaining, or
-mint-side state) and are deferred.
 
 ## References
 
