@@ -453,7 +453,7 @@ worst delay notification or refuse to submit.
 - [NUT-02](02.md) · [NUT-03](03.md) · [NUT-06](06.md) · [NUT-07](07.md) ·
   [NUT-09](09.md) · [NUT-10](10.md) · [NUT-11](11.md) · [NUT-12](12.md) · [NUT-21](21.md) · [NUT-22](22.md)
 - [Maurice Herlihy, Atomic Cross-Chain Swaps](https://arxiv.org/abs/1801.09515)
-  — leader/follower topology and timelock hierarchy (the *structure* of an
+  — leader/follower topology and timelock hierarchy (the _structure_ of an
   adaptor-sig/HTLC swap).
 - [Mazumdar et al., Towards Faster Settlement in HTLC-based Cross-Chain
   Swaps](https://arxiv.org/abs/2211.15804) — the American-call-option-without-premium
