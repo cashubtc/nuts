@@ -72,19 +72,18 @@ Conservation rule, fee model, coverage from keyset metadata, and canonical colle
 Rules 1–7, 9, 11 from [NUT-Exchange][exchange] are inherited. Rules 8 and 10 are **replaced**:
 
 - **Rule 8 (replaced):** Every input/output keyset MUST be active. Collateral keysets MUST be regular with unit equal to the condition's collateral unit. Conditional keysets MUST be registered under this `condition_id`. Either class is valid on either side of a convert.
-- **Rule 10 (replaced):** Per-outcome conservation with `in(o)` / `out(o)` summed across all participants: `out(o) == in(o) − F` for every `o ∈ Ω` (error 13041). **Multi-party-only restriction:** at least one output MUST cover each outcome (i.e. `out(o) > 0` for every `o`). Single-party convert inherits split-merge's rule, which permits `out(o) == 0` for outcomes fully consumed by the fee.
+- **Rule 10 (replaced):** Per-outcome conservation with `in(o)` / `out(o)` summed across all participants: `out(o) == in(o) − F` for every `o ∈ Ω` (error 13041). Since collateral covers every outcome, an uncovered outcome (no participant receives tokens covering it) would force `out(o) = 0 = in(o) − F`, making the fee absorb all collateral — a degenerate settlement. Multi-party convert therefore requires at least one output to cover each outcome. (Single-party convert inherits split-merge's rule, which permits `out(o) == 0` when the fee legitimately consumes one outcome's value.)
 
 Additional multi-party rules:
 
 1. `parent_collection_id` MUST be omitted or all-zero. Advertised limits (`max_participants`, `max_inputs`, `max_outputs`, `max_request_bytes`) MUST be respected.
 2. **No attestation recorded** for `condition_id` (error 13042). This check MUST serialise atomically with the convert commit — see [Attestation atomicity](#attestation-atomicity).
 3. Every input carries a canonical `PAY_TO_UNLOCK` condition (2 tags). All inputs in one participant record share the same condition. Each participant's outputs hash to that `H_recv`.
-4. Reject if any involved keyset has `input_fee_ppk == 0` unless admission control is in force.
-5. Every `expiry` MUST be greater than the current mint clock.
+4. Reject if any involved keyset has `input_fee_ppk == 0` unless admission control is in force _(without `F`, anyone can submit unlimited convert requests at no cost — a free-DoS vector)_.
 
 ## `request_digest`
 
-The CTF digest commits to **all** semantic top-level fields, not just participant records:
+`request_digest` enables idempotent retries: if a client's request commits but the response is lost (timeout, connection drop), the client retries the identical request and the mint returns the cached response instead of re-processing or rejecting as double-spend. The CTF digest commits to **all** semantic top-level fields, not just participant records:
 
 ```
 req_canonical = condition_id || parent_collection_id_canonical || participant[0]_canonical || ... || participant[n-1]_canonical
@@ -95,11 +94,22 @@ where `parent_collection_id_canonical` is the all-zero 32-byte hex if the field 
 
 ## Attestation atomicity
 
-_[Not in NUT-Exchange or CTF-split-merge single-party.]_ This applies to **every** `/v1/ctf/convert` commit (single-party and multi-party). The attestation rejection MUST serialise with both the [NUT-CTF][CTF] attestation write and the convert commit. The mint MUST take the same row-level lock on the condition record as the attestation path, or use a database constraint that makes the race impossible. Without this, a settlement could commit after the oracle has resolved the condition, allowing conversion of conditional tokens whose outcome is already determined.
+_[Not in NUT-Exchange.]_ After the oracle attests the winning outcome, the condition is resolved. If a convert commits in the same instant — between the attestation write and keyset deactivation — the mint issues new conditional tokens for an already-resolved condition. Those tokens are worthless to holders but still backed by collateral, creating phantom liabilities.
+
+To prevent this race, every `/v1/ctf/convert` commit (single-party and multi-party) MUST take the same row-level lock on the condition record as the [NUT-CTF][CTF] attestation write. Either the attestation records first (convert is rejected — condition resolved) or the convert commits first (attestation waits — condition still open). No race is possible.
 
 ## Liability accounting
 
-_[Not in NUT-Exchange.]_ The atomic commit updates per-outcome conditional liability counters: `ΔL(o) += out_conditional(o) − in_conditional(o)` for each `o ∈ Ω`. The reserve `R` (total collateral of the condition's unit held by the mint) and liability `L(o)` are defined and initialised by [NUT-CTF-split-merge][CTF-split-merge]'s Issuance Invariant and updated by every issuance, conversion, redemption, and refund path. Let `ΔR = collateral_in − collateral_out`. Per-outcome conservation rearranges to `ΔL(o) = ΔR − F` for every `o` — the same constant `F` on every outcome (non-contingent). Since `R ≥ L(o)` at inception and `ΔR − ΔL(o) = F ≥ 0`, convert preserves `R ≥ L(o)` for all `o`.
+_[Not in NUT-Exchange.]_
+
+**In plain terms:** the mint doesn't gamble. It takes in collateral and hands out conditional tokens, but the books always balance — for any outcome the oracle might pick, the mint holds enough collateral to redeem every outstanding token. The fee it keeps is the same regardless of which outcome wins.
+
+**Formally:** the reserve `R` (total collateral held) and per-outcome liability `L(o)` are defined by [NUT-CTF-split-merge][CTF-split-merge]'s Issuance Invariant. Every convert preserves `R ≥ L(o)` because:
+
+- `ΔR = collateral_in − collateral_out` (net collateral locked by this convert).
+- `ΔL(o) = out_conditional(o) − in_conditional(o)` (change in conditional liability on outcome `o`).
+- Per-outcome conservation rearranges to `ΔL(o) = ΔR − F` for every `o`.
+- Since `ΔR − ΔL(o) = F ≥ 0`, the solvency margin `R − L(o)` grows by `F` on every outcome.
 
 ## Polymarket match types
 
