@@ -200,9 +200,11 @@ req_canonical = participant[0]_canonical || ... || participant[n-1]_canonical
 request_digest = tagged_hash("Cashu/exchange/request", req_canonical)
 ```
 
-The request digest is the sole idempotency and replay key: a byte-identical
-retry yields the same digest and returns the committed result; any input proof
-can be spent only once.
+If the mint supports idempotent retries (advertised via `idempotent_retries` in
+[NUT-06][06] info), the request digest enables fast retry: a byte-identical
+request returns the cached response instead of failing on double-spend. Without
+this feature, clients fall back to [NUT-09][09] recovery to retrieve lost
+signatures.
 
 Every signature or hash in this NUT is over these canonical encodings.
 
@@ -314,11 +316,12 @@ Before any mutation, the mint MUST verify all of the following:
 11. The request is submitted before the minimum `expiry` across all
     participants' conditions (mint clock); an expired proof is not settleable.
 
-**Processing order.** The mint first canonicalizes the request and computes
-`request_digest`. If a committed response already exists for that digest, it is
-returned unchanged (idempotent retry) without re-running the rules below. Only
-otherwise are rules 1–11 applied, then the atomic commit. The mint MUST finish
-validation before any expensive signing or durable mutation.
+**Processing order.** If the mint supports idempotent retries, it first
+canonicalizes the request and computes `request_digest`. If a committed response
+already exists for that digest, it is returned unchanged (idempotent retry)
+without re-running the rules below. Only otherwise are rules 1–11 applied, then
+the atomic commit. The mint MUST finish validation before any expensive signing
+or durable mutation.
 
 #### Atomic commit
 
@@ -328,12 +331,14 @@ The mint MUST commit these effects in one database transaction:
 2. sign every selected blinded output;
 3. persist every `BlindedMessage` and corresponding `BlindSignature` for
    [NUT-09][09] restoration; and
-4. persist an idempotent response keyed by `request_digest`.
+4. if idempotent retries are supported, persist a response keyed by
+   `request_digest`.
 
 If any validation, signing, or persistence step fails, none of these effects may
-commit. A byte-identical retry MUST return the previously committed result. An
-input proof that already appears in a committed response under a conflicting
-`request_digest` MUST fail without mutation.
+commit. If idempotent retries are supported, a byte-identical retry MUST return
+the previously committed result, and an input proof that already appears in a
+committed response under a conflicting `request_digest` MUST fail without
+mutation.
 
 #### Response
 
@@ -416,6 +421,7 @@ Support MUST be advertised through [NUT-06][06]:
     "max_inputs": "<uint>",
     "max_outputs": "<uint>",
     "max_request_bytes": "<uint>",
+    "idempotent_retries": "<bool>",
     "max_expiry_seconds": "<uint>"
   }
 }
