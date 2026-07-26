@@ -110,7 +110,6 @@ carrying it authorizes one exact exchange.
     "data": "<hex_str: H_recv>",
     "tags": [
       ["offer_keyset", "<keyset_id>"],
-      ["receive_keyset", "<keyset_id>"],
       ["expiry", "<unix_seconds_str>"],
       ["refund", "<xonly_pubkey_hex>"]
     ]
@@ -120,7 +119,7 @@ carrying it authorizes one exact exchange.
 
 - `data` is `H_recv`, the commitment to this participant's complete ordered
   receive-output list (see [Receive-output commitment](#receive-output-commitment)).
-- `offer_keyset` / `receive_keyset` bind the two asset classes. They MUST differ.
+- `offer_keyset` binds the participant's offered asset class. The receive asset class is the common `id` of all entries in the output bundle (authenticated by `H_recv`).
 - `expiry` is a unix timestamp checked against the mint clock. It is the binding
   window of the commitment: settlement is valid only before it and refund only
   after it (the two states are mutually exclusive). It MUST be set; a short window
@@ -133,13 +132,14 @@ carrying it authorizes one exact exchange.
 The condition answers one question:
 
 > May this proof be consumed by a transaction that atomically creates exactly
-> these blinded outputs of `receive_keyset`?
+> these blinded outputs?
 
 Every proof contributed by one participant MUST carry the same `offer_keyset`,
-`receive_keyset`, `H_recv`, `expiry`, and `refund`. Across the exchange, the set
-of `offer_keyset` values MUST equal the set of `receive_keyset` values — i.e.
-every asset class offered by some participant is received by some (other)
-participant, and vice versa. Per-class amount conservation is rule 10's job, so
+`H_recv`, `expiry`, and `refund`. Across the exchange, the set of `offer_keyset`
+values MUST equal the set of receive keysets (the common output `id` of each
+participant's bundle, authenticated by `H_recv`) — i.e. every asset class offered
+by some participant is received by some (other) participant, and vice versa.
+Per-class amount conservation is rule 10's job, so
 the count of participants on each side is unconstrained: 1-vs-N, N-vs-M, and
 N-vs-N are all valid two-class shapes. In the common shape, one side offers
 class `X` and receives `Y`; the other side offers `Y` and receives `X`.
@@ -184,11 +184,11 @@ needed to unblind the mint's signatures.
 - **Amounts**: encoded as JSON numbers per JCS, MUST be unsigned integers in
   `[0, 2^64)`. The mint MUST use checked, non-wrapping arithmetic for all sums
   in validation rule 10.
-- **`PAY_TO_UNLOCK` condition**: each of the four tags (`offer_keyset`,
-  `receive_keyset`, `expiry`, `refund`) MUST appear exactly once; unknown or
-  duplicate tags MUST be rejected. `expiry` is decimal unix seconds without
-  leading zeros or fractional part. Keyset IDs use their [NUT-02][02] canonical
-  form; the refund key is a BIP-340 x-only pubkey in hex.
+- **`PAY_TO_UNLOCK` condition**: each of the three tags (`offer_keyset`,
+  `expiry`, `refund`) MUST appear exactly once; unknown or duplicate tags MUST be
+  rejected. `expiry` is decimal unix seconds without leading zeros or fractional
+  part. Keyset IDs use their [NUT-02][02] canonical form; the refund key is a
+  BIP-340 x-only pubkey in hex.
 - **Participant order**: records are ordered by the lexicographically smallest
   `(keyset_id, secret)` among each participant's inputs. Proof secrets are unique
   across the whole request, so this is a strict total order even when several
@@ -294,12 +294,13 @@ Before any mutation, the mint MUST verify all of the following:
 5. Each participant's inputs are all of that participant's `offer_keyset`.
 6. Each participant's `outputs` list hashes exactly to that participant's
    `H_recv`.
-7. Every output in a participant's `outputs` list has `id` equal to that
-   participant's `receive_keyset`.
+7. Every output in a participant's `outputs` list shares the same `id`; that
+   common `id` is the participant's receive keyset (authenticated by `H_recv`).
 8. Exactly two distinct keysets appear across all participants' `offer_keyset`
-   and `receive_keyset` values, and every participant's `receive_keyset` differs
-   from its own `offer_keyset`. Per-class amount conservation (rule 10) does not
-   require equal participant counts per class, so any two-class shape is valid:
+   values and their derived receive keysets, and every participant's receive
+   keyset differs from its own `offer_keyset`. Per-class amount conservation
+   (rule 10) does not require equal participant counts per class, so any
+   two-class shape is valid:
    1-vs-N, N-vs-M, or N-vs-N.
 9. Every blinded output is unique, valid, uses an accepted keyset, and has not
    been signed before.
