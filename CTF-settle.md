@@ -81,16 +81,18 @@ Additional multi-party rules:
 3. Every input carries a canonical `PAY_TO_UNLOCK` condition (2 tags). All inputs in one participant record share the same condition. Each participant's outputs hash to that `H_recv`.
 4. Reject if any involved keyset has `input_fee_ppk == 0` unless admission control is in force _(without `F`, anyone can submit unlimited convert requests at no cost — a free-DoS vector)_.
 
-## `request_digest`
+## `request_digest` (optional)
 
-`request_digest` enables idempotent retries: if a client's request commits but the response is lost (timeout, connection drop), the client retries the identical request and the mint returns the cached response instead of re-processing or rejecting as double-spend. The CTF digest commits to **all** semantic top-level fields, not just participant records:
+Optional feature inherited from [NUT-Exchange][exchange] (advertised via `idempotent_retries` in [NUT-06][06] info). Enables idempotent retries: if a client's request commits but the response is lost, the client retries the identical request and the mint returns the cached response. Without it, clients fall back to [NUT-09][09] recovery, same as [NUT-03][03] swap.
+
+The CTF digest (when supported) commits to **all** semantic top-level fields:
 
 ```
 req_canonical = condition_id || parent_collection_id_canonical || participant[0]_canonical || ... || participant[n-1]_canonical
 request_digest = tagged_hash("Cashu/ctf/convert/request", req_canonical)
 ```
 
-where `parent_collection_id_canonical` is the all-zero 32-byte hex if the field is omitted. This prevents idempotent-response replay across requests with different `condition_id` or `parent_collection_id`.
+where `parent_collection_id_canonical` is the all-zero 32-byte hex if the field is omitted.
 
 ## Attestation atomicity
 
