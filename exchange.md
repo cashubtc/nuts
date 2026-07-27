@@ -10,8 +10,8 @@
 
 This NUT defines an atomic exchange of two existing Cashu asset classes at one
 mint. Two or more participants each contribute bearer proofs of one asset class
-and commit to exact blinded receive outputs of the other class. The mint spends
-every input and signs every output in a single database transaction, or changes
+and commit to blinded receive outputs of the other class. The mint spends every
+input and signs every output in a single database transaction, or changes
 nothing.
 
 ## Premise
@@ -34,12 +34,12 @@ creates.
 
 ### Model
 
-Each participant first locks its bearer proofs to an exact receive-output
-commitment via a [NUT-10][10] `PAY_TO_UNLOCK` condition. The participants'
-conditioned proofs and public receive descriptors are assembled into one
-settlement request and submitted to the mint. The mint validates every condition
-and conserves each asset class independently, then commits all input spends and
-all output signatures in one transaction — or changes nothing.
+Each participant first locks its bearer proofs to a receive-output commitment
+via a [NUT-10][10] `PAY_TO_UNLOCK` condition. The participants' conditioned
+proofs and public receive descriptors are assembled into one settlement request
+and submitted to the mint. The mint validates every condition and conserves
+each asset class independently, then commits all input spends and all output
+signatures in one transaction — or changes nothing.
 
 Two preparation patterns are supported: a **direct two-party swap** where both
 participants are online, and a **coordinator-mediated swap** where a relay
@@ -70,17 +70,16 @@ here. Two mitigations bound the added trust:
 Version 1 supports:
 
 - one mint;
-- two or more participants in one atomic two-class exchange (any N-vs-M shape,
-  e.g. one taker against one or more makers, or multiple makers on both sides);
+- two or more participants in one atomic two-class exchange (any N-vs-M shape);
 - exactly two existing asset classes, one offered per side;
-- exact, owner-precommitted blinded receive outputs;
+- owner-precommitted blinded receive outputs, with optional change outputs in the
+  offer keyset and alternative output bundles for FAK-style orders;
 - per-asset-class conservation; and
 - one atomic commit (all participants settle or none).
 
 Version 1 does **not** support: a coordinator as a required party; cross-mint
-settlement; general N-way cycles (A wants B, B wants C, C wants A) that would
-require a solver; partial fills of one authorization; a mutable remaining
-balance; a venue-selected price or amount range; asset creation or destruction.
+settlement; general N-way cycles that would require a solver; asset creation or
+destruction.
 
 Separate `/v1/exchange` calls are independent: a failure or retry of one never
 rolls back another, since each is its own database transaction.
@@ -96,58 +95,89 @@ rolls back another, since each is its own database transaction.
   receives the other.
 - **Submitter**: whoever posts the settlement request to the mint — a participant
   or a relay. It is not a custody role.
+- **Change output**: an output in the participant's offer keyset, returning
+  unspent input value. Enabled by the condition's `allow_change` tag (see below).
 
 ### `PAY_TO_UNLOCK` condition
 
-A new [NUT-10][10] well-known secret `kind` named `PAY_TO_UNLOCK`. A proof
-carrying it authorizes one exact exchange.
+A [NUT-10][10] well-known secret `kind` named `PAY_TO_UNLOCK`. A proof carrying
+it authorises one exact exchange — or, if `alt_outputs` is present, one exchange
+chosen from a finite set of owner-authorised output bundles.
 
 ```json
 [
   "PAY_TO_UNLOCK",
   {
     "nonce": "<hex_str: 32 bytes>",
-    "data": "<hex_str: H_recv>",
+    "data": "<hex_str: H_recv (primary bundle)>",
     "tags": [
       ["offer_keyset", "<keyset_id>"],
       ["expiry", "<unix_seconds_str>"],
-      ["refund", "<xonly_pubkey_hex>"]
+      ["refund", "<xonly_pubkey_hex>"],
+      ["alt_outputs", "<H_recv_alt_1>", "<H_recv_alt_2>", "..."],
+      ["allow_change"],
+      ["min_output_amount", "<uint_str>"]
     ]
   }
 ]
 ```
 
-- `data` is `H_recv`, the commitment to this participant's complete ordered
-  receive-output list (see [Receive-output commitment](#receive-output-commitment)).
-- `offer_keyset` binds the participant's offered asset class. The receive asset class is the common `id` of all entries in the output bundle (authenticated by `H_recv`).
-- `expiry` is a unix timestamp checked against the mint clock. It is the binding
-  window of the commitment: settlement is valid only before it and refund only
-  after it (the two states are mutually exclusive). It MUST be set; a short window
-  (seconds to minutes) keeps a resting offer reliable without long lockup.
-- `refund` is a fresh x-only public key whose private half the owner retains. A
-  signature under it authorizes the reclaim path, valid only after `expiry`. A
-  wallet MUST use a fresh refund key per authorization and MUST NOT share its
-  private half (see [Refund](#refund)).
+**Required tags** (MUST appear exactly once):
 
-The condition answers one question:
+- `offer_keyset`: binds the participant's offered asset class. The mint MUST
+  verify `offer_keyset == Proof.id` on every input (prevents keyset-ID relabeling
+  when verification keys are shared across keysets).
+- `expiry`: unix timestamp. Settlement valid only before it; refund only after.
+- `refund`: fresh x-only public key whose private half the owner retains.
 
-> May this proof be consumed by a transaction that atomically creates exactly
-> these blinded outputs?
+**Optional tags** (MAY appear; each at most once):
 
-Every proof contributed by one participant MUST carry the same `offer_keyset`,
-`H_recv`, `expiry`, and `refund`. Across the exchange, the set of `offer_keyset`
-values MUST equal the set of receive keysets (the common output `id` of each
-participant's bundle, authenticated by `H_recv`) — i.e. every asset class offered
-by some participant is received by some (other) participant, and vice versa.
-Per-class amount conservation is rule 10's job, so
-the count of participants on each side is unconstrained: 1-vs-N, N-vs-M, and
-N-vs-N are all valid two-class shapes. In the common shape, one side offers
-class `X` and receives `Y`; the other side offers `Y` and receives `X`.
+- `alt_outputs`: authorises a finite set of alternative output bundles in
+  addition to the primary `data`. Each value is a `H_recv` computed identically
+  to `data`. The submitted output bundle MUST hash to `data` or any listed
+  alternative. Enables FAK-style orders where the actual fill amount varies (each
+  bundle includes a different change amount). All inputs in one participant
+  record MUST carry the identical `alt_outputs` set.
+- `allow_change`: if present, outputs MAY include entries in the offer keyset
+  (change outputs) in addition to entries in the receive keyset. Without this
+  tag, all outputs MUST use a single keyset (the receive keyset). See [Change
+  outputs](#change-outputs).
+- `min_output_amount`: minimum total receive-keyset output amount (excluding
+  change). The mint MUST reject if the actual receive output is below this floor.
+  Prevents a coordinator from filling a tiny amount to consume the authorization
+  and force a refund.
+
+Unknown tags MUST be rejected. `expiry` is decimal unix seconds without leading
+zeros. Keyset IDs use their [NUT-02][02] canonical form; the refund key is a
+BIP-340 x-only pubkey in hex.
+
+Every proof contributed by one participant MUST carry the same condition (same
+`nonce`, `data`, tags, `expiry`, `refund`). Across the exchange, the set of
+`offer_keyset` values MUST equal the set of receive keysets — i.e. every asset
+class offered by some participant is received by some (other) participant, and
+vice versa.
+
+### Change outputs
+
+When `allow_change` is present, a participant's output bundle MAY contain entries
+in both the receive keyset and the offer keyset. The receive-keyset entries are
+the participant's desired receive amount; the offer-keyset entries are change
+returned from unspent input.
+
+The mint determines the correct change amount from per-class conservation (rule
+10): `change = sum(inputs_offer) − sum(outputs_offer_to_counterparties) − fees`.
+The change outputs MUST be included in the committed bundle (`H_recv` or an
+`alt_outputs` entry) — the coordinator cannot insert its own change outputs
+because it lacks the owner's blinding factors.
+
+Change outputs do NOT add a third asset class. The exchange still has exactly two
+keysets: the offer keyset (now appearing on both input and output sides) and the
+receive keyset.
 
 ### Receive-output commitment
 
-The receive destination is the owner's ordered list of `BlindedMessage` values.
-The canonical encoding of one entry is:
+The receive destination is the owner's ordered list of `BlindedMessage` values,
+including any change outputs. The canonical encoding of one entry is:
 
 ```json
 {"amount": <uint>, "id": "<keyset_id>", "B_": "<hex_str>"}
@@ -158,7 +188,7 @@ of entries in declared order. Each `entry_canonical` is the entry serialized wit
 the [RFC 8785][rfc8785] JSON Canonicalization Scheme (JCS): UTF-8, object keys in
 lexicographic order, minimal number serialization, no insignificant whitespace.
 The length prefix is a 4-byte little-endian unsigned integer recording the
-**entry count** (not byte length; output lists are not capped at 255):
+**entry count** (not byte length):
 
 ```
 recv_canonical = uint32_le(len) || entry[0]_canonical || ... || entry[n-1]_canonical
@@ -170,9 +200,7 @@ Amounts are unsigned 64-bit integers; the mint MUST reject outputs whose amounts
 are not representable as u64.
 
 Duplicate entries, unknown fields, non-canonical encodings, and list-prefix
-matches MUST be rejected. A separate receive public key is not required: only the
-wallet that created the blinded messages knows the secrets and blinding factors
-needed to unblind the mint's signatures.
+matches MUST be rejected.
 
 ### Canonical encodings
 
@@ -182,18 +210,16 @@ needed to unblind the mint's signatures.
   exactly the field set defined in [NUT-00][00]; unknown or extra fields MUST be
   rejected.
 - **Amounts**: encoded as JSON numbers per JCS, MUST be unsigned integers in
-  `[0, 2^64)`. The mint MUST use checked, non-wrapping arithmetic for all sums
-  in validation rule 10.
-- **`PAY_TO_UNLOCK` condition**: each of the three tags (`offer_keyset`,
-  `expiry`, `refund`) MUST appear exactly once; unknown or duplicate tags MUST be
-  rejected. `expiry` is decimal unix seconds without leading zeros or fractional
-  part. Keyset IDs use their [NUT-02][02] canonical form; the refund key is a
-  BIP-340 x-only pubkey in hex.
+  `[0, 2^64)`. The mint MUST use checked, non-wrapping arithmetic for all sums.
+- **`PAY_TO_UNLOCK` condition**: the three required tags (`offer_keyset`,
+  `expiry`, `refund`) MUST each appear exactly once. Optional tags (`alt_outputs`,
+  `allow_change`, `min_output_amount`) MAY each appear at most once. Unknown tags
+  MUST be rejected. `alt_outputs` values MUST be distinct 64-char hex strings;
+  the mint MAY enforce `max_alt_outputs` (advertised in [NUT-06][06]).
 - **Participant order**: records are ordered by the lexicographically smallest
   `(keyset_id, secret)` among each participant's inputs. Proof secrets are unique
-  across the whole request, so this is a strict total order even when several
-  participants share an `offer_keyset`.
-- **Request digest**:
+  across the whole request, so this is a strict total order.
+- **Request digest** (optional, for idempotent retries):
 
 ```
 req_canonical = participant[0]_canonical || ... || participant[n-1]_canonical
@@ -203,54 +229,41 @@ request_digest = tagged_hash("Cashu/exchange/request", req_canonical)
 If the mint supports idempotent retries (advertised via `idempotent_retries` in
 [NUT-06][06] info), the request digest enables fast retry: a byte-identical
 request returns the cached response instead of failing on double-spend. Without
-this feature, clients fall back to [NUT-09][09] recovery to retrieve lost
-signatures.
-
-Every signature or hash in this NUT is over these canonical encodings.
+this feature, clients fall back to [NUT-09][09] recovery.
 
 ### Preparation
 
-A `PAY_TO_UNLOCK` proof is reusable settlement material: once minted it is
-consumed by the first `/v1/exchange` request that respects its committed terms,
-or reclaimed by its owner. There are two preparation patterns.
-
 #### Two-party direct swap
 
-Two participants agree on an exact exchange of asset `A` for asset `B` (e.g. an
-OTC trade or a direct match). Both are online. Each participant:
+Two participants agree on an exact exchange. Both are online. Each participant:
 
-1. prepares blinded receive outputs for the agreed amount of the other class and
-   computes `H_recv`;
-2. uses an ordinary [NUT-03][03] swap to convert its bearer proofs of its offered
-   class into `PAY_TO_UNLOCK` proofs committed to `H_recv`, choosing an `expiry`
-   and a fresh `refund` key it retains;
-3. verifies the [NUT-12][12] DLEQ proofs on the returned blind signatures and
-   checks that the conditioned proofs encode the agreed terms;
-4. one participant assembles both participants' conditioned proofs and public
-   receive `BlindedMessage` lists and POSTs `/v1/exchange`.
+1. prepares blinded receive outputs and computes `H_recv`;
+2. uses an ordinary [NUT-03][03] swap to convert its bearer proofs into
+   `PAY_TO_UNLOCK` proofs committed to `H_recv`;
+3. verifies the [NUT-12][12] DLEQ proofs;
+4. one participant assembles both participants' material and POSTs
+   `/v1/exchange`.
 
-If the request fails validation, no proof is spent; each participant reclaims its
-own conditioned proofs via refund after `expiry`, then retries or walks away.
+#### Coordinator-mediated swap with FAK support
 
-#### Coordinator-mediated swap
+A matching engine pairs orders. For exact-fill orders (FOK), each participant
+prepares one `H_recv` as above. For variable-fill orders (FAK), a participant
+uses `alt_outputs` + `allow_change` + `min_output_amount`:
 
-A matching engine pairs orders and a relay assembles and submits the settlement
-request. Each participant prepares its conditioned proofs as in the two-party
-flow above. A participant that wants offline capability may prepare **multiple
-lots**, each a separate `PAY_TO_UNLOCK` authorization with its own `H_recv`, its
-own inputs, and its own `expiry`; each lot becomes its own participant record in
-`/v1/exchange`. The submitter includes only the lots it actually matches; unused
-lots remain unspent and are reclaimed by their owner via refund after their own
-`expiry`. A participant that has pre-committed sufficient lots to cover any
-acceptable match may disconnect before matching; a participant that prepares
-conditioned proofs only after a match is agreed must be online at match time.
+1. Generate the receive outputs for the **maximum** fill (e.g., 100 USD).
+2. For each possible fill amount (one per price tick), generate a complete bundle:
+   receive outputs + change outputs in the offer keyset for the unspent portion.
+3. Compute `H_recv` for each bundle. Set `data` to the max-fill bundle; list the
+   rest in `alt_outputs`.
+4. Set `min_output_amount` to the minimum acceptable receive amount.
+5. Lock the full input amount in one `PAY_TO_UNLOCK` proof (one NUT-03 swap).
+6. The coordinator picks the matching bundle at match time.
 
-The relay assembles every matched participant's conditioned proofs and public
-receive descriptors into one `/v1/exchange` request and submits it.
+One proof, one swap, tick-level granularity. The coordinator can only select
+among owner-authorised bundles; it cannot alter any bundle's contents.
 
-In both patterns the mint does not learn the condition during blind preparation;
-it first sees the plaintext condition at settlement or refund, as with other
-NUT-10 conditions.
+A participant that has pre-committed sufficient bundles may disconnect before
+matching. Unused proofs are reclaimed via refund after `expiry`.
 
 ### Settlement request
 
@@ -270,75 +283,53 @@ POST https://mint.host:3338/v1/exchange
 }
 ```
 
-The `participants` array contains one record per participant (`N >= 2`). Records
-MUST appear in canonical participant order.
-
-```bash
-curl -X POST https://mint.host:3338/v1/exchange \
-  -H "Content-Type: application/json" \
-  -d '{"participants":[...]}'
-```
-
 #### Mint validation
 
-Before any mutation, the mint MUST verify all of the following:
+Before any mutation, the mint MUST verify:
 
-1. The request has two or more participant records, each containing at least one
-   input and one output. Advertised limits (`max_participants`, `max_inputs`,
-   `max_outputs`, `max_request_bytes`) MUST be respected.
+1. Two or more participant records, each with ≥1 input and ≥1 output. Advertised
+   limits respected.
 2. Every proof is authentic, unspent, unique in the request, and signed by an
    active or still-spendable keyset.
-3. Every proof carries a supported, canonical `PAY_TO_UNLOCK` condition (each of
-   the four tags appearing exactly once, no unknown tags; see [Canonical
-   encodings](#canonical-encodings)).
-4. No input proof is reused across records and every input is unique in the
-   request.
-5. Each participant's inputs are all of that participant's `offer_keyset`.
-6. Each participant's `outputs` list hashes exactly to that participant's
-   `H_recv`.
-7. Every output in a participant's `outputs` list shares the same `id`; that
-   common `id` is the participant's receive keyset (authenticated by `H_recv`).
+3. Every proof carries a canonical `PAY_TO_UNLOCK` condition: the three required
+   tags each exactly once; optional tags at most once; no unknown tags.
+4. No input proof is reused across records; every input is unique.
+5. Each input's `Proof.id == offer_keyset` (prevents keyset relabeling).
+6. Each participant's `outputs` list hashes to the condition's `data` **or** an
+   `alt_outputs` entry. (If `alt_outputs` is absent, must match `data` exactly.)
+7. If `allow_change` is absent: every output `id` is the same (the receive
+   keyset), and that keyset differs from `offer_keyset`. If `allow_change` is
+   present: every output `id` is either the receive keyset or the `offer_keyset`;
+   at least one output MUST use the receive keyset; the receive keyset MUST differ
+   from `offer_keyset`.
 8. Exactly two distinct keysets appear across all participants' `offer_keyset`
-   values and their derived receive keysets, and every participant's receive
-   keyset differs from its own `offer_keyset`. Per-class amount conservation
-   (rule 10) does not require equal participant counts per class, so any
-   two-class shape is valid:
-   1-vs-N, N-vs-M, or N-vs-N.
+   values and receive keysets. Per-class conservation (rule 10) does not require
+   equal participant counts per class, so any two-class shape is valid: 1-vs-N,
+   N-vs-M, or N-vs-N.
 9. Every blinded output is unique, valid, uses an accepted keyset, and has not
    been signed before.
-10. For each asset class `c` independently, summed over all participants with
-    checked, non-wrapping unsigned 64-bit arithmetic:
-    `sum(inputs_c) == sum(outputs_c) + input_fees_c`, where amounts are unsigned
-    64-bit integers and
+10. For each asset class `c` independently, with checked, non-wrapping u64
+    arithmetic: `sum(inputs_c) == sum(outputs_c) + input_fees_c`, where
     `input_fees_c = (sum(input_fee_ppk over inputs with id == c) + 999) // 1000`
     per [NUT-02][02]. Fees are computed and rounded **per class**, not globally.
-    No additional operation fee is defined in v1.
-11. The request is submitted before the minimum `expiry` across all
-    participants' conditions (mint clock); an expired proof is not settleable.
+11. The request is submitted before the minimum `expiry` across all participants'
+    conditions.
+12. If `min_output_amount` is present: the total receive-keyset output amount for
+    that participant MUST be ≥ `min_output_amount`. (Change outputs in the offer
+    keyset are excluded from this check.)
 
-**Processing order.** If the mint supports idempotent retries, it first
-canonicalizes the request and computes `request_digest`. If a committed response
-already exists for that digest, it is returned unchanged (idempotent retry)
-without re-running the rules below. Only otherwise are rules 1–11 applied, then
-the atomic commit. The mint MUST finish validation before any expensive signing
-or durable mutation.
+**Processing order.** If idempotent retries are supported, canonicalize and
+compute `request_digest` first. If a committed response exists, return it.
+Otherwise apply rules 1–12, then atomic commit.
 
 #### Atomic commit
 
-The mint MUST commit these effects in one database transaction:
+The mint MUST commit in one transaction:
 
-1. mark every selected input proof spent;
-2. sign every selected blinded output;
-3. persist every `BlindedMessage` and corresponding `BlindSignature` for
-   [NUT-09][09] restoration; and
-4. if idempotent retries are supported, persist a response keyed by
-   `request_digest`.
-
-If any validation, signing, or persistence step fails, none of these effects may
-commit. If idempotent retries are supported, a byte-identical retry MUST return
-the previously committed result, and an input proof that already appears in a
-committed response under a conflicting `request_digest` MUST fail without
-mutation.
+1. mark every input proof spent;
+2. sign every blinded output;
+3. persist every `BlindedMessage` / `BlindSignature` for [NUT-09][09] restoration;
+4. if idempotent retries are supported, persist response keyed by `request_digest`.
 
 #### Response
 
@@ -352,65 +343,48 @@ mutation.
 }
 ```
 
-`signatures` has one entry per participant, in canonical participant order.
-
 ### Recovery
 
-Recovery is the direct [NUT-07][07]/[NUT-09][09] path, with one note: because
-each **owner** retained its own receive `BlindedMessage` values, the owner — not
-the submitter — recovers signatures from the mint and unblinds locally. A wallet
-SHOULD retry [NUT-09][09] with bounded backoff when an input is spent but no
-response was received. Wallets seeking stronger metadata privacy SHOULD use an
-anonymity-preserving transport for recovery polling.
+Recovery is the direct [NUT-07][07]/[NUT-09][09] path. Because each **owner**
+retained its own receive `BlindedMessage` values, the owner — not the submitter —
+recovers signatures from the mint and unblinds locally. A wallet SHOULD retry
+[NUT-09][09] with bounded backoff when an input is spent but no response was
+received.
 
 ### Refund
 
-A `PAY_TO_UNLOCK` proof has two mutually exclusive spend paths selected by the
-mint clock:
+A `PAY_TO_UNLOCK` proof has two mutually exclusive spend paths:
 
-- **Before `expiry`**: only as an input to a valid `/v1/exchange` (rules above).
+- **Before `expiry`**: only as an input to `/v1/exchange`.
 - **At or after `expiry`**: only via an ordinary [NUT-03][03] swap to fresh
   outputs of the offered asset class, where each refunded input carries a
   `Proof.witness` containing a single BIP-340 Schnorr signature by the `refund`
-  private key over
+  private key over:
 
   ```
-  refund_digest = tagged_hash("Cashu/PAY_TO_UNLOCK/refund", canonical_swap_request)
+  refund_digest = tagged_hash("Cashu/PAY_TO_UNLOCK/refund", canonical_refund_request)
   ```
 
-  where `canonical_swap_request` is the [RFC 8785][rfc8785] JCS encoding of the
-  NUT-03 swap request object `{inputs, outputs}` (same canonicalization rule as
-  the settlement request). The mint verifies that the current time is at or past
-  the condition's `expiry`, that the signature is valid under the condition's
-  `refund` public key, and that the swap issues refund outputs in an **active
-  keyset of the same unit** as the condition's `offer_keyset` (not necessarily
-  the same keyset ID, since the original keyset may have been rotated and
-  [NUT-02][02] forbids new outputs from inactive keysets). Otherwise the refund
-  is rejected. The mint MUST NOT accept a refund before `expiry`, and MUST NOT
-  accept an expired proof in a `/v1/exchange` settlement.
+  where `canonical_refund_request` is the [RFC 8785][rfc8785] JCS encoding of the
+  swap request object `{inputs, outputs}`, with each input `Proof` serialized
+  **without** its `witness` field (the witness carries the signature and cannot
+  be included in its own preimage). The mint verifies: current time ≥ `expiry`;
+  signature valid under `refund` public key; swap issues outputs in an active
+  keyset of the same unit as `offer_keyset`. Otherwise rejected.
 
-The proof is therefore committed until `expiry` — settlement is the only valid
-spend — and reclaimable by the owner afterwards — refund is the only valid spend.
 The `refund` signature owner-gates the reclaim path: without it, any holder of
-the bearer proof could refund it to itself.
-
-Liveness is preserved: a `/v1/exchange` that fails validation commits nothing
-(inputs stay unspent), and the owner reclaims its conditioned proofs via refund
-once `expiry` passes. A keyset's own [activation/expiry lifecycle][02] is a
-separate, coarse issuer-level bound and does not replace the per-authorization
-`expiry`.
+the bearer proof could refund it to itself. Liveness is preserved: a failed
+`/v1/exchange` commits nothing, and the owner reclaims via refund once `expiry`
+passes.
 
 ### Fees
 
 Input fees follow [NUT-02][02] per-keyset rules, computed and rounded **per asset
-class** as defined in validation rule 10, and are included in that class's
-conservation. The receiver's committed amount therefore equals the offered amount
-minus that asset class's input fees. No additional operation fee is defined in v1;
-a mint MAY advertise one in a later revision via an explicit condition tag.
+class** as defined in rule 10. Change outputs are in the offer keyset and are
+included in that class's conservation (they reduce the fee-adjusted output to the
+counterparty, not the change recipient).
 
 ### Mint info
-
-Support MUST be advertised through [NUT-06][06]:
 
 ```json
 {
@@ -422,49 +396,42 @@ Support MUST be advertised through [NUT-06][06]:
     "max_outputs": "<uint>",
     "max_request_bytes": "<uint>",
     "idempotent_retries": "<bool>",
+    "max_alt_outputs": "<uint>",
     "max_expiry_seconds": "<uint>"
   }
 }
 ```
 
-`max_participants` bounds `N` in one atomic exchange. `max_expiry_seconds` bounds
-the lifetime of a `PAY_TO_UNLOCK` condition: the mint MUST reject any
-[NUT-03][03] swap that mints a `PAY_TO_UNLOCK` proof whose `expiry` exceeds the
-current mint clock plus `max_expiry_seconds`.
-
-A wallet MUST NOT create `PAY_TO_UNLOCK` proofs unless the mint advertises this
-NUT and suitable bounds. Specific error codes are defined in
-[error_codes.md](error_codes.md).
+`max_alt_outputs` bounds the number of alternative `H_recv` values per
+condition. `max_expiry_seconds` bounds condition lifetime at [NUT-03][03] swap
+time.
 
 ## FAQ
 
 **Why commit to blinded outputs rather than a receive public key?**
 A `BlindedMessage` already commits to amount, receive keyset, and the
 wallet-chosen blinded point `B_`. Only the wallet that knows the secret and
-blinding factor can unblind the signature and build the proof. An unblinded
-destination key would not give the same blind-issuance guarantee and would weaken
-Cashu privacy.
+blinding factor can unblind the signature and build the proof.
 
 **Can a submitter or coordinator steal the funds?**
-No. (1) It receives only the _blinded_ receive messages `B_`; without the
-blinding factors it cannot unblind the returned signatures into spendable proofs,
-so it cannot steal what is received. (2) The input proofs it relays are locked by
-`PAY_TO_UNLOCK` to the owner's exact receive outputs, so it cannot redirect the
-value to itself — it can only submit the one authorized exchange. (3) The only
-theft vector is the refund key; the owner keeps a fresh refund key per
-authorization and never shares its private half. A coordinator can therefore at
-worst delay notification or refuse to submit.
+No. (1) It receives only the _blinded_ receive messages; without the blinding
+factors it cannot unblind signatures. (2) Inputs are locked by `PAY_TO_UNLOCK`
+to owner-authorised bundles — including change outputs, which use the owner's
+blinding factors. (3) The only theft vector is the refund key; the owner keeps
+a fresh one per authorization.
+
+**How does FAK work?**
+Use `alt_outputs` + `allow_change` + `min_output_amount`. One proof authorises a
+finite set of output bundles (one per price tick). The coordinator picks the
+matching bundle. See [Coordinator-mediated swap](#coordinator-mediated-swap-with-fak-support).
 
 ## References
 
 - [NUT-02](02.md) · [NUT-03](03.md) · [NUT-06](06.md) · [NUT-07](07.md) ·
-  [NUT-09](09.md) · [NUT-10](10.md) · [NUT-11](11.md) · [NUT-12](12.md) · [NUT-21](21.md) · [NUT-22](22.md)
+  [NUT-09](09.md) · [NUT-10](10.md) · [NUT-11](11.md) · [NUT-12](12.md)
 - [Maurice Herlihy, Atomic Cross-Chain Swaps](https://arxiv.org/abs/1801.09515)
-  — leader/follower topology and timelock hierarchy (the _structure_ of an
-  adaptor-sig/HTLC swap).
 - [Mazumdar et al., Towards Faster Settlement in HTLC-based Cross-Chain
-  Swaps](https://arxiv.org/abs/2211.15804) — the American-call-option-without-premium
-  framing of the free-option locktime race this NUT removes.
+  Swaps](https://arxiv.org/abs/2211.15804)
 
 [00]: 00.md
 [02]: 02.md
@@ -475,6 +442,4 @@ worst delay notification or refuse to submit.
 [10]: 10.md
 [11]: 11.md
 [12]: 12.md
-[21]: 21.md
-[22]: 22.md
 [rfc8785]: https://www.rfc-editor.org/rfc/rfc8785.html
