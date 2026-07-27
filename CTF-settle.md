@@ -41,16 +41,16 @@ Response: `{signatures: [...]}` — one `BlindSignature` array per participant, 
 
 ## Differences from NUT-Exchange
 
-| Aspect               | NUT-Exchange                                           | This NUT                                                                                                 |
-| -------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| Conservation         | per-class (rule 10)                                    | per-outcome (from [CTF-split-merge]); **replaces** rule 10                                               |
-| Keyset constraint    | exactly two distinct keysets (rule 8)                  | collateral + conditional under one `condition_id`; **replaces** rule 8                                   |
-| Condition tags       | `offer_keyset`, `expiry`, `refund` (3 tags)            | `expiry`, `refund` only (2 tags — CTF keysets have unique signing keys, so `offer_keyset` is not needed) |
-| `H_recv` domain      | `Cashu/PAY_TO_UNLOCK/recv`                             | `Cashu/ctf/convert/recv`                                                                                 |
-| `request_digest`     | `Cashu/exchange/request` over participant records only | `Cashu/ctf/convert/request` over `condition_id` + `parent_collection_id` + participant records           |
-| Refund digest domain | `Cashu/PAY_TO_UNLOCK/refund`                           | `Cashu/ctf/convert/refund`                                                                               |
-| Attestation cutoff   | n/a                                                    | MUST reject after attestation; serialise with commit                                                     |
-| Liability accounting | n/a                                                    | per-outcome `ΔL(o)` (see below)                                                                          |
+| Aspect               | NUT-Exchange                                           | This NUT                                                                                       |
+| -------------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| Conservation         | per-class (rule 10)                                    | per-outcome (from [CTF-split-merge]); **replaces** rule 10                                     |
+| Keyset constraint    | exactly two distinct keysets (rule 8)                  | collateral + conditional under one `condition_id`; **replaces** rule 8                         |
+| Condition tags       | `offer_keyset`, `expiry`, `refund` (3 tags)            | identical (3 tags)                                                                             |
+| `H_recv` domain      | `Cashu/PAY_TO_UNLOCK/recv`                             | `Cashu/ctf/convert/recv`                                                                       |
+| `request_digest`     | `Cashu/exchange/request` over participant records only | `Cashu/ctf/convert/request` over `condition_id` + `parent_collection_id` + participant records |
+| Refund digest domain | `Cashu/PAY_TO_UNLOCK/refund`                           | `Cashu/ctf/convert/refund`                                                                     |
+| Attestation cutoff   | n/a                                                    | MUST reject after attestation; serialise with commit                                           |
+| Liability accounting | n/a                                                    | per-outcome `ΔL(o)` (see below)                                                                |
 
 **Inherited from NUT-Exchange:** rules 1–7, 9, 11; `PAY_TO_UNLOCK` condition mechanism; `H_recv` computation (entry encoding identical, domain differs); recovery; refund mechanics; idempotency; coordinator-trust properties.
 
@@ -78,7 +78,7 @@ Additional multi-party rules:
 
 1. `parent_collection_id` MUST be omitted or all-zero. Advertised limits (`max_participants`, `max_inputs`, `max_outputs`, `max_request_bytes`) MUST be respected.
 2. **No attestation recorded** for `condition_id` (error 13042). This check MUST serialise atomically with the convert commit — see [Attestation atomicity](#attestation-atomicity).
-3. Every input carries a canonical `PAY_TO_UNLOCK` condition (2 tags). All inputs in one participant record share the same condition. Each participant's outputs hash to that `H_recv`.
+3. Every input carries a canonical `PAY_TO_UNLOCK` condition (3 tags: `offer_keyset`, `expiry`, `refund`). All inputs in one participant record share the same condition. Each participant's outputs hash to that `H_recv`. The `offer_keyset` MUST match each proof's actual keyset (`Proof.id`).
 4. Reject if any involved keyset has `input_fee_ppk == 0` unless admission control is in force _(without `F`, anyone can submit unlimited convert requests at no cost — a free-DoS vector)_.
 
 ## `request_digest` (optional)
