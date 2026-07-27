@@ -48,11 +48,11 @@ Response: `{signatures: [...]}` — one `BlindSignature` array per participant, 
 | Condition tags       | `offer_keyset`, `expiry`, `refund` (3 tags)            | identical (3 tags)                                                                             |
 | `H_recv` domain      | `Cashu/PAY_TO_UNLOCK/recv`                             | `Cashu/ctf/convert/recv`                                                                       |
 | `request_digest`     | `Cashu/exchange/request` over participant records only | `Cashu/ctf/convert/request` over `condition_id` + `parent_collection_id` + participant records |
-| Refund digest domain | `Cashu/PAY_TO_UNLOCK/refund`                           | `Cashu/ctf/convert/refund`                                                                     |
+| Refund digest domain | `Cashu/PAY_TO_UNLOCK/refund`                           | identical (unified)                                                                            |
 | Attestation cutoff   | n/a                                                    | MUST reject after attestation; serialise with commit                                           |
 | Liability accounting | n/a                                                    | per-outcome `ΔL(o)` (see below)                                                                |
 
-**Inherited from NUT-Exchange:** rules 1–7, 9, 11; `PAY_TO_UNLOCK` condition mechanism; `H_recv` computation (entry encoding identical, domain differs); recovery; refund mechanics; idempotency; coordinator-trust properties.
+**Inherited from NUT-Exchange:** rules 1–7, 9, 11–12; `PAY_TO_UNLOCK` condition mechanism (3 required tags; CTF does not use `alt_outputs`, `allow_change`, or `min_output_amount` — see [FAK note](#fak-limitation) below); `H_recv` computation (entry encoding identical, domain differs); recovery; refund mechanics (including witness-free preimage and unified refund domain); idempotency; coordinator-trust properties.
 
 **Replaced:** rule 8 (keyset constraint) and rule 10 (conservation) — see CTF-specific validation below.
 
@@ -93,6 +93,10 @@ request_digest = tagged_hash("Cashu/ctf/convert/request", req_canonical)
 ```
 
 where `parent_collection_id_canonical` is the all-zero 32-byte hex if the field is omitted.
+
+## FAK limitation
+
+CTF convert does **not** support `alt_outputs`, `allow_change`, or `min_output_amount`. Change outputs break per-outcome conservation (collateral covers every outcome, so a change output inflates `out(o)` for every `o`). FAK orders in CTF convert use the **micro-lot pattern** instead: multiple small-denomination input proofs sharing the same `H_recv`, with the coordinator selecting the input subset. See [NUT-CTF-split-merge][CTF-split-merge] for conservation details.
 
 ## Attestation atomicity
 
