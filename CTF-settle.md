@@ -69,7 +69,7 @@ Conservation rule, fee model, coverage from keyset metadata, and canonical colle
 
 ## CTF-specific validation
 
-Rules 1–7, 9, 11 from [NUT-Exchange][exchange] are inherited. Rules 8 and 10 are **replaced**:
+Rules 1–7, 9, 11–12 from [NUT-Exchange][exchange] are inherited (CTF rejects the optional `alt_outputs`, `allow_change`, and `min_output_amount` tags — see [FAK limitation](#fak-limitation)). Rules 8 and 10 are **replaced**:
 
 - **Rule 8 (replaced):** Every input/output keyset MUST be active. Collateral keysets MUST be regular with unit equal to the condition's collateral unit. Conditional keysets MUST be registered under this `condition_id`. Either class is valid on either side of a convert.
 - **Rule 10 (replaced):** Per-outcome conservation with `in(o)` / `out(o)` summed across all participants: `out(o) == in(o) − F` for every `o ∈ Ω` (error 13041). Since collateral covers every outcome, an uncovered outcome (no participant receives tokens covering it) would force `out(o) = 0 = in(o) − F`, making the fee absorb all collateral — a degenerate settlement. Multi-party convert therefore requires at least one output to cover each outcome. (Single-party convert inherits split-merge's rule, which permits `out(o) == 0` when the fee legitimately consumes one outcome's value.)
@@ -78,8 +78,9 @@ Additional multi-party rules:
 
 1. `parent_collection_id` MUST be omitted or all-zero. Advertised limits (`max_participants`, `max_inputs`, `max_outputs`, `max_request_bytes`) MUST be respected.
 2. **No attestation recorded** for `condition_id` (error 13042). This check MUST serialise atomically with the convert commit — see [Attestation atomicity](#attestation-atomicity).
-3. Every input carries a canonical `PAY_TO_UNLOCK` condition (3 tags: `offer_keyset`, `expiry`, `refund`). All inputs in one participant record share the same condition. Each participant's outputs hash to that `H_recv`. The `offer_keyset` MUST match each proof's actual keyset (`Proof.id`).
+3. Every input carries a canonical `PAY_TO_UNLOCK` condition (3 required tags: `offer_keyset`, `expiry`, `refund`; no optional tags). All inputs in one participant record share the same `H_recv`, `expiry`, `refund`, and `offer_keyset`, with unique per-proof nonces. Each participant's outputs hash to that `H_recv`. The `offer_keyset` MUST match each proof's actual keyset (`Proof.id`).
 4. Reject if any involved keyset has `input_fee_ppk == 0` unless admission control is in force _(without `F`, anyone can submit unlimited convert requests at no cost — a free-DoS vector)_.
+5. **`expiry` MUST precede** the earliest `final_expiry` among all conditional keysets registered under this `condition_id`. Without this, a proof whose `expiry` falls after all same-outcome keysets are deactivated cannot be refunded (keyset inactive) or redeemed (no attestation path for conditioned proofs) — stranding value permanently.
 
 ## `request_digest` (optional)
 
