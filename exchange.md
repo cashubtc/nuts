@@ -151,11 +151,13 @@ Unknown tags MUST be rejected. `expiry` is decimal unix seconds without leading
 zeros. Keyset IDs use their [NUT-02][02] canonical form; the refund key is a
 BIP-340 x-only pubkey in hex.
 
-Every proof contributed by one participant MUST carry the same condition (same
-`nonce`, `data`, tags, `expiry`, `refund`). Across the exchange, the set of
-`offer_keyset` values MUST equal the set of receive keysets — i.e. every asset
-class offered by some participant is received by some (other) participant, and
-vice versa.
+Every proof contributed by one participant MUST carry a `PAY_TO_UNLOCK`
+condition with the same `data` (`H_recv`), the same tags (`offer_keyset`,
+`expiry`, `refund`, and any optional tags), but a **unique `nonce` per proof**.
+The `nonce` provides per-proof anti-replay; the meaningful authorisation fields
+are shared. This allows multiple proofs (e.g., micro-denomination inputs) in one
+record without duplicate secrets. Across the exchange, the set of `offer_keyset`
+values MUST equal the set of receive keysets.
 
 ### Change outputs
 
@@ -164,8 +166,7 @@ in both the receive keyset and the offer keyset. The receive-keyset entries are
 the participant's desired receive amount; the offer-keyset entries are change
 returned from unspent input.
 
-The mint determines the correct change amount from per-class conservation (rule
-10): `change = sum(inputs_offer) − sum(outputs_offer_to_counterparties) − fees`.
+Change is determined by per-class conservation (rule 10) at the aggregate level.
 The change outputs MUST be included in the committed bundle (`H_recv` or an
 `alt_outputs` entry) — the coordinator cannot insert its own change outputs
 because it lacks the owner's blinding factors.
@@ -186,16 +187,18 @@ including any change outputs. The canonical encoding of one entry is:
 The commitment is a BIP-340 tagged hash over the length-prefixed concatenation
 of entries in declared order. Each `entry_canonical` is the entry serialized with
 the [RFC 8785][rfc8785] JSON Canonicalization Scheme (JCS): UTF-8, object keys in
-lexicographic order, minimal number serialization, no insignificant whitespace.
-The length prefix is a 4-byte little-endian unsigned integer recording the
-**entry count** (not byte length):
+lexicographic order, no insignificant whitespace. **Amounts are encoded as
+decimal strings** (not JSON numbers) in the canonical form to avoid IEEE-754
+precision loss above 2^53. The length prefix is a 4-byte little-endian unsigned
+integer recording the **entry count** (not byte length):
 
 ```
 recv_canonical = uint32_le(len) || entry[0]_canonical || ... || entry[n-1]_canonical
 H_recv = tagged_hash("Cashu/PAY_TO_UNLOCK/recv", recv_canonical)
 ```
 
-where `tagged_hash(tag, msg) = SHA256(SHA256(tag) || SHA256(tag) || msg)`.
+where `tagged_hash(tag, msg) = SHA256(SHA256(tag) || SHA256(tag) || msg)` and
+each `entry_canonical` is `{"amount":"<decimal_str>","id":"<keyset_id>","B_":"<hex>"}`.
 Amounts are unsigned 64-bit integers; the mint MUST reject outputs whose amounts
 are not representable as u64.
 
@@ -217,7 +220,7 @@ matches MUST be rejected.
   MUST be rejected. `alt_outputs` values MUST be distinct 64-char hex strings;
   the mint MAY enforce `max_alt_outputs` (advertised in [NUT-06][06]).
 - **Participant order**: records are ordered by the lexicographically smallest
-  `(keyset_id, secret)` among each participant's inputs. Proof secrets are unique
+  `(id, secret)` among each participant's inputs. Proof secrets are unique
   across the whole request, so this is a strict total order.
 - **Request digest** (optional, for idempotent retries):
 
