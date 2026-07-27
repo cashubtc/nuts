@@ -8,7 +8,7 @@
 
 ---
 
-This NUT extends [NUT-Exchange][exchange]'s `PAY_TO_UNLOCK` condition with a **pool-based authorization mode** that enables FAK (fill-and-kill) orders: the owner locks a single input and authorizes a **range** of possible output bundles, with the actual fill amount determined at match time.
+This NUT extends [NUT-Exchange][exchange]'s `PAY_TO_UNLOCK` condition with a **pool-based authorization mode**: the owner locks a single input and authorizes a **range** of possible output bundles, with the actual output selection determined at match time.
 
 In standard mode (NUT-Exchange), `data` is `H_recv` — a hash of one exact output bundle. In pool mode (this NUT), `data` is a manifest hash over a small set of pre-generated output entries in binary denominations, plus a numeric rate policy that the mint enforces. The coordinator selects any subset satisfying the policy; the mint signs only the selected entries.
 
@@ -56,9 +56,7 @@ The owner generates two pools of `BlindedMessage` entries:
 
 Each entry has a `role` (`receive` or `change`), `amount`, `id` (keyset), and `B_` (blinded point). The owner retains every entry's secret and blinding factor.
 
-**Recommended denomination sets:** for a max receive of `R` units, use `⌈log₂(R+1)⌉` entries (1, 2, 4, ..., 2^(k-1)). For a max change of `C` units, use `⌈log₂(C+1)⌉` entries. Total entries: `O(log R + log C)` — typically 15–25 for most orders.
-
-**Non-power-of-2 keysets:** if the keyset does not support power-of-2 amounts, the owner must choose a denomination set that covers the needed range. The wallet cost is `O(pool_size)` regardless of denomination structure.
+Denominations MUST be powers of 2 (1, 2, 4, 8, ..., 2^k), matching the Cashu binary keyset convention ([NUT-00][00]). For a max receive of `R` units, `⌈log₂(R+1)⌉` entries cover every integer from 0 to `R`. For a max change of `C` units, `⌈log₂(C+1)⌉` entries suffice. Total entries: `O(log R + log C)` — typically 15–25 for most orders.
 
 ## Manifest hash
 
@@ -94,9 +92,17 @@ Pool-mode participants include the full manifest and a selection bitmap:
 }
 ```
 
-- `outputs`: the selected entries only — these are the entries the mint will sign.
-- `pool_manifest`: all pool entries (receive + change), in canonical order.
-- `pool_selection`: hex-encoded bitmap where bit `i` indicates whether manifest entry `i` is selected.
+- `outputs`: the selected entries only — these are the `BlindedMessage` values the mint will sign. MUST be a subset of `pool_manifest`, in manifest index order.
+- `pool_manifest`: the full array of `PoolEntry` objects that the owner pre-generated. Each entry has `{index, role, amount, id, B_}`. The mint hashes this array (see [Manifest hash](#manifest-hash)) and verifies it matches the condition's `data` field. This proves every entry was created by the owner.
+- `pool_selection`: a hex-encoded bitmap selecting which manifest entries to sign. Bit `i` (0-indexed from the least-significant bit of the first byte) corresponds to `pool_manifest[i]`. Bit `1` = selected (include in `outputs`), bit `0` = skipped. Unused trailing bits MUST be zero. The selected entries, in index order, MUST exactly match the `outputs` array.
+
+**PoolEntry schema:**
+
+```json
+{"index": <uint>, "role": "receive|change", "amount": "<decimal_str>", "id": "<keyset_id>", "B_": "<hex_str>"}
+```
+
+Example: a manifest with 3 receive entries and 2 change entries. If the coordinator selects receive entries 0 and 2 plus change entry 0, the bitmap is `0b000010101` = `0x15` (bits 0, 2, and 4 set). `pool_selection = "15"`. `outputs` contains entries 0, 2, and 4 from the manifest, in that order.
 
 Non-pool-mode participants omit `pool_manifest` and `pool_selection` (standard NUT-Exchange behavior).
 
@@ -209,6 +215,7 @@ No. The rate covenant enforces the owner's limit price. Any subset satisfying th
 - [NUT-Exchange][exchange] · [NUT-02](02.md) · [NUT-03](03.md) · [NUT-06](06.md) ·
   [NUT-09](09.md) · [NUT-10](10.md) · [NUT-11](11.md) · [NUT-12](12.md)
 
+[00]: 00.md
 [02]: 02.md
 [03]: 03.md
 [06]: 06.md
