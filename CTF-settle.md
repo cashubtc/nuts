@@ -80,7 +80,7 @@ Additional multi-party rules:
 2. **No attestation recorded** for `condition_id` (error 13042). This check MUST serialise atomically with the convert commit — see [Attestation atomicity](#attestation-atomicity).
 3. Every input carries a canonical `PAY_TO_UNLOCK` condition (3 required tags: `offer_keyset`, `expiry`, `refund`; no optional tags). All inputs in one participant record share the same `H_recv`, `expiry`, `refund`, and `offer_keyset`, with unique per-proof nonces. Each participant's outputs hash to that `H_recv`. The `offer_keyset` MUST match each proof's actual keyset (`Proof.id`).
 4. Reject if any involved keyset has `input_fee_ppk == 0` unless admission control is in force _(without `F`, anyone can submit unlimited convert requests at no cost — a free-DoS vector)_.
-5. **`expiry` MUST precede** the earliest `final_expiry` among all conditional keysets registered under this `condition_id`. Without this, a proof whose `expiry` falls after all same-outcome keysets are deactivated cannot be refunded (keyset inactive) or redeemed (no attestation path for conditioned proofs) — stranding value permanently.
+5. **`expiry` MUST precede** the earliest `final_expiry` among all conditional keysets registered under this `condition_id`. If any keyset lacks `final_expiry`, the mint MUST use its advertised `max_expiry_seconds` as the effective bound. Without this, a proof whose `expiry` falls after all same-outcome keysets are deactivated cannot be refunded or redeemed — stranding value permanently.
 
 ## `request_digest` (optional)
 
@@ -97,7 +97,7 @@ where `parent_collection_id_canonical` is the all-zero 32-byte hex if the field 
 
 ## FAK limitation
 
-CTF convert does **not** support `alt_outputs`, `allow_change`, or `min_output_amount`. Change outputs break per-outcome conservation (collateral covers every outcome, so a change output inflates `out(o)` for every `o`). FAK orders in CTF convert use the **micro-lot pattern** instead: multiple small-denomination input proofs sharing the same `H_recv`, with the coordinator selecting the input subset. See [NUT-CTF-split-merge][CTF-split-merge] for conservation details.
+CTF convert does **not** support `alt_outputs`, `allow_change`, or `min_output_amount`. Change outputs break per-outcome conservation (collateral covers every outcome, so a change output inflates `out(o)` for every `o`). FAK orders in CTF convert use the **micro-lot pattern** instead: the owner creates multiple small-denomination input proofs — all in **one participant record** with unique per-proof nonces and the same `H_recv` — and the coordinator includes the input subset that matches the agreed price. The output bundle (e.g., 100 YES) is fixed; only the input count varies. The coordinator computes the correct subset size accounting for fees (`F` depends on total input count). All proofs MUST be in a single record (not separate records) to avoid violating output-uniqueness (rule 9).
 
 ## Attestation atomicity
 
