@@ -46,6 +46,10 @@
 | 15007 | Refund signature missing or invalid                | [NUT-Exchange][exchange]                               |
 | 15009 | Exchange request exceeds advertised limits         | [NUT-Exchange][exchange]                               |
 | 15010 | Conflicting request or reused input (idempotency)  | [NUT-Exchange][exchange]                               |
+| 15011 | Pool manifest hash (`H_manifest`) mismatch         | [NUT-Exchange-partial-fill][partial-fill]              |
+| 15012 | Pool selection does not match `outputs`            | [NUT-Exchange-partial-fill][partial-fill]              |
+| 15013 | Pool role/keyset or two-class consistency violated | [NUT-Exchange-partial-fill][partial-fill]              |
+| 15014 | Pool policy violation (rate/min/max/overflow)      | [NUT-Exchange-partial-fill][partial-fill]              |
 
 [00]: 00.md
 [01]: 01.md
@@ -65,3 +69,4 @@
 [22]: 22.md
 [29]: 29.md
 [exchange]: exchange.md
+[partial-fill]: exchange-partial-fill.md
