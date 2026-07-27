@@ -106,7 +106,7 @@ Expected behavior:
 - The mint rejects the request because all quotes must share the same payment method and match `{method}` in the URL.
 - No outputs are signed.
 
-## Batch mint rejects NUT-20 signature length mismatch
+## Batch mint rejects signatures array length mismatch
 
 The following is an invalid batch mint request where `signatures` length does not match `quotes` length.
 
@@ -129,21 +129,21 @@ Expected behavior:
 - The mint rejects the request because `signatures[i]` must exist for each `quotes[i]` when signatures are required.
 - No outputs are signed.
 
-## NUT-20 signature with valid ordering
+## Batch mint with valid signature
 
-The following is a valid NUT-20 batch mint request where the signature correctly covers all outputs in order. The quote has pubkey `0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798` (sk = 1).
+The following is a valid NUT-29 batch mint request where the signature correctly covers all outputs in order. The quote has pubkey `0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798` (sk = 1).
 
 ```shell
-quote: "locked-quote"
+quote: "019e6d5a-2347-7000-8c81-a1e0dbf3299f"
 pubkey: 0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
-msg_to_sign_bytes: 43617368755f4d696e7451756f74655369675f76310000000c6c6f636b65642d71756f7465000000010100000021036d6caac248af96f6afa7f904f550253a0f3ef3f5aa2fe6838a95b216691468e2000000010100000021021f8a566c205633d029094747d2e18f44e05993dda7a5f88f496078205f656e59
-msg_hash: 03dc68d6617bba502d8648efd0965bf393841082cf04fd03e5de4bcb5777cdfc
-signature[0]: a913e48177027d87e0e38c6f2021763c46997ff4866a4b63ebca800b0776b28519eab37377cf9bc1869e489d7b25747b7a998eaa1c33c2cac7fa168449d8267a
+msg_to_sign_bytes: 43617368755f4d696e7451756f74655369675f76310000002430313965366435612d323334372d373030302d386338312d613165306462663332393966000000010100000021036d6caac248af96f6afa7f904f550253a0f3ef3f5aa2fe6838a95b216691468e2000000010100000021021f8a566c205633d029094747d2e18f44e05993dda7a5f88f496078205f656e59
+msg_hash: dad25acc587637206d73398894d337f983a0ca644746e8673727eaa0b29fa9b4
+signature[0]: 0c39431338a0202568b9a1d4215c99f179cbb8ee5472ac5ae7133fbb8f99cafbb9e425ad33c60224c96b8f9f984f004379a18e9558468d129b6b03f0da6de162
 ```
 
 ```json
 {
-  "quotes": ["locked-quote"],
+  "quotes": ["019e6d5a-2347-7000-8c81-a1e0dbf3299f"],
   "outputs": [
     {
       "amount": 1,
@@ -157,7 +157,7 @@ signature[0]: a913e48177027d87e0e38c6f2021763c46997ff4866a4b63ebca800b0776b28519
     }
   ],
   "signatures": [
-    "a913e48177027d87e0e38c6f2021763c46997ff4866a4b63ebca800b0776b28519eab37377cf9bc1869e489d7b25747b7a998eaa1c33c2cac7fa168449d8267a"
+    "0c39431338a0202568b9a1d4215c99f179cbb8ee5472ac5ae7133fbb8f99cafbb9e425ad33c60224c96b8f9f984f004379a18e9558468d129b6b03f0da6de162"
   ]
 }
 ```
