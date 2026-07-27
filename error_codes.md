@@ -68,5 +68,5 @@
 [21]: 21.md
 [22]: 22.md
 [29]: 29.md
-[exchange]: exchange.md
-[partial-fill]: exchange-partial-fill.md
+[exchange]: https://github.com/cashubtc/nuts/pull/410
+[partial-fill]: https://github.com/cashubtc/nuts/pull/410
