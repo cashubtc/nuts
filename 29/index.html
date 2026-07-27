@@ -1294,7 +1294,7 @@
 <li><strong>Currency unit consistency</strong>: All quotes MUST use the same currency unit</li>
 <li><strong>Quote state</strong>: All quotes MUST be in PAID state (or have a mintable amount for payment methods that allow multiple mint operations like bolt12)</li>
 <li><strong>Amount balance</strong>: The sum of amounts contained in the <code>outputs</code> MUST equal the sum of <code>quote_amounts</code> (bolt11) or MUST NOT exceed it (bolt12)</li>
-<li><strong>Signature validation (NUT-20)</strong>: The <code>signature</code> array length MUST match the <code>quotes</code> array length; locked quotes MUST include a valid signature; unlocked quotes MUST NOT include one</li>
+<li><strong>Signature validation (NUT-20)</strong>: The <code>signatures</code> array length MUST match the <code>quotes</code> array length; locked quotes MUST include a valid signature; unlocked quotes MUST NOT include one</li>
 </ol>
 <p>Implementations MAY impose additional constraints such as maximum batch size based on their resource limitations. If any validation fails, the mint MUST reject the entire batch and return an appropriate error without minting any quotes.</p>
 <h3 id="nut-20-support">NUT-20 support<a class="headerlink" href="#nut-20-support" title="Permanent link">&para;</a></h3>
@@ -1302,12 +1302,12 @@
 <h4 id="signature-array-structure">Signature Array Structure<a class="headerlink" href="#signature-array-structure" title="Permanent link">&para;</a></h4>
 <p><strong>Array structure:</strong></p>
 <ul>
-<li>The <code>signature</code> field is an array with length equal to <code>quote.length</code> (one entry per quote)</li>
+<li>The <code>signatures</code> field is an array with length equal to <code>quotes.length</code> (one entry per quote)</li>
 <li><code>signatures[i]</code> corresponds to <code>quotes[i]</code></li>
 </ul>
 <p><strong>Per-quote signatures:</strong></p>
 <ul>
-<li><strong>Locked quotes</strong> (with <code>pubkey</code>): <code>signature[i]</code> contains the signature string</li>
+<li><strong>Locked quotes</strong> (with <code>pubkey</code>): <code>signatures[i]</code> contains the signature string</li>
 <li><strong>Unlocked quotes</strong>: <code>signatures[i]</code> is <code>null</code></li>
 </ul>
 <p><strong>Field requirement:</strong></p>
