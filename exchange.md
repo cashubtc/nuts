@@ -208,17 +208,18 @@ matches MUST be rejected.
 ### Canonical encodings
 
 - **Participant record**: the JSON object `{"inputs": [...], "outputs": [...]}`,
-  with `inputs` sorted by `(keyset_id, secret)` and `outputs` in declared order,
-  serialized via [RFC 8785][rfc8785] JCS. Each `Proof` and `BlindedMessage` uses
-  exactly the field set defined in [NUT-00][00]; unknown or extra fields MUST be
-  rejected.
-- **Amounts**: encoded as JSON numbers per JCS, MUST be unsigned integers in
-  `[0, 2^64)`. The mint MUST use checked, non-wrapping arithmetic for all sums.
+  with `inputs` sorted by `(id, secret)` and `outputs` in declared order,
+  serialized via [RFC 8785][rfc8785] JCS. **All `amount` fields (`Proof.amount`
+  and `BlindedMessage.amount`) are encoded as decimal strings** (not JSON numbers)
+  in the canonical form, to avoid IEEE-754 precision loss above 2^53. Amounts
+  MUST be unsigned integers in `[0, 2^64)` with no leading zeros. The mint MUST
+  use checked, non-wrapping arithmetic for all sums.
 - **`PAY_TO_UNLOCK` condition**: the three required tags (`offer_keyset`,
   `expiry`, `refund`) MUST each appear exactly once. Optional tags (`alt_outputs`,
   `allow_change`, `min_output_amount`) MAY each appear at most once. Unknown tags
   MUST be rejected. `alt_outputs` values MUST be distinct 64-char hex strings;
-  the mint MAY enforce `max_alt_outputs` (advertised in [NUT-06][06]).
+  the mint MUST reject if `alt_outputs` count exceeds advertised `max_alt_outputs`.
+  `min_output_amount` is a minimal unsigned decimal string (no leading zeros).
 - **Participant order**: records are ordered by the lexicographically smallest
   `(id, secret)` among each participant's inputs. Proof secrets are unique
   across the whole request, so this is a strict total order.
@@ -371,9 +372,11 @@ A `PAY_TO_UNLOCK` proof has two mutually exclusive spend paths:
   where `canonical_refund_request` is the [RFC 8785][rfc8785] JCS encoding of the
   swap request object `{inputs, outputs}`, with each input `Proof` serialized
   **without** its `witness` field (the witness carries the signature and cannot
-  be included in its own preimage). The mint verifies: current time ≥ `expiry`;
-  signature valid under `refund` public key; swap issues outputs in an active
-  keyset of the same unit as `offer_keyset`. Otherwise rejected.
+  be included in its own preimage). **All `amount` fields are encoded as decimal
+  strings** (same rule as participant canonicalization). The mint verifies:
+  current time ≥ `expiry`; signature valid under `refund` public key; swap issues
+  outputs in an active keyset of the same unit as `offer_keyset`. Otherwise
+  rejected.
 
 The `refund` signature owner-gates the reclaim path: without it, any holder of
 the bearer proof could refund it to itself. Liveness is preserved: a failed
