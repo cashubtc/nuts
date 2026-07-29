@@ -17,6 +17,8 @@ Readers should be familiar with [NUT-Exchange][exchange] (`PAY_TO_UNLOCK`, conse
 ## Condition
 
 Pool mode is signaled by the presence of `rate_n` and `rate_d` tags. When absent, the condition uses standard mode (exact `H_recv` match, as defined in [NUT-Exchange][exchange]). In pool mode the base optional tags `alt_outputs`, `allow_change`, and `min_output_amount` MUST be absent: `alt_outputs` is incompatible with rule 6p's exact `H_manifest`, change is authorized by the manifest's change role (rule 8p), and `min_receive` supersedes `min_output_amount` (base rule 12).
+The base `coordinator_pubkey` tag ([NUT-Exchange][exchange]) is permitted in pool
+mode unchanged.
 
 ```json
 [
@@ -45,7 +47,7 @@ Pool mode is signaled by the presence of `rate_n` and `rate_d` tags. When absent
 - `min_receive`: minimum total receive-keyset output amount. Prevents dust fills. MUST be positive.
 - `max_debit`: maximum total debit (`input_total − change_total`). Caps spending and MUST be no greater than the participant's input total. The mint MUST reject a request whose selected `change_total` exceeds `input_total`; it MUST NOT perform a wrapping subtraction.
 
-Every proof contributed by one participant MUST carry the same `data` and the same tags (`offer_keyset`, `expiry`, `refund`, `rate_n`, `rate_d`, `min_receive`, `max_debit`), while each proof MUST use a unique `nonce`, following the per-proof nonce rule in [NUT-Exchange][exchange].
+Every proof contributed by one participant MUST carry the same `data` and the same tags (`offer_keyset`, `expiry`, `refund`, `rate_n`, `rate_d`, `min_receive`, `max_debit`, and optionally `coordinator_pubkey`), while each proof MUST use a unique `nonce`, following the per-proof nonce rule in [NUT-Exchange][exchange].
 
 ## Output pools
 
@@ -110,7 +112,7 @@ Example: a five-entry manifest has receive entries at manifest indices 0, 1, and
 
 A single `/v1/exchange` request MAY mix pool-mode and standard-mode participants. Standard-mode participants omit `pool_manifest` and `pool_selection` and are validated under base [NUT-Exchange][exchange] rules; rule 8p derives each participant's receive keyset per mode — from the manifest for pool mode, from the outputs for standard mode.
 
-Version 1 uses the full manifest. Pool size is logarithmic in the representable receive and change ranges, and every request remains subject to both `max_pool_entries` per participant and NUT-Exchange's `max_request_bytes` for the complete request. The mint MUST reject a request exceeding either limit, and a wallet MUST NOT create a pool-mode authorization that cannot fit both advertised limits. For idempotent retries, a pool-mode participant's canonical record (and thus `request_digest`) includes `pool_manifest` and `pool_selection` in addition to `inputs` and `outputs`, so two requests differing only in manifest or selection cannot alias to one cached response. Merkle roots and inclusion proofs are not valid version-1 request forms. A future Merkle form MUST use a separately advertised version or mode that defines the leaf encoding, global index binding, tree construction and domain separation, proof encoding, and proof-size limits.
+Version 1 uses the full manifest. Pool size is logarithmic in the representable receive and change ranges, and every request remains subject to both `max_pool_entries` per participant and NUT-Exchange's `max_request_bytes` for the complete request. The mint MUST reject a request exceeding either limit, and a wallet MUST NOT create a pool-mode authorization that cannot fit both advertised limits. For idempotent retries, a pool-mode participant's canonical record is `JCS({"inputs": ..., "outputs": ..., "pool_manifest": ...}) || hex_decode(pool_selection)` (same JCS rules as base NUT-Exchange; `pool_manifest` in index order), appended to `req_canonical`, so two requests differing only in manifest or selection cannot alias to one cached response. `hex_decode(pool_selection)` is the raw bitmap (`⌈len(pool_manifest)/8⌉` bytes); its length is derivable from the manifest, so no length prefix is needed. Merkle roots and inclusion proofs are not valid version-1 request forms. A future Merkle form MUST use a separately advertised version or mode that defines the leaf encoding, global index binding, tree construction and domain separation, proof encoding, and proof-size limits.
 
 Response: same as NUT-Exchange — `{signatures: [...]}`, one `BlindSignature` array per participant. Pool-mode participants receive signatures for their selected entries only.
 

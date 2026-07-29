@@ -114,6 +114,7 @@ chosen from a finite set of owner-authorised output bundles.
       ["offer_keyset", "<keyset_id>"],
       ["expiry", "<unix_seconds_str>"],
       ["refund", "<xonly_pubkey_hex>"],
+      ["coordinator_pubkey", "<xonly_pubkey_hex>"],
       ["alt_outputs", "<H_recv_alt_1>", "<H_recv_alt_2>", "..."],
       ["allow_change"],
       ["min_output_amount", "<uint_str>"]
@@ -146,6 +147,12 @@ chosen from a finite set of owner-authorised output bundles.
   change). The mint MUST reject if the actual receive output is below this floor.
   Prevents a coordinator from filling a tiny amount to consume the authorization
   and force a refund.
+- `coordinator_pubkey`: optional BIP-340 x-only public key (64 lowercase hex
+  chars / 32 bytes) binding these proofs to one coordinator. If present on any
+  input, the settlement requires `coordinator_sig` (see Mint validation);
+  permitted in standard and pool mode. It prevents the same authorization being
+  submitted to two coordinators — only the bound key can authorize a distinct
+  settlement.
 
 Unknown tags MUST be rejected. `expiry` is decimal unix seconds without leading
 zeros. Keyset IDs use their [NUT-02][02] canonical form; the refund key is a
@@ -216,7 +223,8 @@ matches MUST be rejected.
   use checked, non-wrapping arithmetic for all sums.
 - **`PAY_TO_UNLOCK` condition**: the three required tags (`offer_keyset`,
   `expiry`, `refund`) MUST each appear exactly once. Optional tags (`alt_outputs`,
-  `allow_change`, `min_output_amount`) MAY each appear at most once. Unknown tags
+  `allow_change`, `min_output_amount`, `coordinator_pubkey`) MAY each appear at
+  most once. Unknown tags
   MUST be rejected. `alt_outputs` values MUST be distinct 64-char hex strings;
   the mint MUST reject if `alt_outputs` count exceeds advertised `max_alt_outputs`.
   `min_output_amount` is a minimal unsigned decimal string (no leading zeros).
@@ -228,7 +236,12 @@ matches MUST be rejected.
 ```
 req_canonical = participant[0]_canonical || ... || participant[n-1]_canonical
 request_digest = tagged_hash("Cashu/exchange/request", req_canonical)
+coordinator_digest = tagged_hash("Cashu/PAY_TO_UNLOCK/coordinator", req_canonical)
 ```
+
+`coordinator_sig` signs `coordinator_digest` and is excluded from `req_canonical`,
+which already binds each proof secret (hence `coordinator_pubkey` and the spent
+identifier `Y`), the outputs, and any pool manifest/selection.
 
 If the mint supports idempotent retries (advertised via `idempotent_retries` in
 [NUT-06][06] info), the request digest enables fast retry: a byte-identical
@@ -283,7 +296,8 @@ POST https://mint.host:3338/v1/exchange
       "outputs": "<Array[BlindedMessage]>"
     },
     { "...": "one record per participant; N >= 2" }
-  ]
+  ],
+  "coordinator_sig": "<hex_str: 128 chars; present iff any input carries coordinator_pubkey>"
 }
 ```
 
@@ -321,10 +335,22 @@ Before any mutation, the mint MUST verify:
 12. If `min_output_amount` is present: the total receive-keyset output amount for
     that participant MUST be ≥ `min_output_amount`. (Change outputs in the offer
     keyset are excluded from this check.)
+13. **Coordinator authentication.** If any input carries `coordinator_pubkey`
+    (BIP-340 x-only key, 64 lowercase hex / 32 bytes), every such input MUST
+    decode to the same key `K`, and the request MUST carry `coordinator_sig` — a
+    BIP-340 signature (128 lowercase hex / 64 bytes) valid under `K` over
+    `coordinator_digest` ([Canonical encodings](#canonical-encodings)). Version 1
+    permits one `K` per request; if no input carries `coordinator_pubkey`,
+    `coordinator_sig` MUST be absent. Reject with 15015 on key disagreement or a
+    missing, invalid, or unexpected signature. The signature authorizes the
+    request but does not assert inputs are unspent (rules 2 and 11 remain;
+    [NUT-07][07] is advisory). Binding proofs to `K` prevents a _different_
+    coordinator key from authorizing a distinct settlement.
 
-**Processing order.** If idempotent retries are supported, canonicalize and
-compute `request_digest` first. If a committed response exists, return it.
-Otherwise apply rules 1–12, then atomic commit.
+**Processing order.** Verify coordinator authentication (rule 13) before any
+idempotency-cache lookup. If idempotent retries are supported, canonicalize and
+compute `request_digest` (excluding `coordinator_sig`) first; if a committed
+response exists, return it. Otherwise apply rules 1–13, then atomic commit.
 
 #### Atomic commit
 
