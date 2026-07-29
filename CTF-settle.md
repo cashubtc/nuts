@@ -80,7 +80,7 @@ Additional multi-party rules:
 
 1. `parent_collection_id` MUST be omitted or all-zero. Advertised limits (`max_participants`, `max_inputs`, `max_outputs`, `max_request_bytes`, `max_pool_entries`) MUST be respected.
 2. **No attestation recorded** for `condition_id` (error 13042). This check MUST serialise atomically with the convert commit — see [Attestation atomicity](#attestation-atomicity).
-3. Every input carries a canonical `PAY_TO_UNLOCK` condition. **Standard participants** use the 3 required tags (`offer_keyset`, `expiry`, `refund`; no optional tags); all inputs in one participant record share the same `H_recv`, `expiry`, `refund`, and `offer_keyset`, with unique per-proof nonces, and each participant's outputs hash to that `H_recv`. **Pool-mode (range-order) participants** add the 4 pool tags (`rate_n`, `rate_d`, `min_receive`, `max_debit`) and set `data = H_manifest` over the domain `Cashu/ctf/convert/manifest`; see [Range orders](#range-orders-partial-fill). In both modes the `offer_keyset` MUST match each proof's actual keyset (`Proof.id`).
+3. Every input carries a canonical `PAY_TO_UNLOCK` condition. **Standard participants** use the 3 required tags (`offer_keyset`, `expiry`, `refund`) and optionally the inherited `coordinator_pubkey`; all inputs in one participant record share the same `H_recv`, `expiry`, `refund`, and `offer_keyset`, with unique per-proof nonces, and each participant's outputs hash to that `H_recv`. **Pool-mode (range-order) participants** add the 4 pool tags (`rate_n`, `rate_d`, `min_receive`, `max_debit`) and set `data = H_manifest` over the domain `Cashu/ctf/convert/manifest`; `coordinator_pubkey` is also permitted. See [Range orders](#range-orders-partial-fill). In both modes the `offer_keyset` MUST match each proof's actual keyset (`Proof.id`).
 4. Reject if any involved keyset has `input_fee_ppk == 0` unless admission control is in force _(without `F`, anyone can submit unlimited convert requests at no cost — a free-DoS vector)_.
 5. **`expiry` MUST precede** the earliest `final_expiry` among all conditional keysets registered under this `condition_id`. If any keyset lacks `final_expiry`, the mint MUST use its advertised `max_expiry_seconds` as the effective bound. Without this, a proof whose `expiry` falls after all same-outcome keysets are deactivated cannot be refunded or redeemed — stranding value permanently. _Known limitation: `expiry` is inside the blinded `Proof.secret` ([NUT-10][10]) and invisible to the mint at [NUT-03][03] swap time; the mint enforces this check at settlement, not creation. Wallets MUST set `expiry` conservatively._
 
@@ -91,11 +91,14 @@ Optional feature inherited from [NUT-Exchange][exchange] (advertised via `idempo
 The CTF digest (when supported) commits to **all** semantic top-level fields:
 
 ```
-req_canonical = condition_id || parent_collection_id_canonical || participant[0]_canonical || ... || participant[n-1]_canonical
+req_canonical = bytes(condition_id, 32) || bytes(parent_collection_id, 32) || participant[0]_canonical || ... || participant[n-1]_canonical
 request_digest = tagged_hash("Cashu/ctf/convert/request", req_canonical)
+coordinator_digest = tagged_hash("Cashu/ctf/convert/coordinator", req_canonical)
 ```
 
-where `parent_collection_id_canonical` is the all-zero 32-byte hex if the field is omitted. Each `participant_canonical` is mode-dependent: standard participants canonicalise `inputs` and `outputs`; pool-mode participants additionally include `pool_manifest` and `pool_selection` (as in [NUT-Exchange-partial-fill][partial-fill]), so two requests differing only in manifest or selection cannot alias to one cached response.
+`condition_id` and `parent_collection_id` are each exactly 64 lowercase hex chars decoded to 32 raw bytes; an omitted `parent_collection_id` is 32 zero bytes (v1's only permitted explicit value). `participant_canonical` is mode-dependent: standard participants use `JCS({"inputs": ..., "outputs": ...})`; pool-mode participants use `JCS({"inputs": ..., "outputs": ..., "pool_manifest": ...}) || hex_decode(pool_selection)` (as in [NUT-Exchange-partial-fill][partial-fill]). `coordinator_sig` is excluded from `req_canonical`.
+
+**Coordinator authentication** is inherited from [NUT-Exchange][exchange]: if any input carries `coordinator_pubkey`, the request must carry `coordinator_sig` — a BIP-340 signature valid under the bound key over `coordinator_digest`. Version 1 permits one key per request; `coordinator_sig` must be absent otherwise and is verified before any idempotency-cache hit (error 15015 on failure). `coordinator_pubkey` is permitted in standard and pool mode.
 
 ## Range orders (partial fill)
 
