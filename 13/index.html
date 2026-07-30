@@ -921,6 +921,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="HMAC-SHA256 Derivation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#p2pk-derivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        P2PK Derivation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -1383,6 +1400,15 @@
 <li><code>hmac_digest = HMAC_SHA256(seed, message)</code>, where <code>HMAC_SHA256</code> is the <a href="https://en.wikipedia.org/wiki/HMAC">hash-based message authentication code</a> using SHA-256 as the hashing algorithm.</li>
 <li><code>secret = hmac_digest</code> and <code>blinding_factor = hmac_digest % N</code>.</li>
 </ol>
+<h4 id="p2pk-derivation">P2PK Derivation<a class="headerlink" href="#p2pk-derivation" title="Permanent link">&para;</a></h4>
+<p>Wallets are able to generate private keys in a deterministic way to have proofs locked to them.</p>
+<p>The following BIP32 derivation path for derivation of the key: <code>m/129373'/10'/0'/0'/{counter}</code>:</p>
+<ul>
+<li>129373': Purpose picked for P2PK derivation.</li>
+<li>10': Account for generating private keys for usage in P2PK.</li>
+<li><code>{counter}</code> is an incrementing, non-hardened BIP32 child index.</li>
+</ul>
+<p>This will allow wallets to swap proof that are still locked to a public key during a restore process.</p>
 <h3 id="code-examples">Code Examples<a class="headerlink" href="#code-examples" title="Permanent link">&para;</a></h3>
 <h4 id="versioned-secret-derivation_1">Versioned Secret Derivation<a class="headerlink" href="#versioned-secret-derivation_1" title="Permanent link">&para;</a></h4>
 <p>Below are code examples with keyset version-dependent derivation.</p>
