@@ -32,7 +32,10 @@ lo_payout_ratio = 1 - hi_payout_ratio
 For a face value of `amount`:
 
 - HI holder redeems: `floor(amount * hi_payout_ratio)`
-- LO holder redeems: `amount - floor(amount * hi_payout_ratio)` (ensures no rounding loss)
+- LO holder redeems: `floor(amount * lo_payout_ratio)`
+- Dust: `amount - floor(amount * hi_payout_ratio) - floor(amount * lo_payout_ratio)` is retained by the mint.
+
+`HI + LO <= amount` always, so a single redemption never pays out more than the face value. Because `floor` is subadditive (`floor(a * r) + floor(b * r) <= floor((a + b) * r)`), splitting or consolidating proofs before redemption can only reduce a holder's payout, never increase it (see [Conservation](#conservation)).
 
 **Edge cases**:
 
@@ -169,11 +172,11 @@ Same attestation, same range:
 
 - Input: 100 sats of LO tokens + digit witness
 - Payout ratio: `1 - 0.2` = 0.8
-- Output: `100 - floor(100 * 0.2)` = 80 sats regular ecash
+- Output: `floor(100 * 0.8)` = 80 sats regular ecash
 
 ### Conservation
 
-The mint MUST ensure that for a given face `amount`, total HI redemption + total LO redemption = `amount` (minus fees). The `amount - floor(amount * hi_payout_ratio)` formula for LO guarantees this by avoiding independent rounding.
+For a face value `amount`, the mint pays `floor(amount * hi_payout_ratio)` to HI and `floor(amount * lo_payout_ratio)` to LO, and retains the dust `amount - HI - LO` as mint revenue. Total payout is at most `amount`. This rule is partition-invariant: a holder cannot raise a payout by splitting or merging proofs (same-keyset [NUT-03][03] swaps) before redemption, because flooring each leg independently only reduces the sum. The mint MUST settle each leg with exact integer arithmetic; the dust is not condition collateral.
 
 ## Convert (Split and Merge)
 
