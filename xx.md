@@ -38,6 +38,8 @@ For each `pubkey`, the corresponding `pubkey_signatures` entry signs the SHA-256
 
 The mint **MUST** reject the request unless every signature is valid.
 
+The mint **MUST** limit the number of public keys accepted in a single request, and **MUST** reject a request that exceeds the limit with error code `11017`. Every signature has to be verified before the mint can tell whether the caller is entitled to any quote, so this limit is what bounds the work an unauthenticated caller can ask the mint to perform.
+
 ## Response
 
 The mint responds with a `PostMintQuotesByPubkeyResponse`:
@@ -59,10 +61,16 @@ The settings for this NUT are part of the mint info response ([NUT-06][06]):
 ```json
 {
   "XX": {
-    "supported": <bool>
+    "supported": <bool>,
+    "max_pubkeys": <int>
   }
 }
 ```
+
+Fields:
+
+- `supported` (required): whether the mint serves this endpoint.
+- `max_pubkeys` (optional): maximum number of public keys accepted in a single request. If omitted, the limit is implementation-defined and wallets **MUST** handle error code `11017` gracefully.
 
 [04]: 04.md
 [06]: 06.md
