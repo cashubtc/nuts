@@ -10,10 +10,10 @@ This NUT adds an endpoint for wallets to get all NUT-20 locked mint quotes assoc
 
 ## Request
 
-To query quotes assigned to a public key, the wallet makes a `POST /v1/mint/quote/{method}/pubkey` request.
+To query quotes assigned to a public key, the wallet makes a `POST /v1/mint/quote/pubkey` request.
 
 ```http
-POST https://mint.host:3338/v1/mint/quote/bolt11/pubkey
+POST https://mint.host:3338/v1/mint/quote/pubkey
 ```
 
 The wallet includes the following `PostMintQuotesByPubkeyRequest` data:
@@ -49,6 +49,8 @@ The mint responds with a `PostMintQuotesByPubkeyResponse`:
 ```
 
 Where `MintQuoteResponse` is the quote response type defined in [NUT-04][04].
+
+The response contains the quotes locked to `pubkeys` across every payment method. Each `MintQuoteResponse` carries the `method` field defined in [NUT-04][04], so a wallet can tell the methods apart without naming one in the request.
 
 ## Settings
 
