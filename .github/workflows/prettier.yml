@@ -16,7 +16,8 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies
-        run: npm install -g prettier
+        # When bumping, update the version in CONTRIBUTING.md too.
+        run: npm install -g prettier@3.9.1
 
       - name: Run Prettier check
         run: npx prettier --check .

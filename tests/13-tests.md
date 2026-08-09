@@ -111,3 +111,25 @@ Using [NUT-13](../13.md) derivation procedure for V3:
   "blinding_factor": "236dbcb12fc064ceeae6c5e2de7f79258374dccbf23ac0afdf72cf9eb53540c9"
 }
 ```
+
+## P2PK Derivation
+
+Using [NUT-13](13.md) derivation procedure for P2PK, we derive values starting from the following BIP39 mnemonic:
+
+```json
+{
+  "mnemonic": "half depart obvious quality work element tank gorilla view sugar picture humble"
+}
+```
+
+The public keys derived for the first five counters from `counter=0` to `counter=4` are:
+
+```json
+{
+  "m/129373'/10'/0'/0'/0": "021693d45f4fdf610ae641fedb0944fb460fbb8264f21c19d2626c3da755fcbbcb",
+  "m/129373'/10'/0'/0'/1": "0395461ab678058c0ed6aa39f38dda490eaa163e9ad27070b23ec3d06b41e07535",
+  "m/129373'/10'/0'/0'/2": "02a05e4e593a633e9b4405f01c9632c8afde24cb613017a1aee56fd76291ad26d1",
+  "m/129373'/10'/0'/0'/3": "033addea25c3873b93d67d536c61c9d9c993f6efd8b9dfa657951b66b5001e51dd",
+  "m/129373'/10'/0'/0'/4": "03c964bdf42fc82b6c574615746eeca37527a24f1fdfc1b34a732c53843b5744a5"
+}
+```
