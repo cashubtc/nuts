@@ -124,7 +124,7 @@ privkey = 0000000000000000000000000000000000000000000000000000000000000001
 pubkey  = 0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
 ```
 
-The following `SwapRequest` is signed over the v1 message. The witness carries one signature per message format (v1, then the superseded formats); a mint counts ONE unique public key with a valid signature and ignores the signatures it cannot verify.
+The following `SwapRequest` is signed over the v1 message. The witness carries one signature per accepted message format (v1, then the string format it supersedes); a mint counts ONE unique public key with a valid signature and ignores signatures it cannot verify.
 
 ```json
 {
@@ -134,7 +134,7 @@ The following `SwapRequest` is signed over the v1 message. The witness carries o
       "id": "009a1f293253e41e",
       "secret": "[\"P2PK\",{\"nonce\":\"859d4935c4907062a6297cf4e663e2835d90d97ecdd510745d32f6816323a41f\",\"data\":\"0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798\",\"tags\":[[\"sigflag\",\"SIG_ALL\"]]}]",
       "C": "02698c4e2b5f9534cd0687d87513c759790cf829aa5739184a3e3735471fbda904",
-      "witness": "{\"signatures\":[\"b2b821f819f12ab61d261971187d19772aaad11422f9d5f3ffda6f97de03349e0e44976b5d44e3c850a99b621045167915caf3ef5b102abe69439e36b68f89d5\",\"947864cac6d9369f358257eece81c4aa9deb2e63899f2d868e7c243ff334ade5db1d8db010daa2b9f4407610458d9ffa3250eb778d1a0980f4de671627c8718e\",\"ea0cdab0d0895bbf212d6d301ea4180171a1e2af309fcee57fa16998b9c234f2f8722953f9703f561866f45672b2a499109722dfeb3c3e7a2a2d51cda9684652\"]}"
+      "witness": "{\"signatures\":[\"b2b821f819f12ab61d261971187d19772aaad11422f9d5f3ffda6f97de03349e0e44976b5d44e3c850a99b621045167915caf3ef5b102abe69439e36b68f89d5\",\"947864cac6d9369f358257eece81c4aa9deb2e63899f2d868e7c243ff334ade5db1d8db010daa2b9f4407610458d9ffa3250eb778d1a0980f4de671627c8718e\"]}"
     },
     {
       "amount": 2,
