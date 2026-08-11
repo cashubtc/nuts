@@ -125,3 +125,23 @@ P: "02771fed6cb88aaac38b8b32104a942bf4b8f4696bc361171b3c7d06fa2ebddf06" # hex en
 
 # Parity is mismatched (Schnorr even-Y lifted), so use negated derivation key for slot
 ```
+
+## Taproot secrets (v3): the slot map
+
+Vectors for the [v3 slot map](../28.md#taproot-secrets-v3-keysets). The keys are the well-known small test keys: the receiver's static key is `3`, the leaf key owner's static key is `4`, the sender's ephemeral is `5`. Slot `0` blinds the receiver's static key into the base (internal) key; slot `1` is the first leaf key, here tagged blind-me.
+
+```json
+{
+  "receiver_static": "02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+  "ephemeral_E": "022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4",
+  "slot0_r": "7dfb649b0edda814f7cf0feb889e5657eb2083a528aa60a3a943fe0cea066181",
+  "slot0_blinded": "03a3e12cc077e5605f36441046f50c114fcc883b079a34028bed66732e3a419e51",
+  "slot1_key": "02e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd13",
+  "slot1_blinded": "039ca57991c48db95252bff61e02c31cf9b1e9ec2ef27d9dee33db6f0324e6ca81",
+  "leaf_with_blinded_slot1": "000202000101040021039ca57991c48db95252bff61e02c31cf9b1e9ec2ef27d9dee33db6f0324e6ca8106000468a3be80"
+}
+```
+
+`slot0_r = SHA256("Cashu_P2BK_v1" || x(e·P_3) || 0x00)` and `slot0_blinded` is the internal key of [NUT-10's worked example](10-tests.md). `slot1_blinded = P_4 + SHA256("Cashu_P2BK_v1" || x(e·P_4) || 0x01)·G`: the ECDH point differs per key and the slot index differs per position, so the same key at two slots yields unrelated blinded keys.
+
+`leaf_with_blinded_slot1` is the worked example's `after` leaf carrying `slot1_blinded` in place of the verbatim key, otherwise byte-identical. The owner of key `4` finds it by deriving its candidate for each slot in `1..N` and matching **by value**: its slot-1 candidate reproduces the key the leaf carries, at any transmitted position.

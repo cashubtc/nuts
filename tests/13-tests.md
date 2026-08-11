@@ -94,23 +94,53 @@ The corresponding blinding factors `r` are:
 
 ## Version 3: Secret derivation
 
-V3 secret derivation is identical to V2. V3 blinding factor derivation uses rejection sampling against `BLS_FR_ORDER` instead of modular reduction; the V3 HMAC input also includes a 4-byte big-endian `attempt` counter (see [NUT-13 V3 Blinding Factor](../13.md#v3-blinding-factor)).
+V3 keysets derive a [secret key](../13.md#v3-secret-key) on the `0x00` branch (the secret is the compressed point `K = k*G`) and a [blinding factor](../13.md#v3-blinding-factor) by rejection sampling against `BLS_FR_ORDER` on the `0x01` branch. Both branches append a 4-byte big-endian `attempt` counter to the V2 HMAC message.
 
-The vector below is chosen so that `attempt=0` produces `x >= BLS_FR_ORDER` and is rejected; `attempt=1` is accepted. Implementations that omit the rejection loop will compute a different `blinding_factor` and fail this vector.
-
-Using [NUT-13](../13.md) derivation procedure for V3:
+Using [NUT-13](../13.md) derivation procedure for V3 with the following inputs:
 
 ```json
 {
   "seed_utf8": "nut13 v3 test seed",
   "seed_hex": "6e7574313320763320746573742073656564",
-  "keyset_id": "02abd02ebc1ff44652153375162407deaf0b30e590844cca0b6e4894a08a8828dd",
-  "counter": 3,
-  "accepted_attempt": 1,
-  "secret": "7a45e04943504b25273e9569ab7019ab62f814dade23998c12f5f4cb1bb7978a",
-  "blinding_factor": "236dbcb12fc064ceeae6c5e2de7f79258374dccbf23ac0afdf72cf9eb53540c9"
+  "keyset_id": "02abd02ebc1ff44652153375162407deaf0b30e590844cca0b6e4894a08a8828dd"
 }
 ```
+
+The values derived for counters `0` to `3` are:
+
+```json
+[
+  {
+    "counter": 0,
+    "secret_key": "38b91aa1635556d47ce92d99c1a92a2ffb82e57bc292c039d1d7b84c13bd75c6",
+    "secret": "02595a333ef377a29f6756365bd46bf3b5e571dd7a44081822f3bd0bf03b358075",
+    "blinding_factor": "1e2cb8919eaf44fa998b67541cc49aa94dffee2da4d65f7d9a7512e63e42468d",
+    "Y": "b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55"
+  },
+  {
+    "counter": 1,
+    "secret_key": "6bf0daee8bdc91c7b91bd9235b27bc77675f808517f63639612d4df13184a4cc",
+    "secret": "026238b6f7d01a9b9a220636fd5044482759b23b6d2d7c8316c60b29a125ae2d49",
+    "blinding_factor": "266ea1e92ac826be778834ae454bd78e9f34e517a229fdb98d3aa5fc2a1fa68f"
+  },
+  {
+    "counter": 2,
+    "secret_key": "3302a6f3c2958ea73f3bf25d44e05b4b466f9f407cb564416a2e792312de2bfd",
+    "secret": "0329ab175e5ac3f8da8e6ce1a168ef18c5e439db23f7ddb4d38b6bb15a24d7d7f0",
+    "blinding_factor": "5c7f1a61ef0948dc15b1e1944e73775628c0e44ded58e742516361a9bf3f77b5"
+  },
+  {
+    "counter": 3,
+    "secret_key": "efec313f695f39d7a6d72a784825a249e70b919006bbf9ccaa6b79d9106bb754",
+    "secret": "03c687c9ed32e92b1a6301c07e30b433b2c810d0185b3c14f9c2c0851503da0932",
+    "blinding_factor": "236dbcb12fc064ceeae6c5e2de7f79258374dccbf23ac0afdf72cf9eb53540c9"
+  }
+]
+```
+
+Every `secret_key` above is accepted at `attempt=0`. The counter `3` blinding factor is accepted at `attempt=1` (`attempt=0` produces `x >= BLS_FR_ORDER`): implementations that omit the rejection loop compute a different `blinding_factor` and fail this vector.
+
+Counter `0` also carries `Y = hash_to_curve_G1(secret_bytes)` over the **decoded 33 bytes** of the secret, pinning the binary-secret hashing rule ([NUT-00](../00.md#secret-bytes)).
 
 ## P2PK Derivation
 
