@@ -264,11 +264,11 @@ Keys:
 
 ## Version 3
 
-The following keysets and corresponding keyset IDs are correct.
+The following keysets and corresponding keyset IDs are correct. A V3 keyset ID does not commit `final_expiry`: vector 2 lists one and its ID is unchanged by it.
 
 ### Vector 1
 
-- Keyset id: `02abd02ebc1ff44652153375162407deaf0b30e590844cca0b6e4894a08a8828dd`
+- Keyset id: `02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6`
 - Unit: `sat`
 
 Keys:
@@ -282,7 +282,7 @@ Keys:
 
 ### Vector 2
 
-- Keyset id: `020c5210bbb16757130c7e26061df3ea3f97a47046d2cebb54a21b3b4c370f42d8`
+- Keyset id: `027f0dcd008156363a8418b88f38ddd5155a38c46a3f27c15c7eb40ec5f04cb4b3`
 - Unit: `sat`
 - Input fee ppk: `100`
 - Final expiry: `2000000000`

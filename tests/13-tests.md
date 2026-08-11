@@ -96,7 +96,7 @@ The corresponding blinding factors `r` are:
 
 V3 secret derivation is identical to V2. V3 blinding factor derivation uses rejection sampling against `BLS_FR_ORDER` instead of modular reduction; the V3 HMAC input also includes a 4-byte big-endian `attempt` counter (see [NUT-13 V3 Blinding Factor](../13.md#v3-blinding-factor)).
 
-The vector below is chosen so that `attempt=0` produces `x >= BLS_FR_ORDER` and is rejected; `attempt=1` is accepted. Implementations that omit the rejection loop will compute a different `blinding_factor` and fail this vector.
+The vector below is chosen so that attempts `0-2` produce `x >= BLS_FR_ORDER` and are rejected; `attempt=3` is accepted. Implementations that omit the rejection loop will compute a different `blinding_factor` and fail this vector.
 
 Using [NUT-13](../13.md) derivation procedure for V3:
 
@@ -104,11 +104,11 @@ Using [NUT-13](../13.md) derivation procedure for V3:
 {
   "seed_utf8": "nut13 v3 test seed",
   "seed_hex": "6e7574313320763320746573742073656564",
-  "keyset_id": "02abd02ebc1ff44652153375162407deaf0b30e590844cca0b6e4894a08a8828dd",
-  "counter": 3,
-  "accepted_attempt": 1,
-  "secret": "7a45e04943504b25273e9569ab7019ab62f814dade23998c12f5f4cb1bb7978a",
-  "blinding_factor": "236dbcb12fc064ceeae6c5e2de7f79258374dccbf23ac0afdf72cf9eb53540c9"
+  "keyset_id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
+  "counter": 0,
+  "accepted_attempt": 3,
+  "secret": "1b46679baea2775038059f5c6aa74a1d82526b33836668219ccdec01aa7d82ef",
+  "blinding_factor": "513d1a0f0f01a09fdad2f7cea1403143fb86a1be2d152969b46b45cdaabd21aa"
 }
 ```
 
