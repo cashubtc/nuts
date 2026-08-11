@@ -138,7 +138,7 @@ An aggregated internal key commits to having no script path with the empty tweak
 
 ## Transaction transcripts
 
-`msg = "Cashu_Transaction_v1" (ASCII) || transcript`, `digest = SHA256(msg)`. The keyset is a v3 keyset with id `02abd02ebc1ff44652153375162407deaf0b30e590844cca0b6e4894a08a8828dd` (contributing raw bytes); quote ids contribute UTF-8 bytes; amounts are minimal big-endian. The proof secret is [NUT-13 V3](13-tests.md) counter 0's, so its witnesses below are by that counter's secret key.
+`msg = "Cashu_Transaction_v1" (ASCII) || transcript`, `digest = SHA256(msg)`. The keyset is a v3 keyset with id `02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6` (contributing raw bytes); quote ids contribute UTF-8 bytes; amounts are minimal big-endian. The proof secret is [NUT-13 V3](13-tests.md) counter 0's, so its witnesses below are by that counter's secret key.
 
 **Swap.** A `PostSwapRequest` ([NUT-03](../03.md)) spending one 8-sat proof into two 4-sat outputs:
 
@@ -147,20 +147,20 @@ An aggregated internal key commits to having no script path with the empty tweak
   "inputs": [
     {
       "amount": 8,
-      "id": "02abd02ebc1ff44652153375162407deaf0b30e590844cca0b6e4894a08a8828dd",
-      "secret": "02595a333ef377a29f6756365bd46bf3b5e571dd7a44081822f3bd0bf03b358075",
+      "id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
+      "secret": "0234df38671738d8e9ee205dc364fd4b45df8ed2ff91686e93d02ca1feb3b2f118",
       "C": "84d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327"
     }
   ],
   "outputs": [
     {
       "amount": 4,
-      "id": "02abd02ebc1ff44652153375162407deaf0b30e590844cca0b6e4894a08a8828dd",
+      "id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
       "B_": "b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55"
     },
     {
       "amount": 4,
-      "id": "02abd02ebc1ff44652153375162407deaf0b30e590844cca0b6e4894a08a8828dd",
+      "id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
       "B_": "b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55"
     }
   ]
@@ -171,8 +171,8 @@ serializes to the following transcript and digest:
 
 ```json
 {
-  "transcript": "01007f0100010802002102abd02ebc1ff44652153375162407deaf0b30e590844cca0b6e4894a08a8828dd03002102595a333ef377a29f6756365bd46bf3b5e571dd7a44081822f3bd0bf03b35807504003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332703005b0100010402002102abd02ebc1ff44652153375162407deaf0b30e590844cca0b6e4894a08a8828dd030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd5503005b0100010402002102abd02ebc1ff44652153375162407deaf0b30e590844cca0b6e4894a08a8828dd030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
-  "digest": "8d25659160d10dd8b8ef2228f114ffd800efb93cc19db7c64600bbb06df2ff1c"
+  "transcript": "01007f0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f60300210234df38671738d8e9ee205dc364fd4b45df8ed2ff91686e93d02ca1feb3b2f11804003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332703005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd5503005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
+  "digest": "5603e6bd91eae45db2edc5b763057671b8a9667a06fe7c9317846b7981318572"
 }
 ```
 
@@ -181,7 +181,7 @@ and the input's key-path witness over that digest is:
 ```json
 {
   "signatures": [
-    "7bf9e1042e0ec1dbbb4ee025ffe93fb7cdc1e90ba6ffbc5787b02e82afcccb43077c75c1d5ca14be1a90d9f60fa9c2b3b04cead6be2d205e9c0922aa4d2c6ff7"
+    "2223919fc0cbd9e75ff3f7b1330e8644899721bb68fb4d26b08d8d5b2c495582782c93fb3f609cbe47d5521fe864bb2c5c4a58f0d4db013fa6f54658c44714d7"
   ]
 }
 ```
@@ -193,7 +193,7 @@ and the input's key-path witness over that digest is:
   "outputs": [
     {
       "amount": 8,
-      "id": "02abd02ebc1ff44652153375162407deaf0b30e590844cca0b6e4894a08a8828dd",
+      "id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
       "B_": "b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55"
     }
   ]
@@ -202,8 +202,8 @@ and the input's key-path witness over that digest is:
 
 ```json
 {
-  "transcript": "0200160100010802000f71756f74652d6d696e742d3030303103005b0100010802002102abd02ebc1ff44652153375162407deaf0b30e590844cca0b6e4894a08a8828dd030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
-  "digest": "a145f70ab4069902ab45838b0d37a21404bfdb1e98aedeca593b284e7fc70789"
+  "transcript": "0200160100010802000f71756f74652d6d696e742d3030303103005b0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
+  "digest": "096a9b2002cc0b8ebc9b79e0902159385a929f4e63f35eb9e1dee0119205efb6"
 }
 ```
 
@@ -211,14 +211,14 @@ and the input's key-path witness over that digest is:
 
 ```json
 {
-  "transcript": "01007f0100010802002102abd02ebc1ff44652153375162407deaf0b30e590844cca0b6e4894a08a8828dd03002102595a333ef377a29f6756365bd46bf3b5e571dd7a44081822f3bd0bf03b35807504003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d033270400160100010802000f71756f74652d6d656c742d30303031",
-  "digest": "0affbf753b10bd29c9ae4aabcb7f878b7e513e622e55d8cf14833194eab5348f"
+  "transcript": "01007f0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f60300210234df38671738d8e9ee205dc364fd4b45df8ed2ff91686e93d02ca1feb3b2f11804003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d033270400160100010802000f71756f74652d6d656c742d30303031",
+  "digest": "0eb9a8c9b8214437e36af259250c85afe22379126e7d17abbb7ee4eacdaa5cf3"
 }
 ```
 
 ## V4 tokens with spend info
 
-One 8-sat proof per token, mint `https://mint.test`, unit `sat`, keyset id `02abd02ebc1ff44652153375162407deaf0b30e590844cca0b6e4894a08a8828dd`, `C` = `84d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327`.
+One 8-sat proof per token, mint `https://mint.test`, unit `sat`, keyset id `02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6`, `C` = `84d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327`.
 
 Tokens use the short keyset id form; decoders **MUST** also accept the full-length id ([NUT-00][00]). Each shape decodes to the stated `spend_info` fields and re-encodes to the same string.
 
@@ -226,11 +226,11 @@ Bearer (`si.k`, secret is the bare key of `k`):
 
 ```json
 {
-  "secret": "02595a333ef377a29f6756365bd46bf3b5e571dd7a44081822f3bd0bf03b358075",
+  "secret": "0234df38671738d8e9ee205dc364fd4b45df8ed2ff91686e93d02ca1feb3b2f118",
   "spend_info": {
-    "k": "38b91aa1635556d47ce92d99c1a92a2ffb82e57bc292c039d1d7b84c13bd75c6"
+    "k": "7a7b3f7eb44f4a943041d936c0e0b2bf1dd0ac9a210bc8f8bc12b65cdbde9bd3"
   },
-  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAKr0C68H_RGYXCBpGFhCGFzeEIwMjU5NWEzMzNlZjM3N2EyOWY2NzU2MzY1YmQ0NmJmM2I1ZTU3MWRkN2E0NDA4MTgyMmYzYmQwYmYwM2IzNTgwNzVhY1gwhNG3KRrlc388hRqjPK_g96_rXMtNoIbEgruFt1JeYVR_G1ptGgGx_tH5YNGp0DMnYnNpoWFrWCA4uRqhY1VW1HzpLZnBqSov-4Lle8KSwDnR17hME711xg"
+  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAK34HfQIPq-YXCBpGFhCGFzeEIwMjM0ZGYzODY3MTczOGQ4ZTllZTIwNWRjMzY0ZmQ0YjQ1ZGY4ZWQyZmY5MTY4NmU5M2QwMmNhMWZlYjNiMmYxMThhY1gwhNG3KRrlc388hRqjPK_g96_rXMtNoIbEgruFt1JeYVR_G1ptGgGx_tH5YNGp0DMnYnNpoWFrWCB6ez9-tE9KlDBB2TbA4LK_HdCsmiELyPi8ErZc296b0w"
 }
 ```
 
@@ -242,7 +242,7 @@ Receiver-keyed, no conditions (`si.e` only):
   "spend_info": {
     "E": "022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4"
   },
-  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAKr0C68H_RGYXCBpGFhCGFzeEIwM2EzZTEyY2MwNzdlNTYwNWYzNjQ0MTA0NmY1MGMxMTRmY2M4ODNiMDc5YTM0MDI4YmVkNjY3MzJlM2E0MTllNTFhY1gwhNG3KRrlc388hRqjPK_g96_rXMtNoIbEgruFt1JeYVR_G1ptGgGx_tH5YNGp0DMnYnNpoWFlWCECL4veTRoHIJNVtKclClxRKOiLhL3cYZq3y6jVabJA7-Q"
+  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAK34HfQIPq-YXCBpGFhCGFzeEIwM2EzZTEyY2MwNzdlNTYwNWYzNjQ0MTA0NmY1MGMxMTRmY2M4ODNiMDc5YTM0MDI4YmVkNjY3MzJlM2E0MTllNTFhY1gwhNG3KRrlc388hRqjPK_g96_rXMtNoIbEgruFt1JeYVR_G1ptGgGx_tH5YNGp0DMnYnNpoWFlWCECL4veTRoHIJNVtKclClxRKOiLhL3cYZq3y6jVabJA7-Q"
 }
 ```
 
@@ -257,7 +257,7 @@ Receiver-keyed with a disclosed tree (`si.e` + `si.t`; the receiver derives `K` 
       "00020200010104002102e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd1306000468a3be80"
     ]
   },
-  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAKr0C68H_RGYXCBpGFhCGFzeEIwM2MyMjJlZjZkZWMyYmVjMDJhYjBkNjUwOGU0ZjgzMDI5NDgwMjE4NzVhMjY3ZjE0ZTA4NTQzMjVkODE5YmY4MjNhY1gwhNG3KRrlc388hRqjPK_g96_rXMtNoIbEgruFt1JeYVR_G1ptGgGx_tH5YNGp0DMnYnNpomFlWCECL4veTRoHIJNVtKclClxRKOiLhL3cYZq3y6jVabJA7-RhdIFYMQACAgABAQQAIQLkk9vxwQ2A81geSQSTCxQEzGwTkA7gdYR0-pSr6MTNEwYABGijvoA"
+  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAK34HfQIPq-YXCBpGFhCGFzeEIwM2MyMjJlZjZkZWMyYmVjMDJhYjBkNjUwOGU0ZjgzMDI5NDgwMjE4NzVhMjY3ZjE0ZTA4NTQzMjVkODE5YmY4MjNhY1gwhNG3KRrlc388hRqjPK_g96_rXMtNoIbEgruFt1JeYVR_G1ptGgGx_tH5YNGp0DMnYnNpomFlWCECL4veTRoHIJNVtKclClxRKOiLhL3cYZq3y6jVabJA7-RhdIFYMQACAgABAQQAIQLkk9vxwQ2A81geSQSTCxQEzGwTkA7gdYR0-pSr6MTNEwYABGijvoA"
 }
 ```
 
@@ -272,7 +272,7 @@ A disclosed tree with an explicit internal key (`si.i` + `si.t`; no key handed o
       "00020200010104002102e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd1306000468a3be80"
     ]
   },
-  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAKr0C68H_RGYXCBpGFhCGFzeEIwM2MyMjJlZjZkZWMyYmVjMDJhYjBkNjUwOGU0ZjgzMDI5NDgwMjE4NzVhMjY3ZjE0ZTA4NTQzMjVkODE5YmY4MjNhY1gwhNG3KRrlc388hRqjPK_g96_rXMtNoIbEgruFt1JeYVR_G1ptGgGx_tH5YNGp0DMnYnNpomFpWCEDo-EswHflYF82RBBG9QwRT8yIOweaNAKL7WZzLjpBnlFhdIFYMQACAgABAQQAIQLkk9vxwQ2A81geSQSTCxQEzGwTkA7gdYR0-pSr6MTNEwYABGijvoA"
+  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAK34HfQIPq-YXCBpGFhCGFzeEIwM2MyMjJlZjZkZWMyYmVjMDJhYjBkNjUwOGU0ZjgzMDI5NDgwMjE4NzVhMjY3ZjE0ZTA4NTQzMjVkODE5YmY4MjNhY1gwhNG3KRrlc388hRqjPK_g96_rXMtNoIbEgruFt1JeYVR_G1ptGgGx_tH5YNGp0DMnYnNpomFpWCEDo-EswHflYF82RBBG9QwRT8yIOweaNAKL7WZzLjpBnlFhdIFYMQACAgABAQQAIQLkk9vxwQ2A81geSQSTCxQEzGwTkA7gdYR0-pSr6MTNEwYABGijvoA"
 }
 ```
 

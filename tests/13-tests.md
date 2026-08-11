@@ -102,7 +102,7 @@ Using [NUT-13](../13.md) derivation procedure for V3 with the following inputs:
 {
   "seed_utf8": "nut13 v3 test seed",
   "seed_hex": "6e7574313320763320746573742073656564",
-  "keyset_id": "02abd02ebc1ff44652153375162407deaf0b30e590844cca0b6e4894a08a8828dd"
+  "keyset_id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6"
 }
 ```
 
@@ -112,33 +112,33 @@ The values derived for counters `0` to `3` are:
 [
   {
     "counter": 0,
-    "secret_key": "38b91aa1635556d47ce92d99c1a92a2ffb82e57bc292c039d1d7b84c13bd75c6",
-    "secret": "02595a333ef377a29f6756365bd46bf3b5e571dd7a44081822f3bd0bf03b358075",
-    "blinding_factor": "1e2cb8919eaf44fa998b67541cc49aa94dffee2da4d65f7d9a7512e63e42468d",
-    "Y": "b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55"
+    "secret_key": "7a7b3f7eb44f4a943041d936c0e0b2bf1dd0ac9a210bc8f8bc12b65cdbde9bd3",
+    "secret": "0234df38671738d8e9ee205dc364fd4b45df8ed2ff91686e93d02ca1feb3b2f118",
+    "blinding_factor": "513d1a0f0f01a09fdad2f7cea1403143fb86a1be2d152969b46b45cdaabd21aa",
+    "Y": "87d86a7c00ee5f3a18b93c793b8e36f49518de08c7c20fd5e4fe6d89c4a3a9adaf4af0e8f6e9e06e44d0f1d83a1235c7"
   },
   {
     "counter": 1,
-    "secret_key": "6bf0daee8bdc91c7b91bd9235b27bc77675f808517f63639612d4df13184a4cc",
-    "secret": "026238b6f7d01a9b9a220636fd5044482759b23b6d2d7c8316c60b29a125ae2d49",
-    "blinding_factor": "266ea1e92ac826be778834ae454bd78e9f34e517a229fdb98d3aa5fc2a1fa68f"
+    "secret_key": "46b6a7854d4007073151c09aa2091a763abd6492d1cbbc3a5abeb24fd1e1f075",
+    "secret": "02f6231465a1f6d4a787a0ede94b39a070993a4d84c2076ac53e4aeb168b5ff75b",
+    "blinding_factor": "48ec152dbe1ffff2f368d1623723009d9e8d6bdc8c138575eb15c34c6b56db7b"
   },
   {
     "counter": 2,
-    "secret_key": "3302a6f3c2958ea73f3bf25d44e05b4b466f9f407cb564416a2e792312de2bfd",
-    "secret": "0329ab175e5ac3f8da8e6ce1a168ef18c5e439db23f7ddb4d38b6bb15a24d7d7f0",
-    "blinding_factor": "5c7f1a61ef0948dc15b1e1944e73775628c0e44ded58e742516361a9bf3f77b5"
+    "secret_key": "78ef719cc25d6ffa6bfec641dbe0c4fc2a4260c4595ca0d27688dd6eb73ebd92",
+    "secret": "039a8259b6dcb41da0aff51ed9acd4b03b96d795d6825c4ff2c517dbbc31c73909",
+    "blinding_factor": "5041c676498aad5b0ec9e1135aa877a0716dbb3f1a4ccb894688f16d6b1debf6"
   },
   {
     "counter": 3,
-    "secret_key": "efec313f695f39d7a6d72a784825a249e70b919006bbf9ccaa6b79d9106bb754",
-    "secret": "03c687c9ed32e92b1a6301c07e30b433b2c810d0185b3c14f9c2c0851503da0932",
-    "blinding_factor": "236dbcb12fc064ceeae6c5e2de7f79258374dccbf23ac0afdf72cf9eb53540c9"
+    "secret_key": "bc813beb35621f256e923bd9dd7cfb3460077c1b1b2ef07dbd479fe3fcc77f46",
+    "secret": "02cc8d2b280ca8e46846159d8918409a0820d664a4223060024fc6f489140e8368",
+    "blinding_factor": "3d625b8869fc030e126f0a6d8109fc6c48b00ab6a8bd50a68dbd100e3cbb40de"
   }
 ]
 ```
 
-Every `secret_key` above is accepted at `attempt=0`. The counter `3` blinding factor is accepted at `attempt=1` (`attempt=0` produces `x >= BLS_FR_ORDER`): implementations that omit the rejection loop compute a different `blinding_factor` and fail this vector.
+Every `secret_key` above is accepted at `attempt=0`. The blinding factors are accepted at attempts `3`, `4`, `1` and `1` for counters `0` to `3` (earlier attempts produce `x >= BLS_FR_ORDER`): implementations that omit the rejection loop compute a different `blinding_factor` and fail this vector.
 
 Counter `0` also carries `Y = hash_to_curve_G1(secret_bytes)` over the **decoded 33 bytes** of the secret, pinning the binary-secret hashing rule ([NUT-00](../00.md#secret-bytes)).
 
