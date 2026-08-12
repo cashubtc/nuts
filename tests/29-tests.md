@@ -20,7 +20,7 @@ The following is the corresponding response with a blind signature.
 }
 ```
 
-## Check endpoint omits unknown and malformed quotes
+## Check endpoint marks unknown and malformed quotes
 
 The following check request contains two known quote IDs, one malformed quote ID, and one unknown quote ID.
 
