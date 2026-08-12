@@ -27,17 +27,7 @@ All NUT changes go through a community review process before being merged.
 
 ### Required Reviewers
 
-The following maintainers and core contributors must approve a NUT change before it can be merged:
-
-- [@callebtc](https://github.com/callebtc)
-- [@thesimplekid](https://github.com/thesimplekid)
-- [@crodas](https://github.com/crodas)
-- [@robwoodgate](https://github.com/robwoodgate)
-- [@Egge21M](https://github.com/Egge21M)
-- [@a1denvalu3](https://github.com/a1denvalu3)
-- [@asmogo](https://github.com/asmogo)
-
-**A minimum of two approving reviews from this list is required.** Additional review from wallet developers, mint operators, library maintainers, and other ecosystem contributors is strongly encouraged to ensure broad consensus.
+**A minimum of two approving reviews from core Cashu maintainers and contributors are required before a NUT change can be merged.** Additional review from wallet developers, mint operators, library maintainers, and other ecosystem contributors is strongly encouraged to ensure broad consensus.
 
 ### Time for Review
 
