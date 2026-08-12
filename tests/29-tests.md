@@ -32,8 +32,18 @@ The mint omits the malformed and unknown quote IDs. It returns the known quotes 
 
 ```json
 [
-  { "quote": "known-1", "state": "PAID" },
-  { "quote": "known-2", "state": "UNPAID" }
+  {
+    "quote": "known-1",
+    "amount_paid": 5,
+    "amount_issued": 0,
+    "updated_at": 1234567800
+  },
+  {
+    "quote": "known-2",
+    "amount_paid": 0,
+    "amount_issued": 0,
+    "updated_at": 1234567800
+  }
 ]
 ```
 
@@ -54,7 +64,7 @@ Expected behavior:
 
 - The mint rejects the whole request with an error.
 - No outputs are signed.
-- No quote state is consumed/changed by partial processing.
+- No quote's `amount_issued` is increased by partial processing.
 
 ## Batch mint rejects empty quotes array
 
