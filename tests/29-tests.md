@@ -38,6 +38,8 @@ The mint omits the malformed and unknown quote IDs. It returns the known quotes 
     "amount_issued": 0,
     "updated_at": 1234567800
   },
+  { "quote": "not-a-valid-quote-id", "unknown": true },
+  { "quote": "unknown-2", "unknown": true },
   {
     "quote": "known-2",
     "amount_paid": 0,
