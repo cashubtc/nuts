@@ -20,22 +20,24 @@ The following is the corresponding response with a blind signature.
 }
 ```
 
-## Check endpoint with unknown quotes
+## Check endpoint omits unknown and malformed quotes
 
-The following is an invalid check request containing an unknown quote ID.
-
-```json
-{ "quotes": ["known-1", "bogus", "unknown-2"] }
-```
-
-Per NUT-29, quote check uses all-or-nothing error handling. If any quote is unknown, the entire request must be rejected.
+The following check request contains two known quote IDs, one malformed quote ID, and one unknown quote ID.
 
 ```json
-{
-  "code": "UNKNOWN_QUOTE",
-  "error": "one or more quote IDs are unknown"
-}
+{ "quotes": ["known-1", "not-a-valid-quote-id", "unknown-2", "known-2"] }
 ```
+
+The mint omits the malformed and unknown quote IDs. It returns the known quotes in the same relative order as their IDs in the request.
+
+```json
+[
+  { "quote": "known-1", "state": "PAID" },
+  { "quote": "known-2", "state": "UNPAID" }
+]
+```
+
+If the mint cannot handle any of the requested quote IDs, it returns an empty JSON array.
 
 ## Batch mint atomic failure
 
