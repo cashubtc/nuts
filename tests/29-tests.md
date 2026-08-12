@@ -28,7 +28,7 @@ The following check request contains two known quote IDs, one malformed quote ID
 { "quotes": ["known-1", "not-a-valid-quote-id", "unknown-2", "known-2"] }
 ```
 
-The mint omits the malformed and unknown quote IDs. It returns the known quotes in the same relative order as their IDs in the request.
+The mint returns one entry per requested quote ID, in request order. The malformed and unknown quote IDs are returned as `unknown` entries.
 
 ```json
 [
