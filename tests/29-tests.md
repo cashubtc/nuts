@@ -20,6 +20,53 @@ The following is the corresponding response with a blind signature.
 }
 ```
 
+After the batch succeeds, the mint increases `quote_id_a.amount_issued` by 5 and `quote_id_b.amount_issued` by 3.
+
+## Successful batch mint with omitted quote amounts
+
+For bolt11, `quote_amounts` can be omitted. The mint then uses the full currently mintable amount of each quote. Given `quote_id_a` with `amount_paid = 5` and `amount_issued = 2`, and `quote_id_b` with `amount_paid = 3` and `amount_issued = 0`, the following is a valid request for 6 sats:
+
+```json
+{
+  "quotes": ["quote_id_a", "quote_id_b"],
+  "outputs": [{ "amount": 6, "id": "keyset_1", "B_": "<blinded_message>" }]
+}
+```
+
+After the batch succeeds, the mint atomically sets `quote_id_a.amount_issued` to 5 and `quote_id_b.amount_issued` to 3.
+
+## Successful batch mint with an expired quote
+
+Given an expired quote with `amount_paid = 5` and `amount_issued = 2`, the following request is valid because the quote still has a currently mintable amount of 3 sats:
+
+```json
+{
+  "quotes": ["expired_quote_id"],
+  "quote_amounts": [3],
+  "outputs": [{ "amount": 3, "id": "keyset_1", "B_": "<blinded_message>" }]
+}
+```
+
+The mint MUST NOT reject issuance solely because the quote's `expiry` has passed. After the batch succeeds, the mint sets `expired_quote_id.amount_issued` to 5.
+
+## Batch mint rejects an amount exceeding a quote's balance
+
+Given `quote_id_a` with `amount_paid = 5` and `amount_issued = 2`, the following request is invalid because its allocation of 4 sats exceeds the quote's currently mintable amount of 3 sats:
+
+```json
+{
+  "quotes": ["quote_id_a"],
+  "quote_amounts": [4],
+  "outputs": [{ "amount": 4, "id": "keyset_1", "B_": "<blinded_message>" }]
+}
+```
+
+Expected behavior:
+
+- The mint rejects the whole request with an error.
+- No outputs are signed.
+- `quote_id_a.amount_issued` remains 2.
+
 ## Check endpoint marks unknown and malformed quotes
 
 The following check request contains two known quote IDs, one malformed quote ID, and one unknown quote ID.
@@ -49,7 +96,68 @@ The mint returns one entry per requested quote ID, in request order. The malform
 ]
 ```
 
-If the mint cannot handle any of the requested quote IDs, it returns an empty JSON array.
+Each unknown entry contains exactly `quote` and `unknown: true`. Known quote entries do not contain the `unknown` field.
+
+If the mint cannot handle any of the requested quote IDs, every entry in the response is an `unknown` entry. The response is never shorter than the request.
+
+For example:
+
+```json
+[
+  { "quote": "not-a-valid-quote-id", "unknown": true },
+  { "quote": "unknown-2", "unknown": true }
+]
+```
+
+## Check endpoint is scoped to mint quotes for the requested method
+
+The following request to `/v1/mint/quote/bolt11/check` contains a bolt11 mint quote ID, a bolt12 mint quote ID, and a melt quote ID.
+
+```json
+{ "quotes": ["bolt11-mint-quote", "bolt12-mint-quote", "bolt11-melt-quote"] }
+```
+
+Only the bolt11 mint quote is within the endpoint's scope. The other IDs are returned as `unknown` entries, even if the mint holds records for them elsewhere.
+
+```json
+[
+  {
+    "quote": "bolt11-mint-quote",
+    "amount_paid": 5,
+    "amount_issued": 0,
+    "updated_at": 1234567800
+  },
+  { "quote": "bolt12-mint-quote", "unknown": true },
+  { "quote": "bolt11-melt-quote", "unknown": true }
+]
+```
+
+## Check endpoint accepts an empty quotes array
+
+The following empty request is valid:
+
+```json
+{ "quotes": [] }
+```
+
+The mint returns an empty array:
+
+```json
+[]
+```
+
+## Check endpoint rejects duplicate quote IDs
+
+The following request is invalid because the quote ID occurs twice:
+
+```json
+{ "quotes": ["quote_id_dup", "quote_id_dup"] }
+```
+
+Expected behavior:
+
+- The mint rejects the entire request with error code `11016`.
+- The mint does not return a partial or positional response.
 
 ## Batch mint atomic failure
 
