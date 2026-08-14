@@ -216,6 +216,15 @@ and the input's key-path witness over that digest is:
 }
 ```
 
+**Melt with change.** The same melt carrying two [NUT-08](../08.md) blank change outputs (amount 0, on the same keyset with the swap's `B_`). Containers group in ascending type order, so the blank outputs (type `0x03`) precede the melt quote (type `0x04`) in the transcript regardless of the request's field order; note each blank's zero amount encodes to a zero-length record (`010000`):
+
+```json
+{
+  "transcript": "01007f0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f60300210234df38671738d8e9ee205dc364fd4b45df8ed2ff91686e93d02ca1feb3b2f11804003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332703005a01000002002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd5503005a01000002002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd550400160100010802000f71756f74652d6d656c742d30303031",
+  "digest": "98bd694b8b67668d27a82a37a59261aacac3baec47959cb7a45de63ab9c7bfe0"
+}
+```
+
 ## V4 tokens with spend info
 
 One 8-sat proof per token, mint `https://mint.test`, unit `sat`, keyset id `02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6`, `C` = `84d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327`.
