@@ -158,13 +158,43 @@ Unknown tags MUST be rejected. `expiry` is decimal unix seconds without leading
 zeros. Keyset IDs use their [NUT-02][02] canonical form; the refund key is a
 BIP-340 x-only pubkey in hex.
 
-Every proof contributed by one participant MUST carry a `PAY_TO_UNLOCK`
-condition with the same `data` (`H_recv`), the same tags (`offer_keyset`,
-`expiry`, `refund`, and any optional tags), but a **unique `nonce` per proof**.
-The `nonce` provides per-proof anti-replay; the meaningful authorisation fields
-are shared. This allows multiple proofs (e.g., micro-denomination inputs) in one
-record without duplicate secrets. Across the exchange, the set of `offer_keyset`
-values MUST equal the set of receive keysets.
+Each input is validated under its own spending condition. Within one
+record, all `PAY_TO_UNLOCK` inputs MUST use the same `data` and the same
+tags, with a **unique `nonce` per proof** — for standard participants,
+`data` is `H_recv` with the tags `offer_keyset`, `expiry`, `refund`, and
+any optional tags; for pool-authorized participants, `data` is
+`H_manifest` with the pool tags defined by
+[NUT-Exchange-partial-fill][partial-fill]. A record MAY also contain
+endpoint-compatible non-`PAY_TO_UNLOCK` inputs (rule 3).
+The `nonce` provides per-proof anti-replay; the meaningful authorisation
+fields are shared. This allows multiple proofs (e.g., micro-denomination
+inputs) in one record without duplicate secrets.
+
+A record with no `PAY_TO_UNLOCK` inputs at all is a bare record (see
+rule 3 for the condition classes and the record predicate). A bare record has no
+`H_recv` commitment and no refund path under this NUT: its outputs are
+constrained by the global two-class rule (rule 8) and conservation
+(rule 10). Rules that read a `PAY_TO_UNLOCK` field (`H_recv`, `refund`,
+`expiry`, coordinator binding) apply only to locked records. Across the
+exchange, locked records' `offer_keyset` values and receive keysets MUST
+lie within the two classes of rule 8.
+
+`request_digest` and `coordinator_digest` bind every input proof and
+witness, every output, every pool field, and every condition-relevant
+top-level field, for locked and bare records alike. Recovery restores
+outputs only to a party that retained the corresponding blinded messages;
+conservation gives the holder of a bare input no claim on outputs another
+assembler chose.
+
+Non-normative cautions: a disclosed bearer proof — or any
+non-output-binding condition together with its witness — can fund a
+different valid request; keep such material private until direct
+submission. For a request containing at least one `PAY_TO_UNLOCK` input, any party
+able to assemble a complete valid request holds a timing option until the
+earliest `PAY_TO_UNLOCK` `expiry` in it: it can choose whether and when to
+submit. A coordinator is optional; when a
+`coordinator_pubkey` binds a locked input, the holder of that key holds
+the option.
 
 ### Change outputs
 
@@ -297,7 +327,7 @@ POST https://mint.host:3338/v1/exchange
     },
     { "...": "one record per participant; N >= 2" }
   ],
-  "coordinator_sig": "<hex_str: 128 chars; present iff any input carries coordinator_pubkey>"
+  "coordinator_sig": "<hex_str: 128 chars; present iff any canonical PAY_TO_UNLOCK input carries coordinator_pubkey>"
 }
 ```
 
@@ -309,20 +339,42 @@ Before any mutation, the mint MUST verify:
    limits respected.
 2. Every proof is authentic, unspent, unique in the request, and signed by an
    active or still-spendable keyset.
-3. Every proof carries a canonical `PAY_TO_UNLOCK` condition: the three required
-   tags each exactly once; optional tags at most once; no unknown tags.
+3. Every proof satisfies its own spending condition, restricted to
+   endpoint-compatible conditions: (a) no [NUT-10][10] condition — an
+   ordinary proof; (b) a canonical `PAY_TO_UNLOCK` condition: the three
+   required tags each exactly once, optional tags at most once, no unknown
+   tags; or (c) another supported [NUT-10][10] condition whose validation
+   depends only on the individual proof and its witness — no request
+   context of any kind.
+   Conditions that require a transaction preimage over this endpoint's
+   request (for example [NUT-11][11] `SIG_ALL`) MUST be rejected: this NUT
+   defines no such preimage. Within one record, let `L` be its
+   `PAY_TO_UNLOCK` inputs. If `L` is non-empty the record is a *locked
+   record*: every input in `L` MUST share the same `data` and tags per the
+   participant rule. A locked record whose inputs in `L` carry the pool
+   tags is a *pool record*: all of its inputs MUST be pool-authorized
+   `PAY_TO_UNLOCK` inputs, `pool_manifest` and `pool_selection` are
+   accepted only on it, and it is validated by the pool rule set
+   ([NUT-Exchange-partial-fill][partial-fill] 6p-9p) — base rules 6, 7,
+   and 12 do NOT apply to it. Any other locked record is a *standard
+   locked record*: rules 6, 7, and 12 apply to its complete `outputs`
+   list. If `L` is empty the record is a *bare record*: every
+   `PAY_TO_UNLOCK`-derived rule is skipped for it, and its outputs remain
+   subject to rules 8, 9, and 10.
 4. No input proof is reused across records; every input is unique.
-5. Each input's `Proof.id == offer_keyset` (prevents keyset relabeling).
-6. Each participant's `outputs` list hashes to the condition's `data` **or** an
+5. Each `PAY_TO_UNLOCK` input's `Proof.id == offer_keyset` (prevents keyset relabeling).
+6. Each standard locked record's `outputs` list hashes to the condition's `data` **or** an
    `alt_outputs` entry. (If `alt_outputs` is absent, must match `data` exactly.)
-7. If `allow_change` is absent: every output `id` is the same (the receive
+7. For a standard locked record — if `allow_change` is absent: every output `id` is the same (the receive
    keyset), and that keyset differs from `offer_keyset`. If `allow_change` is
    present: every output `id` is either the receive keyset or the `offer_keyset`;
    at least one output MUST use the receive keyset; the receive keyset MUST differ
    from `offer_keyset`.
-8. Exactly two distinct keysets appear across all participants' `offer_keyset`
-   values and receive keysets. Per-class conservation (rule 10) does not require
-   equal participant counts per class, so any two-class shape is valid: 1-vs-N,
+8. Exactly two distinct keysets appear across all actual input `Proof.id`
+   values and all output `id` values in the request. Bare records are counted
+   by their actual keysets and remain subject to this two-class rule and to
+   conservation (rule 10). Per-class conservation does not require equal
+   participant counts per class, so any two-class shape is valid: 1-vs-N,
    N-vs-M, or N-vs-N.
 9. Every blinded output is unique, valid, uses an accepted keyset, and has not
    been signed before.
@@ -330,17 +382,18 @@ Before any mutation, the mint MUST verify:
     arithmetic: `sum(inputs_c) == sum(outputs_c) + input_fees_c`, where
     `input_fees_c = (sum(input_fee_ppk over inputs with id == c) + 999) // 1000`
     per [NUT-02][02]. Fees are computed and rounded **per class**, not globally.
-11. The request is submitted before the minimum `expiry` across all participants'
-    conditions.
-12. If `min_output_amount` is present: the total receive-keyset output amount for
+11. The request is submitted before the minimum `expiry` across all
+    `PAY_TO_UNLOCK` inputs. This rule is skipped when the request contains
+    none.
+12. For a standard locked record — if `min_output_amount` is present: the total receive-keyset output amount for
     that participant MUST be ≥ `min_output_amount`. (Change outputs in the offer
     keyset are excluded from this check.)
-13. **Coordinator authentication.** If any input carries `coordinator_pubkey`
+13. **Coordinator authentication.** If any canonical `PAY_TO_UNLOCK` input carries `coordinator_pubkey`
     (BIP-340 x-only key, 64 lowercase hex / 32 bytes), every such input MUST
     decode to the same key `K`, and the request MUST carry `coordinator_sig` — a
     BIP-340 signature (128 lowercase hex / 64 bytes) valid under `K` over
     `coordinator_digest` ([Canonical encodings](#canonical-encodings)). Version 1
-    permits one `K` per request; if no input carries `coordinator_pubkey`,
+    permits one `K` per request; if no canonical `PAY_TO_UNLOCK` input carries `coordinator_pubkey`,
     `coordinator_sig` MUST be absent. Reject with 15015 on key disagreement or a
     missing, invalid, or unexpected signature. The signature authorizes the
     request but does not assert inputs are unspent (rules 2 and 11 remain;
