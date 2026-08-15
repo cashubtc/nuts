@@ -1234,6 +1234,7 @@
 <span class="w">  </span><span class="p">],</span>
 <span class="w">  </span><span class="nt">&quot;time&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1725304480</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;tos_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://mint.host/tos&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;max_array_length&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;nuts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;4&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;methods&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
@@ -1288,6 +1289,7 @@
 <li>(optional) <code>urls</code> is the list of endpoint URLs where the mint is reachable from.</li>
 <li>(optional) <code>time</code> is the current time set on the server. The value is passed as a Unix timestamp integer.</li>
 <li>(optional) <code>tos_url</code> is the URL pointing to the Terms of Service of the mint.</li>
+<li>(optional) <code>max_array_length</code> is the maximum length the mint accepts for any array in a request, such as <code>inputs</code>, <code>outputs</code> or <code>Ys</code>. Wallets <strong>SHOULD</strong> split larger requests into batches no bigger than this.</li>
 <li>(optional) <code>nuts</code> indicates each NUT specification that the mint supports and its settings. The settings are defined in each NUT separately.</li>
 </ul>
 <p>With curl:</p>
