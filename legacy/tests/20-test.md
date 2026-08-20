@@ -1,8 +1,8 @@
-# NUT-20 Test Vectors
+# NUT-20 (legacy) Test Vectors
 
-## Deterministic quote locking key derivation (deprecated)
+## Deterministic quote locking key derivation
 
-Using the deprecated [NUT-20](../20.md#deterministic-quote-locking-key-derivation) BIP32 path, we derive values starting from the following BIP39 mnemonic:
+Using [NUT-20](../20.md) quote locking key derivation, we derive values starting from the following BIP39 mnemonic:
 
 ```json
 {
