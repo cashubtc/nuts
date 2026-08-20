@@ -1,4 +1,4 @@
-# NUT-12 Test vectors
+# NUT-12 (legacy) Test vectors
 
 ## `hash_e` function
 
