@@ -1,4 +1,4 @@
-# NUT-11 Test Vectors
+# NUT-11 (legacy) Test Vectors
 
 ### Multisig Test Vectors
 
