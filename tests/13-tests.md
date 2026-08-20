@@ -60,7 +60,7 @@ The corresponding derivation paths are
 
 ## Version 2: Secret derivation
 
-Using [NUT-13](13.md) derivation procedure for V2 with keyset ID `015ba18a8adcd02e715a58358eb618da4a4b3791151a4bee5e968bb88406ccf76a`, we derive values starting from the following BIP39 mnemonic:
+Using [NUT-13](../13.md) derivation procedure for V2 with keyset ID `015ba18a8adcd02e715a58358eb618da4a4b3791151a4bee5e968bb88406ccf76a`, we derive values starting from the following BIP39 mnemonic:
 
 ```json
 {
@@ -175,7 +175,7 @@ Counter `0` also carries `Y = hash_to_curve_G1(secret_bytes)` over the **decoded
 
 ## P2PK Derivation (pre-v3 keysets)
 
-Using [NUT-13](13.md) derivation procedure for P2PK, we derive values starting from the following BIP39 mnemonic:
+Using [NUT-13](../13.md) derivation procedure for P2PK, we derive values starting from the following BIP39 mnemonic:
 
 ```json
 {
