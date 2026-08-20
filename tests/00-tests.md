@@ -71,7 +71,7 @@ C: b7a4881059133fd91a8753600d9a5e524c65d6224f6fe2d5aef9e59f1507fdad90b3b4d48ee46
 
 ### BLS12-381 (v3) batch verification
 
-Test vector for the multi-pairing batch check with deterministic weight derivation (see [Batch Verification](../00.md#batch-verification)). Two proofs signed under the same mint key `K = 2·g2`.
+Test vector for the multi-pairing batch check with deterministic weight derivation (see [Batch Verification](../00.md#optional-batch-verification)). Two proofs signed under the same mint key `K = 2·g2`.
 
 ```shell
 K: aa4edef9c1ed7f729f520e47730a124fd70662a904ba1074728114d1031e1572c6c886f6b57ec72a6178288c47c335771638533957d540a9d2370f17cc7ed5863bc0b995b8825e0ee1ea1e1e4d00dbae81f14b0bf3611b78c952aacab827a053
