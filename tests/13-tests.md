@@ -94,9 +94,7 @@ The corresponding blinding factors `r` are:
 
 ## Version 3: Secret derivation
 
-V3 keysets derive a [secret key](../13.md#v3-secret-key) on the `0x00` branch (the secret is the compressed point `K = k*G`) and a [blinding factor](../13.md#v3-blinding-factor) by rejection sampling against `BLS_FR_ORDER` on the `0x01` branch. Both branches append a 4-byte big-endian `attempt` counter to the V2 HMAC message.
-
-Using [NUT-13](../13.md) derivation procedure for V3 with the following inputs:
+Using [NUT-13](../13.md#v3-message) derivation procedure for V3 with the following inputs:
 
 ```json
 {
@@ -112,37 +110,70 @@ The values derived for counters `0` to `3` are:
 [
   {
     "counter": 0,
-    "secret_key": "7a7b3f7eb44f4a943041d936c0e0b2bf1dd0ac9a210bc8f8bc12b65cdbde9bd3",
-    "secret": "0234df38671738d8e9ee205dc364fd4b45df8ed2ff91686e93d02ca1feb3b2f118",
-    "blinding_factor": "513d1a0f0f01a09fdad2f7cea1403143fb86a1be2d152969b46b45cdaabd21aa",
-    "Y": "87d86a7c00ee5f3a18b93c793b8e36f49518de08c7c20fd5e4fe6d89c4a3a9adaf4af0e8f6e9e06e44d0f1d83a1235c7"
+    "secret_key": "47196dc081150ce13fd0e478b8b71831b825be389211c9c56a8062a61af70347",
+    "secret": "02e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b",
+    "blinding_factor": "156857a0bce1b2788895f1885a21c56cf000df0de1e855608c7ccb6d9e2d7728",
+    "nums_offset": "4af68649f3230c5589879f0cf33fd6d9f007cd3a54a2e6ed8699a576630fc025",
+    "Y": "a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a73"
   },
   {
     "counter": 1,
-    "secret_key": "46b6a7854d4007073151c09aa2091a763abd6492d1cbbc3a5abeb24fd1e1f075",
-    "secret": "02f6231465a1f6d4a787a0ede94b39a070993a4d84c2076ac53e4aeb168b5ff75b",
-    "blinding_factor": "48ec152dbe1ffff2f368d1623723009d9e8d6bdc8c138575eb15c34c6b56db7b"
+    "secret_key": "659a545656334a47e08de62377e2f3128c72cd27e576908842e1ab359d395247",
+    "secret": "03a882e17eb79f4f87313b299e208f9109734d0211a8df307b1570dbad2cdf74bf",
+    "blinding_factor": "6de008e7a6c418b76a94e48c4b71a11078173de70abb3eaeb7cc1273a6dccede",
+    "nums_offset": "d78b39a2ba263f92ea3ea2f721705c545d949349767e55bbdc41884cbb9a8b18"
   },
   {
     "counter": 2,
-    "secret_key": "78ef719cc25d6ffa6bfec641dbe0c4fc2a4260c4595ca0d27688dd6eb73ebd92",
-    "secret": "039a8259b6dcb41da0aff51ed9acd4b03b96d795d6825c4ff2c517dbbc31c73909",
-    "blinding_factor": "5041c676498aad5b0ec9e1135aa877a0716dbb3f1a4ccb894688f16d6b1debf6"
+    "secret_key": "cee0df42cdaee25b228300b460edcbfab94be650ce2676abd77ef0697311e5e2",
+    "secret": "02da107b7bfa3afedc0b49c62de58cb5429e1ad42b45c14a3e6da20156222ea41b",
+    "blinding_factor": "35f56bb2016802a96a2846de8635712281d68182788410735b9826a211499fd4",
+    "nums_offset": "d01054af49de60a8a62c592c4bea44f02782f7c6371136d985dfd9d690de5a15"
   },
   {
     "counter": 3,
-    "secret_key": "bc813beb35621f256e923bd9dd7cfb3460077c1b1b2ef07dbd479fe3fcc77f46",
-    "secret": "02cc8d2b280ca8e46846159d8918409a0820d664a4223060024fc6f489140e8368",
-    "blinding_factor": "3d625b8869fc030e126f0a6d8109fc6c48b00ab6a8bd50a68dbd100e3cbb40de"
+    "secret_key": "46c2c20d79496e1ebe19805ba4df33535474800eefefc252140e1f20d0284ffe",
+    "secret": "03189b6c67a0046084bbd2d810b5c6086c117082fe569cb56107d70f4acf8ddb5c",
+    "blinding_factor": "65724fcdbc4ccfbb2a610b1bddd14238492b81d3761584b6492fcbadfeb9355f",
+    "nums_offset": "54d0371fad402c83b0f3854fd9b7c876da857e7f276614d7e19dfb6680356f09"
   }
 ]
 ```
 
-Every `secret_key` above is accepted at `attempt=0`. The blinding factors are accepted at attempts `3`, `4`, `1` and `1` for counters `0` to `3` (earlier attempts produce `x >= BLS_FR_ORDER`): implementations that omit the rejection loop compute a different `blinding_factor` and fail this vector.
+The rejection loops are not decoration: for counters `0` to `3` the `0x00` branch accepts at attempts `0, 0, 0, 0` and the `0x01` branch at attempts `7, 1, 2, 2` (earlier attempts produce `x >= BLS_FR_ORDER`). An implementation that omits the loop, skips the length framing, or reuses the V2 message computes different values and fails these vectors.
+
+The **leaf keys** (type `0x03`) at counter `0`, with the index suffix `u32_BE(i)`:
+
+```json
+[
+  {
+    "counter": 0,
+    "index": 0,
+    "privkey": "8aac8b31fe4babb8097f416ef8f8508fdba63589087f4d10bf6f96bddba23788",
+    "pubkey": "033c1828d880aebfd316781d3dffe1c45953087917e6f734032666c1ed80f0653c"
+  },
+  {
+    "counter": 0,
+    "index": 1,
+    "privkey": "c77d6d9440bde035b140fe622e96dea2ffb2227179c3241df6e2994811984656",
+    "pubkey": "0210b63f8016248a6f4c372366eb521784002ab182acbeba94e00ec4898f629d81"
+  },
+  {
+    "counter": 0,
+    "index": 2,
+    "privkey": "ba7a8fc52b8c77b7412e5edaae211d92f2c79980788e3e3a480eb0dccac0b33e",
+    "pubkey": "020e35e2edc190c2c34e46e586233a4f357e35fa428ae6f53636bb93f201792096"
+  }
+]
+```
+
+**NOTE**:`i` is not a leaf's position: recover by deriving candidates and matching the tree's keys by value.
+
+Type `0x04` quote lock keys have their own vectors in [NUT-20](20-test.md#deterministic-quote-locking-key-derivation-v3-keysets).
 
 Counter `0` also carries `Y = hash_to_curve_G1(secret_bytes)` over the **decoded 33 bytes** of the secret, pinning the binary-secret hashing rule ([NUT-00](../00.md#secret-bytes)).
 
-## P2PK Derivation
+## P2PK Derivation (pre-v3 keysets)
 
 Using [NUT-13](13.md) derivation procedure for P2PK, we derive values starting from the following BIP39 mnemonic:
 

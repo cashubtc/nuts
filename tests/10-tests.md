@@ -148,7 +148,7 @@ An aggregated internal key commits to having no script path with the empty tweak
     {
       "amount": 8,
       "id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
-      "secret": "0234df38671738d8e9ee205dc364fd4b45df8ed2ff91686e93d02ca1feb3b2f118",
+      "secret": "02e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b",
       "C": "84d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327"
     }
   ],
@@ -171,8 +171,8 @@ serializes to the following transcript and digest:
 
 ```json
 {
-  "transcript": "01007f0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f60300210234df38671738d8e9ee205dc364fd4b45df8ed2ff91686e93d02ca1feb3b2f11804003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332703005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd5503005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
-  "digest": "5603e6bd91eae45db2edc5b763057671b8a9667a06fe7c9317846b7981318572"
+  "transcript": "01007f0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f603002102e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b04003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332703005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd5503005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
+  "digest": "77d581ac1ea31d85ecc5c251a7115ef6777e5b2a8f297933fd3a1a7e441094bd"
 }
 ```
 
@@ -181,7 +181,7 @@ and the input's key-path witness over that digest is:
 ```json
 {
   "signatures": [
-    "2223919fc0cbd9e75ff3f7b1330e8644899721bb68fb4d26b08d8d5b2c495582782c93fb3f609cbe47d5521fe864bb2c5c4a58f0d4db013fa6f54658c44714d7"
+    "d924e2b60507ebeeebb23f6fa1fb3851a170c17e9756d30e87f33e0091a0b20b513ff5e09030a83bfc438de09cd99cc852616a5c791585bafba6a7e4c39bee36"
   ]
 }
 ```
@@ -211,8 +211,8 @@ and the input's key-path witness over that digest is:
 
 ```json
 {
-  "transcript": "01007f0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f60300210234df38671738d8e9ee205dc364fd4b45df8ed2ff91686e93d02ca1feb3b2f11804003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d033270400160100010802000f71756f74652d6d656c742d30303031",
-  "digest": "0eb9a8c9b8214437e36af259250c85afe22379126e7d17abbb7ee4eacdaa5cf3"
+  "transcript": "01007f0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f603002102e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b04003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d033270400160100010802000f71756f74652d6d656c742d30303031",
+  "digest": "172e38f867afa4d096fe0c1caef1aad4a19a2da6ffea25a33660172df66474b3"
 }
 ```
 
@@ -220,8 +220,8 @@ and the input's key-path witness over that digest is:
 
 ```json
 {
-  "transcript": "01007f0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f60300210234df38671738d8e9ee205dc364fd4b45df8ed2ff91686e93d02ca1feb3b2f11804003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332703005a01000002002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd5503005a01000002002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd550400160100010802000f71756f74652d6d656c742d30303031",
-  "digest": "98bd694b8b67668d27a82a37a59261aacac3baec47959cb7a45de63ab9c7bfe0"
+  "transcript": "01007f0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f603002102e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b04003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332703005a01000002002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd5503005a01000002002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd550400160100010802000f71756f74652d6d656c742d30303031",
+  "digest": "3b7a268b8c49e836d5235a4d4b89f1d5bfbe7bfa01d6427fa2a013f91b9d1a68"
 }
 ```
 
@@ -235,11 +235,11 @@ Bearer (`si.k`, secret is the bare key of `k`):
 
 ```json
 {
-  "secret": "0234df38671738d8e9ee205dc364fd4b45df8ed2ff91686e93d02ca1feb3b2f118",
+  "secret": "02e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b",
   "spend_info": {
-    "k": "7a7b3f7eb44f4a943041d936c0e0b2bf1dd0ac9a210bc8f8bc12b65cdbde9bd3"
+    "k": "47196dc081150ce13fd0e478b8b71831b825be389211c9c56a8062a61af70347"
   },
-  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAK34HfQIPq-YXCBpGFhCGFzeEIwMjM0ZGYzODY3MTczOGQ4ZTllZTIwNWRjMzY0ZmQ0YjQ1ZGY4ZWQyZmY5MTY4NmU5M2QwMmNhMWZlYjNiMmYxMThhY1gwhNG3KRrlc388hRqjPK_g96_rXMtNoIbEgruFt1JeYVR_G1ptGgGx_tH5YNGp0DMnYnNpoWFrWCB6ez9-tE9KlDBB2TbA4LK_HdCsmiELyPi8ErZc296b0w"
+  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAK34HfQIPq-YXCBpGFhCGFzeEIwMmU2ZTdjZmE3YjgyZDRiM2I0NDlmYTY0NjZjODkzNDY5YTcyN2QwMjE0ZDQ4ZGI0OTU2YTYwNTRiODAyMmEyOWJhY1gwhNG3KRrlc388hRqjPK_g96_rXMtNoIbEgruFt1JeYVR_G1ptGgGx_tH5YNGp0DMnYnNpoWFrWCBHGW3AgRUM4T_Q5Hi4txgxuCW-OJIRycVqgGKmGvcDRw"
 }
 ```
 
@@ -270,7 +270,7 @@ Receiver-keyed with a disclosed tree (`si.e` + `si.t`; the receiver derives `K` 
 }
 ```
 
-A disclosed tree with an explicit internal key (`si.i` + `si.t`; no key handed over, the script-only and third-party-signer shape):
+A disclosed tree with an explicit internal key (`si.i` + `si.t`; no key handed over, the third-party-signer shape):
 
 ```json
 {
@@ -282,6 +282,22 @@ A disclosed tree with an explicit internal key (`si.i` + `si.t`; no key handed o
     ]
   },
   "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAK34HfQIPq-YXCBpGFhCGFzeEIwM2MyMjJlZjZkZWMyYmVjMDJhYjBkNjUwOGU0ZjgzMDI5NDgwMjE4NzVhMjY3ZjE0ZTA4NTQzMjVkODE5YmY4MjNhY1gwhNG3KRrlc388hRqjPK_g96_rXMtNoIbEgruFt1JeYVR_G1ptGgGx_tH5YNGp0DMnYnNpomFpWCEDo-EswHflYF82RBBG9QwRT8yIOweaNAKL7WZzLjpBnlFhdIFYMQACAgABAQQAIQLkk9vxwQ2A81geSQSTCxQEzGwTkA7gdYR0-pSr6MTNEwYABGijvoA"
+}
+```
+
+Script-only (`si.i` + `si.u` + `si.t`): `K = H + u*G`, so the holder checks `K - u*G == H` and knows no key path exists. `u` is fixed here for a stable vector; a real send uses a fresh one per proof.
+
+```json
+{
+  "secret": "036ea10bfdebcc3b20034331ff520e94b2c85d65274fc0e4341b70d174c219b146",
+  "spend_info": {
+    "K": "0308ca9ef021bf7ec241dbef7fa31aec8e63b41be200eb7530cd3d67d2a2c7d096",
+    "u": "4af68649f3230c5589879f0cf33fd6d9f007cd3a54a2e6ed8699a576630fc025",
+    "tree": [
+      "00020200010104002102e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd1306000468a3be80"
+    ]
+  },
+  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAK34HfQIPq-YXCBpGFhCGFzeEIwMzZlYTEwYmZkZWJjYzNiMjAwMzQzMzFmZjUyMGU5NGIyYzg1ZDY1Mjc0ZmMwZTQzNDFiNzBkMTc0YzIxOWIxNDZhY1gwhNG3KRrlc388hRqjPK_g96_rXMtNoIbEgruFt1JeYVR_G1ptGgGx_tH5YNGp0DMnYnNpo2FpWCEDCMqe8CG_fsJB2-9_oxrsjmO0G-IA63UwzT1n0qLH0JZhdVggSvaGSfMjDFWJh58M8z_W2fAHzTpUoubthpmldmMPwCVhdIFYMQACAgABAQQAIQLkk9vxwQ2A81geSQSTCxQEzGwTkA7gdYR0-pSr6MTNEwYABGijvoA"
 }
 ```
 
