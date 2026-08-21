@@ -199,7 +199,7 @@ A request for 8 sat to the payee's static key (well-known test key `3`), under a
 
 #### NUMS (leaves-only) request
 
-A request locking payments to their leaves only: `k` is the [NUMS point](../10.md#bare-empty-tweaked-and-script-only-secrets), used verbatim, and the leaf's key (test key `4`) is tagged blind-me, which a NUMS request **MUST** include: the blinded leaf key is what makes each payment's secret unique.
+A request locking payments to their leaves only: `k` is the [NUMS point](../10.md#bare-empty-tweaked-and-script-only-secrets), and the leaf's key (test key `4`) is tagged blind-me, so the payment's ephemeral travels. The payer derives `K = H + u*G` with a fresh `u` per output; `u` is fixed to the scalar of a small test key here for a stable vector.
 
 ```json
 {
@@ -221,14 +221,15 @@ Encoded:
 creqAo2FhCGF1Y3NhdGd0YXByb290o2FreEIwMjUwOTI5Yjc0YzFhMDQ5NTRiNzhiNGI2MDM1ZTk3YTVlMDc4YTVhMGYyOGVjOTZkNTQ3YmZlZTlhY2U4MDNhYzBhbIF4YjAwMDIwMjAwMDEwMTA0MDAyMTAyZTQ5M2RiZjFjMTBkODBmMzU4MWU0OTA0OTMwYjE0MDRjYzZjMTM5MDBlZTA3NTg0NzRmYTk0YWJlOGM0Y2QxMzA2MDAwNDY4YTNiZTgwYWKBeEIwMmU0OTNkYmYxYzEwZDgwZjM1ODFlNDkwNDkzMGIxNDA0Y2M2YzEzOTAwZWUwNzU4NDc0ZmE5NGFiZThjNGNkMTM=
 ```
 
-Paying it with ephemeral key `5` leaves the internal key as the NUMS point verbatim and blinds the leaf key at slot 1 (the [NUT-28 vectors](28-tests.md)' blinded leaf, byte for byte); the resulting proof carries:
+Paying it with ephemeral key `5` and `u` = scalar `7` blinds the leaf key at slot 1 (the [NUT-28 vectors](28-tests.md)' blinded leaf, byte for byte); the resulting proof carries:
 
 ```json
 {
-  "secret": "0296b745e131e3bfdd030d5f0d99c2e292a98385531b8a8715efe26ae29da86b20",
+  "secret": "02fb23814e330739413a6e3982a21916002962002bc101ac105a28e0cf3bcb46d1",
   "spend_info": {
     "E": "022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4",
-    "K": "0250929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0",
+    "K": "028edfebd6fdea3e1d89359af20868a2e76315b36cdb1a79de497a1757ca7bd407",
+    "u": "0000000000000000000000000000000000000000000000000000000000000007",
     "tree": [
       "000202000101040021039ca57991c48db95252bff61e02c31cf9b1e9ec2ef27d9dee33db6f0324e6ca8106000468a3be80"
     ]
@@ -236,4 +237,19 @@ Paying it with ephemeral key `5` leaves the internal key as the NUMS point verba
 }
 ```
 
-A second payment picks a fresh ephemeral, blinds the leaf key differently, and lands on a different secret.
+The same request without its `b` entry blinds nothing, so no ephemeral is picked and none travels: spend info **MUST** omit `E`. Paid with `u` = scalar `9`, the requested leaf comes back verbatim:
+
+```json
+{
+  "secret": "030b5dc180dd2ef76be0f0319fc5c254511fede8c8563a823d3b0fcd6f9012a0b2",
+  "spend_info": {
+    "K": "03b948fab26606a34380c4515ece4c27d25fcf53eb95d1041630ab44f2be4f7331",
+    "u": "0000000000000000000000000000000000000000000000000000000000000009",
+    "tree": [
+      "00020200010104002102e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd1306000468a3be80"
+    ]
+  }
+}
+```
+
+A second payment picks a fresh `u` (and, where the request blinds, a fresh ephemeral) and lands on a different secret.
