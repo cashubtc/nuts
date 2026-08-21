@@ -179,15 +179,15 @@ Encoded:
 creqApmFpdXByZWZlcnJlZF9mZWVfbWV0aG9kc2FhGGRhdWNzYXRhbYF4GGh0dHBzOi8vbWludC5leGFtcGxlLmNvbWJtcPVic22CoWJtbmZib2x0MTGiYm1uZmJvbHQxMmJtZgU=
 ```
 
-### Taproot Locking
+### Nutroot Locking
 
-A request for 8 sat to the payee's static key (well-known test key `3`), under a requested `after` leaf naming a co-signer key (test key `4`) that its owner tags blind-me; the payee relays the tag in `b`. The leaf bytes are the payer's to reproduce exactly ([NUT-18](../18.md#taproot-locking-v3-keysets)); the resulting proof appears in the [NUT-10 vectors](10-tests.md).
+A request for 8 sat to the payee's static key (well-known test key `3`), under a requested `after` leaf naming a co-signer key (test key `4`) that its owner tags blind-me; the payee relays the tag in `b`. The leaf bytes are the payer's to reproduce exactly ([NUT-18](../18.md#nutroot-locking-v3-keysets)); the resulting proof appears in the [NUT-10 vectors](10-tests.md).
 
 ```json
 {
   "a": 8,
   "u": "sat",
-  "taproot": {
+  "nutroot": {
     "k": "02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
     "l": [
       "00020200010104002102e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd1306000468a3be80"
@@ -205,7 +205,7 @@ A request locking payments to their leaves only: `k` is the [NUMS point](../10.m
 {
   "a": 8,
   "u": "sat",
-  "taproot": {
+  "nutroot": {
     "k": "0250929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0",
     "l": [
       "00020200010104002102e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd1306000468a3be80"

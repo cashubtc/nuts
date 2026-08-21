@@ -1,6 +1,6 @@
 # NUT-10 Test Vectors
 
-These vectors cover [taproot secrets](../10.md#taproot-secrets-v3-keysets) (v3 keysets). All signatures are BIP-340 with the auxiliary randomness fixed to 32 zero bytes, which makes them reproducible; verifiers **MUST** accept any valid signature.
+These vectors cover [nutroot secrets](../10.md#nutroot-secrets-v3-keysets) (v3 keysets). All signatures are BIP-340 with the auxiliary randomness fixed to 32 zero bytes, which makes them reproducible; verifiers **MUST** accept any valid signature.
 
 ## Conventions
 
@@ -59,7 +59,7 @@ A three-leaf tree (`threshold_1of1_key3`, `after_1of1_key4`, `hashlock_1of1_key3
 
 ## Worked example: receiver-keyed proof with a refund leaf
 
-Alice pays Carol, refundable to Alice after `time`. Carol's static key is key `3`, Alice's refund key is key `4`, Alice's ephemeral is key `5`. The internal key is Carol's static key blinded at slot 0 ([NUT-28](../28.md#taproot-secrets-v3-keysets)); the tree is the single `after` leaf.
+Alice pays Carol, refundable to Alice after `time`. Carol's static key is key `3`, Alice's refund key is key `4`, Alice's ephemeral is key `5`. The internal key is Carol's static key blinded at slot 0 ([NUT-28](../28.md#nutroot-secrets-v3-keysets)); the tree is the single `after` leaf.
 
 ```json
 {
@@ -186,7 +186,7 @@ and the input's key-path witness over that digest is:
 }
 ```
 
-**Mint.** Executing mint quote `quote-mint-0001` (amount 8, [NUT-04](../04.md#taproot-transactions-v3-keysets)) with one 8-sat output. The quote is the transaction's only input; its lock key signs this digest via the mint request's `signature` field:
+**Mint.** Executing mint quote `quote-mint-0001` (amount 8, [NUT-04](../04.md#nutroot-transactions-v3-keysets)) with one 8-sat output. The quote is the transaction's only input; its lock key signs this digest via the mint request's `signature` field:
 
 ```json
 {

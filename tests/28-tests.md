@@ -126,9 +126,9 @@ P: "02771fed6cb88aaac38b8b32104a942bf4b8f4696bc361171b3c7d06fa2ebddf06" # hex en
 # Parity is mismatched (Schnorr even-Y lifted), so use negated derivation key for slot
 ```
 
-## Taproot secrets (v3): the slot map
+## Nutroot secrets (v3): the slot map
 
-Vectors for the [v3 slot map](../28.md#taproot-secrets-v3-keysets). The keys are the well-known small test keys: the receiver's static key is `3`, the leaf key owner's static key is `4`, the sender's ephemeral is `5`. Slot `0` blinds the receiver's static key into the internal key; slot `1` is the first leaf key, here tagged blind-me.
+Vectors for the [v3 slot map](../28.md#nutroot-secrets-v3-keysets). The keys are the well-known small test keys: the receiver's static key is `3`, the leaf key owner's static key is `4`, the sender's ephemeral is `5`. Slot `0` blinds the receiver's static key into the internal key; slot `1` is the first leaf key, here tagged blind-me.
 
 ```json
 {
