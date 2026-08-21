@@ -15,7 +15,7 @@ ROOTS = ["*.md", "tests/*.md", "suppl/*.md", "legacy/*.md", "legacy/tests/*.md"]
 ALLOWED_LEGACY_MENTIONS = {
     "00.md", "01.md", "07.md", "10.md", "13.md", "18.md", "20.md", "22.md",
     "24.md", "02.md", "03.md", "23.md", "28.md", "29.md", "README.md",
-    "tests/28-tests.md",
+    "tests/28-tests.md", "26.md",
 }
 LEGACY_MARKERS = re.compile(
     r"pre-v3|version byte `0[01]`|SIG_ALL|sigflag|DLEQ|dleq|deprecated", re.I
