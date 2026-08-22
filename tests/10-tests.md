@@ -58,6 +58,21 @@ A three-leaf tree (`threshold_1of1_key3`, `after_1of1_key4`, `hashlock_1of1_key3
 
 `secret = internal_key + tagged_hash("Cashu_NutrootTweak", internal_key || root)*G`, and the commitment also verifies through `path_for_index_2` from leaf 2 alone.
 
+Duplicate leaves fold without deduplication: two copies of `threshold_1of1_key3` under internal key `6` commit `root = tagged_hash("Cashu_NutrootBranch", h || h)`, distinct from the single-leaf root `h`, and either copy spends with `path = [h]`:
+
+```json
+{
+  "leaves": [
+    "00010200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+    "00010200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
+  ],
+  "leaf_hash": "23e8ff1693496ecad495b7ed3cdd7f8595c52a3adc0b92475835b0fb839116cb",
+  "merkle_root": "1eaf291448e2f3c3a4fc00bfd591917bbb807e63af0fb905d054002bddd2cbc6",
+  "internal_key": "03fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556",
+  "secret": "03dd2f11ab23b670222ada50325b5d49cd07e1d7a721d9b52fa2039df1f1b0dbfd"
+}
+```
+
 ## Worked example: receiver-keyed proof with a refund leaf
 
 Alice pays Carol, refundable to Alice after `time`. Carol's static key is key `3`, Alice's refund key is key `4`, Alice's ephemeral is key `5`. The internal key is Carol's static key blinded at slot 0 ([NUT-28](../28.md#nutroot-secrets-v3-keysets)); the tree is the single `after` leaf.
