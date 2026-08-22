@@ -124,6 +124,18 @@ A two-leaf tree under internal key `6`. Leaf 0 uses the **unallocated** type `0x
 
 `merkle_root = tagged_hash("Cashu_NutrootBranch", leaf_hash_1 || leaf_hash_0)`: the pair is sorted, so `leaf_hash_1` comes first. A witness revealing `leaf_0_unknown_type` with `path = [leaf_hash_1]` reconstructs the secret but **MUST** be rejected as unsatisfiable (unknown leaf type).
 
+## Rejection vectors
+
+An unknown field rejects, and odd type numbers are reserved with none allocated, so this leaf (`threshold_1of1_key3` with a four-byte field `0x09` appended) is malformed:
+
+```json
+{
+  "leaf_unknown_field": "00010200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9090004deadbeef"
+}
+```
+
+`signatures` is bounded: exactly one entry on the key path, at most the leaf's key count on the script path. Listing Carol's key-path signature twice, or Alice's script-path signature twice (her leaf lists one key), makes each witness above invalid with no other change.
+
 ## Empty tweak
 
 An aggregated internal key commits to having no script path with the empty tweak: `t = tagged_hash("Cashu_NutrootTweak", K)`, no merkle root bytes. With `K` = public key of `3`:
