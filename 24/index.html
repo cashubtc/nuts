@@ -1144,10 +1144,10 @@
 <p>HTTP servers may respond with the HTTP status code 402 and an <code>X-Cashu</code> header containing a payment request, encoded in either <a href="../18/">NUT-18</a> <code>creqA</code> or <a href="../26/">NUT-26</a> <code>creqB</code> formats. Wallets <strong>MUST</strong> support both formats.</p>
 <p>The decoded payment request has the following fields:</p>
 <div class="codehilite"><pre><span></span><code><span class="err">{</span>
-<span class="w">    </span><span class="ss">&quot;a&quot;</span><span class="err">:</span><span class="w"> </span><span class="nc">int</span><span class="p">,</span>
-<span class="w">    </span><span class="ss">&quot;u&quot;</span><span class="err">:</span><span class="w"> </span><span class="nf">str</span><span class="p">,</span>
-<span class="w">    </span><span class="ss">&quot;m&quot;</span><span class="err">:</span><span class="w"> </span><span class="k">Array</span><span class="o">[</span><span class="n">str</span><span class="o">]</span><span class="p">,</span>
-<span class="w">    </span><span class="ss">&quot;nut10&quot;</span><span class="err">:</span><span class="w"> </span><span class="n">NUT10Option</span><span class="w"> </span><span class="o">&lt;</span><span class="n">optional</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="ss">"a"</span><span class="err">:</span><span class="w"> </span><span class="nc">int</span><span class="p">,</span>
+<span class="w">    </span><span class="ss">"u"</span><span class="err">:</span><span class="w"> </span><span class="nf">str</span><span class="p">,</span>
+<span class="w">    </span><span class="ss">"m"</span><span class="err">:</span><span class="w"> </span><span class="k">Array</span><span class="o">[</span><span class="n">str</span><span class="o">]</span><span class="p">,</span>
+<span class="w">    </span><span class="ss">"nut10"</span><span class="err">:</span><span class="w"> </span><span class="n">NUT10Option</span><span class="w"> </span><span class="o">&lt;</span><span class="n">optional</span><span class="o">&gt;</span>
 <span class="err">}</span>
 </code></pre></div>
 

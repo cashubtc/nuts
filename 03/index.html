@@ -1236,32 +1236,32 @@
 
 <p>With the data being of the form <code>PostSwapRequest</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;inputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Proo</span><span class="kc">f</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dedMessage</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"inputs"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Proo</span><span class="kc">f</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"outputs"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dedMessage</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <p>With curl:</p>
 <div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://mint.host:3338/v1/swap<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
 <span class="o">{</span>
-<span class="w">  </span><span class="s2">&quot;inputs&quot;</span>:
+<span class="w">  </span><span class="s2">"inputs"</span>:
 <span class="w">    </span><span class="o">[</span>
 <span class="w">      </span><span class="o">{</span>
-<span class="w">        </span><span class="s2">&quot;amount&quot;</span>:<span class="w"> </span><span class="m">2</span>,
-<span class="w">        </span><span class="s2">&quot;id&quot;</span>:<span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;secret&quot;</span>:<span class="w"> </span><span class="s2">&quot;407915bc212be61a77e3e6d2aeb4c727980bda51cd06a6afc29e2861768a7837&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;C&quot;</span>:<span class="w"> </span><span class="s2">&quot;02bc9097997d81afb2cc7346b5e4345a9346bd2a506eb7958598a72f0cf85163ea&quot;</span>
+<span class="w">        </span><span class="s2">"amount"</span>:<span class="w"> </span><span class="m">2</span>,
+<span class="w">        </span><span class="s2">"id"</span>:<span class="w"> </span><span class="s2">"009a1f293253e41e"</span>,
+<span class="w">        </span><span class="s2">"secret"</span>:<span class="w"> </span><span class="s2">"407915bc212be61a77e3e6d2aeb4c727980bda51cd06a6afc29e2861768a7837"</span>,
+<span class="w">        </span><span class="s2">"C"</span>:<span class="w"> </span><span class="s2">"02bc9097997d81afb2cc7346b5e4345a9346bd2a506eb7958598a72f0cf85163ea"</span>
 <span class="w">      </span><span class="o">}</span>,
 <span class="w">      </span><span class="o">{</span>
 <span class="w">      </span>...
 <span class="w">      </span><span class="o">}</span>
 <span class="w">    </span><span class="o">]</span>,
-<span class="w">  </span><span class="s2">&quot;outputs&quot;</span>:
+<span class="w">  </span><span class="s2">"outputs"</span>:
 <span class="w">    </span><span class="o">[</span>
 <span class="w">      </span><span class="o">{</span>
-<span class="w">        </span><span class="s2">&quot;amount&quot;</span>:<span class="w"> </span><span class="m">2</span>,
-<span class="w">        </span><span class="s2">&quot;id&quot;</span>:<span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span>,
-<span class="w">        </span><span class="s2">&quot;B_&quot;</span>:<span class="w"> </span><span class="s2">&quot;02634a2c2b34bec9e8a4aba4361f6bf202d7fa2365379b0840afe249a7a9d71239&quot;</span>
+<span class="w">        </span><span class="s2">"amount"</span>:<span class="w"> </span><span class="m">2</span>,
+<span class="w">        </span><span class="s2">"id"</span>:<span class="w"> </span><span class="s2">"009a1f293253e41e"</span>,
+<span class="w">        </span><span class="s2">"B_"</span>:<span class="w"> </span><span class="s2">"02634a2c2b34bec9e8a4aba4361f6bf202d7fa2365379b0840afe249a7a9d71239"</span>
 <span class="w">      </span><span class="o">}</span>,
 <span class="w">      </span><span class="o">{</span>
 <span class="w">      </span>...
@@ -1272,7 +1272,7 @@
 
 <p>If successful, <code>Bob</code> will respond with a <code>PostSwapResponse</code></p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dSig</span><span class="kc">nature</span><span class="p">]</span><span class="err">&gt;</span>
+<span class="w">  </span><span class="nt">"signatures"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dSig</span><span class="kc">nature</span><span class="p">]</span><span class="err">&gt;</span>
 <span class="p">}</span>
 </code></pre></div>
 

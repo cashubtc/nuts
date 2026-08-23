@@ -1272,7 +1272,7 @@
 <p>Before requesting a Lightning payment as described in <a href="../05/">NUT-05</a>, <code>Alice</code> produces a number of <code>BlindedMessage</code> which are similar to ordinary blinded messages but their value is yet to be determined by the mint <code>Bob</code> and are thus called <em>blank outputs</em>. The number of necessary blank outputs is <code>max(ceil(log2(fee_reserve)), 1)</code> which ensures that there is at least one output if there is any fee. If the <code>fee_reserve</code> is <code>0</code>, then the number of blank outputs is <code>0</code> as well. The blank outputs will contain the overpaid fees that will be returned by the mint to the wallet.</p>
 <p>This code calculates the number of necessary blank outputs in Python:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">calculate_number_of_blank_outputs</span><span class="p">(</span><span class="n">fee_reserve_sat</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-    <span class="k">assert</span> <span class="n">fee_reserve_sat</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Fee reserve can&#39;t be negative.&quot;</span>
+    <span class="k">assert</span> <span class="n">fee_reserve_sat</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"Fee reserve can't be negative."</span>
     <span class="k">if</span> <span class="n">fee_reserve_sat</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">0</span>
     <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">fee_reserve_sat</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
@@ -1294,24 +1294,24 @@
 
 <p>With the data being of the form <code>PostMeltBolt11Request</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;inputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Proo</span><span class="kc">f</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dedMessage</span><span class="p">]</span><span class="err">&gt;</span><span class="w"> </span><span class="err">&lt;</span><span class="mi">--</span><span class="w"> </span><span class="err">New</span>
+<span class="w">  </span><span class="nt">"quote"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"inputs"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Proo</span><span class="kc">f</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"outputs"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dedMessage</span><span class="p">]</span><span class="err">&gt;</span><span class="w"> </span><span class="err">&lt;</span><span class="mi">--</span><span class="w"> </span><span class="err">New</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <p>where the new <code>output</code> field carries the <code>BlindMessages</code>.</p>
 <p>The mint <code>Bob</code> then responds with a <code>PostMeltQuoteBolt11Response</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;fee_reserve&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">STATE</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;payment_preimage&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;change&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dSig</span><span class="kc">nature</span><span class="p">]</span><span class="err">&gt;</span><span class="w"> </span><span class="err">&lt;</span><span class="mi">--</span><span class="w"> </span><span class="err">New</span>
+<span class="w">  </span><span class="nt">"quote"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"request"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"unit"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"fee_reserve"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"state"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">STATE</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"expiry"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"payment_preimage"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"change"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dSig</span><span class="kc">nature</span><span class="p">]</span><span class="err">&gt;</span><span class="w"> </span><span class="err">&lt;</span><span class="mi">--</span><span class="w"> </span><span class="err">New</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1319,43 +1319,43 @@
 <h2 id="example_2">Example<a class="headerlink" href="#example_2" title="Permanent link">&para;</a></h2>
 <p>Request of <code>Alice</code> with curl:</p>
 <div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://mint.host:3338/v1/melt/bolt11<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
-<span class="s1">&#39;{</span>
-<span class="s1">  &quot;quote&quot;: &quot;019e6d5a-2347-7000-813e-a11ea6e419e7&quot;,</span>
-<span class="s1">  &quot;inputs&quot;: [</span>
+<span class="s1">'{</span>
+<span class="s1">  "quote": "019e6d5a-2347-7000-813e-a11ea6e419e7",</span>
+<span class="s1">  "inputs": [</span>
 <span class="s1">    {</span>
-<span class="s1">      &quot;amount&quot;: 4,</span>
-<span class="s1">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
-<span class="s1">      &quot;secret&quot;: &quot;429700b812a58436be2629af8731a31a37fce54dbf8cbbe90b3f8553179d23f5&quot;,</span>
-<span class="s1">      &quot;C&quot;: &quot;03b01869f528337e161a6768b480fcf9f75fd248b649c382f5e352489fd84fd011&quot;,</span>
+<span class="s1">      "amount": 4,</span>
+<span class="s1">      "id": "009a1f293253e41e",</span>
+<span class="s1">      "secret": "429700b812a58436be2629af8731a31a37fce54dbf8cbbe90b3f8553179d23f5",</span>
+<span class="s1">      "C": "03b01869f528337e161a6768b480fcf9f75fd248b649c382f5e352489fd84fd011",</span>
 <span class="s1">    },</span>
 <span class="s1">    {</span>
-<span class="s1">      &quot;amount&quot;: 8,</span>
-<span class="s1">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
-<span class="s1">      &quot;secret&quot;: &quot;4f3155acef6481108fcf354f6d06e504ce8b441e617d30c88924991298cdbcad&quot;,</span>
-<span class="s1">      &quot;C&quot;: &quot;0278ab1c1af35487a5ea903b693e96447b2034d0fd6bac529e753097743bf73ca9&quot;,</span>
+<span class="s1">      "amount": 8,</span>
+<span class="s1">      "id": "009a1f293253e41e",</span>
+<span class="s1">      "secret": "4f3155acef6481108fcf354f6d06e504ce8b441e617d30c88924991298cdbcad",</span>
+<span class="s1">      "C": "0278ab1c1af35487a5ea903b693e96447b2034d0fd6bac529e753097743bf73ca9",</span>
 <span class="s1">    }</span>
 <span class="s1">  ],</span>
-<span class="s1">  &quot;outputs&quot;: [</span>
+<span class="s1">  "outputs": [</span>
 <span class="s1">    {</span>
-<span class="s1">      &quot;amount&quot;: 1,</span>
-<span class="s1">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
-<span class="s1">      &quot;B_&quot;: &quot;03327fc4fa333909b70f08759e217ce5c94e6bf1fc2382562f3c560c5580fa69f4&quot;</span>
+<span class="s1">      "amount": 0,</span>
+<span class="s1">      "id": "009a1f293253e41e",</span>
+<span class="s1">      "B_": "03327fc4fa333909b70f08759e217ce5c94e6bf1fc2382562f3c560c5580fa69f4"</span>
 <span class="s1">    }</span>
 <span class="s1">  ]</span>
-<span class="s1">}&#39;</span>
+<span class="s1">}'</span>
 </code></pre></div>
 
-<p>Everything here is the same as in <a href="../05/">NUT-05</a> except for <code>outputs</code>. The <code>amount</code> field in the <code>BlindedMessage</code>s here are ignored by <code>Bob</code> so they can be set to any arbitrary value by <code>Alice</code> (they should be set to a value, like <code>1</code> so potential JSON validations do not error).</p>
+<p>Everything here is the same as in <a href="../05/">NUT-05</a> except for <code>outputs</code>. <code>Alice</code> <strong>MUST</strong> set the <code>amount</code> of each blank output to <code>0</code>, and <code>Bob</code> <strong>MUST</strong> ignore it, imprinting the amount himself.</p>
 <p>If the mint has made a successful payment, it will respond the following.</p>
 <p><strong>Response</strong> <code>PostMeltQuoteBolt11Response</code> from <code>Bob</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PAID&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;payment_preimage&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;c5a1ae1f639e1f4a3872e81500fd028bece7bedc1152f740cba5c3417b748c1b&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;change&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PAID"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"payment_preimage"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c5a1ae1f639e1f4a3872e81500fd028bece7bedc1152f740cba5c3417b748c1b"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"change"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;C_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03c668f551855ddc792e22ea61d32ddfa6a45b1eb659ce66e915bf5127a8657be0&quot;</span>
+<span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"009a1f293253e41e"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"C_"</span><span class="p">:</span><span class="w"> </span><span class="s2">"03c668f551855ddc792e22ea61d32ddfa6a45b1eb659ce66e915bf5127a8657be0"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
@@ -1365,8 +1365,8 @@
 <h2 id="mint-info-setting">Mint info setting<a class="headerlink" href="#mint-info-setting" title="Permanent link">&para;</a></h2>
 <p>The <a href="../06/">NUT-06</a> <code>MintMethodSetting</code> indicates support for this feature:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;8&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">"8"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"supported"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>

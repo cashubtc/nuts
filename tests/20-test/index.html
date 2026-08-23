@@ -1138,36 +1138,36 @@
 <h2 id="deterministic-quote-locking-key-derivation">Deterministic quote locking key derivation<a class="headerlink" href="#deterministic-quote-locking-key-derivation" title="Permanent link">&para;</a></h2>
 <p>Using <a href="../../20/">NUT-20</a> quote locking key derivation, we derive values starting from the following BIP39 mnemonic:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;mnemonic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;half depart obvious quality work element tank gorilla view sugar picture humble&quot;</span>
+<span class="w">  </span><span class="nt">"mnemonic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"half depart obvious quality work element tank gorilla view sugar picture humble"</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <p>The public keys derived for the first five counters from <code>counter=0</code> to <code>counter=4</code> are:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;m/129373&#39;/20&#39;/0&#39;/0&#39;/0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03062837166e56114b59a4d1fd3a5a812bf7aadc1dde758428cf943d80acd41539&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m/129373&#39;/20&#39;/0&#39;/0&#39;/1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02b47d9d41725f5ce6f08c874835cef25376cb1e95f6cb073fef52ca8fd986cf15&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m/129373&#39;/20&#39;/0&#39;/0&#39;/2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;029acbd3a46fd75bc05ba0226d0b4d909b2fb6e96c80544a094a1a3567737e44d3&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m/129373&#39;/20&#39;/0&#39;/0&#39;/3&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0373e4a42fbe0a4e18aadb57cf500b655f2446b4071ee579121d2ed8905bcc49c2&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m/129373&#39;/20&#39;/0&#39;/0&#39;/4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02b8709bfce17c10f1864f5218844533ae60930d52089669b317d8b5f474eec071&quot;</span>
+<span class="w">  </span><span class="nt">"m/129373'/20'/0'/0'/0"</span><span class="p">:</span><span class="w"> </span><span class="s2">"03062837166e56114b59a4d1fd3a5a812bf7aadc1dde758428cf943d80acd41539"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m/129373'/20'/0'/0'/1"</span><span class="p">:</span><span class="w"> </span><span class="s2">"02b47d9d41725f5ce6f08c874835cef25376cb1e95f6cb073fef52ca8fd986cf15"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m/129373'/20'/0'/0'/2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"029acbd3a46fd75bc05ba0226d0b4d909b2fb6e96c80544a094a1a3567737e44d3"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m/129373'/20'/0'/0'/3"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0373e4a42fbe0a4e18aadb57cf500b655f2446b4071ee579121d2ed8905bcc49c2"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m/129373'/20'/0'/0'/4"</span><span class="p">:</span><span class="w"> </span><span class="s2">"02b8709bfce17c10f1864f5218844533ae60930d52089669b317d8b5f474eec071"</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <p>The following is a <code>PostMintBolt11Request</code> with a valid signature, where the <code>pubkey</code> in the <code>PostMintQuoteBolt11Response</code> is <code>0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798</code> (secret key <code>0x01</code>).</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0192d3c0-7e8a-7c3d-8e9f-1a2b3c4d5e6f&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"quote"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0192d3c0-7e8a-7c3d-8e9f-1a2b3c4d5e6f"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"outputs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;036d6caac248af96f6afa7f904f550253a0f3ef3f5aa2fe6838a95b216691468e2&quot;</span>
+<span class="w">      </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"009a1f293253e41e"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"B_"</span><span class="p">:</span><span class="w"> </span><span class="s2">"036d6caac248af96f6afa7f904f550253a0f3ef3f5aa2fe6838a95b216691468e2"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;021f8a566c205633d029094747d2e18f44e05993dda7a5f88f496078205f656e59&quot;</span>
+<span class="w">      </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"009a1f293253e41e"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"B_"</span><span class="p">:</span><span class="w"> </span><span class="s2">"021f8a566c205633d029094747d2e18f44e05993dda7a5f88f496078205f656e59"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;signature&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4881093a332ff7c79f3e598ce5b249d64978b47165a0b19c18adf0ced0246228e61e702f0abaf1bf27b92be4336bdbabacfbe4c914076386b3c66fdcd0b3480e&quot;</span>
+<span class="w">  </span><span class="nt">"signature"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4881093a332ff7c79f3e598ce5b249d64978b47165a0b19c18adf0ced0246228e61e702f0abaf1bf27b92be4336bdbabacfbe4c914076386b3c66fdcd0b3480e"</span>
 <span class="p">}</span>
 </code></pre></div>
 

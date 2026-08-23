@@ -1417,64 +1417,64 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">derive_secret_and_r</span><span class="p">(</span><span class="n">seed</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">keyset_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">counter_k</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Derive secret and blinding factor using appropriate method based on keyset version</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Determine keyset version from first two characters</span>
     <span class="n">keyset_version</span> <span class="o">=</span> <span class="n">keyset_id</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="n">keyset_version</span> <span class="o">==</span> <span class="s2">&quot;00&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">keyset_version</span> <span class="o">==</span> <span class="s2">"00"</span><span class="p">:</span>
         <span class="c1"># Use legacy BIP32 derivation for version 00</span>
         <span class="k">return</span> <span class="n">derive_secret_and_r_bip32</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="n">keyset_id</span><span class="p">,</span> <span class="n">counter_k</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">keyset_version</span> <span class="o">==</span> <span class="s2">&quot;01&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">keyset_version</span> <span class="o">==</span> <span class="s2">"01"</span><span class="p">:</span>
         <span class="c1"># Use HMAC-SHA256 derivation for version 01</span>
         <span class="k">return</span> <span class="n">derive_secret_and_r_hmac</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="n">keyset_id</span><span class="p">,</span> <span class="n">counter_k</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported keyset version: </span><span class="si">{</span><span class="n">keyset_version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unsupported keyset version: </span><span class="si">{</span><span class="n">keyset_version</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">derive_secret_and_r_hmac</span><span class="p">(</span><span class="n">seed</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">keyset_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">counter_k</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    HMAC-SHA256 derivation for keyset version 01</span>
 
 <span class="sd">    Semantics:</span>
 <span class="sd">      - secret = HMAC-SHA256(seed, msg || 0x00)</span>
 <span class="sd">      - r      = OS2IP(HMAC-SHA256(seed, msg || 0x01)) mod N</span>
 <span class="sd">      - reject r == 0 (astronomically unlikely)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># secp256k1 scalar field (group) order</span>
     <span class="n">SECP256K1_N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
-        <span class="s2">&quot;FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141&quot;</span><span class="p">,</span> <span class="mi">16</span>
+        <span class="s2">"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141"</span><span class="p">,</span> <span class="mi">16</span>
     <span class="p">)</span>
 
     <span class="c1"># Step 1: Create the message</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;Cashu_KDF_HMAC_SHA256&quot;</span> <span class="o">+</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">keyset_id</span><span class="p">)</span> <span class="o">+</span> <span class="n">counter_k</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;big&#39;</span><span class="p">)</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">"Cashu_KDF_HMAC_SHA256"</span> <span class="o">+</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">keyset_id</span><span class="p">)</span> <span class="o">+</span> <span class="n">counter_k</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">'big'</span><span class="p">)</span>
 
     <span class="c1"># Step 2: Compute HMAC-SHA256</span>
-    <span class="n">secret</span> <span class="o">=</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="n">message</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x00</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
-    <span class="n">blinding_factor_digest</span> <span class="o">=</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="n">message</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x01</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+    <span class="n">secret</span> <span class="o">=</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="n">message</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">"</span><span class="se">\x00</span><span class="s2">"</span><span class="p">,</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+    <span class="n">blinding_factor_digest</span> <span class="o">=</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="n">message</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">"</span><span class="se">\x01</span><span class="s2">"</span><span class="p">,</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
 
     <span class="c1"># Step 3: Interpret digest as integer and reduce mod N</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">blinding_factor_digest</span><span class="p">,</span> <span class="s2">&quot;big&quot;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">blinding_factor_digest</span><span class="p">,</span> <span class="s2">"big"</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">x</span> <span class="o">%</span> <span class="n">SECP256K1_N</span>
 
     <span class="k">if</span> <span class="n">r</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Derived invalid blinding scalar r == 0&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Derived invalid blinding scalar r == 0"</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">secret</span><span class="p">,</span> <span class="n">r</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">derive_secret_and_r_bip32</span><span class="p">(</span><span class="n">seed</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">keyset_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">counter_k</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Legacy BIP32 derivation for keyset version 00</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Convert seed to mnemonic and derive master key</span>
     <span class="n">bip32</span> <span class="o">=</span> <span class="n">BIP32</span><span class="o">.</span><span class="n">from_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
 
     <span class="c1"># Calculate keyset_id_int for BIP32 derivation path</span>
-    <span class="n">keyset_id_int</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">keyset_id</span><span class="p">),</span> <span class="s2">&quot;big&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">keyset_id_int</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">keyset_id</span><span class="p">),</span> <span class="s2">"big"</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># Derive secret and r using BIP32 paths</span>
-    <span class="n">secret_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;m/129372&#39;/0&#39;/</span><span class="si">{</span><span class="n">keyset_id_int</span><span class="si">}</span><span class="s2">&#39;/</span><span class="si">{</span><span class="n">counter_k</span><span class="si">}</span><span class="s2">&#39;/0&quot;</span>
-    <span class="n">r_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;m/129372&#39;/0&#39;/</span><span class="si">{</span><span class="n">keyset_id_int</span><span class="si">}</span><span class="s2">&#39;/</span><span class="si">{</span><span class="n">counter_k</span><span class="si">}</span><span class="s2">&#39;/1&quot;</span>
+    <span class="n">secret_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"m/129372'/0'/</span><span class="si">{</span><span class="n">keyset_id_int</span><span class="si">}</span><span class="s2">'/</span><span class="si">{</span><span class="n">counter_k</span><span class="si">}</span><span class="s2">'/0"</span>
+    <span class="n">r_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"m/129372'/0'/</span><span class="si">{</span><span class="n">keyset_id_int</span><span class="si">}</span><span class="s2">'/</span><span class="si">{</span><span class="n">counter_k</span><span class="si">}</span><span class="s2">'/1"</span>
 
     <span class="n">secret</span> <span class="o">=</span> <span class="n">bip32</span><span class="o">.</span><span class="n">get_privkey_from_path</span><span class="p">(</span><span class="n">secret_path</span><span class="p">)</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">bip32</span><span class="o">.</span><span class="n">get_privkey_from_path</span><span class="p">(</span><span class="n">r_path</span><span class="p">)</span>
@@ -1483,20 +1483,20 @@
 </code></pre></div>
 
 <p>TypeScript:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">crypto</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;crypto&quot;</span><span class="p">;</span>
+<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">crypto</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"crypto"</span><span class="p">;</span>
 <span class="c1">// secp256k1 scalar field (group) order</span>
 <span class="kd">const</span><span class="w"> </span><span class="nx">SECP256K1_N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">BigInt</span><span class="p">(</span>
-<span class="w">  </span><span class="s2">&quot;0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">"0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141"</span><span class="p">,</span>
 <span class="p">);</span>
 
 <span class="kd">function</span><span class="w"> </span><span class="nx">deriveSecretAndR</span><span class="p">(</span><span class="nx">seed</span><span class="o">:</span><span class="w"> </span><span class="kt">Buffer</span><span class="p">,</span><span class="w"> </span><span class="nx">keysetId</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">counterK</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// Determine keyset version from first two characters</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">keysetVersion</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">keysetId</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">);</span>
 
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">keysetVersion</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;00&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">keysetVersion</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">"00"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// Use legacy BIP32 derivation for version 00</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">deriveSecretAndRBip32</span><span class="p">(</span><span class="nx">seed</span><span class="p">,</span><span class="w"> </span><span class="nx">keysetId</span><span class="p">,</span><span class="w"> </span><span class="nx">counterK</span><span class="p">);</span>
-<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">keysetVersion</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;01&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">keysetVersion</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">"01"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// Use HMAC-SHA256 derivation for version 01</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">deriveSecretAndRHmac</span><span class="p">(</span><span class="nx">seed</span><span class="p">,</span><span class="w"> </span><span class="nx">keysetId</span><span class="p">,</span><span class="w"> </span><span class="nx">counterK</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
@@ -1513,8 +1513,8 @@
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">counterBuffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Buffer</span><span class="p">.</span><span class="nx">alloc</span><span class="p">(</span><span class="mf">8</span><span class="p">);</span>
 <span class="w">  </span><span class="nx">counterBuffer</span><span class="p">.</span><span class="nx">writeBigUInt64BE</span><span class="p">(</span><span class="nb">BigInt</span><span class="p">(</span><span class="nx">counterK</span><span class="p">));</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Buffer</span><span class="p">.</span><span class="nx">concat</span><span class="p">([</span>
-<span class="w">    </span><span class="nx">Buffer</span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">&quot;Cashu_KDF_HMAC_SHA256&quot;</span><span class="p">),</span>
-<span class="w">    </span><span class="nx">Buffer</span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="nx">keysetId</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;hex&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="nx">Buffer</span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="s2">"Cashu_KDF_HMAC_SHA256"</span><span class="p">),</span>
+<span class="w">    </span><span class="nx">Buffer</span><span class="p">.</span><span class="kr">from</span><span class="p">(</span><span class="nx">keysetId</span><span class="p">,</span><span class="w"> </span><span class="s2">"hex"</span><span class="p">),</span>
 <span class="w">    </span><span class="nx">counterBuffer</span><span class="p">,</span>
 <span class="w">  </span><span class="p">]);</span>
 
@@ -1523,20 +1523,20 @@
 
 <span class="w">  </span><span class="c1">// Step 2: Compute HMAC-SHA256</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">secret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">crypto</span>
-<span class="w">    </span><span class="p">.</span><span class="nx">createHmac</span><span class="p">(</span><span class="s2">&quot;sha256&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">seed</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">createHmac</span><span class="p">(</span><span class="s2">"sha256"</span><span class="p">,</span><span class="w"> </span><span class="nx">seed</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="nx">update</span><span class="p">(</span><span class="nx">Buffer</span><span class="p">.</span><span class="nx">concat</span><span class="p">([</span><span class="nx">message</span><span class="p">,</span><span class="w"> </span><span class="nx">secretDerivation</span><span class="p">]))</span>
 <span class="w">    </span><span class="p">.</span><span class="nx">digest</span><span class="p">();</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">blindingFactorDigest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">crypto</span>
-<span class="w">    </span><span class="p">.</span><span class="nx">createHmac</span><span class="p">(</span><span class="s2">&quot;sha256&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">seed</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="nx">createHmac</span><span class="p">(</span><span class="s2">"sha256"</span><span class="p">,</span><span class="w"> </span><span class="nx">seed</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="nx">update</span><span class="p">(</span><span class="nx">Buffer</span><span class="p">.</span><span class="nx">concat</span><span class="p">([</span><span class="nx">message</span><span class="p">,</span><span class="w"> </span><span class="nx">blindingFactorDerivation</span><span class="p">]))</span>
 <span class="w">    </span><span class="p">.</span><span class="nx">digest</span><span class="p">();</span>
 
 <span class="w">  </span><span class="c1">// Step 3: OS2IP + modulo reduction</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">BigInt</span><span class="p">(</span><span class="s2">&quot;0x&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">blindingFactorDigest</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s2">&quot;hex&quot;</span><span class="p">));</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">BigInt</span><span class="p">(</span><span class="s2">"0x"</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">blindingFactorDigest</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s2">"hex"</span><span class="p">));</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="nx">SECP256K1_N</span><span class="p">;</span>
 
 <span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mi">0n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">&quot;Derived invalid blinding scalar r == 0&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">"Derived invalid blinding scalar r == 0"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">secret</span><span class="p">,</span><span class="w"> </span><span class="nx">r</span><span class="w"> </span><span class="p">};</span>
@@ -1553,15 +1553,15 @@
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">keysetIdInt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">BigInt</span><span class="p">(</span><span class="sb">`0x</span><span class="si">${</span><span class="nx">keysetId</span><span class="si">}</span><span class="sb">`</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="nb">BigInt</span><span class="p">(</span><span class="mf">2</span><span class="w"> </span><span class="o">**</span><span class="w"> </span><span class="mf">31</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1</span><span class="p">);</span>
 
 <span class="w">  </span><span class="c1">// This is pseudocode - actual implementation depends on BIP32 library</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">secretPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`m/129372&#39;/0&#39;/</span><span class="si">${</span><span class="nx">keysetIdInt</span><span class="si">}</span><span class="sb">&#39;/</span><span class="si">${</span><span class="nx">counterK</span><span class="si">}</span><span class="sb">&#39;/0`</span><span class="p">;</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">rPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`m/129372&#39;/0&#39;/</span><span class="si">${</span><span class="nx">keysetIdInt</span><span class="si">}</span><span class="sb">&#39;/</span><span class="si">${</span><span class="nx">counterK</span><span class="si">}</span><span class="sb">&#39;/1`</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">secretPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`m/129372'/0'/</span><span class="si">${</span><span class="nx">keysetIdInt</span><span class="si">}</span><span class="sb">'/</span><span class="si">${</span><span class="nx">counterK</span><span class="si">}</span><span class="sb">'/0`</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">rPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`m/129372'/0'/</span><span class="si">${</span><span class="nx">keysetIdInt</span><span class="si">}</span><span class="sb">'/</span><span class="si">${</span><span class="nx">counterK</span><span class="si">}</span><span class="sb">'/1`</span><span class="p">;</span>
 
 <span class="w">  </span><span class="c1">// const secret = bip32.derivePath(secretPath).privateKey;</span>
 <span class="w">  </span><span class="c1">// const r = bip32.derivePath(rPath).privateKey;</span>
 
 <span class="w">  </span><span class="c1">// Return placeholder for demonstration</span>
 <span class="w">  </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span>
-<span class="w">    </span><span class="s2">&quot;BIP32 derivation requires additional library implementation&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"BIP32 derivation requires additional library implementation"</span><span class="p">,</span>
 <span class="w">  </span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -1584,8 +1584,8 @@ The derivation path depends on the <a href="../02/">keyset ID</a> of <code>keyse
 </ul>
 <p><code>m / 129372' / 0' / keyset_k_int' / counter' / secret||r</code></p>
 <p>This results in the following derivation paths:</p>
-<div class="codehilite"><pre><span></span><code>secret_derivation_path = <span class="sb">`m/129372&#39;/0&#39;/{keyset_k_int}&#39;/{counter_k}&#39;/0`</span>
-r_derivation_path = <span class="sb">`m/129372&#39;/0&#39;/{keyset_id_k_int}&#39;/{counter_k}&#39;/1`</span>
+<div class="codehilite"><pre><span></span><code>secret_derivation_path = <span class="sb">`m/129372'/0'/{keyset_k_int}'/{counter_k}'/0`</span>
+r_derivation_path = <span class="sb">`m/129372'/0'/{keyset_id_k_int}'/{counter_k}'/1`</span>
 </code></pre></div>
 
 <p>Here, <code>{keyset_k_int}</code> and <code>{counter_k}</code> are the only variables that can change. <code>keyset_id_k_int</code> is an integer representation (see below) of the keyset ID the token is generated with. This means that the derivation path is unique for each keyset. Note that the coin type is always <code>0'</code>, independent of the unit of the ecash.</p>
@@ -1603,7 +1603,7 @@ This mapping is deprecated and unsafe to use due to its small keyspace.</p>
 </blockquote>
 <p>The integer representation <code>keyset_id_int</code> of a keyset is calculated from its <a href="../02/">hexadecimal ID</a> which has a length of 8 bytes or 16 hex characters. First, we convert the hex string to a big-endian sequence of bytes. This value is then modulo reduced by <code>2^31 - 1</code> to arrive at an integer that is a unique identifier <code>keyset_id_int</code>. Keyset IDs with version prefix <code>01</code> <strong>MUST</strong> be shortened to the first 8 bytes before conversion.</p>
 <p>Example in Python:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">keyset_id_int</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">keyset_id_hex</span><span class="p">),</span> <span class="s2">&quot;big&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><code><span class="n">keyset_id_int</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">keyset_id_hex</span><span class="p">),</span> <span class="s2">"big"</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
 
 <p>Example in JavaScript:</p>

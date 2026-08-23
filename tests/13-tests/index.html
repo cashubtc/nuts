@@ -1138,90 +1138,90 @@
 <h2 id="version-1-keyset-id-integer-representation">Version 1: keyset ID integer representation<a class="headerlink" href="#version-1-keyset-id-integer-representation" title="Permanent link">&para;</a></h2>
 <p>The integer representation of a keyset with an ID <code>009a1f293253e41e</code> and its corresponding derivation path for a counter of value <code>{counter}</code> are:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;keyset_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;keyest_id_int&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">864559728</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;derivation_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;m/129372&#39;/0&#39;/864559728&#39;/{counter}&#39;&quot;</span>
+<span class="w">  </span><span class="nt">"keyset_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"009a1f293253e41e"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"keyest_id_int"</span><span class="p">:</span><span class="w"> </span><span class="mi">864559728</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"derivation_path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"m/129372'/0'/864559728'/{counter}'"</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <h2 id="version-1-secret-derivation">Version 1: Secret derivation<a class="headerlink" href="#version-1-secret-derivation" title="Permanent link">&para;</a></h2>
 <p>Using derivation <code>m/129372'/0'/864559728'/{counter}'</code>, we derive values starting from the following BIP39 mnemonic.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;mnemonic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;half depart obvious quality work element tank gorilla view sugar picture humble&quot;</span>
+<span class="w">  </span><span class="nt">"mnemonic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"half depart obvious quality work element tank gorilla view sugar picture humble"</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <p>The secrets derived for the first five counters from <code>counter=0</code> to <code>counter=4</code> are</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;secret_0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;485875df74771877439ac06339e284c3acfcd9be7abf3bc20b516faeadfe77ae&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;secret_1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;8f2b39e8e594a4056eb1e6dbb4b0c38ef13b1b2c751f64f810ec04ee35b77270&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;secret_2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bc628c79accd2364fd31511216a0fab62afd4a18ff77a20deded7b858c9860c8&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;secret_3&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;59284fd1650ea9fa17db2b3acf59ecd0f2d52ec3261dd4152785813ff27a33bf&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;secret_4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;576c23393a8b31cc8da6688d9c9a96394ec74b40fdaf1f693a6bb84284334ea0&quot;</span>
+<span class="w">  </span><span class="nt">"secret_0"</span><span class="p">:</span><span class="w"> </span><span class="s2">"485875df74771877439ac06339e284c3acfcd9be7abf3bc20b516faeadfe77ae"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"secret_1"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8f2b39e8e594a4056eb1e6dbb4b0c38ef13b1b2c751f64f810ec04ee35b77270"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"secret_2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bc628c79accd2364fd31511216a0fab62afd4a18ff77a20deded7b858c9860c8"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"secret_3"</span><span class="p">:</span><span class="w"> </span><span class="s2">"59284fd1650ea9fa17db2b3acf59ecd0f2d52ec3261dd4152785813ff27a33bf"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"secret_4"</span><span class="p">:</span><span class="w"> </span><span class="s2">"576c23393a8b31cc8da6688d9c9a96394ec74b40fdaf1f693a6bb84284334ea0"</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <p>The corresponding blinding factors <code>r</code> are</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;r_0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ad00d431add9c673e843d4c2bf9a778a5f402b985b8da2d5550bf39cda41d679&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;r_1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;967d5232515e10b81ff226ecf5a9e2e2aff92d66ebc3edf0987eb56357fd6248&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;r_2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;b20f47bb6ae083659f3aa986bfa0435c55c6d93f687d51a01f26862d9b9a4899&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;r_3&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fb5fca398eb0b1deb955a2988b5ac77d32956155f1c002a373535211a2dfdc29&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;r_4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5f09bfbfe27c439a597719321e061e2e40aad4a36768bb2bcc3de547c9644bf9&quot;</span>
+<span class="w">  </span><span class="nt">"r_0"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ad00d431add9c673e843d4c2bf9a778a5f402b985b8da2d5550bf39cda41d679"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"r_1"</span><span class="p">:</span><span class="w"> </span><span class="s2">"967d5232515e10b81ff226ecf5a9e2e2aff92d66ebc3edf0987eb56357fd6248"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"r_2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"b20f47bb6ae083659f3aa986bfa0435c55c6d93f687d51a01f26862d9b9a4899"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"r_3"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fb5fca398eb0b1deb955a2988b5ac77d32956155f1c002a373535211a2dfdc29"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"r_4"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5f09bfbfe27c439a597719321e061e2e40aad4a36768bb2bcc3de547c9644bf9"</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <p>The corresponding derivation paths are</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;derivation_path_0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;m/129372&#39;/0&#39;/864559728&#39;/0&#39;&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;derivation_path_1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;m/129372&#39;/0&#39;/864559728&#39;/1&#39;&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;derivation_path_2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;m/129372&#39;/0&#39;/864559728&#39;/2&#39;&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;derivation_path_3&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;m/129372&#39;/0&#39;/864559728&#39;/3&#39;&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;derivation_path_4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;m/129372&#39;/0&#39;/864559728&#39;/4&#39;&quot;</span>
+<span class="w">  </span><span class="nt">"derivation_path_0"</span><span class="p">:</span><span class="w"> </span><span class="s2">"m/129372'/0'/864559728'/0'"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"derivation_path_1"</span><span class="p">:</span><span class="w"> </span><span class="s2">"m/129372'/0'/864559728'/1'"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"derivation_path_2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"m/129372'/0'/864559728'/2'"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"derivation_path_3"</span><span class="p">:</span><span class="w"> </span><span class="s2">"m/129372'/0'/864559728'/3'"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"derivation_path_4"</span><span class="p">:</span><span class="w"> </span><span class="s2">"m/129372'/0'/864559728'/4'"</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <h2 id="version-2-secret-derivation">Version 2: Secret derivation<a class="headerlink" href="#version-2-secret-derivation" title="Permanent link">&para;</a></h2>
 <p>Using <a href="13.md">NUT-13</a> derivation procedure for V2 with keyset ID <code>015ba18a8adcd02e715a58358eb618da4a4b3791151a4bee5e968bb88406ccf76a</code>, we derive values starting from the following BIP39 mnemonic:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;mnemonic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;half depart obvious quality work element tank gorilla view sugar picture humble&quot;</span>
+<span class="w">  </span><span class="nt">"mnemonic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"half depart obvious quality work element tank gorilla view sugar picture humble"</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <p>The secrets derived for the first five counters from <code>counter=0</code> to <code>counter=4</code> are:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;secret_0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;db5561a07a6e6490f8dadeef5be4e92f7cebaecf2f245356b5b2a4ec40687298&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;secret_1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;b70e7b10683da3bf1cdf0411206f8180c463faa16014663f39f2529b2fda922e&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;secret_2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;78a7ac32ccecc6b83311c6081b89d84bb4128f5a0d0c5e1af081f301c7a513f5&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;secret_3&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;094a2b6c63bfa7970bc09cda0e1cfc9cd3d7c619b8e98fabcfc60aea9e4963e5&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;secret_4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5e89fc5d30d0bf307ddf0a3ac34aa7a8ee3702169dafa3d3fe1d0cae70ecd5ef&quot;</span>
+<span class="w">  </span><span class="nt">"secret_0"</span><span class="p">:</span><span class="w"> </span><span class="s2">"db5561a07a6e6490f8dadeef5be4e92f7cebaecf2f245356b5b2a4ec40687298"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"secret_1"</span><span class="p">:</span><span class="w"> </span><span class="s2">"b70e7b10683da3bf1cdf0411206f8180c463faa16014663f39f2529b2fda922e"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"secret_2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"78a7ac32ccecc6b83311c6081b89d84bb4128f5a0d0c5e1af081f301c7a513f5"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"secret_3"</span><span class="p">:</span><span class="w"> </span><span class="s2">"094a2b6c63bfa7970bc09cda0e1cfc9cd3d7c619b8e98fabcfc60aea9e4963e5"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"secret_4"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5e89fc5d30d0bf307ddf0a3ac34aa7a8ee3702169dafa3d3fe1d0cae70ecd5ef"</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <p>The corresponding blinding factors <code>r</code> are:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;r_0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;6d26181a3695e32e9f88b80f039ba1ae2ab5a200ad4ce9dbc72c6d3769f2b035&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;r_1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bde4354cee75545bea1a2eee035a34f2d524cee2bb01613823636e998386952e&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;r_2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;f40cc1218f085b395c8e1e5aaa25dccc851be3c6c7526a0f4e57108f12d6dac4&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;r_3&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;099ed70fc2f7ac769bc20b2a75cb662e80779827b7cc358981318643030577d0&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;r_4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5550337312d223ba62e3f75cfe2ab70477b046d98e3e71804eade3956c7b98cf&quot;</span>
+<span class="w">  </span><span class="nt">"r_0"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6d26181a3695e32e9f88b80f039ba1ae2ab5a200ad4ce9dbc72c6d3769f2b035"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"r_1"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bde4354cee75545bea1a2eee035a34f2d524cee2bb01613823636e998386952e"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"r_2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f40cc1218f085b395c8e1e5aaa25dccc851be3c6c7526a0f4e57108f12d6dac4"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"r_3"</span><span class="p">:</span><span class="w"> </span><span class="s2">"099ed70fc2f7ac769bc20b2a75cb662e80779827b7cc358981318643030577d0"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"r_4"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5550337312d223ba62e3f75cfe2ab70477b046d98e3e71804eade3956c7b98cf"</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <h2 id="p2pk-derivation">P2PK Derivation<a class="headerlink" href="#p2pk-derivation" title="Permanent link">&para;</a></h2>
 <p>Using <a href="13.md">NUT-13</a> derivation procedure for P2PK, we derive values starting from the following BIP39 mnemonic:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;mnemonic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;half depart obvious quality work element tank gorilla view sugar picture humble&quot;</span>
+<span class="w">  </span><span class="nt">"mnemonic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"half depart obvious quality work element tank gorilla view sugar picture humble"</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <p>The public keys derived for the first five counters from <code>counter=0</code> to <code>counter=4</code> are:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;m/129373&#39;/10&#39;/0&#39;/0&#39;/0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;021693d45f4fdf610ae641fedb0944fb460fbb8264f21c19d2626c3da755fcbbcb&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m/129373&#39;/10&#39;/0&#39;/0&#39;/1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0395461ab678058c0ed6aa39f38dda490eaa163e9ad27070b23ec3d06b41e07535&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m/129373&#39;/10&#39;/0&#39;/0&#39;/2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02a05e4e593a633e9b4405f01c9632c8afde24cb613017a1aee56fd76291ad26d1&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m/129373&#39;/10&#39;/0&#39;/0&#39;/3&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;033addea25c3873b93d67d536c61c9d9c993f6efd8b9dfa657951b66b5001e51dd&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m/129373&#39;/10&#39;/0&#39;/0&#39;/4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03c964bdf42fc82b6c574615746eeca37527a24f1fdfc1b34a732c53843b5744a5&quot;</span>
+<span class="w">  </span><span class="nt">"m/129373'/10'/0'/0'/0"</span><span class="p">:</span><span class="w"> </span><span class="s2">"021693d45f4fdf610ae641fedb0944fb460fbb8264f21c19d2626c3da755fcbbcb"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m/129373'/10'/0'/0'/1"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0395461ab678058c0ed6aa39f38dda490eaa163e9ad27070b23ec3d06b41e07535"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m/129373'/10'/0'/0'/2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"02a05e4e593a633e9b4405f01c9632c8afde24cb613017a1aee56fd76291ad26d1"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m/129373'/10'/0'/0'/3"</span><span class="p">:</span><span class="w"> </span><span class="s2">"033addea25c3873b93d67d536c61c9d9c993f6efd8b9dfa657951b66b5001e51dd"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m/129373'/10'/0'/0'/4"</span><span class="p">:</span><span class="w"> </span><span class="s2">"03c964bdf42fc82b6c574615746eeca37527a24f1fdfc1b34a732c53843b5744a5"</span>
 <span class="p">}</span>
 </code></pre></div>
 

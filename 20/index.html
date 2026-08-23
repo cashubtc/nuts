@@ -1323,10 +1323,10 @@
 
 <p>The wallet of <code>Alice</code> includes the following <code>PostMintQuoteBolt11Request</code> data in its request:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="s2">&quot;sat&quot;</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Optional</span>
-<span class="w">  </span><span class="nt">&quot;pubkey&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// Optional &lt;-- New</span>
+<span class="w">  </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"unit"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="s2">"sat"</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Optional</span>
+<span class="w">  </span><span class="nt">"pubkey"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// Optional &lt;-- New</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1339,7 +1339,7 @@
 <h3 id="deterministic-quote-locking-key-derivation">Deterministic quote locking key derivation<a class="headerlink" href="#deterministic-quote-locking-key-derivation" title="Permanent link">&para;</a></h3>
 <p>Wallets can deterministically generate private keys for NUT-20 quote locking from their wallet seed.</p>
 <p>The following BIP32 derivation path is used to derive the private key:</p>
-<div class="codehilite"><pre><span></span><code>m/129373&#39;/20&#39;/0&#39;/0&#39;/{counter}
+<div class="codehilite"><pre><span></span><code>m/129373'/20'/0'/0'/{counter}
 </code></pre></div>
 
 <p>Where:</p>
@@ -1352,41 +1352,41 @@
 <p>The wallet uses the compressed secp256k1 public key derived from the private key as the quote <code>pubkey</code>. This allows a wallet to restore the private key needed to sign for unpaid or paid NUT-20 locked mint quotes during a recovery process.</p>
 <p>The mint <code>Bob</code> then responds with a <code>PostMintQuoteBolt11Response</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w">  </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;amount_paid&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;amount_issued&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">STATE</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Deprecated, optional</span>
-<span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;pubkey&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// Optional &lt;-- New</span>
+<span class="w">  </span><span class="nt">"quote"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"request"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"unit"</span><span class="p">:</span><span class="w">  </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"amount_paid"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"amount_issued"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"state"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">STATE</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Deprecated, optional</span>
+<span class="w">  </span><span class="nt">"expiry"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pubkey"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// Optional &lt;-- New</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <p>The response is the same as the <code>bolt11</code> mint quote response in <a href="../23/">NUT-23</a> except for <code>pubkey</code> which has been provided by the wallet in the previous request.</p>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <p>Request of <code>Alice</code> with curl:</p>
-<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:3338/v1/mint/quote/bolt11<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;amount&quot;: 10, &quot;unit&quot;: &quot;sat&quot;, &quot;pubkey&quot;: &quot;03d56ce4e446a85bbdaa547b4ec2b073d40ff802831352b8272b7dd7a4de5a7cac&quot;}&#39;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:3338/v1/mint/quote/bolt11<span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"amount": 10, "unit": "sat", "pubkey": "03d56ce4e446a85bbdaa547b4ec2b073d40ff802831352b8272b7dd7a4de5a7cac"}'</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span>
 </code></pre></div>
 
 <p>Response of <code>Bob</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;9d745270-1405-46de-b5c5-e2762b4f5e00&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lnbc100n1pj4apw9...&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;amount_paid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;amount_issued&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704657</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UNPAID&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704757</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;pubkey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03d56ce4e446a85bbdaa547b4ec2b073d40ff802831352b8272b7dd7a4de5a7cac&quot;</span>
+<span class="w">  </span><span class="nt">"quote"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9d745270-1405-46de-b5c5-e2762b4f5e00"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"request"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lnbc100n1pj4apw9..."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"amount_paid"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"amount_issued"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704657</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UNPAID"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"expiry"</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704757</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pubkey"</span><span class="p">:</span><span class="w"> </span><span class="s2">"03d56ce4e446a85bbdaa547b4ec2b073d40ff802831352b8272b7dd7a4de5a7cac"</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <h2 id="signing-the-mint-request">Signing the mint request<a class="headerlink" href="#signing-the-mint-request" title="Permanent link">&para;</a></h2>
 <h3 id="message-aggregation">Message aggregation<a class="headerlink" href="#message-aggregation" title="Permanent link">&para;</a></h3>
 <p>To authenticate a mint request, the signer commits to the quote ID and all <code>BlindedMessages</code> (the outputs, see <a href="../00/">NUT-00</a>) of the <code>PostMintBolt11Request</code>, in the order they appear in the request. The message is built over raw bytes:</p>
-<div class="codehilite"><pre><span></span><code>msg_to_sign = b&quot;Cashu_MintQuoteSig_v1&quot;
+<div class="codehilite"><pre><span></span><code>msg_to_sign = b"Cashu_MintQuoteSig_v1"
               || len32(quote) || quote
               || for each output i (in request order):
                    len32(amount_i) || amount_i
@@ -1410,9 +1410,9 @@
 
 <p>The wallet <code>Alice</code> includes the following <code>PostMintBolt11Request</code> data in its request</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dedMessage</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;signature&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="w"> </span><span class="err">&lt;</span><span class="mi">--</span><span class="w"> </span><span class="err">New</span>
+<span class="w">  </span><span class="nt">"quote"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"outputs"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dedMessage</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"signature"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="w"> </span><span class="err">&lt;</span><span class="mi">--</span><span class="w"> </span><span class="err">New</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1421,38 +1421,38 @@
 <p>The mint responds with a <code>PostMintBolt11Response</code> as in <a href="../04/">NUT-04</a> if all validations are successful.</p>
 <h2 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h2>
 <p>Request of <code>Alice</code> with curl:</p>
-<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://mint.host:3338/v1/mint/bolt11<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
-<span class="s1">&#39;{</span>
-<span class="s1">  &quot;quote&quot;: &quot;9d745270-1405-46de-b5c5-e2762b4f5e00&quot;,</span>
-<span class="s1">  &quot;outputs&quot;: [</span>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://mint.host:3338/v1/mint/bolt11<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="s1">'{</span>
+<span class="s1">  "quote": "9d745270-1405-46de-b5c5-e2762b4f5e00",</span>
+<span class="s1">  "outputs": [</span>
 <span class="s1">    {</span>
-<span class="s1">      &quot;amount&quot;: 8,</span>
-<span class="s1">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
-<span class="s1">      &quot;B_&quot;: &quot;035015e6d7ade60ba8426cefaf1832bbd27257636e44a76b922d78e79b47cb689d&quot;</span>
+<span class="s1">      "amount": 8,</span>
+<span class="s1">      "id": "009a1f293253e41e",</span>
+<span class="s1">      "B_": "035015e6d7ade60ba8426cefaf1832bbd27257636e44a76b922d78e79b47cb689d"</span>
 <span class="s1">    },</span>
 <span class="s1">    {</span>
-<span class="s1">      &quot;amount&quot;: 2,</span>
-<span class="s1">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
-<span class="s1">      &quot;B_&quot;: &quot;0288d7649652d0a83fc9c966c969fb217f15904431e61a44b14999fabc1b5d9ac6&quot;</span>
+<span class="s1">      "amount": 2,</span>
+<span class="s1">      "id": "009a1f293253e41e",</span>
+<span class="s1">      "B_": "0288d7649652d0a83fc9c966c969fb217f15904431e61a44b14999fabc1b5d9ac6"</span>
 <span class="s1">    }</span>
 <span class="s1">  ],</span>
-<span class="s1">  &quot;signature&quot;: &quot;d9be080b33179387e504bb6991ea41ae0dd715e28b01ce9f63d57198a095bccc776874914288e6989e97ac9d255ac667c205fa8d90a211184b417b4ffdd24092&quot;</span>
+<span class="s1">  "signature": "d9be080b33179387e504bb6991ea41ae0dd715e28b01ce9f63d57198a095bccc776874914288e6989e97ac9d255ac667c205fa8d90a211184b417b4ffdd24092"</span>
 
-<span class="s1">}&#39;</span>
+<span class="s1">}'</span>
 </code></pre></div>
 
 <p>Response of <code>Bob</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"signatures"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;C_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0224f1c4c564230ad3d96c5033efdc425582397a5a7691d600202732edc6d4b1ec&quot;</span>
+<span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"009a1f293253e41e"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"C_"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0224f1c4c564230ad3d96c5033efdc425582397a5a7691d600202732edc6d4b1ec"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;C_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0277d1de806ed177007e5b94a8139343b6382e472c752a74e99949d511f7194f6c&quot;</span>
+<span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"009a1f293253e41e"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"C_"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0277d1de806ed177007e5b94a8139343b6382e472c752a74e99949d511f7194f6c"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
@@ -1468,8 +1468,8 @@
 <h2 id="settings">Settings<a class="headerlink" href="#settings" title="Permanent link">&para;</a></h2>
 <p>The settings for this NUT indicate the support for requiring a signature before minting. They are part of the info response of the mint (<a href="../06/">NUT-06</a>) which in this case reads</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;20&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;bool&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"20"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"supported"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;bool&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>

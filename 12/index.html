@@ -1157,27 +1157,27 @@
 <p>The complete DLEQ proof reads</p>
 <div class="codehilite"><pre><span></span><code><span class="err">#</span><span class="w"> </span><span class="nt">DLEQ</span><span class="w"> </span><span class="nt">Proof</span>
 
-<span class="o">(</span><span class="nt">These</span><span class="w"> </span><span class="nt">steps</span><span class="w"> </span><span class="nt">occur</span><span class="w"> </span><span class="nt">when</span><span class="w"> </span><span class="nt">Bob</span><span class="w"> </span><span class="nt">returns</span><span class="w"> </span><span class="nt">C</span><span class="s1">&#39;)</span>
+<span class="o">(</span><span class="nt">These</span><span class="w"> </span><span class="nt">steps</span><span class="w"> </span><span class="nt">occur</span><span class="w"> </span><span class="nt">when</span><span class="w"> </span><span class="nt">Bob</span><span class="w"> </span><span class="nt">returns</span><span class="w"> </span><span class="nt">C</span><span class="s1">')</span>
 
 <span class="s1">Bob:</span>
-<span class="s1">r = HMAC-SHA256(key=a, data=&quot;Cashu_DLEQ_R_v1&quot; || A || B&#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nt">C</span><span class="s1">&#39; || ctr) # Deterministic nonce</span>
+<span class="s1">r = HMAC-SHA256(key=a, data="Cashu_DLEQ_R_v1" || A || B'</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nt">C</span><span class="s1">' || ctr) # Deterministic nonce</span>
 <span class="s1">R1 = r*G</span>
-<span class="s1">R2 = r*B&#39;</span>
-<span class="nt">e</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">hash</span><span class="o">(</span><span class="nt">R1</span><span class="o">,</span><span class="nt">R2</span><span class="o">,</span><span class="nt">A</span><span class="o">,</span><span class="nt">C</span><span class="s1">&#39;)</span>
+<span class="s1">R2 = r*B'</span>
+<span class="nt">e</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">hash</span><span class="o">(</span><span class="nt">R1</span><span class="o">,</span><span class="nt">R2</span><span class="o">,</span><span class="nt">A</span><span class="o">,</span><span class="nt">C</span><span class="s1">')</span>
 <span class="s1">s = (r + e*a) mod n</span>
 <span class="s1">return e, s</span>
 
 <span class="s1">Alice:</span>
 <span class="s1">R1 = s*G - e*A</span>
-<span class="s1">R2 = s*B&#39;</span><span class="w"> </span><span class="nt">-</span><span class="w"> </span><span class="nt">e</span><span class="o">*</span><span class="nt">C</span><span class="s1">&#39;</span>
-<span class="s1">e == hash(R1,R2,A,C&#39;</span><span class="o">)</span>
+<span class="s1">R2 = s*B'</span><span class="w"> </span><span class="nt">-</span><span class="w"> </span><span class="nt">e</span><span class="o">*</span><span class="nt">C</span><span class="s1">'</span>
+<span class="s1">e == hash(R1,R2,A,C'</span><span class="o">)</span>
 
-<span class="nt">If</span><span class="w"> </span><span class="nt">true</span><span class="o">,</span><span class="w"> </span><span class="nt">a</span><span class="w"> </span><span class="nt">in</span><span class="w"> </span><span class="nt">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">a</span><span class="o">*</span><span class="nt">G</span><span class="w"> </span><span class="nt">must</span><span class="w"> </span><span class="nt">be</span><span class="w"> </span><span class="nt">equal</span><span class="w"> </span><span class="nt">to</span><span class="w"> </span><span class="nt">a</span><span class="w"> </span><span class="nt">in</span><span class="w"> </span><span class="nt">C</span><span class="s1">&#39; = a*B&#39;</span>
+<span class="nt">If</span><span class="w"> </span><span class="nt">true</span><span class="o">,</span><span class="w"> </span><span class="nt">a</span><span class="w"> </span><span class="nt">in</span><span class="w"> </span><span class="nt">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">a</span><span class="o">*</span><span class="nt">G</span><span class="w"> </span><span class="nt">must</span><span class="w"> </span><span class="nt">be</span><span class="w"> </span><span class="nt">equal</span><span class="w"> </span><span class="nt">to</span><span class="w"> </span><span class="nt">a</span><span class="w"> </span><span class="nt">in</span><span class="w"> </span><span class="nt">C</span><span class="s1">' = a*B'</span>
 
 <span class="nt">where</span><span class="o">:</span>
 <span class="w">  </span><span class="nt">G</span><span class="o">,</span><span class="w"> </span><span class="nt">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">secp256k1</span><span class="w"> </span><span class="nt">generator</span><span class="w"> </span><span class="nt">point</span><span class="o">,</span><span class="w"> </span><span class="nt">and</span><span class="w"> </span><span class="nt">curve</span><span class="w"> </span><span class="nt">order</span>
-<span class="w">  </span><span class="nt">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">mint</span><span class="s1">&#39;s amount-i private key, as 32-byte big-endian (HMAC key)</span>
-<span class="s1">  A, B&#39;</span><span class="o">,</span><span class="w"> </span><span class="nt">C</span><span class="err">&#39;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">uncompressed</span><span class="w"> </span><span class="o">(</span><span class="nt">65</span><span class="w"> </span><span class="nt">byte</span><span class="o">)</span><span class="w"> </span><span class="nt">SEC1</span><span class="w"> </span><span class="nt">public</span><span class="w"> </span><span class="nt">points</span><span class="w"> </span><span class="nt">as</span><span class="w"> </span><span class="nt">raw</span><span class="w"> </span><span class="nt">bytes</span>
+<span class="w">  </span><span class="nt">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">mint</span><span class="s1">'s amount-i private key, as 32-byte big-endian (HMAC key)</span>
+<span class="s1">  A, B'</span><span class="o">,</span><span class="w"> </span><span class="nt">C</span><span class="err">'</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">uncompressed</span><span class="w"> </span><span class="o">(</span><span class="nt">65</span><span class="w"> </span><span class="nt">byte</span><span class="o">)</span><span class="w"> </span><span class="nt">SEC1</span><span class="w"> </span><span class="nt">public</span><span class="w"> </span><span class="nt">points</span><span class="w"> </span><span class="nt">as</span><span class="w"> </span><span class="nt">raw</span><span class="w"> </span><span class="nt">bytes</span>
 <span class="w">  </span><span class="nt">ctr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">nonce</span><span class="w"> </span><span class="nt">counter</span><span class="w"> </span><span class="nt">byte</span><span class="o">;</span><span class="w"> </span><span class="nt">set</span><span class="w"> </span><span class="nt">to</span><span class="w"> </span><span class="nt">0x00</span><span class="w"> </span><span class="nt">initially</span><span class="o">,</span><span class="w"> </span><span class="nt">increment</span><span class="w"> </span><span class="nt">and</span><span class="w"> </span><span class="nt">retry</span><span class="w"> </span><span class="nt">if</span><span class="w"> </span><span class="nt">r</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nt">0</span><span class="w"> </span><span class="nt">or</span><span class="w"> </span><span class="nt">r</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nt">n</span><span class="w"> </span><span class="o">(</span><span class="nt">max</span><span class="w"> </span><span class="nt">256</span><span class="w"> </span><span class="nt">tries</span><span class="o">)</span>
 </code></pre></div>
 
@@ -1189,11 +1189,11 @@
 <h3 id="hash-function">Hash function<a class="headerlink" href="#hash-function" title="Permanent link">&para;</a></h3>
 <p>The hash function <code>hash(x: &lt;Array&lt;[PublicKey]&gt;) -&gt; bytes</code> generates a deterministic SHA256 hash for a given input list of <code>PublicKey</code>. The uncompressed (32+32+1)-byte hexadecimal representations (130 characters) of each <code>PublicKey</code> is concatenated before taking the SHA256 hash.</p>
 <div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">hash_e</span><span class="p">(</span><span class="o">*</span><span class="n">publickeys</span><span class="p">:</span> <span class="n">PublicKey</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-    <span class="n">e_</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">e_</span> <span class="o">=</span> <span class="s2">""</span>
     <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">publickeys</span><span class="p">:</span>
         <span class="n">_p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="n">compressed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span>
         <span class="n">e_</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">_p</span><span class="p">)</span>
-    <span class="n">e</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">e_</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">e_</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">))</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">e</span>
 </code></pre></div>
 
@@ -1204,12 +1204,12 @@ For examples of valid DLEQ proofs, see the <a href="../tests/12-tests/">test vec
 <h3 id="mint-to-user-dleq-in-blindsignature">Mint to user: DLEQ in <code>BlindSignature</code><a class="headerlink" href="#mint-to-user-dleq-in-blindsignature" title="Permanent link">&para;</a></h3>
 <p>The mint produces these DLEQ proofs when returning <code>BlindSignature</code>'s in the responses for minting (<a href="../04/">NUT-04</a>) and swapping (<a href="../03/">NUT-03</a>) tokens. The <code>BlindSignature</code> object is extended in the following way to include the DLEQ proof:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;C_&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;dleq&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">&lt;</span><span class="mi">--</span><span class="w"> </span><span class="err">New</span><span class="p">:</span><span class="w"> </span><span class="err">DLEQ</span><span class="w"> </span><span class="err">proo</span><span class="kc">f</span>
-<span class="w">    </span><span class="nt">&quot;e&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;s&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"C_"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"dleq"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">&lt;</span><span class="mi">--</span><span class="w"> </span><span class="err">New</span><span class="p">:</span><span class="w"> </span><span class="err">DLEQ</span><span class="w"> </span><span class="err">proo</span><span class="kc">f</span>
+<span class="w">    </span><span class="nt">"e"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"s"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -1218,14 +1218,14 @@ For examples of valid DLEQ proofs, see the <a href="../tests/12-tests/">test vec
 <h3 id="user-to-user-dleq-in-proof">User to user: DLEQ in <code>Proof</code><a class="headerlink" href="#user-to-user-dleq-in-proof" title="Permanent link">&para;</a></h3>
 <p>In order for <code>Alice</code> to communicate the DLEQ to another user <code>Carol</code>, we extend the <code>Proof</code> (see <a href="../00/">NUT-00</a>) object and include the DLEQ proof. As explained below, we also need to include the blinding factor <code>r</code> for the proof to be convincing to another user <code>Carol</code>.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;C&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;dleq&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">&lt;</span><span class="mi">--</span><span class="w"> </span><span class="err">New</span><span class="p">:</span><span class="w"> </span><span class="err">DLEQ</span><span class="w"> </span><span class="err">proo</span><span class="kc">f</span>
-<span class="w">    </span><span class="nt">&quot;e&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;s&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;r&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"secret"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"C"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"dleq"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">&lt;</span><span class="mi">--</span><span class="w"> </span><span class="err">New</span><span class="p">:</span><span class="w"> </span><span class="err">DLEQ</span><span class="w"> </span><span class="err">proo</span><span class="kc">f</span>
+<span class="w">    </span><span class="nt">"e"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"s"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"r"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -1238,8 +1238,8 @@ For examples of valid DLEQ proofs, see the <a href="../tests/12-tests/">test vec
 <h2 id="alice-minting-user-verifies-dleq-proof">Alice (minting user) verifies DLEQ proof<a class="headerlink" href="#alice-minting-user-verifies-dleq-proof" title="Permanent link">&para;</a></h2>
 <p>When minting or swapping tokens, <code>Alice</code> receives DLEQ proofs in the <code>BlindSignature</code> response from the mint <code>Bob</code>. <code>Alice</code> checks the validity of the DLEQ proofs for each ecash token she receives via the equations:</p>
 <div class="codehilite"><pre><span></span><code>R1 = s*G - e*A
-R2 = s*B&#39; - e*C&#39;
-e == hash(R1,R2,A,C&#39;) # must be True
+R2 = s*B' - e*C'
+e == hash(R1,R2,A,C') # must be True
 </code></pre></div>
 
 <p>Here, the variables are</p>
@@ -1261,8 +1261,8 @@ e == hash(R1,R2,A,C&#39;) # must be True
 <p>Here, <code>x</code> is the Proof's secret, and <code>C</code> is the mint's signature on it. To execute the DLEQ proof like <code>Alice</code> did above, <code>Carol</code> needs <code>(B', C')</code> which she can compute herself using the blinding factor <code>r</code> that she receives from <code>Alice</code>.</p>
 <p>To verify the DLEQ proof of a received token, <code>Carol</code> needs to reconstruct <code>B'</code> and <code>C'</code> using the blinding factor <code>r</code> that <code>Alice</code> has included in the <code>Proof</code> she sent to <code>Carol</code>. Since <code>Carol</code> now has all the necessary information, she can execute the same equations to verify the DLEQ proof as <code>Alice</code> did:</p>
 <div class="codehilite"><pre><span></span><code>Y = hash_to_curve(x)
-C&#39; = C + r*A
-B&#39; = Y + r*G
+C' = C + r*A
+B' = Y + r*G
 
 R1 = ... (same as Alice)
 </code></pre></div>
@@ -1271,8 +1271,8 @@ R1 = ... (same as Alice)
 <h2 id="mint-info-setting">Mint info setting<a class="headerlink" href="#mint-info-setting" title="Permanent link">&para;</a></h2>
 <p>The <a href="../06/">NUT-06</a> <code>MintMethodSetting</code> indicates support for this feature:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;12&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">"12"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"supported"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>

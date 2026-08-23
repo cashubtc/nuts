@@ -1147,7 +1147,7 @@
 
 <p>The wallet includes the following body in its request:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quotes&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">s</span><span class="kc">tr</span><span class="p">]</span><span class="err">&gt;</span>
+<span class="w">  </span><span class="nt">"quotes"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">s</span><span class="kc">tr</span><span class="p">]</span><span class="err">&gt;</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1160,33 +1160,33 @@
 <span class="err">Content-Type: application/json</span>
 
 <span class="err">{</span>
-<span class="err">  &quot;quotes&quot;: [ &quot;019e6d5a-2347-7000-8037-b42dae20f1fe&quot;, &quot;019e6d5a-2347-7000-868a-08e59a1c6716&quot; ]</span>
+<span class="err">  "quotes": [ "019e6d5a-2347-7000-8037-b42dae20f1fe", "019e6d5a-2347-7000-868a-08e59a1c6716" ]</span>
 <span class="err">}</span>
 </code></pre></div>
 
 <h5 id="response">Response<a class="headerlink" href="#response" title="Permanent link">&para;</a></h5>
 <div class="codehilite"><pre><span></span><code><span class="p">[</span>
 <span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;019e6d5a-2347-7000-8037-b42dae20f1fe&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lnbc...&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;amount_paid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;amount_issued&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1234567800</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PAID&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1234567890</span>
+<span class="w">    </span><span class="nt">"quote"</span><span class="p">:</span><span class="w"> </span><span class="s2">"019e6d5a-2347-7000-8037-b42dae20f1fe"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"request"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lnbc..."</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"amount_paid"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"amount_issued"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="mi">1234567800</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PAID"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"expiry"</span><span class="p">:</span><span class="w"> </span><span class="mi">1234567890</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;quote&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;019e6d5a-2347-7000-868a-08e59a1c6716&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lnbc...&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;amount_paid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;amount_issued&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1234567800</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UNPAID&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1234567890</span>
+<span class="w">    </span><span class="nt">"quote"</span><span class="p">:</span><span class="w"> </span><span class="s2">"019e6d5a-2347-7000-868a-08e59a1c6716"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"request"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lnbc..."</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"amount_paid"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"amount_issued"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="mi">1234567800</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UNPAID"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"expiry"</span><span class="p">:</span><span class="w"> </span><span class="mi">1234567890</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">]</span>
 </code></pre></div>
@@ -1207,10 +1207,10 @@
 <p>The batch endpoint is method-specific: every quote in the batch <strong>MUST</strong> be for the same payment <code>method</code> as the <code>{method}</code> in the URL, and a batch that mixes payment methods <strong>MUST</strong> be rejected by the mint.</p>
 <p>The wallet includes the following body in its request:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quotes&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">s</span><span class="kc">tr</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;quote_amounts&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">i</span><span class="kc">nt</span><span class="p">]</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Optional</span>
-<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dedMessage</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span><span class="p">]</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// Optional</span>
+<span class="w">  </span><span class="nt">"quotes"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">s</span><span class="kc">tr</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"quote_amounts"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">i</span><span class="kc">nt</span><span class="p">]</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Optional</span>
+<span class="w">  </span><span class="nt">"outputs"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dedMessage</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"signatures"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span><span class="p">]</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// Optional</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1224,7 +1224,7 @@
 <h4 id="response-by-mint">Response by mint<a class="headerlink" href="#response-by-mint" title="Permanent link">&para;</a></h4>
 <p>The mint responds with:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dSig</span><span class="kc">nature</span><span class="p">]</span><span class="err">&gt;</span>
+<span class="w">  </span><span class="nt">"signatures"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Bli</span><span class="kc">n</span><span class="err">dSig</span><span class="kc">nature</span><span class="p">]</span><span class="err">&gt;</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1238,38 +1238,38 @@
 <span class="err">Content-Type: application/json</span>
 
 <span class="err">{</span>
-<span class="err">  &quot;quotes&quot;: [</span>
-<span class="err">    &quot;019e6d5a-2347-7000-8037-b42dae20f1fe&quot;,</span>
-<span class="err">    &quot;019e6d5a-2347-7000-868a-08e59a1c6716&quot;</span>
+<span class="err">  "quotes": [</span>
+<span class="err">    "019e6d5a-2347-7000-8037-b42dae20f1fe",</span>
+<span class="err">    "019e6d5a-2347-7000-868a-08e59a1c6716"</span>
 <span class="err">  ],</span>
-<span class="err">  &quot;quote_amounts&quot;: [</span>
+<span class="err">  "quote_amounts": [</span>
 <span class="err">    100,</span>
 <span class="err">    50</span>
 <span class="err">  ],</span>
-<span class="err">  &quot;signatures&quot;: [</span>
-<span class="err">    &quot;d9be080b33179387e504bb6991ea41ae0dd715e28b01ce9f63d57198a095bccc776874914288e6989e97ac9d255ac667c205fa8d90a211184b417b4ffdd24092&quot;,</span>
-<span class="err">    &quot;f2d97118390195cf5bef21d84c94e505dcdc2760154519536f74ba5e27f886f313b82296610df14db1d91d346e988ed384070bad084aaf06d14ccd7686157f24&quot;</span>
+<span class="err">  "signatures": [</span>
+<span class="err">    "d9be080b33179387e504bb6991ea41ae0dd715e28b01ce9f63d57198a095bccc776874914288e6989e97ac9d255ac667c205fa8d90a211184b417b4ffdd24092",</span>
+<span class="err">    "f2d97118390195cf5bef21d84c94e505dcdc2760154519536f74ba5e27f886f313b82296610df14db1d91d346e988ed384070bad084aaf06d14ccd7686157f24"</span>
 <span class="err">  ],</span>
-<span class="err">  &quot;outputs&quot;: [</span>
+<span class="err">  "outputs": [</span>
 <span class="err">    {</span>
-<span class="err">      &quot;amount&quot;: 128,</span>
-<span class="err">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
-<span class="err">      &quot;B_&quot;: &quot;035015e6d7ade60ba8426cefaf1832bbd27257636e44a76b922d78e79b47cb689d&quot;</span>
+<span class="err">      "amount": 128,</span>
+<span class="err">      "id": "009a1f293253e41e",</span>
+<span class="err">      "B_": "035015e6d7ade60ba8426cefaf1832bbd27257636e44a76b922d78e79b47cb689d"</span>
 <span class="err">    },</span>
 <span class="err">    {</span>
-<span class="err">      &quot;amount&quot;: 16,</span>
-<span class="err">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
-<span class="err">      &quot;B_&quot;: &quot;0288d7649652d0a83fc9c966c969fb217f15904431e61a44b14999fabc1b5d9ac6&quot;</span>
+<span class="err">      "amount": 16,</span>
+<span class="err">      "id": "009a1f293253e41e",</span>
+<span class="err">      "B_": "0288d7649652d0a83fc9c966c969fb217f15904431e61a44b14999fabc1b5d9ac6"</span>
 <span class="err">    },</span>
 <span class="err">    {</span>
-<span class="err">      &quot;amount&quot;: 4,</span>
-<span class="err">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
-<span class="err">      &quot;B_&quot;: &quot;03b85be0c0a9f51056375b632a2f2c8149831b9827fad677be9807455e7d84b584&quot;</span>
+<span class="err">      "amount": 4,</span>
+<span class="err">      "id": "009a1f293253e41e",</span>
+<span class="err">      "B_": "03b85be0c0a9f51056375b632a2f2c8149831b9827fad677be9807455e7d84b584"</span>
 <span class="err">    },</span>
 <span class="err">    {</span>
-<span class="err">      &quot;amount&quot;: 2,</span>
-<span class="err">      &quot;id&quot;: &quot;009a1f293253e41e&quot;,</span>
-<span class="err">      &quot;B_&quot;: &quot;0276bbcf69e1b1238e6d39fc14c84e7cdfd519fee07f3369d2b2b23045390e2efc&quot;</span>
+<span class="err">      "amount": 2,</span>
+<span class="err">      "id": "009a1f293253e41e",</span>
+<span class="err">      "B_": "0276bbcf69e1b1238e6d39fc14c84e7cdfd519fee07f3369d2b2b23045390e2efc"</span>
 <span class="err">    }</span>
 <span class="err">  ]</span>
 <span class="err">}</span>
@@ -1277,9 +1277,9 @@
 
 <h5 id="response_1">Response<a class="headerlink" href="#response_1" title="Permanent link">&para;</a></h5>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;0208657b2917f469f275226cc931e5389451f6eed515d586ad16fa7a700eed4fb6&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;037dc0b5e712a39ef22f5bba1d49bc65a323ab9e0b771f7281d8c33280e2e58dbc&quot;</span>
+<span class="w">  </span><span class="nt">"signatures"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"0208657b2917f469f275226cc931e5389451f6eed515d586ad16fa7a700eed4fb6"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"037dc0b5e712a39ef22f5bba1d49bc65a323ab9e0b771f7281d8c33280e2e58dbc"</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -1318,7 +1318,7 @@
 <h4 id="signature-message">Signature Message<a class="headerlink" href="#signature-message" title="Permanent link">&para;</a></h4>
 <p>Each locked quote is signed independently exactly as in <a href="../20/">NUT-20</a>: <code>signatures[i]</code> is the NUT-20 signature over <code>quotes[i]</code> and the request's <code>outputs</code>. The batch <code>outputs</code> are a single consolidated set (not partitioned per quote), so each signature is computed over the full <code>outputs</code> array.</p>
 <p>Following the <a href="../20/#message-aggregation">NUT-20 message aggregation</a> pattern, the signature message for <code>quotes[i]</code> is computed as:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">msg_to_sign</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="ss">&quot;Cashu_MintQuoteSig_v1&quot;</span>
+<div class="codehilite"><pre><span></span><code><span class="n">msg_to_sign</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="ss">"Cashu_MintQuoteSig_v1"</span>
 <span class="w">              </span><span class="o">||</span><span class="w"> </span><span class="n">len32</span><span class="p">(</span><span class="n">quotes</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">quotes</span><span class="o">[</span><span class="n">i</span><span class="o">]</span>
 <span class="w">              </span><span class="o">||</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="k">output</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="p">(</span><span class="ow">in</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="k">order</span><span class="p">)</span><span class="err">:</span>
 <span class="w">                   </span><span class="n">len32</span><span class="p">(</span><span class="n">amount_j</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">amount_j</span>
@@ -1338,20 +1338,20 @@
 <p>If <strong>any signature in the batch is invalid</strong>, the mint MUST reject the <strong>entire batch</strong> and return an error. This maintains atomicity: all quotes must be successfully authenticated and minted together, or none at all.</p>
 <h3 id="example_2">Example<a class="headerlink" href="#example_2" title="Permanent link">&para;</a></h3>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quotes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;019e6d5a-2347-7000-8005-9428c4fc5edb&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;019e6d5a-2347-7000-841a-4d222fd00a33&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;019e6d5a-2347-7000-8d60-d35c1a9e19b3&quot;</span>
+<span class="w">  </span><span class="nt">"quotes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"019e6d5a-2347-7000-8005-9428c4fc5edb"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"019e6d5a-2347-7000-841a-4d222fd00a33"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"019e6d5a-2347-7000-8d60-d35c1a9e19b3"</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;keyset_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;keyset_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;keyset_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="nt">"outputs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"keyset_1"</span><span class="p">,</span><span class="w"> </span><span class="nt">"B_"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"keyset_1"</span><span class="p">,</span><span class="w"> </span><span class="nt">"B_"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"keyset_1"</span><span class="p">,</span><span class="w"> </span><span class="nt">"B_"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w"> </span><span class="p">}</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;d9be080b...&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Signature for quote[0], covers ALL 3 outputs</span>
+<span class="w">  </span><span class="nt">"signatures"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"d9be080b..."</span><span class="p">,</span><span class="w"> </span><span class="c1">// Signature for quote[0], covers ALL 3 outputs</span>
 <span class="w">    </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="c1">// Quote[1] is unlocked</span>
-<span class="w">    </span><span class="s2">&quot;a1c5f7e2...&quot;</span><span class="w"> </span><span class="c1">// Signature for quote[2], covers ALL 3 outputs</span>
+<span class="w">    </span><span class="s2">"a1c5f7e2..."</span><span class="w"> </span><span class="c1">// Signature for quote[2], covers ALL 3 outputs</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -1360,10 +1360,10 @@
 <h3 id="batch-size-limits">Batch Size Limits<a class="headerlink" href="#batch-size-limits" title="Permanent link">&para;</a></h3>
 <p>Mints MAY advertise a maximum batch size through the <a href="../06/">NUT-06</a> mint info endpoint. The batch size limit is included in the <code>nuts</code> object under the <code>29</code> key:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;nuts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;29&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;max_batch_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;methods&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;bolt11&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;bolt12&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"nuts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"29"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"max_batch_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"methods"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"bolt11"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bolt12"</span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>

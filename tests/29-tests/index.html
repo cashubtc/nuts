@@ -1138,34 +1138,34 @@
 <h2 id="successful-batch-mint">Successful batch mint<a class="headerlink" href="#successful-batch-mint" title="Permanent link">&para;</a></h2>
 <p>The following is a valid batch mint request combining two bolt11 quotes (<code>quote_id_a</code> for 5 sats and <code>quote_id_b</code> for 3 sats) into a single 8 sat output.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quotes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;quote_id_a&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;quote_id_b&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;quote_amounts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;keyset_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;blinded_message&gt;&quot;</span><span class="w"> </span><span class="p">}]</span>
+<span class="w">  </span><span class="nt">"quotes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"quote_id_a"</span><span class="p">,</span><span class="w"> </span><span class="s2">"quote_id_b"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"quote_amounts"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"outputs"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"keyset_1"</span><span class="p">,</span><span class="w"> </span><span class="nt">"B_"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;blinded_message&gt;"</span><span class="w"> </span><span class="p">}]</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <p>The following is the corresponding response with a blind signature.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;keyset_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;C_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;blind_signature&gt;&quot;</span><span class="w"> </span><span class="p">}]</span>
+<span class="w">  </span><span class="nt">"signatures"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"keyset_1"</span><span class="p">,</span><span class="w"> </span><span class="nt">"C_"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;blind_signature&gt;"</span><span class="w"> </span><span class="p">}]</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <h2 id="check-endpoint-with-unknown-quotes">Check endpoint with unknown quotes<a class="headerlink" href="#check-endpoint-with-unknown-quotes" title="Permanent link">&para;</a></h2>
 <p>The following is an invalid check request containing an unknown quote ID.</p>
-<div class="codehilite"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">&quot;quotes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;known-1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;bogus&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;unknown-2&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">"quotes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"known-1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bogus"</span><span class="p">,</span><span class="w"> </span><span class="s2">"unknown-2"</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div>
 
 <p>Per NUT-29, quote check uses all-or-nothing error handling. If any quote is unknown, the entire request must be rejected.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;code&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UNKNOWN_QUOTE&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;one or more quote IDs are unknown&quot;</span>
+<span class="w">  </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UNKNOWN_QUOTE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"error"</span><span class="p">:</span><span class="w"> </span><span class="s2">"one or more quote IDs are unknown"</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <h2 id="batch-mint-atomic-failure">Batch mint atomic failure<a class="headerlink" href="#batch-mint-atomic-failure" title="Permanent link">&para;</a></h2>
 <p>The following is an invalid batch mint request containing one unknown quote ID, causing the entire batch to fail atomically with no partial minting.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quotes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;valid_quote_id&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;unknown_quote_id&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"quotes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"valid_quote_id"</span><span class="p">,</span><span class="w"> </span><span class="s2">"unknown_quote_id"</span><span class="p">],</span>
 <span class="w">  </span><span class="err">...</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -1179,8 +1179,8 @@
 <h2 id="batch-mint-rejects-empty-quotes-array">Batch mint rejects empty quotes array<a class="headerlink" href="#batch-mint-rejects-empty-quotes-array" title="Permanent link">&para;</a></h2>
 <p>The following is an invalid batch mint request with an empty <code>quotes</code> array.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quotes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;keyset_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;blinded_message&gt;&quot;</span><span class="w"> </span><span class="p">}]</span>
+<span class="w">  </span><span class="nt">"quotes"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">"outputs"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"keyset_1"</span><span class="p">,</span><span class="w"> </span><span class="nt">"B_"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;blinded_message&gt;"</span><span class="w"> </span><span class="p">}]</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1192,8 +1192,8 @@
 <h2 id="batch-mint-rejects-duplicate-quote-ids">Batch mint rejects duplicate quote IDs<a class="headerlink" href="#batch-mint-rejects-duplicate-quote-ids" title="Permanent link">&para;</a></h2>
 <p>The following is an invalid batch mint request with duplicate quote IDs.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quotes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;quote_id_dup&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;quote_id_dup&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;keyset_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;blinded_message&gt;&quot;</span><span class="w"> </span><span class="p">}]</span>
+<span class="w">  </span><span class="nt">"quotes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"quote_id_dup"</span><span class="p">,</span><span class="w"> </span><span class="s2">"quote_id_dup"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"outputs"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"keyset_1"</span><span class="p">,</span><span class="w"> </span><span class="nt">"B_"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;blinded_message&gt;"</span><span class="w"> </span><span class="p">}]</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1205,12 +1205,12 @@
 <h2 id="batch-mint-rejects-mixed-payment-methods">Batch mint rejects mixed payment methods<a class="headerlink" href="#batch-mint-rejects-mixed-payment-methods" title="Permanent link">&para;</a></h2>
 <p>The following is an invalid request to <code>/v1/mint/bolt11/batch</code> where one quote is bolt11 and one quote is bolt12.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quotes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;019e6d5a-2347-7000-80fe-07ae8fa79774&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;019e6d5a-2347-7000-8791-dbfba168f0ad&quot;</span>
+<span class="w">  </span><span class="nt">"quotes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"019e6d5a-2347-7000-80fe-07ae8fa79774"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"019e6d5a-2347-7000-8791-dbfba168f0ad"</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;quote_amounts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;keyset_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;blinded_message&gt;&quot;</span><span class="w"> </span><span class="p">}]</span>
+<span class="w">  </span><span class="nt">"quote_amounts"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"outputs"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"keyset_1"</span><span class="p">,</span><span class="w"> </span><span class="nt">"B_"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;blinded_message&gt;"</span><span class="w"> </span><span class="p">}]</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1222,15 +1222,15 @@
 <h2 id="batch-mint-rejects-signatures-array-length-mismatch">Batch mint rejects signatures array length mismatch<a class="headerlink" href="#batch-mint-rejects-signatures-array-length-mismatch" title="Permanent link">&para;</a></h2>
 <p>The following is an invalid batch mint request where <code>signatures</code> length does not match <code>quotes</code> length.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quotes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;019e6d5a-2347-7000-80fe-07ae8fa79774&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;019e6d5a-2347-7000-8791-dbfba168f0ad&quot;</span>
+<span class="w">  </span><span class="nt">"quotes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"019e6d5a-2347-7000-80fe-07ae8fa79774"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"019e6d5a-2347-7000-8791-dbfba168f0ad"</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;keyset_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;blinded_message_0&gt;&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;keyset_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;blinded_message_1&gt;&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="nt">"outputs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"keyset_1"</span><span class="p">,</span><span class="w"> </span><span class="nt">"B_"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;blinded_message_0&gt;"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"keyset_1"</span><span class="p">,</span><span class="w"> </span><span class="nt">"B_"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;blinded_message_1&gt;"</span><span class="w"> </span><span class="p">}</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;&lt;sig_for_quote_1_only&gt;&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"signatures"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"&lt;sig_for_quote_1_only&gt;"</span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1241,7 +1241,7 @@
 </ul>
 <h2 id="batch-mint-with-valid-signature">Batch mint with valid signature<a class="headerlink" href="#batch-mint-with-valid-signature" title="Permanent link">&para;</a></h2>
 <p>The following is a valid NUT-29 batch mint request where the signature correctly covers all outputs in order. The quote has pubkey <code>0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798</code> (sk = 1).</p>
-<div class="codehilite"><pre><span></span><code>quote:<span class="w"> </span><span class="s2">&quot;019e6d5a-2347-7000-8c81-a1e0dbf3299f&quot;</span>
+<div class="codehilite"><pre><span></span><code>quote:<span class="w"> </span><span class="s2">"019e6d5a-2347-7000-8c81-a1e0dbf3299f"</span>
 pubkey:<span class="w"> </span>0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
 msg_to_sign_bytes:<span class="w"> </span>43617368755f4d696e7451756f74655369675f76310000002430313965366435612d323334372d373030302d386338312d613165306462663332393966000000010100000021036d6caac248af96f6afa7f904f550253a0f3ef3f5aa2fe6838a95b216691468e2000000010100000021021f8a566c205633d029094747d2e18f44e05993dda7a5f88f496078205f656e59
 msg_hash:<span class="w"> </span>dad25acc587637206d73398894d337f983a0ca644746e8673727eaa0b29fa9b4
@@ -1249,21 +1249,21 @@ signature<span class="o">[</span><span class="m">0</span><span class="o">]</span
 </code></pre></div>
 
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;quotes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;019e6d5a-2347-7000-8c81-a1e0dbf3299f&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;outputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"quotes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"019e6d5a-2347-7000-8c81-a1e0dbf3299f"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"outputs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;010000000000000000000000000000000000000000000000000000000000000000&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;036d6caac248af96f6afa7f904f550253a0f3ef3f5aa2fe6838a95b216691468e2&quot;</span>
+<span class="w">      </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"010000000000000000000000000000000000000000000000000000000000000000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"B_"</span><span class="p">:</span><span class="w"> </span><span class="s2">"036d6caac248af96f6afa7f904f550253a0f3ef3f5aa2fe6838a95b216691468e2"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;010000000000000000000000000000000000000000000000000000000000000000&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;B_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;021f8a566c205633d029094747d2e18f44e05993dda7a5f88f496078205f656e59&quot;</span>
+<span class="w">      </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"010000000000000000000000000000000000000000000000000000000000000000"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"B_"</span><span class="p">:</span><span class="w"> </span><span class="s2">"021f8a566c205633d029094747d2e18f44e05993dda7a5f88f496078205f656e59"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;0c39431338a0202568b9a1d4215c99f179cbb8ee5472ac5ae7133fbb8f99cafbb9e425ad33c60224c96b8f9f984f004379a18e9558468d129b6b03f0da6de162&quot;</span>
+<span class="w">  </span><span class="nt">"signatures"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"0c39431338a0202568b9a1d4215c99f179cbb8ee5472ac5ae7133fbb8f99cafbb9e425ad33c60224c96b8f9f984f004379a18e9558468d129b6b03f0da6de162"</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>

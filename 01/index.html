@@ -1284,14 +1284,14 @@ For Bitcoin, ISO 4217 currencies (and stablecoins pegged to those currencies), K
 
 <p>Response <code>GetKeysResponse</code> of <code>Bob</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;keysets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"keysets"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;keyse</span><span class="kc">t</span><span class="err">_id_hex_s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;curre</span><span class="kc">n</span><span class="err">cy_u</span><span class="kc">n</span><span class="err">i</span><span class="kc">t</span><span class="err">_s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;bool&gt;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;input_fee_ppk&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;final_expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;u</span><span class="kc">n</span><span class="err">ix_</span><span class="kc">t</span><span class="err">imes</span><span class="kc">ta</span><span class="err">mp_i</span><span class="kc">nt</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span>
-<span class="w">      </span><span class="nt">&quot;keys&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;keyse</span><span class="kc">t</span><span class="err">_id_hex_s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"unit"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;curre</span><span class="kc">n</span><span class="err">cy_u</span><span class="kc">n</span><span class="err">i</span><span class="kc">t</span><span class="err">_s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"active"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;bool&gt;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"input_fee_ppk"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"final_expiry"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;u</span><span class="kc">n</span><span class="err">ix_</span><span class="kc">t</span><span class="err">imes</span><span class="kc">ta</span><span class="err">mp_i</span><span class="kc">nt</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span>
+<span class="w">      </span><span class="nt">"keys"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="err">&lt;amou</span><span class="kc">nt</span><span class="err">_i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;public_key_s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">        </span><span class="err">...</span>
 <span class="w">      </span><span class="p">}</span>
@@ -1303,18 +1303,18 @@ For Bitcoin, ISO 4217 currencies (and stablecoins pegged to those currencies), K
 <p>Here, <code>active</code> indicates whether the mint will sign new outputs with this keyset, and <code>input_fee_ppk</code> is the fee in parts per thousand (ppk) per input spent from this keyset (see <a href="../02/">NUT-02</a>).</p>
 <h2 id="example-response">Example response<a class="headerlink" href="#example-response" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;keysets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"keysets"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;009a1f293253e41e&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;input_fee_ppk&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;final_expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1896187313</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;keys&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02194603ffa36356f4a56b7df9371fc3192472351453ec7398b8da8117e7c3e104&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03b0f36d6d47ce14df8a7be9137712c42bcdd960b19dd02f1d4a9703b1f31d7513&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0366be6e026e42852498efb82014ca91e89da2e7a5bd3761bdad699fa2aec9fe09&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;8&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0253de5237f189606f29d8a690ea719f74d65f617bb1cb6fbea34f2bc4f930016d&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"009a1f293253e41e"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"active"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"input_fee_ppk"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"final_expiry"</span><span class="p">:</span><span class="w"> </span><span class="mi">1896187313</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"keys"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">"1"</span><span class="p">:</span><span class="w"> </span><span class="s2">"02194603ffa36356f4a56b7df9371fc3192472351453ec7398b8da8117e7c3e104"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"03b0f36d6d47ce14df8a7be9137712c42bcdd960b19dd02f1d4a9703b1f31d7513"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"4"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0366be6e026e42852498efb82014ca91e89da2e7a5bd3761bdad699fa2aec9fe09"</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">"8"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0253de5237f189606f29d8a690ea719f74d65f617bb1cb6fbea34f2bc4f930016d"</span><span class="p">,</span>
 <span class="w">          </span><span class="err">...</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
@@ -1324,18 +1324,18 @@ For Bitcoin, ISO 4217 currencies (and stablecoins pegged to those currencies), K
 
 <p>Note that for a keyset in an ISO 4217 currency, the key amounts represent values in the Minor Unit of that currency (keys truncated and comments added for clarity):</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;keysets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"keysets"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;00a2f293253e41f9&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;usd&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;input_fee_ppk&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;final_expiry&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1896187313</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;keys&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0229...e101&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// 1 cent (0.01 USD)</span>
-<span class="w">          </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;03c0...7512&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// 2 cents (0.02 USD)</span>
-<span class="w">          </span><span class="nt">&quot;4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0376...fe00&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// 4 cents (0.04 USD)</span>
-<span class="w">          </span><span class="nt">&quot;8&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0263...016e&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// 8 cents (0.08 USD)</span>
+<span class="w">      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"00a2f293253e41f9"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"usd"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"active"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"input_fee_ppk"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"final_expiry"</span><span class="p">:</span><span class="w"> </span><span class="mi">1896187313</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"keys"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">"1"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0229...e101"</span><span class="p">,</span><span class="w"> </span><span class="c1">// 1 cent (0.01 USD)</span>
+<span class="w">          </span><span class="nt">"2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"03c0...7512"</span><span class="p">,</span><span class="w"> </span><span class="c1">// 2 cents (0.02 USD)</span>
+<span class="w">          </span><span class="nt">"4"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0376...fe00"</span><span class="p">,</span><span class="w"> </span><span class="c1">// 4 cents (0.04 USD)</span>
+<span class="w">          </span><span class="nt">"8"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0263...016e"</span><span class="p">,</span><span class="w"> </span><span class="c1">// 8 cents (0.08 USD)</span>
 <span class="w">          </span><span class="err">...</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>

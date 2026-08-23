@@ -1140,15 +1140,15 @@
 <h3 id="basic-payment-request">Basic Payment Request<a class="headerlink" href="#basic-payment-request" title="Permanent link">&para;</a></h3>
 <p>A basic payment request with required fields.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;b7a90176&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://8333.space:3338&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"i"</span><span class="p">:</span><span class="w"> </span><span class="s2">"b7a90176"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"u"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://8333.space:3338"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"t"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nostr&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nprofile1qqsgm6qfa3c8dtz2fvzhvfqeacmwm0e50pe3k5tfmvpjjmn0vj7m2tgpz3mhxue69uhhyetvv9ujuerpd46hxtnfduq3wamnwvaz7tmjv4kxz7fw8qenxvewwdcxzcm99uqs6amnwvaz7tmwdaejumr0ds4ljh7n&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;g&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;17&quot;</span><span class="p">]]</span>
+<span class="w">      </span><span class="nt">"t"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nostr"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nprofile1qqsgm6qfa3c8dtz2fvzhvfqeacmwm0e50pe3k5tfmvpjjmn0vj7m2tgpz3mhxue69uhhyetvv9ujuerpd46hxtnfduq3wamnwvaz7tmjv4kxz7fw8qenxvewwdcxzcm99uqs6amnwvaz7tmwdaejumr0ds4ljh7n"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"g"</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="s2">"n"</span><span class="p">,</span><span class="w"> </span><span class="s2">"17"</span><span class="p">]]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
@@ -1162,17 +1162,17 @@
 <h3 id="nostr-transport-payment-request">Nostr Transport Payment Request<a class="headerlink" href="#nostr-transport-payment-request" title="Permanent link">&para;</a></h3>
 <p>A payment request using Nostr transport with multiple mints.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;f92a51b8&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint1.example.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;https://mint2.example.com&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"i"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f92a51b8"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"u"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://mint1.example.com"</span><span class="p">,</span><span class="w"> </span><span class="s2">"https://mint2.example.com"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"t"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nostr&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nprofile1qqsqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq8uzqt&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;g&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;17&quot;</span><span class="p">],</span>
-<span class="w">        </span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;9735&quot;</span><span class="p">]</span>
+<span class="w">      </span><span class="nt">"t"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nostr"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nprofile1qqsqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq8uzqt"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"g"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">[</span><span class="s2">"n"</span><span class="p">,</span><span class="w"> </span><span class="s2">"17"</span><span class="p">],</span>
+<span class="w">        </span><span class="p">[</span><span class="s2">"n"</span><span class="p">,</span><span class="w"> </span><span class="s2">"9735"</span><span class="p">]</span>
 <span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
@@ -1187,9 +1187,9 @@
 <h3 id="minimal-payment-request">Minimal Payment Request<a class="headerlink" href="#minimal-payment-request" title="Permanent link">&para;</a></h3>
 <p>A minimal payment request with only required fields (no transport specified).</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;7f4a2b39&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint.example.com&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"i"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7f4a2b39"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"u"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://mint.example.com"</span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1201,14 +1201,14 @@
 <h3 id="payment-request-with-nut-10-locking">Payment Request with NUT-10 Locking<a class="headerlink" href="#payment-request-with-nut-10-locking" title="Permanent link">&para;</a></h3>
 <p>A payment request requiring P2PK-locked tokens with timeout tag.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;c9e45d2a&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint.example.com&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;nut10&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;k&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;P2PK&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;d&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;02c3b5bb27e361457c92d93d78dd73d3d53732110b2cfe8b50fbc0abc615e9c331&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="s2">&quot;timeout&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;3600&quot;</span><span class="p">]]</span>
+<span class="w">  </span><span class="nt">"i"</span><span class="p">:</span><span class="w"> </span><span class="s2">"c9e45d2a"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"u"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://mint.example.com"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"nut10"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"k"</span><span class="p">:</span><span class="w"> </span><span class="s2">"P2PK"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"d"</span><span class="p">:</span><span class="w"> </span><span class="s2">"02c3b5bb27e361457c92d93d78dd73d3d53732110b2cfe8b50fbc0abc615e9c331"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"t"</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="s2">"timeout"</span><span class="p">,</span><span class="w"> </span><span class="s2">"3600"</span><span class="p">]]</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -1221,15 +1221,15 @@
 <h3 id="http-post-transport-kind0x01">HTTP POST Transport (kind=0x01)<a class="headerlink" href="#http-post-transport-kind0x01" title="Permanent link">&para;</a></h3>
 <p>A payment request using HTTP POST transport with custom tags.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http_test&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">250</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint.example.com&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"i"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http_test"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="mi">250</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"u"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://mint.example.com"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"t"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;post&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://api.example.com/v1/payment&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;g&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="s2">&quot;custom&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;value1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;value2&quot;</span><span class="p">]]</span>
+<span class="w">      </span><span class="nt">"t"</span><span class="p">:</span><span class="w"> </span><span class="s2">"post"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api.example.com/v1/payment"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"g"</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="s2">"custom"</span><span class="p">,</span><span class="w"> </span><span class="s2">"value1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"value2"</span><span class="p">]]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
@@ -1243,14 +1243,14 @@
 <h3 id="relay-tag-extraction-from-nprofile">Relay Tag Extraction from nprofile<a class="headerlink" href="#relay-tag-extraction-from-nprofile" title="Permanent link">&para;</a></h3>
 <p>A payment request with relays embedded in the nprofile (demonstrates "r" tag tuple encoding).</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;relay_test&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint.example.com&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"i"</span><span class="p">:</span><span class="w"> </span><span class="s2">"relay_test"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"u"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://mint.example.com"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"t"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nostr&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nprofile1qqsrhuxx8l9ex335q7he0f09aej04zpazpl0ne2cgukyawd24mayt8gprpmhxue69uhhyetvv9unztn90psk6urvv5hxxmmdqyv8wumn8ghj7un9d3shjv3wv4uxzmtsd3jjucm0d5q3samnwvaz7tmjv4kxz7fn9ejhsctdwpkx2tnrdaksxzjpjp&quot;</span>
+<span class="w">      </span><span class="nt">"t"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nostr"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nprofile1qqsrhuxx8l9ex335q7he0f09aej04zpazpl0ne2cgukyawd24mayt8gprpmhxue69uhhyetvv9unztn90psk6urvv5hxxmmdqyv8wumn8ghj7un9d3shjv3wv4uxzmtsd3jjucm0d5q3samnwvaz7tmjv4kxz7fn9ejhsctdwpkx2tnrdaksxzjpjp"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
@@ -1264,11 +1264,11 @@
 <h3 id="description-field">Description Field<a class="headerlink" href="#description-field" title="Permanent link">&para;</a></h3>
 <p>A payment request with a description field.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;desc_test&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint.example.com&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;d&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Test payment description&quot;</span>
+<span class="w">  </span><span class="nt">"i"</span><span class="p">:</span><span class="w"> </span><span class="s2">"desc_test"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"u"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://mint.example.com"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"d"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Test payment description"</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1280,11 +1280,11 @@
 <h3 id="single-use-field-true">Single-Use Field (true)<a class="headerlink" href="#single-use-field-true" title="Permanent link">&para;</a></h3>
 <p>A payment request with single_use set to true.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;single_use_true&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;s&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint.example.com&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"i"</span><span class="p">:</span><span class="w"> </span><span class="s2">"single_use_true"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"u"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"s"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://mint.example.com"</span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1296,11 +1296,11 @@
 <h3 id="single-use-field-false">Single-Use Field (false)<a class="headerlink" href="#single-use-field-false" title="Permanent link">&para;</a></h3>
 <p>A payment request with single_use set to false.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;single_use_false&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;s&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint.example.com&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"i"</span><span class="p">:</span><span class="w"> </span><span class="s2">"single_use_false"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"u"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"s"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://mint.example.com"</span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1312,10 +1312,10 @@
 <h3 id="non-sat-unit-msat">Non-Sat Unit (msat)<a class="headerlink" href="#non-sat-unit-msat" title="Permanent link">&para;</a></h3>
 <p>A payment request using millisatoshi unit (string encoding, not 0x00).</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;unit_msat&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;msat&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint.example.com&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"i"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unit_msat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"u"</span><span class="p">:</span><span class="w"> </span><span class="s2">"msat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://mint.example.com"</span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1327,10 +1327,10 @@
 <h3 id="non-sat-unit-usd">Non-Sat Unit (usd)<a class="headerlink" href="#non-sat-unit-usd" title="Permanent link">&para;</a></h3>
 <p>A payment request using USD unit (string encoding).</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;unit_usd&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;usd&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint.example.com&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"i"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unit_usd"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"u"</span><span class="p">:</span><span class="w"> </span><span class="s2">"usd"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://mint.example.com"</span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1342,25 +1342,25 @@
 <h3 id="multiple-transports">Multiple Transports<a class="headerlink" href="#multiple-transports" title="Permanent link">&para;</a></h3>
 <p>A payment request with multiple transport options (Nostr + HTTP POST), demonstrating priority ordering.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;multi_transport&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint.example.com&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;d&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Payment with multiple transports&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"i"</span><span class="p">:</span><span class="w"> </span><span class="s2">"multi_transport"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"u"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://mint.example.com"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"d"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Payment with multiple transports"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"t"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nostr&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nprofile1qqsrhuxx8l9ex335q7he0f09aej04zpazpl0ne2cgukyawd24mayt8g2lcy6q&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;g&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;17&quot;</span><span class="p">]]</span>
+<span class="w">      </span><span class="nt">"t"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nostr"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nprofile1qqsrhuxx8l9ex335q7he0f09aej04zpazpl0ne2cgukyawd24mayt8g2lcy6q"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"g"</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="s2">"n"</span><span class="p">,</span><span class="w"> </span><span class="s2">"17"</span><span class="p">]]</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;post&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://api1.example.com/payment&quot;</span>
+<span class="w">      </span><span class="nt">"t"</span><span class="p">:</span><span class="w"> </span><span class="s2">"post"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api1.example.com/payment"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;post&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://api2.example.com/payment&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;g&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="s2">&quot;priority&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;backup&quot;</span><span class="p">]]</span>
+<span class="w">      </span><span class="nt">"t"</span><span class="p">:</span><span class="w"> </span><span class="s2">"post"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api2.example.com/payment"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"g"</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="s2">"priority"</span><span class="p">,</span><span class="w"> </span><span class="s2">"backup"</span><span class="p">]]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
@@ -1374,13 +1374,13 @@
 <h3 id="minimal-nostr-transport-pubkey-only">Minimal Nostr Transport (pubkey only)<a class="headerlink" href="#minimal-nostr-transport-pubkey-only" title="Permanent link">&para;</a></h3>
 <p>A minimal Nostr transport with just the pubkey (no relays, no tags).</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;minimal_nostr&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint.example.com&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"i"</span><span class="p">:</span><span class="w"> </span><span class="s2">"minimal_nostr"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"u"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://mint.example.com"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"t"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nostr&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nprofile1qqsrhuxx8l9ex335q7he0f09aej04zpazpl0ne2cgukyawd24mayt8g2lcy6q&quot;</span>
+<span class="w">      </span><span class="nt">"t"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nostr"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nprofile1qqsrhuxx8l9ex335q7he0f09aej04zpazpl0ne2cgukyawd24mayt8g2lcy6q"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
@@ -1394,13 +1394,13 @@
 <h3 id="minimal-http-post-transport-url-only">Minimal HTTP POST Transport (URL only)<a class="headerlink" href="#minimal-http-post-transport-url-only" title="Permanent link">&para;</a></h3>
 <p>A minimal HTTP POST transport with just the URL (no tags).</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;minimal_http&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint.example.com&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">"i"</span><span class="p">:</span><span class="w"> </span><span class="s2">"minimal_http"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"u"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://mint.example.com"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"t"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;post&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://api.example.com&quot;</span>
+<span class="w">      </span><span class="nt">"t"</span><span class="p">:</span><span class="w"> </span><span class="s2">"post"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api.example.com"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
@@ -1414,19 +1414,19 @@
 <h3 id="nut-10-htlc-locking-kind1">NUT-10 HTLC Locking (kind=1)<a class="headerlink" href="#nut-10-htlc-locking-kind1" title="Permanent link">&para;</a></h3>
 <p>A payment request requiring HTLC-locked tokens with preimage tag.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;htlc_test&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint.example.com&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;d&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HTLC locked payment&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;nut10&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;k&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HTLC&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;d&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a]0e66820bfb412212cf7ab3deb0459ce282a1b04fda76ea6026a67e41ae26f3dc&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">      </span><span class="p">[</span><span class="s2">&quot;locktime&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;1700000000&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"i"</span><span class="p">:</span><span class="w"> </span><span class="s2">"htlc_test"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"u"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://mint.example.com"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"d"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HTLC locked payment"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"nut10"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"k"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HTLC"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"d"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a]0e66820bfb412212cf7ab3deb0459ce282a1b04fda76ea6026a67e41ae26f3dc"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"t"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">[</span><span class="s2">"locktime"</span><span class="p">,</span><span class="w"> </span><span class="s2">"1700000000"</span><span class="p">],</span>
 <span class="w">      </span><span class="p">[</span>
-<span class="w">        </span><span class="s2">&quot;refund&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e&quot;</span>
+<span class="w">        </span><span class="s2">"refund"</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">"033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e"</span>
 <span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">]</span>
 <span class="w">  </span><span class="p">}</span>
@@ -1441,10 +1441,10 @@
 <h3 id="custom-currency-unit">Custom Currency Unit<a class="headerlink" href="#custom-currency-unit" title="Permanent link">&para;</a></h3>
 <p>A payment request using a custom currency unit (string encoding, not a known unit).</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;custom_unit&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;btc&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint.example.com&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"i"</span><span class="p">:</span><span class="w"> </span><span class="s2">"custom_unit"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"u"</span><span class="p">:</span><span class="w"> </span><span class="s2">"btc"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://mint.example.com"</span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1456,12 +1456,12 @@
 <h3 id="preferred-mint-list-with-supported-methods">Preferred Mint List with Supported Methods<a class="headerlink" href="#preferred-mint-list-with-supported-methods" title="Permanent link">&para;</a></h3>
 <p>A payment request specifying a preferred mint list with <code>mp</code> set to <code>true</code> (tag 0x09) and the supported payment methods (<code>sm</code>, tag 0x0a). <code>bolt12</code> carries a per-method fee (<code>mf</code>, sub-tag 0x02) that applies to payments from non-preferred mints.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;i&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;preferred_fee_methods&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;u&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sat&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;m&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint.example.com&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;mp&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;sm&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">&quot;mn&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bolt11&quot;</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;mn&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bolt12&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;mf&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">}]</span>
+<span class="w">  </span><span class="nt">"i"</span><span class="p">:</span><span class="w"> </span><span class="s2">"preferred_fee_methods"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"u"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"m"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://mint.example.com"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"mp"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"sm"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"mn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bolt11"</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"mn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bolt12"</span><span class="p">,</span><span class="w"> </span><span class="nt">"mf"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">}]</span>
 <span class="p">}</span>
 </code></pre></div>
 

@@ -1150,15 +1150,15 @@
 <li>Derive the public key: <code>public_key = secp256k1_generator * private_key</code></li>
 </ol>
 <h3 id="example-implementation">Example Implementation<a class="headerlink" href="#example-implementation" title="Permanent link">&para;</a></h3>
-<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">mnemonicToSeedSync</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@scure/bip39&quot;</span><span class="p">;</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">sha256</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@noble/hashes/sha256&quot;</span><span class="p">;</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">bytesToHex</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@noble/hashes/utils&quot;</span><span class="p">;</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">getPublicKey</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;nostr-tools&quot;</span><span class="p">;</span>
+<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">mnemonicToSeedSync</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"@scure/bip39"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">sha256</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"@noble/hashes/sha256"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">bytesToHex</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"@noble/hashes/utils"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">getPublicKey</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"nostr-tools"</span><span class="p">;</span>
 
 <span class="kd">function</span><span class="w"> </span><span class="nx">deriveMintBackupKeys</span><span class="p">(</span><span class="nx">mnemonic</span><span class="o">:</span><span class="w"> </span><span class="nx">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">privateKeyHex</span><span class="o">:</span><span class="w"> </span><span class="nx">string</span><span class="p">;</span><span class="w"> </span><span class="nx">publicKeyHex</span><span class="o">:</span><span class="w"> </span><span class="nx">string</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// Derive seed from mnemonic</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">seed</span><span class="o">:</span><span class="w"> </span><span class="nb">Uint8Array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">mnemonicToSeedSync</span><span class="p">(</span><span class="nx">mnemonic</span><span class="p">);</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">domainSeparator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">TextEncoder</span><span class="p">().</span><span class="nx">encode</span><span class="p">(</span><span class="s2">&quot;cashu-mint-backup&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">domainSeparator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">TextEncoder</span><span class="p">().</span><span class="nx">encode</span><span class="p">(</span><span class="s2">"cashu-mint-backup"</span><span class="p">);</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">combinedData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Uint8Array</span><span class="p">(</span><span class="nx">seed</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">domainSeparator</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
 <span class="w">  </span><span class="nx">combinedData</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">seed</span><span class="p">);</span>
 <span class="w">  </span><span class="nx">combinedData</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">domainSeparator</span><span class="p">,</span><span class="w"> </span><span class="nx">seed</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
@@ -1177,14 +1177,14 @@
 <p>The mint backup uses Nostr event kind <code>30078</code> (addressable event) as specified in <a href="https://github.com/nostr-protocol/nips/blob/master/78.md">NIP-78</a>.</p>
 <h3 id="event-structure">Event Structure<a class="headerlink" href="#event-structure" title="Permanent link">&para;</a></h3>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30078</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;encrypted_backup_data&gt;&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;mint-list&quot;</span><span class="p">],</span>
-<span class="w">    </span><span class="p">[</span><span class="s2">&quot;client&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;cashu.me&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"kind"</span><span class="p">:</span><span class="w"> </span><span class="mi">30078</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;encrypted_backup_data&gt;"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"tags"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">[</span><span class="s2">"d"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mint-list"</span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="s2">"client"</span><span class="p">,</span><span class="w"> </span><span class="s2">"cashu.me"</span><span class="p">]</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;</span><span class="kc">t</span><span class="err">imes</span><span class="kc">ta</span><span class="err">mp&gt;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;pubkey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;mint_backup_public_key&gt;&quot;</span>
+<span class="w">  </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;</span><span class="kc">t</span><span class="err">imes</span><span class="kc">ta</span><span class="err">mp&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pubkey"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;mint_backup_public_key&gt;"</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1201,8 +1201,8 @@
 <h3 id="backup-data-format">Backup Data Format<a class="headerlink" href="#backup-data-format" title="Permanent link">&para;</a></h3>
 <p>The plaintext data that gets encrypted in the <code>content</code> field has the following JSON structure:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;mints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;&lt;mint_url_1&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&lt;mint_url_2&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;u</span><span class="kc">n</span><span class="err">ix_</span><span class="kc">t</span><span class="err">imes</span><span class="kc">ta</span><span class="err">mp&gt;</span>
+<span class="w">  </span><span class="nt">"mints"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"&lt;mint_url_1&gt;"</span><span class="p">,</span><span class="w"> </span><span class="s2">"&lt;mint_url_2&gt;"</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;u</span><span class="kc">n</span><span class="err">ix_</span><span class="kc">t</span><span class="err">imes</span><span class="kc">ta</span><span class="err">mp&gt;</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1236,23 +1236,23 @@
 </ol>
 <h3 id="example-backup-event">Example Backup Event<a class="headerlink" href="#example-backup-event" title="Permanent link">&para;</a></h3>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30078</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;AgAQJBIqWKEEBjGHfoozgDBgVQAAAAC5lQJtJQV_psHckN2KxWsUq7Q-B_twv4M2P3_vJrPMWg&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;mint-list&quot;</span><span class="p">],</span>
-<span class="w">    </span><span class="p">[</span><span class="s2">&quot;client&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;cashu.me&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"kind"</span><span class="p">:</span><span class="w"> </span><span class="mi">30078</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AgAQJBIqWKEEBjGHfoozgDBgVQAAAAC5lQJtJQV_psHckN2KxWsUq7Q-B_twv4M2P3_vJrPMWg"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"tags"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">[</span><span class="s2">"d"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mint-list"</span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="s2">"client"</span><span class="p">,</span><span class="w"> </span><span class="s2">"cashu.me"</span><span class="p">]</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1703721600</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;pubkey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bc9097997d81afb2cc7346b5e4345a9346bd2a506eb7958598a72f0cf85163ea&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;sig&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span>
+<span class="w">  </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="mi">1703721600</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pubkey"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bc9097997d81afb2cc7346b5e4345a9346bd2a506eb7958598a72f0cf85163ea"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"sig"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <p>When decrypted, the content would reveal:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;mints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://mint.example.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;https://another-mint.org&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1703721600</span>
+<span class="w">  </span><span class="nt">"mints"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://mint.example.com"</span><span class="p">,</span><span class="w"> </span><span class="s2">"https://another-mint.org"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1703721600</span>
 <span class="p">}</span>
 </code></pre></div>
 

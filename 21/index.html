@@ -1305,13 +1305,13 @@
 <h2 id="mint">Mint<a class="headerlink" href="#mint" title="Permanent link">&para;</a></h2>
 <h3 id="signalling-protected-endpoints">Signalling protected endpoints<a class="headerlink" href="#signalling-protected-endpoints" title="Permanent link">&para;</a></h3>
 <p>The mint lists each protected endpoint that requires a clear authentication token (CAT) in the <code>MintClearAuthSetting</code> in its <a href="../06/">NUT-06</a> info response:</p>
-<div class="codehilite"><pre><span></span><code><span class="nt">&quot;21&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;openid_discovery&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://mint.com:8080/realms/nutshell/.well-known/openid-configuration&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;client_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cashu-client&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;protected_endpoints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<div class="codehilite"><pre><span></span><code><span class="nt">"21"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"openid_discovery"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://mint.com:8080/realms/nutshell/.well-known/openid-configuration"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"client_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cashu-client"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"protected_endpoints"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/v1/auth/blind/mint&quot;</span>
+<span class="w">        </span><span class="nt">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"POST"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/v1/auth/blind/mint"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
