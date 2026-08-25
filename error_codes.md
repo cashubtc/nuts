@@ -50,6 +50,7 @@
 | 15012 | Pool selection does not match `outputs`            | [NUT-Exchange-partial-fill][partial-fill]              |
 | 15013 | Pool role/keyset or two-class consistency violated | [NUT-Exchange-partial-fill][partial-fill]              |
 | 15014 | Pool policy violation (rate/min/max/overflow)      | [NUT-Exchange-partial-fill][partial-fill]              |
+| 15015 | Coordinator authentication failed                  | [NUT-Exchange][exchange]                               |
 
 [00]: 00.md
 [01]: 01.md
