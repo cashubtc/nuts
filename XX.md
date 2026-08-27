@@ -473,9 +473,19 @@ they are blinded differently because they use different derivation contexts
 (`sender_stage1` and `sender_stage1_refund`), and therefore the mint cannot
 see that `data` and `refund` correspond to the same underlying party.
 
-As the swap that spends this funding token uses SIG_ALL, the same stage-1 pubkey blinding applies
-to every funding output. The deterministic nonce and blind-signature blinding factor are still
-derived separately for each output.
+When the funding proofs are spent together as `SIG_ALL` inputs, every
+funding proof MUST have the same P2PK `Secret.data` and `Secret.tags`, as
+required by NUT-11. Therefore, all funding proofs use the same blinded
+stage-1 sender, receiver, and refund pubkeys. The `Secret.nonce` and Cashu
+blind-signature blinding factor are still derived separately for each
+funding output.
+
+This does not prevent per-proof P2BK blinding of the commitment outputs.
+`SIG_ALL` applies to the funding proofs used as inputs and commits to the
+`amount` and `B_` of every commitment output. It does not require those
+outputs to have identical P2PK spending conditions. Once issued as Proofs,
+the commitment outputs use the default `SIG_INPUTS` behavior, so each can
+have its own deterministic `e`, `E`, `p2pk_e`, and blinded recipient key.
 
 Example funding token secret (JSON):
 
