@@ -141,7 +141,7 @@ complexity to ensure that the payments cover fees for both stages.
 │                         FUNDING TOKEN                                   │
 │                  (total_funding_token_amount)                           │
 │                                                                         │
-│  Created by Alice with P2BK proofs requiring both signatures (SIG_ALL)  │
+│  Created by Alice with blinded P2PK proofs (SIG_ALL)                    │
 │  After the expiry time, Alice's signature alone is sufficient           │
 └─────────────────────────────────────────────────────────────────────────┘
                                   │
@@ -442,12 +442,13 @@ where `output_context` is one of `funding`, `sender` or `receiver`.
 The `blinding_factor` here is the per-proof factor used in the Cashu blind-signature
 scheme; it is separate from the pubkey-tweak derivations described below.
 
-## Funding Token Secret (2-of-2 with Blinded Pubkeys)
+## Funding Token Secret (2-of-2 with XX-Specific Blinded Pubkeys)
 
-The keys are blinded. Later, we discuss how the 1-of-1 keys for the commitment outputs
-are blinded using a NUT-28-style shared-secret scheme.
-But (for now, we should change to NUT-28 for this too), a simpler deterministic
-scalar-tweak scheme is used for the 2-of-2 keys - and refund key - in the funding token.
+The funding token uses an XX-specific deterministic scalar-tweak construction
+for its 2-of-2 keys and refund key. It does not use the NUT-28 ECDH/tweak
+construction, and funding proofs do not carry `p2pk_e` metadata. NUT-28
+applies only to the 1-of-1 commitment outputs described below.
+
 For the funding token, the blinded pubkeys are derived directly from
 context-specific scalars of the form:
 
