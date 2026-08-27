@@ -428,11 +428,11 @@ The secret's _nonce_ and the blind-signature _blinding factor_ are computed as f
 ```
 deterministic_nonce(...)
  =
-   SHA256(channel_secret || "{channel_id}|{output_context}|{amount}|nonce|{index}")
+   HMAC-SHA256(key = channel_secret, message = "{channel_id}|{output_context}|{amount}|nonce|{index}")
 
 blinding_factor(...)
  =
-   SHA256(channel_secret || "{channel_id}|{output_context}|{amount}|blinding|{index}")
+   HMAC-SHA256(key = channel_secret, message = "{channel_id}|{output_context}|{amount}|blinding|{index}")
 ```
 
 where `output_context` is one of `funding`, `sender` or `receiver`.
@@ -522,12 +522,15 @@ where `stage2_context` is `receiver_stage2` or `sender_stage2`, for Charlie's ba
 The `retry_counter` is incremented until the hash yields such a valid scalar
 for use as the ephemeral secret key.
 
-Then an ECDH shared secret is computed between that ephemeral private key and
-the recipient's public key, and the NUT-28 tweak scalar is derived as:
+ Then an ECDH shared secret is computed as defined by NUT-28 P2BK. Let `Zx` denote the 32-byte x-coordinate shared secret from NUT-28:
+ 
+   - sender side: `Zx = x(eP)` 
+   - receiver side: `Zx = x(pE)`
 
-```
-stage2_tweak_scalar = SHA256("Cashu_P2BK_v1" || shared_secret_x || 0x00)
-```
+where `e` is the sender ephemeral private key, `E = eG` is the sender ephemeral public key, `p` is the recipient private key, and `P = pG` is the recipient public key.
+
+`stage2_tweak_scalar = SHA256("Cashu_P2BK_v1" || Zx || 0x00)`
+      
 
 If that does not yield a valid scalar, the current implementation
 retries with an extra trailing `0xff` byte.
