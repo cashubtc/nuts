@@ -215,12 +215,32 @@ and a minimum channel lifetime that Charlie requires, Alice defines the channel 
  - `setup_timestamp` unix timestamp: the time when Alice is setting up this channel
 
 There is also a _channel secret_, derived from an ECDH shared secret
-between the two parties, with a domain separator to ensure the raw
-Diffie-Hellman value is never used directly:
+between the two parties. Let `P = alice_secret * charlie_pubkey`.
+`P` MUST be serialized as a 33-byte compressed SEC1 public key, using
+prefix `0x02` when its Y coordinate is even and `0x03` when it is odd.
+Define:
 
 ```
-channel_secret = SHA256("Cashu_Spilman_channel_secret_v1" || ECDH(alice_secret, charlie_pubkey))
+dh = SHA256(compressed_SEC1(P))
 ```
+
+This is the default ECDH output of libsecp256k1. Charlie obtains the
+same `dh` with `P = charlie_secret * alice_pubkey`.
+
+`channel_secret` is the 32-byte output of:
+
+```
+HKDF-SHA256(
+    salt = empty byte string,
+    ikm = dh,
+    info = b"Cashu_Spilman_channel_secret_v1",
+    length = 32
+)
+```
+
+The HKDF invocation is as specified by RFC 5869. This derives a
+protocol-specific secret without using the raw Diffie-Hellman value
+directly.
 
 The `channel_id` is the SHA256 hash of the following pipe-delimited string:
 
