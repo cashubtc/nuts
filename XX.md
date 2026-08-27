@@ -535,11 +535,31 @@ specified by NUT-28. The `p2pk_e` field is Proof metadata and is not part
 of the P2PK secret. Because `e` is derived deterministically above, `E`
 and `p2pk_e` are deterministic for each `(stage2_context, amount, index)`.
 
-`stage2_tweak_scalar = SHA256("Cashu_P2BK_v1" || Zx || 0x00)`
-      
+Unlike the NUT-28 sender workflow, `e` is derived deterministically above
+rather than generated randomly. Once `e` has been selected, the tweak is
+derived according to NUT-28. Because each commitment-output secret contains
+only the `data` key, its P2BK slot index is `0`, encoded as the single byte
+`0x00`:
 
-If that does not yield a valid scalar, the current implementation
-retries with an extra trailing `0xff` byte.
+```
+stage2_tweak_scalar =
+    SHA256(b"Cashu_P2BK_v1" || Zx || 0x00)
+```
+
+The digest is interpreted as an unsigned 256-bit integer and MUST NOT be
+reduced modulo the secp256k1 group order `n`. It is valid only when
+`1 <= stage2_tweak_scalar < n`.
+
+If it is invalid, retry once as specified by NUT-28:
+
+```
+stage2_tweak_scalar =
+    SHA256(b"Cashu_P2BK_v1" || Zx || 0x00 || 0xff)
+```
+
+If the second value is also invalid, discard the ephemeral keypair `e`/`E`,
+increment `retry_counter`, and restart from the deterministic derivation of
+`ephemeral_secret`.
 
 That scalar is then applied to the recipient's pubkey, where the recipient
 can then use the NUT-28 / BIP-340 parity rules to derive the corresponding private key
