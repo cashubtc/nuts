@@ -192,8 +192,9 @@ amounts that each party gets after completing the second stage of the exit will 
 Knowing Charlie's public key, and the set of mints and _units_ and keysets that are trusted by Charlie,
 and a minimum channel lifetime that Charlie requires, Alice defines the channel parameters as follows:
 
- - `sender_pubkey`: Alice's key. Could be an ephemeral pubkey just for this channel
- - `receiver_pubkey`: Charlie's key.
+ - `sender_pubkey`: Alice's 33-byte compressed SEC1 public key. It may be
+   an ephemeral public key used only for this channel.
+ - `receiver_pubkey`: Charlie's 33-byte compressed SEC1 public key.
 
  - `mint` string: URL of mint
  - `unit`: typically `sat` or `msat`
@@ -230,8 +231,10 @@ setup_timestamp | sender_pubkey | receiver_pubkey |
 expiry_timestamp | hex(channel_secret)
 ```
 
-The public keys are represented in hex, and `channel_secret` is hex-encoded before
-being inserted into that string.
+The public keys are represented as lowercase hexadecimal encodings of their
+33-byte compressed SEC1 forms. This exact encoding MUST be used when constructing
+the `channel_id`. The `channel_secret` is also lowercase hex-encoded before being
+inserted into that string.
 
 The channel secret is to add a little extra privacy here, by making it more difficult
 for a third party, especially the mint, to predict what the `channel_id` might be.
