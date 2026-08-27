@@ -450,10 +450,19 @@ construction, and funding proofs do not carry `p2pk_e` metadata. NUT-28
 applies only to the 1-of-1 commitment outputs described below.
 
 For the funding token, the blinded pubkeys are derived directly from
-context-specific scalars of the form:
+context-specific scalars. For each `retry_counter`, construct:
 
 ```
-r = SHA256("Cashu_Spilman_P2BK_v1" || channel_secret || "{channel_id}|{context}|{retry_counter}")
+message =
+    b"Cashu_Spilman_stage1_key_tweak_v1" ||
+    UTF8(channel_id) || b"|" ||
+    UTF8(context) || b"|" ||
+    UTF8(decimal(retry_counter))
+
+r_candidate = HMAC-SHA256(
+    key = channel_secret,
+    message = message
+)
 ```
 
 where `context` is one of:
@@ -461,9 +470,15 @@ where `context` is one of:
 - `receiver_stage1`
 - `sender_stage1_refund`
 
-The `retry_counter` is incremented until a valid scalar is found,
-i.e. one in the range `1 <= s < n` where `n` is the secp256k1 group order.
-That scalar is then applied directly to the relevant party's pubkey, with
+The `channel_secret` is the raw 32-byte HMAC key. `retry_counter` starts at
+`0` and increments through `255`; its decimal representation uses base-10
+ASCII without leading zeros. Interpret `r_candidate` as an unsigned
+big-endian integer. It is valid only when `1 <= r_candidate < n`, where `n`
+is the secp256k1 group order; it MUST NOT be reduced modulo `n`. The first
+valid candidate is used. If all 256 candidates are invalid, channel
+construction fails.
+
+The selected scalar is then applied directly to the relevant party's pubkey, with
 BIP-340 parity handling, to derive the blinded pubkey.
 While Alice and Charlie know the tweaks that are applied, the mint (Bob) does not.
 
