@@ -529,6 +529,12 @@ for use as the ephemeral secret key.
 
 where `e` is the sender ephemeral private key, `E = eG` is the sender ephemeral public key, `p` is the recipient private key, and `P = pG` is the recipient public key.
 
+For each commitment output, `E` MUST be encoded as a 33-byte compressed
+SEC1 public key and included in the resulting Proof's `p2pk_e` field, as
+specified by NUT-28. The `p2pk_e` field is Proof metadata and is not part
+of the P2PK secret. Because `e` is derived deterministically above, `E`
+and `p2pk_e` are deterministic for each `(stage2_context, amount, index)`.
+
 `stage2_tweak_scalar = SHA256("Cashu_P2BK_v1" || Zx || 0x00)`
       
 
