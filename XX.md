@@ -242,19 +242,27 @@ The HKDF invocation is as specified by RFC 5869. This derives a
 protocol-specific secret without using the raw Diffie-Hellman value
 directly.
 
-The `channel_id` is the SHA256 hash of the following pipe-delimited string:
+The `channel_id` is the SHA256 hash of the UTF-8 encoding of the following
+pipe-delimited string. Each `|` below is the single byte `0x7c`; the
+preimage contains no spaces, line breaks, or trailing separator:
 
 ```
-mint | unit | capacity | funding_token_amount |
-keyset_id | input_fee_ppk | maximum_amount_for_one_output |
-setup_timestamp | sender_pubkey | receiver_pubkey |
-expiry_timestamp | hex(channel_secret)
+mint|unit|capacity|funding_token_amount|
+keyset_id|input_fee_ppk|maximum_amount_for_one_output|
+setup_timestamp|sender_pubkey|receiver_pubkey|
+expiry_timestamp|hex(channel_secret)
 ```
 
-The public keys are represented as lowercase hexadecimal encodings of their
-33-byte compressed SEC1 forms. This exact encoding MUST be used when constructing
-the `channel_id`. The `channel_secret` is also lowercase hex-encoded before being
-inserted into that string.
+Text fields use their UTF-8 bytes. The `mint` URL MUST have trailing `/`
+characters removed, as specified by NUT-00. The `mint` and `unit` fields
+MUST NOT contain `|`. `capacity`, `funding_token_amount`, `input_fee_ppk`,
+`maximum_amount_for_one_output`, `setup_timestamp`, and `expiry_timestamp`
+are unsigned integers encoded as base-10 ASCII without a sign or leading
+zeros, except that zero is encoded as `0`. `keyset_id`, `sender_pubkey`,
+`receiver_pubkey`, and `channel_secret` are lowercase hexadecimal encodings.
+The public keys are their 33-byte compressed SEC1 forms, and
+`channel_secret` is its raw 32-byte value. The resulting 32-byte
+`channel_id` is represented externally as lowercase hexadecimal.
 
 The channel secret is to add a little extra privacy here, by making it more difficult
 for a third party, especially the mint, to predict what the `channel_id` might be.
