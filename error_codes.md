@@ -20,6 +20,7 @@
 | 11015 | Max outputs exceeded                            | [NUT-03][03], [NUT-04][04], [NUT-05][05]               |
 | 11016 | Duplicate quote IDs provided                    | [NUT-29][29]                                           |
 | 11017 | Max batch size exceeded                         | [NUT-29][29]                                           |
+| 11018 | Requested expiry cannot be honored              | [NUT-23][23], [NUT-25][25], [NUT-30][30]               |
 | 12001 | Keyset is not known                             | [NUT-02][02], [NUT-04][04]                             |
 | 12002 | Keyset is inactive, cannot sign messages        | [NUT-02][02], [NUT-03][03], [NUT-04][04]               |
 | 12003 | Keyset has expired                              | [NUT-02][02], [NUT-03][03], [NUT-04][04], [NUT-05][05] |
@@ -55,4 +56,7 @@
 [20]: 20.md
 [21]: 21.md
 [22]: 22.md
+[23]: 23.md
+[25]: 25.md
 [29]: 29.md
+[30]: 30.md
