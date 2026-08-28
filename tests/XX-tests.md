@@ -148,3 +148,34 @@ normalized_mint = https://vector-mint.example
 
 The exact UTF-8 SHA-256 preimage and the expected channel ID are therefore the
 same as `spilman-test-vector-channel-id`.
+
+## spilman-test-vector-output-nonce-and-blinding
+
+This vector covers one 64-sat output in the 100-sat funding token from
+`spilman-test-vector-channel-id`. With zero fees and a maximum output amount
+of 64, that funding token has outputs of 64, 32, and 4 sats. This vector does
+not define the funding output's stage-1 P2PK keys; it only defines its
+per-proof NUT-10 nonce and Cashu blind-signature blinding factor.
+
+```text
+channel_id = 7af675f4f1b9843200d23060ebeb5bf5abea67fa511af79aefa4ba6a19b88c2e
+channel_secret = acfc96a584e645524b017b75cfe0770c3b8dc2ba4f9cef6d99f2cb7bcee691cf
+output_context = funding
+amount = 64
+index = 0
+
+nonce_message =
+  7af675f4f1b9843200d23060ebeb5bf5abea67fa511af79aefa4ba6a19b88c2e|funding|64|nonce|0
+nonce_bytes = HMAC-SHA256(channel_secret, nonce_message) =
+  f934dd4311715f9e9af3d338c2b7235581a779f748839ffbfe584b0c1e21e37a
+Secret.nonce = f934dd4311715f9e9af3d338c2b7235581a779f748839ffbfe584b0c1e21e37a
+
+retry_counter = 0
+blinding_message =
+  7af675f4f1b9843200d23060ebeb5bf5abea67fa511af79aefa4ba6a19b88c2e|funding|64|blinding|0|0
+blinding_factor = HMAC-SHA256(channel_secret, blinding_message) =
+  74285411dc702b0e295f143d026b95bd75cf730647a694e5c5b8147f619d1b35
+```
+
+The `blinding_factor` is a valid secp256k1 scalar. It is the first valid
+candidate, so no retry is needed for this vector.
