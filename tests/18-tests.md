@@ -199,7 +199,7 @@ A request for 8 sat to the payee's static key (well-known test key `3`), under a
 
 #### NUMS (leaves-only) request
 
-A request locking payments to their leaves only: `k` is the [NUMS point](../10.md#bare-empty-tweaked-and-script-only-secrets), and the leaf's key (test key `4`) is tagged blind-me, so the payment's ephemeral travels. The payer derives `K = H + u*G` with a fresh `u` per output; `u` is fixed to the scalar of a small test key here for a stable vector.
+A request locking payments to their leaves only: `k` is the [NUMS point](../10.md#the-internal-key), and the leaf's key (test key `4`) is tagged blind-me, so the payment's ephemeral travels. The payer derives `K = H + u*G` with a fresh `u` per output; `u` is fixed to the scalar of a small test key here for a stable vector.
 
 ```json
 {
