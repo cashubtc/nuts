@@ -464,6 +464,23 @@ The deterministic process is a function of five things:
 As these are all deterministic and based on information known to both parties,
 both parties can construct all these outputs and secrets and blinding factors.
 
+## Deterministic Secret Serialization
+
+The exact UTF-8 bytes of a `Secret` are blinded to construct each Cashu
+`BlindedMessage`. For the deterministic outputs defined by this NUT, Alice and
+Charlie MUST therefore use the following compact JSON serialization, rather
+than merely a semantically equivalent JSON value:
+
+- No whitespace is permitted.
+- The P2PK object fields MUST appear in the order `data`, `nonce`, `tags`.
+- The `tags` member MUST always be present and MUST be a JSON array.
+- Tags MUST appear in the order defined for the output type below, and all tag
+  values defined by this NUT are JSON strings.
+- A tagless commitment output MUST encode `tags` as `[]`.
+
+This serialization requirement applies only to deterministic NUT-XX outputs;
+it does not define general canonical JSON for NUT-10 or NUT-11.
+
 The secret's _nonce_ is computed as follows, where all string components are
 UTF-8 encoded and each `|` is the single byte `0x7c`:
 
@@ -576,20 +593,7 @@ have its own deterministic `e`, `E`, `p2pk_e`, and blinded recipient key.
 Example funding token secret (JSON):
 
 ```json
-[
-  "P2PK",
-  {
-    "nonce": "a1b2c3d4e5f678901234567890abcdef...",
-    "data": "02abc123def456789...",
-    "tags": [
-      ["pubkeys", "03def456abc789012..."],
-      ["refund", "02789abcdef012345..."],
-      ["n_sigs", "2"],
-      ["locktime", "1737500000"],
-      ["sigflag", "SIG_ALL"]
-    ]
-  }
-]
+["P2PK",{"data":"02abc123def456789...","nonce":"a1b2c3d4e5f678901234567890abcdef...","tags":[["pubkeys","03def456abc789012..."],["locktime","1737500000"],["n_sigs","2"],["refund","02789abcdef012345..."],["n_sigs_refund","1"],["sigflag","SIG_ALL"]]}]
 ```
 
 Where:
@@ -598,6 +602,10 @@ Where:
 - The `"refund"` tag contains Alice's blinded _refund_ pubkey.
 - `"n_sigs": "2"` requires both Alice and Charlie's signatures before the NUT-11 `locktime` tag, which is the channel's `expiry_timestamp`
 - After that `locktime`, Alice can spend alone using her refund blinded secret key
+
+Funding secrets MUST use the exact template shown above. In particular, the
+tags are ordered `pubkeys`, `locktime`, `n_sigs`, `refund`, `n_sigs_refund`,
+then `sigflag`.
 
 ## Commitment Output Secrets (1-of-1 with Per-Proof Blinded Pubkeys)
 
@@ -676,14 +684,7 @@ for that specific `(amount, index)` output.
 Example commitment output secret for Charlie (JSON):
 
 ```json
-[
-  "P2PK",
-  {
-    "nonce": "b2c3d4e5f6a1234567890abcdef01234...",
-    "data": "02charlie_blinded_pubkey_for_this_output...",
-    "tags": null
-  }
-]
+["P2PK",{"data":"02charlie_blinded_pubkey_for_this_output...","nonce":"b2c3d4e5f6a1234567890abcdef01234...","tags":[]}]
 ```
 
 The `"data"` field contains Charlie's blinded pubkey derived as described above.
@@ -691,18 +692,12 @@ The `"data"` field contains Charlie's blinded pubkey derived as described above.
 Example commitment output secret for Alice (JSON):
 
 ```json
-[
-  "P2PK",
-  {
-    "nonce": "c3d4e5f6a1b234567890abcdef012345...",
-    "data": "02alice_blinded_pubkey_for_this_output...",
-    "tags": null
-  }
-]
+["P2PK",{"data":"02alice_blinded_pubkey_for_this_output...","nonce":"c3d4e5f6a1b234567890abcdef012345...","tags":[]}]
 ```
 
 The `"data"` field contains Alice's blinded pubkey derived as described above.
-No explicit `sigflag` tag is required here; a missing or `null` tag set is interpreted as the default `SIG_INPUTS` behavior.
+No explicit `sigflag` tag is required here; the empty tag set uses the default
+`SIG_INPUTS` behavior.
 
 # Order of outputs in the commitment transaction
 

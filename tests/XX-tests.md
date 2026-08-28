@@ -180,3 +180,176 @@ blinding_factor = HMAC-SHA256(channel_secret, blinding_message) =
 
 The `blinding_factor` is a valid secp256k1 scalar. It is the first valid
 candidate, so no retry is needed for this vector.
+
+## spilman-test-vector-amount-selection-keysetv2
+
+This vector selects funding-output denominations from the Shared Deterministic
+V2 Mint Fixture.
+
+```text
+target = 100
+maximum_amount_for_one_output = 64
+selected_amounts_largest_first = 64, 32, 4
+```
+
+## spilman-test-vector-amount-selection-keysetv2-max32
+
+This is the same V2-keyset target with a lower per-output maximum.
+
+```text
+target = 100
+maximum_amount_for_one_output = 32
+selected_amounts_largest_first = 32, 32, 32, 4
+```
+
+## spilman-test-vector-stage1-key-tweaks-keysetv2
+
+This vector derives the three shared P2PK keys used by every funding proof.
+Each `message` is the exact HMAC-SHA256 input. All retry counters are `0`.
+
+```text
+channel_id = 7af675f4f1b9843200d23060ebeb5bf5abea67fa511af79aefa4ba6a19b88c2e
+channel_secret = acfc96a584e645524b017b75cfe0770c3b8dc2ba4f9cef6d99f2cb7bcee691cf
+prefix = Cashu_Spilman_stage1_key_tweak_v1
+
+sender_stage1:
+  original_pubkey = 0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+  message = Cashu_Spilman_stage1_key_tweak_v17af675f4f1b9843200d23060ebeb5bf5abea67fa511af79aefa4ba6a19b88c2e|sender_stage1|0
+  scalar = 2c30d26a35b0d093bab0d1d58f6c70572c0c7cd82cb0ecc34d7e26a54a0eae49
+  blinded_pubkey = 03da88bac82ac2731d6f4463e2d981824ea2d0e4862215bf8a422b1afe4eea6a8d
+
+receiver_stage1:
+  original_pubkey = 02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5
+  message = Cashu_Spilman_stage1_key_tweak_v17af675f4f1b9843200d23060ebeb5bf5abea67fa511af79aefa4ba6a19b88c2e|receiver_stage1|0
+  scalar = ea4bf4110a5c73c232ea288adf577be653d334521a82f71a767fdbe66fb49614
+  blinded_pubkey = 03c988d50c11fa634afdd519e2a9ce751adf29f0b17ad6251b7c199fdf9c1f7455
+
+sender_stage1_refund:
+  original_pubkey = 0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+  message = Cashu_Spilman_stage1_key_tweak_v17af675f4f1b9843200d23060ebeb5bf5abea67fa511af79aefa4ba6a19b88c2e|sender_stage1_refund|0
+  scalar = 45ad552923c0cd0e988c5a929766c7da81e1b6eced096ff745a3f95b30abbc2b
+  blinded_pubkey = 02d9194f39e5689e97a4f20614b09e5ec751edc41f63d0bde6fc39d7dfeba74760
+```
+
+## spilman-test-vector-funding-outputs-keysetv2
+
+This vector combines the 100-sat amount-selection and stage-1 vectors. Outputs
+are in Cashu smallest-first order. Each secret is the NUT-10 P2PK JSON with
+the shared `data`, `pubkeys`, `locktime`, `n_sigs`, `refund`,
+`n_sigs_refund`, and `sigflag = SIG_ALL` fields defined above; only `nonce`
+varies by output.
+
+```text
+keyset_id = 01fd5a9250eb619ce33b33bf6e752634a5a8ca4bb629c6b48a99db9c94d09d310d
+
+amount = 4
+index = 0
+secret = ["P2PK",{"data":"03da88bac82ac2731d6f4463e2d981824ea2d0e4862215bf8a422b1afe4eea6a8d","nonce":"e9aad80a4e747e570bb68cff4f8a33f8c2d904f424e695f9e2febf92bbd4fb30","tags":[["pubkeys","03c988d50c11fa634afdd519e2a9ce751adf29f0b17ad6251b7c199fdf9c1f7455"],["locktime","1800000000"],["n_sigs","2"],["refund","02d9194f39e5689e97a4f20614b09e5ec751edc41f63d0bde6fc39d7dfeba74760"],["n_sigs_refund","1"],["sigflag","SIG_ALL"]]}]
+nonce = e9aad80a4e747e570bb68cff4f8a33f8c2d904f424e695f9e2febf92bbd4fb30
+blinding_factor = 89d7fc20c07229e615c9365c83b70938566037c55fe61c102afee78ff44fab66
+blinded_message = 027e3b02f160f2d75b276bd411821a2fc66bd3ba4aed5fc23b9a88e472dd641134
+
+amount = 32
+index = 0
+secret = ["P2PK",{"data":"03da88bac82ac2731d6f4463e2d981824ea2d0e4862215bf8a422b1afe4eea6a8d","nonce":"879abe0662d57e86ec39d715103c1c95814780b29752c01aadb0888b92d3c081","tags":[["pubkeys","03c988d50c11fa634afdd519e2a9ce751adf29f0b17ad6251b7c199fdf9c1f7455"],["locktime","1800000000"],["n_sigs","2"],["refund","02d9194f39e5689e97a4f20614b09e5ec751edc41f63d0bde6fc39d7dfeba74760"],["n_sigs_refund","1"],["sigflag","SIG_ALL"]]}]
+nonce = 879abe0662d57e86ec39d715103c1c95814780b29752c01aadb0888b92d3c081
+blinding_factor = 932933b55f73dfc76c8fd04e671360e46fc2be33878e83ebde17a5c48651744c
+blinded_message = 034e10f284aceb8d8a316105f2533583c7f4e5ea6b2102f276403d061f1ee9460f
+
+amount = 64
+index = 0
+secret = ["P2PK",{"data":"03da88bac82ac2731d6f4463e2d981824ea2d0e4862215bf8a422b1afe4eea6a8d","nonce":"f934dd4311715f9e9af3d338c2b7235581a779f748839ffbfe584b0c1e21e37a","tags":[["pubkeys","03c988d50c11fa634afdd519e2a9ce751adf29f0b17ad6251b7c199fdf9c1f7455"],["locktime","1800000000"],["n_sigs","2"],["refund","02d9194f39e5689e97a4f20614b09e5ec751edc41f63d0bde6fc39d7dfeba74760"],["n_sigs_refund","1"],["sigflag","SIG_ALL"]]}]
+nonce = f934dd4311715f9e9af3d338c2b7235581a779f748839ffbfe584b0c1e21e37a
+blinding_factor = 74285411dc702b0e295f143d026b95bd75cf730647a694e5c5b8147f619d1b35
+blinded_message = 03fb84f24c1bb271786a89aaeaff334c36db02bde6e1f9607d69f94db907b48bbf
+```
+
+## spilman-test-vector-stage2-p2bk-keysetv2
+
+This vector fixes the NUT-28 derivation for the commitment-output `(amount,
+index) = (32, 0)` slot. Both entries use the channel ID and channel secret from
+`spilman-test-vector-channel-id-keysetv2`; both scalar retry counters are zero.
+
+```text
+amount = 32
+index = 0
+
+context = receiver_stage2
+recipient_pubkey = 02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5
+ephemeral_secret = dc2029be89e39a26f5a49653a7de750807002f9549f4774ed8c6376d1cf4bc7b
+p2pk_e = 02224366f001c35581b8316a62160d4e5733f102757a1a824d8e41a9ad795d5a90
+shared_secret_x = e5198d9a589490993b1edd9c5bf76e31bf9610bdca088654fb2d654b62a0085d
+p2bk_scalar = 51db52022fe771a7e084346852a2115fbefd204efe4fb6c5e94cd3844c718e75
+blinded_pubkey = 0397dfedc39293131c2d4c5f76169001e2b11057284dc9345e8178f3ce035660df
+
+context = sender_stage2
+recipient_pubkey = 0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+ephemeral_secret = b0a12b2dc14d71c23a27c02d35ebde1eccdc50984fac5b4597099cc653a6d69b
+p2pk_e = 02a1be7b930f67d26fd168214a18f5c208cb21cda5f6f08bbf61930cae109d5a39
+shared_secret_x = a1be7b930f67d26fd168214a18f5c208cb21cda5f6f08bbf61930cae109d5a39
+p2bk_scalar = 891005d4ef10bee9b46144fec3d81f051e8d5db42c6078f60a0fd1ad0c4798db
+blinded_pubkey = 023725a2912497df0d49de8269b778e664b917e6c919e122fd099e2e99be03f1af
+```
+
+## spilman-test-vector-commitment-outputs-keysetv2
+
+This vector uses the zero-fee 100-sat channel and a 50-sat receiver balance.
+Receiver and sender each receive deterministic amounts `2 + 16 + 32`. Each
+`secret` is the exact canonical UTF-8 JSON string defined by NUT-XX; every
+tagless secret uses `"tags":[]`.
+
+```text
+keyset_id = 01fd5a9250eb619ce33b33bf6e752634a5a8ca4bb629c6b48a99db9c94d09d310d
+receiver_balance = 50
+
+context = receiver
+amount = 2
+index = 0
+secret = ["P2PK",{"data":"03aae5610f300463773890d489bc8638324b7d9966c6aec461b9afe2859cf2be9f","nonce":"008b267f22e9da9672d141c6ca72f069c464e1863909d82e4ccdd0fbca0fe658","tags":[]}]
+p2pk_e = 0254f06f28d614849f7e90c53171b194c358a625864cdf26fec99c78553c6781c5
+blinding_factor = 9c9107c949e3bb007439519cad428379702bfac828b33fcad7a5b885ba2a95bf
+blinded_message = 033a81f9199fda2d0b6955a4114cd2ddffc52b2ddf89197b5a04bd806c8843399e
+
+context = receiver
+amount = 16
+index = 0
+secret = ["P2PK",{"data":"03f8d7134afdf587bf8d40d79ae4aab8905e3a2bb378493a46de13daadff24a2b4","nonce":"fe4ac5c03c0dca0ef9af528fddb8975558d03ae7a7f73a93e3718d6f52f4c2f0","tags":[]}]
+p2pk_e = 029927a0192b8c65ad0e4ddbfcb476b4f9f6c4deb8746a4810eb767cfa81d62195
+blinding_factor = 3bc38b19a49bc506cee66eca9a779dcb4fc132aea294713150532fae82152e39
+blinded_message = 03dc893fd2f3a9509d2f0ed30459aff829cede98826aea0a6ee7a80948c2d74e32
+
+context = receiver
+amount = 32
+index = 0
+secret = ["P2PK",{"data":"0397dfedc39293131c2d4c5f76169001e2b11057284dc9345e8178f3ce035660df","nonce":"0c640e9c0e7b5c13d519e6a5dbae6d84fc8b71a2da736689fd950606aa3abd07","tags":[]}]
+p2pk_e = 02224366f001c35581b8316a62160d4e5733f102757a1a824d8e41a9ad795d5a90
+blinding_factor = de8dedd0c3484e02422ee298d7fa97cca44b80d82d7c6b7ab33743aa32d78e3d
+blinded_message = 024e661853c27f2e83300b1ad45c85290861a6eb2d8567ae6595eb6e582770ddf1
+
+context = sender
+amount = 2
+index = 0
+secret = ["P2PK",{"data":"02ff4d525e601d93409a27b86704fd4fef883bba75729cf88eb2e8d59de3a55c58","nonce":"a5a204390c60cca38988fcedc3f77bef1f32272cef922082f3a8cb8de6fbc73d","tags":[]}]
+p2pk_e = 028db3f60a69b312696ca1e54e49a0ea3b9b1aaaf3c1405b412333ac07771707de
+blinding_factor = 2c0d9ab01f983f1610a9f8a9b1a3773923bda5e8938b5a15b89c13f02ea0ccd9
+blinded_message = 02cf1e71062b1e7ff01986cd0160174c7b039b4b94cd0ef5e1518fe776a1b3154d
+
+context = sender
+amount = 16
+index = 0
+secret = ["P2PK",{"data":"039da1bb99af72c4e3359961d06a27fcba0b09c6e9ced64682c5c58f8166df06b5","nonce":"fa5eac4d875dbb343a5840d62a9b6fd0b90d1ee08f1a0b627ba7767c0c622881","tags":[]}]
+p2pk_e = 02f7895660f690f1d498e2f215a7e6de772407b954d09b75e579ed4a284c3a28f7
+blinding_factor = 603d1b5b9c66de9a5144c19bbac91e943feccb8d5d408c7a1ce4092bc5bd4b8f
+blinded_message = 02a2f5005d6b714b9c35e9806a9c9f45fd6d7055a112e4f22551c555ccb945d550
+
+context = sender
+amount = 32
+index = 0
+secret = ["P2PK",{"data":"023725a2912497df0d49de8269b778e664b917e6c919e122fd099e2e99be03f1af","nonce":"d19c3e67ae5c9aa3d737ccd349cb83c8f384ec5940d166238da8eef54fcd0cfe","tags":[]}]
+p2pk_e = 02a1be7b930f67d26fd168214a18f5c208cb21cda5f6f08bbf61930cae109d5a39
+blinding_factor = df1c0c9bb910d9dcbace8fa188e38c72ec9e90474b9c574d789aa45b1c31b530
+blinded_message = 035ff45bffcec127d65c52aad3fd866591cfd6cdb24cfc95761c1faed0647e1fb5
+
+stable_swap_output_order =
+  receiver:2, sender:2, receiver:16, sender:16, receiver:32, sender:32
+```
