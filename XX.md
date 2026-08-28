@@ -857,4 +857,4 @@ This delay is to make it more difficult for the mint to correlate the three 'exi
 
 # proof-of-concept
 
-_As of 2026-03-20, the implementation includes P2BK (Pay-to-Blinded-Key) with per-proof blinding for stage 2 outputs. The funding and commitment outputs are deterministic with blinded pubkeys. Fees are taken into account fully. The token-state-check and token-restore endpoints are used. The implementation is [here](https://github.com/SatsAndSports/demo_of_spillman_cashu_channel/tree/spilman.channel/crates/cdk/src/spilman), with many integration tests._
+_As of 2026-03-20, the implementation includes P2BK (Pay-to-Blinded-Key) with per-proof blinding for stage 2 outputs. The funding and commitment outputs are deterministic with blinded pubkeys. Fees are taken into account fully. The token-state-check and token-restore endpoints are used. The implementation is [here](https://github.com/SatsAndSports/cashu_spilman_channels), with many integration tests._
