@@ -445,28 +445,57 @@ The deterministic outputs are created in one of three `context` values:
 
 The deterministic process is a function of five things:
 
- - the `channel_id`, the hex representation of the channel_id.
- - the `context` as a string
- - the `amount` in decimal representation, e.g. "32" for 32 satoshis
- - the `index` in decimal representation.
+ - the `channel_id`, represented as 64 lowercase hexadecimal characters.
+ - the `context` as a string.
+ - the `amount` in base-10 ASCII without leading zeros, e.g. `32` for 32 satoshis.
+ - the `index` in base-10 ASCII without leading zeros.
  - the `channel_secret` mentioned earlier. Using this ensures that the mint cannot compute the outputs even if they know the channel_id.
 
 As these are all deterministic and based on information known to both parties,
 both parties can construct all these outputs and secrets and blinding factors.
 
-The secret's _nonce_ and the blind-signature _blinding factor_ are computed as follows:
+The secret's _nonce_ is computed as follows, where all string components are
+UTF-8 encoded and each `|` is the single byte `0x7c`:
 
 ```
-deterministic_nonce(...)
- =
-   HMAC-SHA256(key = channel_secret, message = "{channel_id}|{output_context}|{amount}|nonce|{index}")
+nonce_message =
+    UTF8(channel_id) || b"|" ||
+    UTF8(output_context) || b"|" ||
+    UTF8(decimal(amount)) || b"|nonce|" ||
+    UTF8(decimal(index))
 
-blinding_factor(...)
- =
-   HMAC-SHA256(key = channel_secret, message = "{channel_id}|{output_context}|{amount}|blinding|{index}")
+nonce_bytes = HMAC-SHA256(key = channel_secret, message = nonce_message)
+Secret.nonce = lowercase_hex(nonce_bytes)
 ```
 
-where `output_context` is one of `funding`, `sender` or `receiver`.
+All 32-byte `nonce_bytes` values are valid; the nonce is not a secp256k1
+scalar.
+
+The blind-signature _blinding factor_ is a secp256k1 scalar. For each
+`retry_counter`, construct:
+
+```
+blinding_message =
+    UTF8(channel_id) || b"|" ||
+    UTF8(output_context) || b"|" ||
+    UTF8(decimal(amount)) || b"|blinding|" ||
+    UTF8(decimal(index)) || b"|" ||
+    UTF8(decimal(retry_counter))
+
+blinding_candidate = HMAC-SHA256(
+    key = channel_secret,
+    message = blinding_message
+)
+```
+
+`retry_counter` starts at `0` and increments through `255`; its decimal
+representation uses base-10 ASCII without leading zeros. Interpret
+`blinding_candidate` as an unsigned big-endian integer. It is valid only
+when `1 <= blinding_candidate < n`, where `n` is the secp256k1 group order;
+it MUST NOT be reduced modulo `n`. The first valid candidate is the blinding
+factor. If all 256 candidates are invalid, output construction fails.
+
+`output_context` is exactly one of `funding`, `sender`, or `receiver`.
 The `blinding_factor` here is the per-proof factor used in the Cashu blind-signature
 scheme; it is separate from the pubkey-tweak derivations described below.
 
