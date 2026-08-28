@@ -2,7 +2,7 @@
 
 `optional`
 
-`depends on: NUT-11 (P2PK), NUT-12 (DLEQ), NUT-09 (restore signatures), NUT-07 (token state check), NUT-28 (P2BK), (NUT-17 is beneficial, but not required)`
+`depends on: NUT-11 (P2PK), NUT-12 (DLEQ for V1/V2 keysets), NUT-09 (restore signatures), NUT-07 (token state check), NUT-28 (P2BK), (NUT-17 is beneficial, but not required)`
 
 ---
 
@@ -39,6 +39,16 @@ This document doesn't discuss transport of the payments.
 This doesn't discuss how prices will be negotiated.
 This document is purely cryptographic, specifying the outputs (`BlindedMessage`) to use, and
 what is needed to construct and sign and verify the transactions.
+
+# Keyset versions
+
+This draft supports NUT-02 V1 and V2 keysets. V1 keysets remain accepted but
+are discouraged; all published test vectors use V2 keysets.
+
+This draft will be extended to support V3 keysets. Unlike V1 and V2, V3 proof
+validation does not require DLEQ, and its spending conditions use a
+substantially different encoding from the NUT-10/NUT-11 P2PK structure used
+here.
 
 # Overview and terminology and determinism
 

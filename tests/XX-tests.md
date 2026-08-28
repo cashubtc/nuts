@@ -52,7 +52,7 @@ channel_secret =
 Charlie obtains the same `shared_point`, `dh`, and `channel_secret` from
 `charlie_secret_key * alice_public_key`.
 
-## Shared Deterministic Mint Fixture
+## Shared Deterministic V2 Mint Fixture
 
 The vectors below use this real SAT keyset. It is generated directly with CDK
 from the public test-only mnemonic below and MUST NOT be used for funds. This
@@ -60,6 +60,7 @@ fixture documents test data only; it does not specify Offline Spilman behavior.
 
 ```text
 mint_seed_mnemonic = nut nut nut nut nut nut nut nut nut nut nut crunch
+keyset_version = v2
 unit = sat
 input_fee_ppk = 0
 denominations = 1, 2, 4, ..., 2147483648
@@ -103,11 +104,11 @@ The complete public SAT keyset is:
 2147483648=022d410dc2dd4a4e14e4deda462afd1dd7a61a0a2a9f2d3b92b8c7b091bfd45598
 ```
 
-## spilman-test-vector-channel-id
+## spilman-test-vector-channel-id-keysetv2
 
 This vector defines the canonical channel-ID encoding in the [Offline Spilman
 channel draft](../XX.md). Its `keyset_id` and `input_fee_ppk` are from the
-Shared Deterministic Mint Fixture.
+Shared Deterministic V2 Mint Fixture.
 
 ```text
 mint = https://vector-mint.example
@@ -135,11 +136,11 @@ channel_id = SHA256(preimage) =
   7af675f4f1b9843200d23060ebeb5bf5abea67fa511af79aefa4ba6a19b88c2e
 ```
 
-## spilman-test-vector-channel-id-mint-trailing-slash
+## spilman-test-vector-channel-id-keysetv2-mint-trailing-slash
 
 This vector verifies that a trailing slash in the mint URL does not affect the
 channel ID. All inputs and the expected output are the same as
-`spilman-test-vector-channel-id`, except:
+`spilman-test-vector-channel-id-keysetv2`, except:
 
 ```text
 mint_input = https://vector-mint.example/
@@ -147,12 +148,12 @@ normalized_mint = https://vector-mint.example
 ```
 
 The exact UTF-8 SHA-256 preimage and the expected channel ID are therefore the
-same as `spilman-test-vector-channel-id`.
+same as `spilman-test-vector-channel-id-keysetv2`.
 
-## spilman-test-vector-output-nonce-and-blinding
+## spilman-test-vector-output-nonce-and-blinding-keysetv2
 
 This vector covers one 64-sat output in the 100-sat funding token from
-`spilman-test-vector-channel-id`. With zero fees and a maximum output amount
+`spilman-test-vector-channel-id-keysetv2`. With zero fees and a maximum output amount
 of 64, that funding token has outputs of 64, 32, and 4 sats. This vector does
 not define the funding output's stage-1 P2PK keys; it only defines its
 per-proof NUT-10 nonce and Cashu blind-signature blinding factor.
