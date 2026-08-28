@@ -594,19 +594,31 @@ Where:
 Each commitment output is locked to a **unique** blinded pubkey derived from the specific `(amount, index)` of that output.
 
 For the 1-of-1 P2PK secret in the commitment outputs, a per-output
-ephemeral private key is computed as:
+ephemeral private key is derived as follows. For each `retry_counter`,
+construct:
 
 ```
-ephemeral_secret = SHA256(
-    "Cashu_Spilman_P2BK_ephemeral_v1" ||
+ephemeral_message =
+    b"Cashu_Spilman_P2BK_ephemeral_v1" ||
     channel_secret ||
-    "{channel_id}|{stage2_context}|{amount}|{index}|{retry_counter}"
-)
+    UTF8(channel_id) || b"|" ||
+    UTF8(stage2_context) || b"|" ||
+    UTF8(decimal(amount)) || b"|" ||
+    UTF8(decimal(index)) || b"|" ||
+    UTF8(decimal(retry_counter))
+
+ephemeral_candidate = SHA256(ephemeral_message)
 ```
 
-where `stage2_context` is `receiver_stage2` or `sender_stage2`, for Charlie's balance and Alice's remainder respectively.
-The `retry_counter` is incremented until the hash yields such a valid scalar
-for use as the ephemeral secret key.
+`stage2_context` is exactly `receiver_stage2` or `sender_stage2`, for
+Charlie's balance and Alice's remainder respectively. `retry_counter` starts
+at `0` and increments through `255`; its decimal representation uses base-10
+ASCII without leading zeros. Interpret `ephemeral_candidate` as an unsigned
+big-endian integer. It is valid only when
+`1 <= ephemeral_candidate < n`, where `n` is the secp256k1 group order; it
+MUST NOT be reduced modulo `n`. The first valid candidate is
+`ephemeral_secret`. If all 256 candidates are invalid, output construction
+fails.
 
  Then an ECDH shared secret is computed as defined by NUT-28 P2BK. Let `Zx` denote the 32-byte x-coordinate shared secret from NUT-28:
  
