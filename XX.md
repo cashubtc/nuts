@@ -732,6 +732,19 @@ context    | amount | index
 Alice then signs this (`SIG_ALL`).
 Alice can then send three pieces of data to Charlie: the `channel_id`, the balance for Charlie, and her signature.
 
+The `SIG_ALL` message is the NUT-11 swap aggregation in this exact transaction
+order:
+
+```
+secret_0 || C_0 || ... || secret_n || C_n ||
+amount_0 || B_0 || ... || amount_m || B_m
+```
+
+where each `secret` is its exact canonical NUT-XX serialization, each `C` and
+`B_` is its lowercase compressed SEC1 hex encoding, and each `amount` is its
+base-10 ASCII encoding. Alice and Charlie MUST reconstruct the identical
+message before signing or verifying a balance update.
+
 As already mentioned, Alice must send the full set of channel parameters to Charlie in the first payment - if she hasn't already sent them beforehand -
 but after this it is sufficient for her to send those three pieces of data.
 

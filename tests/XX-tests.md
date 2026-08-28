@@ -353,3 +353,38 @@ blinded_message = 035ff45bffcec127d65c52aad3fd866591cfd6cdb24cfc95761c1faed0647e
 stable_swap_output_order =
   receiver:2, sender:2, receiver:16, sender:16, receiver:32, sender:32
 ```
+
+## spilman-test-vector-sig-all-keysetv2
+
+This vector fixes the NUT-11 `SIG_ALL` message for the 50-sat receiver-balance
+commitment swap above. The three funding inputs are ordered `4, 32, 64`; use
+their complete `secret` strings from
+`spilman-test-vector-funding-outputs-keysetv2` in that order.
+
+The funding-proof `C` values are valid unblinded signatures from the shared
+deterministic V2 test mint. DLEQ proofs are not part of this Spilman vector;
+their generation and verification are defined by NUT-12.
+
+```text
+funding_input_0_amount = 4
+funding_input_0_C = 028d2b7d1215b72c2b23d51563fb0d61e3652b87a77ceb3b237df1b9f46b0d044f
+funding_input_1_amount = 32
+funding_input_1_C = 02de5cb101e677403e4658d615e1a665db787558cccd09ff93a65983fa48fcecfd
+funding_input_2_amount = 64
+funding_input_2_C = 03bb199086ab2d33ce69cc80a007b48350fb13ce669af96be24f44613e9d0013b7
+
+commitment_outputs_in_order =
+  2|033a81f9199fda2d0b6955a4114cd2ddffc52b2ddf89197b5a04bd806c8843399e,
+  2|02cf1e71062b1e7ff01986cd0160174c7b039b4b94cd0ef5e1518fe776a1b3154d,
+  16|03dc893fd2f3a9509d2f0ed30459aff829cede98826aea0a6ee7a80948c2d74e32,
+  16|02a2f5005d6b714b9c35e9806a9c9f45fd6d7055a112e4f22551c555ccb945d550,
+  32|024e661853c27f2e83300b1ad45c85290861a6eb2d8567ae6595eb6e582770ddf1,
+  32|035ff45bffcec127d65c52aad3fd866591cfd6cdb24cfc95761c1faed0647e1fb5
+
+sig_all_message_sha256 = e070783478edcc7917e26ee2c2b9befc67f5ffc389304519f532d980bc4b5532
+```
+
+The concatenated message is signed by Alice's stage-1 blinded key for each
+balance update. Charlie signs the identical message with his stage-1 blinded
+key when submitting the close swap. Schnorr signature bytes are not fixed by
+this vector because NUT-11 signatures are nondeterministic.
