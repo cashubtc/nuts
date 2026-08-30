@@ -169,6 +169,7 @@ nonce_message =
   7af675f4f1b9843200d23060ebeb5bf5abea67fa511af79aefa4ba6a19b88c2e|funding|64|nonce|0
 nonce_bytes = HMAC-SHA256(channel_secret, nonce_message) =
   f934dd4311715f9e9af3d338c2b7235581a779f748839ffbfe584b0c1e21e37a
+nonce_bytes is a valid nonzero secp256k1 scalar, so no retry is used.
 Secret.nonce = f934dd4311715f9e9af3d338c2b7235581a779f748839ffbfe584b0c1e21e37a
 
 retry_counter = 0

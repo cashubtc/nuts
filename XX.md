@@ -481,8 +481,9 @@ than merely a semantically equivalent JSON value:
 This serialization requirement applies only to deterministic NUT-XX outputs;
 it does not define general canonical JSON for NUT-10 or NUT-11.
 
-The secret's _nonce_ is computed as follows, where all string components are
-UTF-8 encoded and each `|` is the single byte `0x7c`:
+The secret's _nonce_ is an output-discriminator scalar. For V1/V2 P2PK
+output nonces, all string components of `nonce_message` are UTF-8 encoded and
+each `|` is the single byte `0x7c`:
 
 ```
 nonce_message =
@@ -491,12 +492,29 @@ nonce_message =
     UTF8(decimal(amount)) || b"|nonce|" ||
     UTF8(decimal(index))
 
-nonce_bytes = HMAC-SHA256(key = channel_secret, message = nonce_message)
-Secret.nonce = lowercase_hex(nonce_bytes)
+nonce_candidate = HMAC-SHA256(
+    key = channel_secret,
+    message = nonce_message
+)
 ```
 
-All 32-byte `nonce_bytes` values are valid; the nonce is not a secp256k1
-scalar.
+Interpret `nonce_candidate` as an unsigned big-endian integer. If
+`1 <= nonce_candidate < n`, where `n` is the secp256k1 group order,
+`Secret.nonce` is its exactly 64-character lowercase hexadecimal encoding.
+The candidate MUST NOT be reduced modulo `n`.
+
+Otherwise, retry once with the single raw byte `0xff` appended to the original
+`nonce_message`:
+
+```
+nonce_candidate = HMAC-SHA256(
+    key = channel_secret,
+    message = nonce_message || 0xff
+)
+```
+
+If that candidate is also not in the range `1 <= nonce_candidate < n`, output
+construction fails.
 
 The blind-signature _blinding factor_ is a secp256k1 scalar. For each
 `retry_counter`, construct:
