@@ -516,16 +516,14 @@ nonce_candidate = HMAC-SHA256(
 If that candidate is also not in the range `1 <= nonce_candidate < n`, output
 construction fails.
 
-The blind-signature _blinding factor_ is a secp256k1 scalar. For each
-`retry_counter`, construct:
+The blind-signature _blinding factor_ is a secp256k1 scalar. Construct:
 
 ```
 blinding_message =
     UTF8(channel_id) || b"|" ||
     UTF8(output_context) || b"|" ||
     UTF8(decimal(amount)) || b"|blinding|" ||
-    UTF8(decimal(index)) || b"|" ||
-    UTF8(decimal(retry_counter))
+    UTF8(decimal(index))
 
 blinding_candidate = HMAC-SHA256(
     key = channel_secret,
@@ -533,12 +531,22 @@ blinding_candidate = HMAC-SHA256(
 )
 ```
 
-`retry_counter` starts at `0` and increments through `255`; its decimal
-representation uses base-10 ASCII without leading zeros. Interpret
-`blinding_candidate` as an unsigned big-endian integer. It is valid only
-when `1 <= blinding_candidate < n`, where `n` is the secp256k1 group order;
-it MUST NOT be reduced modulo `n`. The first valid candidate is the blinding
-factor. If all 256 candidates are invalid, output construction fails.
+Interpret `blinding_candidate` as an unsigned big-endian integer. If
+`1 <= blinding_candidate < n`, where `n` is the secp256k1 group order, it is
+the blinding factor. The candidate MUST NOT be reduced modulo `n`.
+
+Otherwise, retry once with the single raw byte `0xff` appended to the original
+`blinding_message`:
+
+```
+blinding_candidate = HMAC-SHA256(
+    key = channel_secret,
+    message = blinding_message || 0xff
+)
+```
+
+If that candidate is also not in the range `1 <= blinding_candidate < n`,
+output construction fails.
 
 `output_context` is exactly one of `funding`, `sender`, or `receiver`.
 The `blinding_factor` here is the per-proof factor used in the Cashu blind-signature
