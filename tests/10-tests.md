@@ -158,7 +158,7 @@ The canonical [auditable lock](../10.md#auditable-locks) to `P` = key `3`: NUMS 
 }
 ```
 
-For the pinned spend transaction in the shared JSON vector:
+Spending this proof as the sole input of the [swap transaction](#transaction-transcripts) below, in place of its 8-sat input (same amount, keyset id and `C`; the two 4-sat outputs unchanged), gives:
 
 ```json
 {
@@ -272,7 +272,18 @@ and the input's key-path witness over its `input_digest` is:
 }
 ```
 
-**Multiple proof inputs.** Appending the NUT-13 counter `1` proof (amount `4`) to the swap above and changing the two output amounts to `8` and `4` gives one shared transaction digest but a distinct signing digest for each proof:
+**Multiple proof inputs.** Appending a second proof to the swap above, and changing the two output amounts to `8` and `4`, gives one shared transaction digest but a distinct signing digest for each proof. The appended input is the [NUT-13 V3](13-tests.md) counter `1` secret with the same `C`:
+
+```json
+{
+  "amount": 4,
+  "id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
+  "secret": "03a882e17eb79f4f87313b299e208f9109734d0211a8df307b1570dbad2cdf74bf",
+  "C": "84d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327"
+}
+```
+
+The transaction and per-input digests, with each proof's key-path signature:
 
 ```json
 {
@@ -292,7 +303,7 @@ and the input's key-path witness over its `input_digest` is:
 }
 ```
 
-The complete transaction and transcript are pinned as `transcript.multi_input` in the shared JSON vector. Each signature **MUST** verify only against its corresponding `input_digest`; neither signs the shared `digest`.
+Each signature **MUST** verify only against its corresponding `input_digest`; neither signs the shared `digest`.
 
 **Mint.** Executing mint quote `quote-mint-0001` (amount 8, [NUT-04](../04.md#nutroot-transactions-v3-keysets)) with one 8-sat output. The quote is the transaction's only input; its lock key signs this digest via the mint request's `signature` field:
 

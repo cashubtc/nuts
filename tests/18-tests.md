@@ -181,7 +181,7 @@ creqApmFpdXByZWZlcnJlZF9mZWVfbWV0aG9kc2FhGGRhdWNzYXRhbYF4GGh0dHBzOi8vbWludC5leGF
 
 ### Nutroot Locking
 
-A request for 8 sat to the payee's static key (well-known test key `3`), under a requested `after` leaf naming a co-signer key (test key `4`) that its owner tags blind-me; the payee relays the tag in `b`. The leaf bytes are the payer's to reproduce exactly ([NUT-18](../18.md#nutroot-locking-v3-keysets)); the resulting proof appears in the [NUT-10 vectors](10-tests.md).
+A request for 8 sat to the payee's static key (well-known test key `3`), under a requested `after` leaf naming a co-signer key (test key `4`) that its owner tags blind-me; the payee relays the tag in `b`. The leaf bytes are the payer's to reproduce exactly ([NUT-18](../18.md#nutroot-locking-v3-keysets)). Paid with ephemeral key `5`, the resulting proof's internal key and blinded leaf are the [NUT-28 slot-map vectors](28-tests.md#nutroot-secrets-v3-the-slot-map)' `slot0_blinded` and `leaf_with_blinded_slot1`.
 
 ```json
 {

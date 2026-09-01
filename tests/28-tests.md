@@ -142,6 +142,6 @@ Vectors for the [v3 slot map](../28.md#nutroot-secrets-v3-keysets). The keys are
 }
 ```
 
-`slot0_r = SHA256("Cashu_P2BK_v1" || x(e·P_3) || 0x00)` and `slot0_blinded` is the internal key of [NUT-10's worked example](10-tests.md). `slot1_blinded = P_4 + SHA256("Cashu_P2BK_v1" || x(e·P_4) || 0x01)·G`: the ECDH point differs per key and the slot index differs per position, so the same key at two slots yields unrelated blinded keys.
+`slot0_r = SHA256("Cashu_P2BK_v1" || x(e·P_3) || 0x00)` and `slot0_blinded` is the internal key of [NUT-10's worked example](10-tests.md#worked-example-receiver-keyed-proof-with-a-refund-leaf). `slot1_blinded = P_4 + SHA256("Cashu_P2BK_v1" || x(e·P_4) || 0x01)·G`: the ECDH point differs per key and the slot index differs per position, so the same key at two slots yields unrelated blinded keys.
 
 `leaf_with_blinded_slot1` is the worked example's `after` leaf carrying `slot1_blinded` in place of the verbatim key, otherwise byte-identical. The owner of key `4` finds it by deriving its candidate for each slot in `1..N` and matching **by value**: its slot-1 candidate reproduces the key the leaf carries, at any transmitted position.
