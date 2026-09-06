@@ -20,7 +20,8 @@ message         = tagged_hash("Cashu_MintResponse_v1", request_digest || respons
 
 where:
 
-- `authorized_request_container` is the [NUT-10][10] request transcript container (`0x05`: `01` method, `02` target, `03` body hash) built from the request as the mint received it. `request_digest` is the same value a [NUT-22][22] blind authentication token signs.
+- `authorized_request_container` is the [NUT-10][10] request transcript container (`0x05`: `01` method, `02` target, `03` body hash) built from the request as the mint received it.
+- `request_digest` is the same value a [NUT-22][22] blind authentication token signs.
 - `response_body` is the exact bytes of the HTTP response body. An empty body hashes the empty byte string.
 - `tagged_hash` is the [BIP-340] tagged hash: `SHA256(SHA256(tag) || SHA256(tag) || msg)`.
 
