@@ -1,6 +1,6 @@
 # NUT-06 Test Vectors
 
-These vectors use fixed challenges and timestamps for reproducibility. Wallets generate fresh random challenges for actual requests as specified in [NUT-06](../06.md).
+These vectors use fixed challenges and timestamps for reproducibility. Wallets that include challenges generate fresh random challenges for actual requests as specified in [NUT-06](../06.md).
 
 ## Identity key derivation
 
@@ -16,9 +16,9 @@ The seed is the UTF-8 encoding of `NUT-06 example mint seed`. With the domain se
 }
 ```
 
-Both signatures below use this identity key and the specified zero-filled BIP-340 auxiliary randomness. Verification uses the 32-byte x-coordinate of the compressed public key.
+All signatures below use this identity key and the specified zero-filled BIP-340 auxiliary randomness. Verification uses the 32-byte x-coordinate of the compressed public key.
 
-## Minimal signed response
+## Minimal signed response with a challenge
 
 Request:
 
@@ -51,9 +51,41 @@ a586404ca44b8dbffbd732a1dc881905411d7558c40bb7c63855ffc9a0b1e913
 
 With the request challenge above and the wallet's current Unix time set to `1725304480`, both signature verification and response validation succeed.
 
+## Minimal signed response without a challenge
+
+Request:
+
+```http
+GET https://mint.host:3338/v1/info
+```
+
+The mint omits `challenge` and signs the response using the same identity key and auxiliary randomness:
+
+```json
+{
+  "pubkey": "0338596797cef0627f653cd6568387361b00314add55d9f1ea9c94f46ae421e3da",
+  "signature": "446f52ec13fea5410092eb2d26c28cd9c56b141fa9feb3c60c3845766038905ba44480bc24b0e202278634d724c07560d9f8528ee64db016e48016cb03c409a0",
+  "time": 1725304480
+}
+```
+
+After removing only `signature`, the canonical UTF-8 JSON is the following single line, without a trailing newline:
+
+```text
+{"pubkey":"0338596797cef0627f653cd6568387361b00314add55d9f1ea9c94f46ae421e3da","time":1725304480}
+```
+
+The SHA-256 hash signed by the mint is:
+
+```text
+10f9a05585b71ce112269d10a16acbe1f81835958be3fcfc1d8b63cbbef0bb55
+```
+
+With no request challenge and the wallet's current Unix time set to `1725304480`, both signature verification and response validation succeed.
+
 ## Response verification cases
 
-Each row starts from the minimal signed response, its request challenge, and the wallet time `1725304480`. Apply only the indicated change; keep the original signature. `C` denotes the example challenge, and `Z` denotes 64 zero characters, a different valid challenge.
+Each row starts from the minimal signed response with a challenge, its request challenge, and the wallet time `1725304480`. Apply only the indicated change; keep the original signature. `C` denotes the example challenge, and `Z` denotes 64 zero characters, a different valid challenge.
 
 | Change                                                           | Expected result | Reason                                                                |
 | ---------------------------------------------------------------- | --------------- | --------------------------------------------------------------------- |
@@ -62,7 +94,7 @@ Each row starts from the minimal signed response, its request challenge, and the
 | Request challenge is `Z`; response still contains `C`            | Reject          | Challenge mismatch, even though the signature remains valid           |
 | Response challenge is `Z`; request still contains `C`            | Reject          | Challenge mismatch and invalid signature                              |
 | Both request and response challenges are `Z`                     | Reject          | Challenge matches, but the signature does not cover the new challenge |
-| Remove `challenge`                                               | Reject          | Missing required challenge                                            |
+| Remove `challenge`                                               | Reject          | Challenge was requested but is missing                                |
 | Uppercase the response challenge                                 | Reject          | Malformed challenge                                                   |
 | Set response challenge to JSON number `0`                        | Reject          | Malformed challenge                                                   |
 | Remove `pubkey`, `signature`, or `time`, testing each separately | Reject          | Missing required field                                                |
@@ -75,21 +107,30 @@ Each row starts from the minimal signed response, its request challenge, and the
 | Wallet time is `1725300879`                                      | Reject          | Mint time is 3601 seconds ahead                                       |
 | Wallet time is `1725308081`                                      | Reject          | Mint time is 3601 seconds behind                                      |
 
+The following cases start from the minimal signed response without a challenge, a request without a challenge, and the wallet time `1725304480`. Apply only the indicated change; keep the original signature unless specified otherwise.
+
+| Change                                                                                        | Expected result | Reason                                                                          |
+| --------------------------------------------------------------------------------------------- | --------------- | ------------------------------------------------------------------------------- |
+| None                                                                                          | Accept          | Valid signed response to a request without a challenge                          |
+| Request challenge is `C`                                                                      | Reject          | Challenge was requested but is missing, even though the signature remains valid |
+| Replace the signature with the minimal response's signature from the example with a challenge | Reject          | That signature covers a payload containing `challenge`                          |
+| Add `"challenge": C` and set the request challenge to `C`                                     | Reject          | Challenge matches, but the signature does not cover the added member            |
+
 ## Request validation cases
 
 `C` denotes the example challenge above. All lengths below refer to the decoded query parameter value. A valid format alone does not demonstrate that a challenge was generated randomly; generating a fresh random challenge is the wallet's responsibility.
 
-| Query                                                                  | Expected result |
-| ---------------------------------------------------------------------- | --------------- |
-| `?challenge=C` with `C` substituted                                    | Valid request   |
-| No query parameter                                                     | HTTP `400`      |
-| `?challenge=`                                                          | HTTP `400`      |
-| Challenge is `C` with its final two characters removed (62 characters) | HTTP `400`      |
-| Challenge is `C` with `00` appended (66 characters)                    | HTTP `400`      |
-| Challenge is `C` with its final character removed (63 characters)      | HTTP `400`      |
-| Challenge is the uppercase encoding of `C`                             | HTTP `400`      |
-| Challenge is `C` with its first character replaced by `g`              | HTTP `400`      |
-| `?challenge=C&challenge=C` with `C` substituted                        | HTTP `400`      |
+| Query                                                                  | Expected result                                     |
+| ---------------------------------------------------------------------- | --------------------------------------------------- |
+| `?challenge=C` with `C` substituted                                    | Valid request                                       |
+| No query parameter                                                     | Valid request; response omits `challenge`           |
+| `?challenge=`                                                          | HTTP `400`                                          |
+| Challenge is `C` with its final two characters removed (62 characters) | HTTP `400`                                          |
+| Challenge is `C` with `00` appended (66 characters)                    | HTTP `400`                                          |
+| Challenge is `C` with its final character removed (63 characters)      | HTTP `400`                                          |
+| Challenge is the uppercase encoding of `C`                             | HTTP `400`                                          |
+| Challenge is `C` with its first character replaced by `g`              | HTTP `400`                                          |
+| Two separate requests with `?challenge=C`, with `C` substituted        | Both valid; the mint does not track challenge reuse |
 
 ## Full NUT-06 example
 
