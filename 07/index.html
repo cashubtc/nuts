@@ -1265,9 +1265,9 @@
 <h3 id="token-states">Token states<a class="headerlink" href="#token-states" title="Permanent link">&para;</a></h3>
 <p>A proof can be in one of the following states</p>
 <ul>
-<li>A proof is <code>UNSPENT</code> if it has not been spent yet</li>
 <li>A proof is <code>PENDING</code> if it is being processed in a transaction (in an ongoing payment). A <code>PENDING</code> proof cannot be used in another transaction until it is <code>live</code> again.</li>
 <li>A proof is <code>SPENT</code> if it has been redeemed and its secret is in the list of spent secrets of the mint.</li>
+<li>A proof is <code>UNSPENT</code> if the mint has no record of it being pending or spent</li>
 </ul>
 <p><strong>Note:</strong> Before deleting spent proofs from their database, wallets can check if the proof is <code>SPENT</code> to make sure that they don't accidentally delete an unspent proof. Beware that this behavior can make it easier for the mint to correlate the sender to the receiver.</p>
 <p><strong>Important:</strong> Mints <strong>MUST</strong> remember which proofs are currently <code>PENDING</code> to avoid reuse of the same token in multiple concurrent transactions. This can be achieved with for example mutex lock whose key is the <code>Proof</code>'s <code>Y</code>.</p>
