@@ -18,6 +18,10 @@ The seed is the UTF-8 encoding of `NUT-06 example mint seed`. With the domain se
 
 All signatures below use this identity key and the specified zero-filled BIP-340 auxiliary randomness. Verification uses the 32-byte x-coordinate of the compressed public key.
 
+## Signature message hash
+
+The message hash is `tagged_hash("Cashu_MintInfo_v1", bytes)`, where `bytes` is the canonical UTF-8 JSON after removing only `signature`. The UTF-8 tag hashes to `916a34ebf6f2244d64490e8eb2b5e7af19cdc45aa6176160186fc6543aa20d9b`. Decode this hex value into the raw 32-byte `tag_hash`; the message hash is `SHA256(tag_hash || tag_hash || bytes)`.
+
 ## Minimal signed response with a challenge
 
 Request:
@@ -31,7 +35,7 @@ Response:
 ```json
 {
   "pubkey": "0338596797cef0627f653cd6568387361b00314add55d9f1ea9c94f46ae421e3da",
-  "signature": "77cc645a451e744ef2d0d05ef09166cae27e9baf38afd5ab1301739d5444e144db224b0f29bfa0941ec3d228a74c50a5287bb6664333e4261d641f806bc4a672",
+  "signature": "e22072aff2d70f9cb210ae5bb9a1d3fe44349cbde03fcd26a73e0c10e30bb3b801046db0b096d02f25c8cf76dd24ffd6c1906c3cbc98193c7d2d8d6978c95f0a",
   "challenge": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
   "time": 1725304480
 }
@@ -43,10 +47,10 @@ After removing only `signature`, the canonical UTF-8 JSON is the following singl
 {"challenge":"000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f","pubkey":"0338596797cef0627f653cd6568387361b00314add55d9f1ea9c94f46ae421e3da","time":1725304480}
 ```
 
-The SHA-256 hash signed by the mint is:
+The tagged message hash signed by the mint is:
 
 ```text
-a586404ca44b8dbffbd732a1dc881905411d7558c40bb7c63855ffc9a0b1e913
+374353ff76b340d0010379009839f8b29152808ec393409cfb79abf4b19e65bc
 ```
 
 With the request challenge above and the wallet's current Unix time set to `1725304480`, both signature verification and response validation succeed.
@@ -64,7 +68,7 @@ The mint omits `challenge` and signs the response using the same identity key an
 ```json
 {
   "pubkey": "0338596797cef0627f653cd6568387361b00314add55d9f1ea9c94f46ae421e3da",
-  "signature": "446f52ec13fea5410092eb2d26c28cd9c56b141fa9feb3c60c3845766038905ba44480bc24b0e202278634d724c07560d9f8528ee64db016e48016cb03c409a0",
+  "signature": "1d48ab4a18f5680f9cbc28481c1c9921615cd0fbb8a8f3a015ec47ddf4720b69f7e870d8195c65b30445ce35b0d3035819ccc3adbea741873cf1e44cb9a48998",
   "time": 1725304480
 }
 ```
@@ -75,10 +79,10 @@ After removing only `signature`, the canonical UTF-8 JSON is the following singl
 {"pubkey":"0338596797cef0627f653cd6568387361b00314add55d9f1ea9c94f46ae421e3da","time":1725304480}
 ```
 
-The SHA-256 hash signed by the mint is:
+The tagged message hash signed by the mint is:
 
 ```text
-10f9a05585b71ce112269d10a16acbe1f81835958be3fcfc1d8b63cbbef0bb55
+f50b2ddcbb72c59c25a17019d310ab5e73d2506f508522fa521fbd336aa9159c
 ```
 
 With no request challenge and the wallet's current Unix time set to `1725304480`, both signature verification and response validation succeed.
@@ -101,7 +105,7 @@ Each row starts from the minimal signed response with a challenge, its request c
 | Set `time` to JSON string `"1725304480"`                         | Reject          | Malformed timestamp                                                   |
 | Set `time` to `1725304481`                                       | Reject          | Timestamp is within the allowed window, but the signature is invalid  |
 | Add `"name": "Another mint"`                                     | Reject          | Every response member except `signature` is signed                    |
-| Change the first signature byte from `0x77` to `0x76`            | Reject          | Invalid signature                                                     |
+| Change the first signature byte from `0xe2` to `0xe3`            | Reject          | Invalid signature                                                     |
 | Wallet time is `1725300880`                                      | Accept          | Mint time is exactly 3600 seconds ahead                               |
 | Wallet time is `1725308080`                                      | Accept          | Mint time is exactly 3600 seconds behind                              |
 | Wallet time is `1725300879`                                      | Reject          | Mint time is 3601 seconds ahead                                       |
@@ -138,11 +142,23 @@ The following cases start from the minimal signed response without a challenge, 
 
 ## Full NUT-06 example
 
-The complete response in the [NUT-06 example](../06.md#example) uses the same seed, challenge, timestamp, and auxiliary randomness. After removing only `signature` and canonicalizing the remaining object, the expected hash and signature are:
+The complete response in the [NUT-06 example](../06.md#example) uses the same seed, challenge, timestamp, and auxiliary randomness. After removing only `signature` and canonicalizing the remaining object, the expected tagged message hash and signature are:
 
 ```json
 {
-  "sha256": "5c318faedf41fb96835b18c775abf2f24bb5712310585aaf8a8d101ff2533344",
-  "signature": "6495ee5d693994f9a7e821e5baaf87791c50eb98bae9b2047bdb18cfbed4d92298816032c97aa6382ce6b4226efc8401d1ef7e2d8731bbb658bb6c44acc86df5"
+  "message_hash": "3c08960dfc7c5f62e489271ed44cf82240b3fe48a13968179683461444855db6",
+  "signature": "e91f667871ff922f7430aee729bc0252ff893ec2b05ef2b0f98376f7f5119b152029b363f89c35ffa2d8e3395c889c5caa2484c8b716cc18881dad7b6ef9a739"
+}
+```
+
+## Untagged signatures (invalid)
+
+The following signatures were made over plain `SHA256(bytes)` using the same identity key and auxiliary randomness. Substituting each signature into its corresponding response above **MUST** fail verification against the tagged message hash:
+
+```json
+{
+  "minimal_with_challenge": "77cc645a451e744ef2d0d05ef09166cae27e9baf38afd5ab1301739d5444e144db224b0f29bfa0941ec3d228a74c50a5287bb6664333e4261d641f806bc4a672",
+  "minimal_without_challenge": "446f52ec13fea5410092eb2d26c28cd9c56b141fa9feb3c60c3845766038905ba44480bc24b0e202278634d724c07560d9f8528ee64db016e48016cb03c409a0",
+  "full_example": "6495ee5d693994f9a7e821e5baaf87791c50eb98bae9b2047bdb18cfbed4d92298816032c97aa6382ce6b4226efc8401d1ef7e2d8731bbb658bb6c44acc86df5"
 }
 ```
