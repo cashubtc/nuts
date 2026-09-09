@@ -118,19 +118,23 @@ The following cases start from the minimal signed response without a challenge, 
 
 ## Request validation cases
 
-`C` denotes the example challenge above. All lengths below refer to the decoded query parameter value. A valid format alone does not demonstrate that a challenge was generated randomly; generating a fresh random challenge is the wallet's responsibility.
+`C` denotes the example challenge above. All lengths below refer to the URL-decoded query parameter value. Values longer than 64 characters are rejected before hex decoding or constructing and signing a response, without truncation. A valid format alone does not demonstrate that a challenge was generated randomly; generating a fresh random challenge is the wallet's responsibility.
 
-| Query                                                                  | Expected result                                     |
-| ---------------------------------------------------------------------- | --------------------------------------------------- |
-| `?challenge=C` with `C` substituted                                    | Valid request                                       |
-| No query parameter                                                     | Valid request; response omits `challenge`           |
-| `?challenge=`                                                          | HTTP `400`                                          |
-| Challenge is `C` with its final two characters removed (62 characters) | HTTP `400`                                          |
-| Challenge is `C` with `00` appended (66 characters)                    | HTTP `400`                                          |
-| Challenge is `C` with its final character removed (63 characters)      | HTTP `400`                                          |
-| Challenge is the uppercase encoding of `C`                             | HTTP `400`                                          |
-| Challenge is `C` with its first character replaced by `g`              | HTTP `400`                                          |
-| Two separate requests with `?challenge=C`, with `C` substituted        | Both valid; the mint does not track challenge reuse |
+| Query                                                                                                       | Expected result                                     |
+| ----------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| `?challenge=C` with `C` substituted                                                                         | Valid request                                       |
+| No query parameter                                                                                          | Valid request; response omits `challenge`           |
+| `?challenge=`                                                                                               | HTTP `400`                                          |
+| Challenge is `C` with its final two characters removed (62 characters)                                      | HTTP `400`                                          |
+| Challenge is `C` with `0` appended (65 characters)                                                          | HTTP `400`; exceeds the length limit                |
+| Challenge is `C` with `00` appended (66 characters)                                                         | HTTP `400`                                          |
+| Challenge is `0` repeated 4096 times (4096 characters)                                                      | HTTP `400`; exceeds the length limit                |
+| Challenge is `C` with every character percent-encoded (64 characters after URL decoding)                    | Valid request; response echoes `C`                  |
+| Challenge is `C` with `0` appended, with every character percent-encoded (65 characters after URL decoding) | HTTP `400`; exceeds the length limit                |
+| Challenge is `C` with its final character removed (63 characters)                                           | HTTP `400`                                          |
+| Challenge is the uppercase encoding of `C`                                                                  | HTTP `400`                                          |
+| Challenge is `C` with its first character replaced by `g`                                                   | HTTP `400`                                          |
+| Two separate requests with `?challenge=C`, with `C` substituted                                             | Both valid; the mint does not track challenge reuse |
 
 ## Full NUT-06 example
 
