@@ -4,7 +4,14 @@ These vectors cover [nutroot secrets](../10.md#nutroot-secrets-v3-keysets) (v3 k
 
 ## Conventions
 
-Tagged hashes use the tags `Cashu_NutrootLeaf`, `Cashu_NutrootBranch` and `Cashu_NutrootTweak`; receiver-keyed blinding uses `Cashu_P2BK_v1` ([NUT-28](../28.md)); the transaction domain tag is `Cashu_Transaction_v1` and per-input signing messages use the tag `Cashu_TransactionInput`; the NUMS point is `0250929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0`. These are the normative constants of [NUT-10](../10.md), restated here so the vectors read standalone.
+Tagged hashes use the tags `Cashu_NutrootLeaf`, `Cashu_NutrootBranch` and `Cashu_NutrootTweak`; receiver-keyed blinding uses `Cashu_P2BK_v1` ([NUT-28](../28.md)); per-input signing messages use the tag `Cashu_TransactionInput`; the NUMS point is `0250929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0`. These are the normative constants of [NUT-10](../10.md), restated here so the vectors read standalone. Each tag hashes (SHA-256 of its UTF-8 bytes) to the `tag_hash` an implementation prefixes twice:
+
+| Tag                      | `SHA256(tag)`                                                      |
+| ------------------------ | ------------------------------------------------------------------ |
+| `Cashu_NutrootLeaf`      | `e19ba80c5d6798399efd68b1d3b0e7ad57e79a2777310a9e6334934ee7a0b52b` |
+| `Cashu_NutrootBranch`    | `f54194fd19dabbcca1474f329fe5ec065fc54d94063d14ae820788ba5bd8e55e` |
+| `Cashu_NutrootTweak`     | `cc14d6872e6d0bc79a3dadb4c43f9362916bb6df512126dda139e65b812facd1` |
+| `Cashu_TransactionInput` | `4996fee585f625e6a33865ce975efc32c42d2b1b95328385ce45f5209a16e9ec` |
 
 The keys throughout are the well-known small test keys, written `key N` for the private scalar `N`:
 
@@ -164,7 +171,7 @@ Spending this proof as the sole input of the [swap transaction](#transaction-tra
 {
   "transaction_digest": "882b3bd6dba132160a3349fc64017214be68e3e150242f2a6f4ddfcb4aef49e6",
   "input_id": "71ab32aa7d1b611bb7ddfc63c34b67a9aacde5c027cebd4227e819afb8eaf6dd",
-  "input_digest": "db64ca493b62de0a5d6e66d25a5f9544e0af97aebfb050059a731ea739d3675d"
+  "input_digest": "1f2cc22d83da66466ce82250f41977b59f97ffc97d1cb4a8933654c6413fdf24"
 }
 ```
 
@@ -178,7 +185,7 @@ Spending this proof as the sole input of the [swap transaction](#transaction-tra
     "path": []
   },
   "signatures": [
-    "e0d832c9de4d75f3dec43205b55e814fef15b186e7309f275107e1aa566b5ab6b8422628e0b8e5ae303e8812f355c83953af8155d1b8310d78e2acb883f48861"
+    "3b213cc219a97ab9fafbc91386e2996c9bf5d1973699d5647003728fc95cc8cc9a5fe6e06f5d3e920bb82433e31006a82e25116aa6a120eab5a8e20805d593b0"
   ]
 }
 ```
@@ -222,7 +229,7 @@ An aggregated internal key commits to having no script path with the empty tweak
 
 ## Transaction transcripts
 
-`transaction_digest = SHA256("Cashu_Transaction_v1" (ASCII) || transcript)`; each input signs `input_digest = tagged_hash("Cashu_TransactionInput", transaction_digest || input_id)`, where `input_id = SHA256(input container record)`. The single-input transactions below place that container first; the separate multi-input vector identifies both containers explicitly. The `digest` key in each vector is the transaction digest. The keyset is a v3 keyset with id `02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6` (contributing raw bytes); quote ids contribute UTF-8 bytes; amounts are minimal big-endian. Single-proof examples use [NUT-13 V3](13-tests.md) counter `0`; the multi-input example also uses counter `1`.
+`transaction_digest = SHA256(transcript)`; each input signs `input_digest = tagged_hash("Cashu_TransactionInput", transaction_digest || input_id)`, where `input_id = SHA256(input container record)`. The single-input transactions below place that container first; the separate multi-input vector identifies both containers explicitly. The `digest` key in each vector is the transaction digest. The keyset is a v3 keyset with id `02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6` (contributing raw bytes); quote ids contribute UTF-8 bytes; amounts are minimal big-endian. Single-proof examples use [NUT-13 V3](13-tests.md) counter `0`; the multi-input example also uses counter `1`.
 
 **Swap.** A `PostSwapRequest` ([NUT-03](../03.md)) spending one 8-sat proof into two 4-sat outputs:
 
@@ -256,9 +263,9 @@ serializes to the following transcript and digest:
 ```json
 {
   "transcript": "01007f0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f603002102e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b04003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332703005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd5503005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
-  "digest": "77d581ac1ea31d85ecc5c251a7115ef6777e5b2a8f297933fd3a1a7e441094bd",
+  "digest": "5985ee7a424a7d9ce66441eacac3165d0d933c4c31315c7cb2dacdb9579d01bb",
   "input_id": "56db6f708b5b9ad59d160a6014321a76916bb41141b360d30c85c06d497cfd80",
-  "input_digest": "0f9483a25c859d5156dccc3c141a26d987618ec365bfa12f8c107db0ebd02ae7"
+  "input_digest": "d988bdcfa1d7699324894fc5dba3a70e7bca534e644b257c9700debb424b4ec8"
 }
 ```
 
@@ -267,7 +274,7 @@ and the input's key-path witness over its `input_digest` is:
 ```json
 {
   "signatures": [
-    "ff3be61493fba8bcb2eb8256a1976699f5d439f1ad9f1e82f724b1565091239fb4e0dcc5f99e83a995176fcb5a750dca017c76c4caac9862e416bfd86f3b8b71"
+    "678c1e71b29552ad86069bcc6d1965028b31df1e4dedf69fe5274ffefcad8c77593e474f581e7b43d9e5f8815c0babb607b17f22536ef5f2354889f088da3979"
   ]
 }
 ```
@@ -287,17 +294,17 @@ The transaction and per-input digests, with each proof's key-path signature:
 
 ```json
 {
-  "digest": "0b77a01a0df036026387107b89318714d1627a156cf28a1b82bdcf710d425c3f",
+  "digest": "1544d76f577b7d567f429b482c1c081796f68f201edb3cafa75f68619d018a88",
   "inputs": [
     {
       "input_id": "56db6f708b5b9ad59d160a6014321a76916bb41141b360d30c85c06d497cfd80",
-      "input_digest": "50d55a5c4c176a526fc8c8f9ba554e6637a9d003317913498e1a9c9cb1131fab",
-      "signature": "292e0418b7e58f71694f2d3faadaf368ca236711075b8530cb15184162e5cae18962671c61a369038eae3db26ac3ce982fdb6bbb269db1b23dd27ab341465872"
+      "input_digest": "0054406a4cf6bbfc11fed28e7c896310f43d1f8eea4d0f2f015541d5c4e86756",
+      "signature": "f3d44abd44e262734e40f57bf3e3c4f60ab61242f7eb9751d149729e083621387ddca3141baffdda3b902068c2dd94aec5a16ade6b1153f3cf1ef0e1c6facc49"
     },
     {
       "input_id": "3fe70f160a85a6fe4586b1643767099dbdb78b740d2a4ce281e8e435e6e83a54",
-      "input_digest": "a2d8b55cad8f0123fdb25251750df39b43295942f1c76ae37d2bf72a1fcd20b2",
-      "signature": "30d4dd3aa65aa2c74bfd05c9f3edc5d4097742e38554a5909f8bcbaf274728d491ddecc967bda42f222c0af57f96ff76e407bbada00d8ab09370d589760453f8"
+      "input_digest": "bdef95d2bb49c0d4d6de2119bf009808eb9d87141c9f539113c0a8d546aa234b",
+      "signature": "d3f93b9ae50290a82374d1382985b8fcae4658ab6d4c5e9454e41ce22d344a2ca2a6e9f04cdd199b4bbfb2becf0f260b86a5cbd500734a88f138cf7226b51ad1"
     }
   ]
 }
@@ -322,9 +329,9 @@ Each signature **MUST** verify only against its corresponding `input_digest`; ne
 ```json
 {
   "transcript": "0200160100010802000f71756f74652d6d696e742d3030303103005b0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
-  "digest": "096a9b2002cc0b8ebc9b79e0902159385a929f4e63f35eb9e1dee0119205efb6",
+  "digest": "271cb7d13b3de01fe693c8f1be0adcd7855ee2bed3532840778cdc9ff8a5b783",
   "input_id": "c7892510d9bd10a53d590f3454790546f0b5ae46d3ee2b6905b77592e4cb0346",
-  "input_digest": "5564488281ed47fa6c335aa6b662e1529ca4ad2402bb2847750833dc35212060"
+  "input_digest": "ca6970e6795f610be199bc1d4705dec7ef31f3939dcd08b8a1e2ea4960565f39"
 }
 ```
 
@@ -333,9 +340,9 @@ Each signature **MUST** verify only against its corresponding `input_digest`; ne
 ```json
 {
   "transcript": "01007f0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f603002102e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b04003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d033270400160100010802000f71756f74652d6d656c742d30303031",
-  "digest": "172e38f867afa4d096fe0c1caef1aad4a19a2da6ffea25a33660172df66474b3",
+  "digest": "a8ecb925d2f3e63b0a17233ff921fc94f5c785cc4c3ffbcef8bca56b8a53366c",
   "input_id": "56db6f708b5b9ad59d160a6014321a76916bb41141b360d30c85c06d497cfd80",
-  "input_digest": "b9d84e5c5f2bf37da113fb12d9d5c0207b0109a322922eb0bfcb81f1523c479c"
+  "input_digest": "4a61b7d01d6389091d540dd829d767c5571ee391f5a9571efc6f27c8adb7824e"
 }
 ```
 
@@ -346,9 +353,9 @@ The melt spends the swap's proof, so it shares the swap's `input_id`; the differ
 ```json
 {
   "transcript": "01007f0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f603002102e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b04003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332703005a01000002002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd5503005a01000002002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd550400160100010802000f71756f74652d6d656c742d30303031",
-  "digest": "3b7a268b8c49e836d5235a4d4b89f1d5bfbe7bfa01d6427fa2a013f91b9d1a68",
+  "digest": "a17e91f4243d58376fbfed65a3bbb73fdfa5889adbe999e9992bc4e4162531fd",
   "input_id": "56db6f708b5b9ad59d160a6014321a76916bb41141b360d30c85c06d497cfd80",
-  "input_digest": "98f8267de415b51d7e24eb8d9d6606e028c39b5d71e3de2135cfa65226dc9900"
+  "input_digest": "0c0b95cf065bf515aa40b308f17ce91c2b311a08d4b314a1333ffa65ba52465e"
 }
 ```
 
@@ -403,10 +410,10 @@ nutspAeyJ2ZXJzaW9uIjoibnV0c3BBIiwidHlwZSI6InN3YXAiLCJpbnB1dHMiOlt7ImFtb3VudCI6OC
 Key `3` signs the spend's input digest (`db64ca49...`, see the worked example) and returns the package with `signatures` filled, which merges back into the transaction as the [script-path witness](#worked-example-auditable-lock-with-disclosure) shown there:
 
 ```
-nutspAeyJ2ZXJzaW9uIjoibnV0c3BBIiwidHlwZSI6InN3YXAiLCJpbnB1dHMiOlt7ImFtb3VudCI6OCwiaWQiOiIwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYiLCJzZWNyZXQiOiIwMmZjMTFiZjRmOTM5ZjJiZmQ0N2U0Y2VlNzk5YzgyNTRmYzRhY2MyN2ExMzRjNzI5ZWRmYzNjNmEzYzEzYTA1M2IiLCJDIjoiODRkMWI3MjkxYWU1NzM3ZjNjODUxYWEzM2NhZmUwZjdhZmViNWNjYjRkYTA4NmM0ODJiYjg1Yjc1MjVlNjE1NDdmMWI1YTZkMWEwMWIxZmVkMWY5NjBkMWE5ZDAzMzI3In1dLCJvdXRwdXRzIjpbeyJhbW91bnQiOjQsImlkIjoiMDJiN2UwNzdkMDIwZmFiZWQ0NTZhNmJlMTM4YThlMjBlOWVmNDBiNDRkODczZmExMmMwMDViNjU2ZWIwY2Y5OWY2IiwiQl8iOiJiNDJhMGJjYzM5NTk4ZGIxZGNhNjE3YWVlYTZiYzM2N2YyNTY2NjM2ODI2ZGM5NjFhNTRmYWFlMTViM2I4ZDEwYWZjMWNiMDIwNmU3MGFiM2IwZTEyYzJiOTQ3OGNkNTUifSx7ImFtb3VudCI6NCwiaWQiOiIwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYiLCJCXyI6ImI0MmEwYmNjMzk1OThkYjFkY2E2MTdhZWVhNmJjMzY3ZjI1NjY2MzY4MjZkYzk2MWE1NGZhYWUxNWIzYjhkMTBhZmMxY2IwMjA2ZTcwYWIzYjBlMTJjMmI5NDc4Y2Q1NSJ9XSwic3BlbmRzIjpbeyJzZWNyZXQiOiIwMmZjMTFiZjRmOTM5ZjJiZmQ0N2U0Y2VlNzk5YzgyNTRmYzRhY2MyN2ExMzRjNzI5ZWRmYzNjNmEzYzEzYTA1M2IiLCJsZWFmIjoiMDAwMTAyMDAwMTAxMDQwMDIxMDJmOTMwOGEwMTkyNThjMzEwNDkzNDRmODVmODlkNTIyOWI1MzFjODQ1ODM2Zjk5YjA4NjAxZjExM2JjZTAzNmY5MGEwMDAxMDEiLCJjb250cm9sIjp7IksiOiIwMjhlZGZlYmQ2ZmRlYTNlMWQ4OTM1OWFmMjA4NjhhMmU3NjMxNWIzNmNkYjFhNzlkZTQ5N2ExNzU3Y2E3YmQ0MDciLCJwYXRoIjpbXX0sInNpZ25hdHVyZXMiOlsiZTBkODMyYzlkZTRkNzVmM2RlYzQzMjA1YjU1ZTgxNGZlZjE1YjE4NmU3MzA5ZjI3NTEwN2UxYWE1NjZiNWFiNmI4NDIyNjI4ZTBiOGU1YWUzMDNlODgxMmYzNTVjODM5NTNhZjgxNTVkMWI4MzEwZDc4ZTJhY2I4ODNmNDg4NjEiXX1dfQ
+nutspAeyJ2ZXJzaW9uIjoibnV0c3BBIiwidHlwZSI6InN3YXAiLCJpbnB1dHMiOlt7ImFtb3VudCI6OCwiaWQiOiIwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYiLCJzZWNyZXQiOiIwMmZjMTFiZjRmOTM5ZjJiZmQ0N2U0Y2VlNzk5YzgyNTRmYzRhY2MyN2ExMzRjNzI5ZWRmYzNjNmEzYzEzYTA1M2IiLCJDIjoiODRkMWI3MjkxYWU1NzM3ZjNjODUxYWEzM2NhZmUwZjdhZmViNWNjYjRkYTA4NmM0ODJiYjg1Yjc1MjVlNjE1NDdmMWI1YTZkMWEwMWIxZmVkMWY5NjBkMWE5ZDAzMzI3In1dLCJvdXRwdXRzIjpbeyJhbW91bnQiOjQsImlkIjoiMDJiN2UwNzdkMDIwZmFiZWQ0NTZhNmJlMTM4YThlMjBlOWVmNDBiNDRkODczZmExMmMwMDViNjU2ZWIwY2Y5OWY2IiwiQl8iOiJiNDJhMGJjYzM5NTk4ZGIxZGNhNjE3YWVlYTZiYzM2N2YyNTY2NjM2ODI2ZGM5NjFhNTRmYWFlMTViM2I4ZDEwYWZjMWNiMDIwNmU3MGFiM2IwZTEyYzJiOTQ3OGNkNTUifSx7ImFtb3VudCI6NCwiaWQiOiIwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYiLCJCXyI6ImI0MmEwYmNjMzk1OThkYjFkY2E2MTdhZWVhNmJjMzY3ZjI1NjY2MzY4MjZkYzk2MWE1NGZhYWUxNWIzYjhkMTBhZmMxY2IwMjA2ZTcwYWIzYjBlMTJjMmI5NDc4Y2Q1NSJ9XSwic3BlbmRzIjpbeyJzZWNyZXQiOiIwMmZjMTFiZjRmOTM5ZjJiZmQ0N2U0Y2VlNzk5YzgyNTRmYzRhY2MyN2ExMzRjNzI5ZWRmYzNjNmEzYzEzYTA1M2IiLCJsZWFmIjoiMDAwMTAyMDAwMTAxMDQwMDIxMDJmOTMwOGEwMTkyNThjMzEwNDkzNDRmODVmODlkNTIyOWI1MzFjODQ1ODM2Zjk5YjA4NjAxZjExM2JjZTAzNmY5MGEwMDAxMDEiLCJjb250cm9sIjp7IksiOiIwMjhlZGZlYmQ2ZmRlYTNlMWQ4OTM1OWFmMjA4NjhhMmU3NjMxNWIzNmNkYjFhNzlkZTQ5N2ExNzU3Y2E3YmQ0MDciLCJwYXRoIjpbXX0sInNpZ25hdHVyZXMiOlsiM2IyMTNjYzIxOWE5N2FiOWZhZmJjOTEzODZlMjk5NmM5YmY1ZDE5NzM2OTlkNTY0NzAwMzcyOGZjOTVjYzhjYzlhNWZlNmUwNmY1ZDNlOTIwYmI4MjQzM2UzMTAwNmE4MmUyNTExNmFhNmExMjBlYWI1YThlMjA4MDVkNTkzYjAiXX1dfQ
 ```
 
-**Spend receipt.** The payer's receipt for the [swap](#transaction-transcripts)'s bearer input: its [V4 token](#v4-tokens-with-spend-info) (with `spend_info.k`, harmless once spent), and one receipt whose `transcript` is the domain tag `Cashu_Transaction_v1` followed by the swap's TLV transcript, so `SHA256(transcript)` is the transaction digest. `Y`, `input_digest`, the witness and the commitment are the [NUT-07 vector](07-tests.md)'s:
+**Spend receipt.** The payer's receipt for the [swap](#transaction-transcripts)'s bearer input: its [V4 token](#v4-tokens-with-spend-info) (with `spend_info.k`, harmless once spent), and one receipt whose `transcript` is the swap's TLV transcript, so `SHA256(transcript)` is the transaction digest. `Y`, `input_digest`, the witness and the commitment are the [NUT-07 vector](07-tests.md)'s:
 
 ```json
 {
@@ -415,17 +422,17 @@ nutspAeyJ2ZXJzaW9uIjoibnV0c3BBIiwidHlwZSI6InN3YXAiLCJpbnB1dHMiOlt7ImFtb3VudCI6OC
     {
       "Y": "a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a73",
       "keysetId": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
-      "inputDigest": "0f9483a25c859d5156dccc3c141a26d987618ec365bfa12f8c107db0ebd02ae7",
-      "witness": "{\"signatures\":[\"ff3be61493fba8bcb2eb8256a1976699f5d439f1ad9f1e82f724b1565091239fb4e0dcc5f99e83a995176fcb5a750dca017c76c4caac9862e416bfd86f3b8b71\"]}",
-      "commitment": "844f7fb08c7ed859e74f0b70ace741a2d1b75e56eccdac6b0a7ae449a7598ac1",
-      "transcript": "43617368755f5472616e73616374696f6e5f763101007f0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f603002102e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b04003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332703005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd5503005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55"
+      "inputDigest": "d988bdcfa1d7699324894fc5dba3a70e7bca534e644b257c9700debb424b4ec8",
+      "witness": "{\"signatures\":[\"678c1e71b29552ad86069bcc6d1965028b31df1e4dedf69fe5274ffefcad8c77593e474f581e7b43d9e5f8815c0babb607b17f22536ef5f2354889f088da3979\"]}",
+      "commitment": "36c3dac6f3d99dc42dc05ddc1eb5d1b619b70e6a4433c0e1a115126aecdbc0cf",
+      "transcript": "01007f0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f603002102e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b04003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332703005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd5503005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55"
     }
   ]
 }
 ```
 
 ```
-nutrcAeyJ0b2tlbiI6ImNhc2h1Qm8yRnRjV2gwZEhCek9pOHZiV2x1ZEM1MFpYTjBZWFZqYzJGMFlYU0JvbUZwU0FLMzRIZlFJUHEtWVhDQnBHRmhDR0Z6ZUVJd01tVTJaVGRqWm1FM1lqZ3laRFJpTTJJME5EbG1ZVFkwTmpaak9Ea3pORFk1WVRjeU4yUXdNakUwWkRRNFpHSTBPVFUyWVRZd05UUmlPREF5TW1FeU9XSmhZMWd3aE5HM0tScmxjMzg4aFJxalBLX2c5Nl9yWE10Tm9JYkVncnVGdDFKZVlWUl9HMXB0R2dHeF90SDVZTkdwMERNblluTnBvV0ZyV0NCSEdXM0FnUlVNNFRfUTVIaTR0eGd4dUNXLU9KSVJ5Y1ZxZ0dLbUd2Y0RSdyIsInJlY2VpcHRzIjpbeyJZIjoiYTBhY2Y5MzlmMDMzZTNkMGFlOWI1Zjc4NDM0MWZhZGEzODM2N2VlYzE5MGVkZmIzNGUxZjBjY2U5MDUwYzgwNjcyZGJlZTc3YTc1MTJiNzI0MzU0NGM4NWFlMjkwYTczIiwia2V5c2V0SWQiOiIwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYiLCJpbnB1dERpZ2VzdCI6IjBmOTQ4M2EyNWM4NTlkNTE1NmRjY2MzYzE0MWEyNmQ5ODc2MThlYzM2NWJmYTEyZjhjMTA3ZGIwZWJkMDJhZTciLCJ3aXRuZXNzIjoie1wic2lnbmF0dXJlc1wiOltcImZmM2JlNjE0OTNmYmE4YmNiMmViODI1NmExOTc2Njk5ZjVkNDM5ZjFhZDlmMWU4MmY3MjRiMTU2NTA5MTIzOWZiNGUwZGNjNWY5OWU4M2E5OTUxNzZmY2I1YTc1MGRjYTAxN2M3NmM0Y2FhYzk4NjJlNDE2YmZkODZmM2I4YjcxXCJdfSIsImNvbW1pdG1lbnQiOiI4NDRmN2ZiMDhjN2VkODU5ZTc0ZjBiNzBhY2U3NDFhMmQxYjc1ZTU2ZWNjZGFjNmIwYTdhZTQ0OWE3NTk4YWMxIiwidHJhbnNjcmlwdCI6IjQzNjE3MzY4NzU1ZjU0NzI2MTZlNzM2MTYzNzQ2OTZmNmU1Zjc2MzEwMTAwN2YwMTAwMDEwODAyMDAyMTAyYjdlMDc3ZDAyMGZhYmVkNDU2YTZiZTEzOGE4ZTIwZTllZjQwYjQ0ZDg3M2ZhMTJjMDA1YjY1NmViMGNmOTlmNjAzMDAyMTAyZTZlN2NmYTdiODJkNGIzYjQ0OWZhNjQ2NmM4OTM0NjlhNzI3ZDAyMTRkNDhkYjQ5NTZhNjA1NGI4MDIyYTI5YjA0MDAzMDg0ZDFiNzI5MWFlNTczN2YzYzg1MWFhMzNjYWZlMGY3YWZlYjVjY2I0ZGEwODZjNDgyYmI4NWI3NTI1ZTYxNTQ3ZjFiNWE2ZDFhMDFiMWZlZDFmOTYwZDFhOWQwMzMyNzAzMDA1YjAxMDAwMTA0MDIwMDIxMDJiN2UwNzdkMDIwZmFiZWQ0NTZhNmJlMTM4YThlMjBlOWVmNDBiNDRkODczZmExMmMwMDViNjU2ZWIwY2Y5OWY2MDMwMDMwYjQyYTBiY2MzOTU5OGRiMWRjYTYxN2FlZWE2YmMzNjdmMjU2NjYzNjgyNmRjOTYxYTU0ZmFhZTE1YjNiOGQxMGFmYzFjYjAyMDZlNzBhYjNiMGUxMmMyYjk0NzhjZDU1MDMwMDViMDEwMDAxMDQwMjAwMjEwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYwMzAwMzBiNDJhMGJjYzM5NTk4ZGIxZGNhNjE3YWVlYTZiYzM2N2YyNTY2NjM2ODI2ZGM5NjFhNTRmYWFlMTViM2I4ZDEwYWZjMWNiMDIwNmU3MGFiM2IwZTEyYzJiOTQ3OGNkNTUifV19
+nutrcAeyJ0b2tlbiI6ImNhc2h1Qm8yRnRjV2gwZEhCek9pOHZiV2x1ZEM1MFpYTjBZWFZqYzJGMFlYU0JvbUZwU0FLMzRIZlFJUHEtWVhDQnBHRmhDR0Z6ZUVJd01tVTJaVGRqWm1FM1lqZ3laRFJpTTJJME5EbG1ZVFkwTmpaak9Ea3pORFk1WVRjeU4yUXdNakUwWkRRNFpHSTBPVFUyWVRZd05UUmlPREF5TW1FeU9XSmhZMWd3aE5HM0tScmxjMzg4aFJxalBLX2c5Nl9yWE10Tm9JYkVncnVGdDFKZVlWUl9HMXB0R2dHeF90SDVZTkdwMERNblluTnBvV0ZyV0NCSEdXM0FnUlVNNFRfUTVIaTR0eGd4dUNXLU9KSVJ5Y1ZxZ0dLbUd2Y0RSdyIsInJlY2VpcHRzIjpbeyJZIjoiYTBhY2Y5MzlmMDMzZTNkMGFlOWI1Zjc4NDM0MWZhZGEzODM2N2VlYzE5MGVkZmIzNGUxZjBjY2U5MDUwYzgwNjcyZGJlZTc3YTc1MTJiNzI0MzU0NGM4NWFlMjkwYTczIiwia2V5c2V0SWQiOiIwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYiLCJpbnB1dERpZ2VzdCI6ImQ5ODhiZGNmYTFkNzY5OTMyNDg5NGZjNWRiYTNhNzBlN2JjYTUzNGU2NDRiMjU3Yzk3MDBkZWJiNDI0YjRlYzgiLCJ3aXRuZXNzIjoie1wic2lnbmF0dXJlc1wiOltcIjY3OGMxZTcxYjI5NTUyYWQ4NjA2OWJjYzZkMTk2NTAyOGIzMWRmMWU0ZGVkZjY5ZmU1Mjc0ZmZlZmNhZDhjNzc1OTNlNDc0ZjU4MWU3YjQzZDllNWY4ODE1YzBiYWJiNjA3YjE3ZjIyNTM2ZWY1ZjIzNTQ4ODlmMDg4ZGEzOTc5XCJdfSIsImNvbW1pdG1lbnQiOiIzNmMzZGFjNmYzZDk5ZGM0MmRjMDVkZGMxZWI1ZDFiNjE5YjcwZTZhNDQzM2MwZTFhMTE1MTI2YWVjZGJjMGNmIiwidHJhbnNjcmlwdCI6IjAxMDA3ZjAxMDAwMTA4MDIwMDIxMDJiN2UwNzdkMDIwZmFiZWQ0NTZhNmJlMTM4YThlMjBlOWVmNDBiNDRkODczZmExMmMwMDViNjU2ZWIwY2Y5OWY2MDMwMDIxMDJlNmU3Y2ZhN2I4MmQ0YjNiNDQ5ZmE2NDY2Yzg5MzQ2OWE3MjdkMDIxNGQ0OGRiNDk1NmE2MDU0YjgwMjJhMjliMDQwMDMwODRkMWI3MjkxYWU1NzM3ZjNjODUxYWEzM2NhZmUwZjdhZmViNWNjYjRkYTA4NmM0ODJiYjg1Yjc1MjVlNjE1NDdmMWI1YTZkMWEwMWIxZmVkMWY5NjBkMWE5ZDAzMzI3MDMwMDViMDEwMDAxMDQwMjAwMjEwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYwMzAwMzBiNDJhMGJjYzM5NTk4ZGIxZGNhNjE3YWVlYTZiYzM2N2YyNTY2NjM2ODI2ZGM5NjFhNTRmYWFlMTViM2I4ZDEwYWZjMWNiMDIwNmU3MGFiM2IwZTEyYzJiOTQ3OGNkNTUwMzAwNWIwMTAwMDEwNDAyMDAyMTAyYjdlMDc3ZDAyMGZhYmVkNDU2YTZiZTEzOGE4ZTIwZTllZjQwYjQ0ZDg3M2ZhMTJjMDA1YjY1NmViMGNmOTlmNjAzMDAzMGI0MmEwYmNjMzk1OThkYjFkY2E2MTdhZWVhNmJjMzY3ZjI1NjY2MzY4MjZkYzk2MWE1NGZhYWUxNWIzYjhkMTBhZmMxY2IwMjA2ZTcwYWIzYjBlMTJjMmI5NDc4Y2Q1NSJ9XX0
 ```
 
 A verifier recomputes `input_digest` from `transcript` and the token's proof, the commitment from `Y`, `input_digest` and the witness, and checks the witness signature against the secret over `input_digest`; matching the commitment against the mint's for `Y` ties the receipt to the spend.
