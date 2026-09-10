@@ -53,7 +53,7 @@ C_: 0398bc70ce8184d27ba89834d19f5199c84443c31131e48d3c1214db24247d005d
 
 ### BLS12-381 (v3) round-trip
 
-Test vectors for `hash_to_curve_G1`, multiplicative blinding `B_ = r·Y`, blind signing `C_ = a·B_`, and unblinding `C = r⁻¹·C_`, for keysets with version byte `02` (see [Pairing-based BDHKE (BLS12-381)](../00.md#pairing-based-bdhke-bls12-381)).
+Test vectors for `hash_to_curve_G1`, multiplicative blinding `B_ = r·Y`, blind signing `C_ = a·B_`, and unblinding `C = r⁻¹·C_`, for keysets with version byte `02` (see [Pairing-based BDHKE (BLS12-381)](../00.md#pairing-based-bls-blind-signatures)).
 
 ```shell
 # Test 1
@@ -71,7 +71,7 @@ C: b7a4881059133fd91a8753600d9a5e524c65d6224f6fe2d5aef9e59f1507fdad90b3b4d48ee46
 
 ### BLS12-381 (v3) batch verification
 
-Test vector for the multi-pairing batch check with deterministic weight derivation (see [Batch Verification](../00.md#batch-verification)). Two proofs signed under the same mint key `K = 2·g2`.
+Test vector for the multi-pairing batch check with deterministic weight derivation (see [Batch Verification](../00.md#optional-batch-verification)). Two proofs signed under the same mint key `K = 2·g2`.
 
 ```shell
 K: aa4edef9c1ed7f729f520e47730a124fd70662a904ba1074728114d1031e1572c6c886f6b57ec72a6178288c47c335771638533957d540a9d2370f17cc7ed5863bc0b995b8825e0ee1ea1e1e4d00dbae81f14b0bf3611b78c952aacab827a053
