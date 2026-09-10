@@ -1,0 +1,62 @@
+# NUT-26 (legacy) Test Vectors
+
+Bech32m payment requests carrying the pre-v3 `nut10` sub-TLV, tag `0x08` ([legacy NUT-26](../26.md)).
+
+## Payment Request with NUT-10 Locking
+
+A payment request requiring P2PK-locked tokens with timeout tag.
+
+```json
+{
+  "i": "c9e45d2a",
+  "a": 500,
+  "u": "sat",
+  "m": ["https://mint.example.com"],
+  "nut10": {
+    "k": "P2PK",
+    "d": "02c3b5bb27e361457c92d93d78dd73d3d53732110b2cfe8b50fbc0abc615e9c331",
+    "t": [["timeout", "3600"]]
+  }
+}
+```
+
+Encoded:
+
+```
+CREQB1QYQQSCEEV56R2EPJVYPQQZQQQQQQQQQQQ86QXQQPQQZSQXRGW368QUE69UHK66TWWSHX27RPD4CXCEFWVDHK6ZQQTYQSQQGQQGQYYVPJVVEKYDTZVGERWEFNXCCNGDFHVVUNYEPEXDJRWWRYVSMNXEPNVS6NXDENXGCNZVRZXF3KVEFCVG6NQENZVVCXZCNRXCCN2EFEVVENXVGRQQXSWARFD4JK7AT5QSENVVPS2N5FAS
+```
+
+---
+
+## NUT-10 HTLC Locking (kind=1)
+
+A payment request requiring HTLC-locked tokens with preimage tag.
+
+```json
+{
+  "i": "htlc_test",
+  "a": 1000,
+  "u": "sat",
+  "m": ["https://mint.example.com"],
+  "d": "HTLC locked payment",
+  "nut10": {
+    "k": "HTLC",
+    "d": "a]0e66820bfb412212cf7ab3deb0459ce282a1b04fda76ea6026a67e41ae26f3dc",
+    "t": [
+      ["locktime", "1700000000"],
+      [
+        "refund",
+        "033281c37677ea273eb7183b783067f5244933ef78d8c3f15b1a77cb246099c26e"
+      ]
+    ]
+  }
+}
+```
+
+Encoded:
+
+```
+CREQB1QYQQJ6R5D3347AR9WD6QYQQGQQQQQQQQQQP7SQCQQYQQ2QQCDP68GURN8GHJ7MTFDE6ZUETCV9KHQMR99E3K7MGXQQF5S4ZVGVSXCMMRDDJKGGRSV9UK6ETWWSYQPTGPQQQSZQSQGFS46VR9XCMRSV3SVFNXYDP3XGERZVNRVCMKZC3NV3JKYVP5X5UKXEFJ8QEXZVTZXQ6XVERPXUMX2CFKXQERVCFKXAJNGVTPV5ERVE3NV33SXQQ5PPKX7CMTW35K6EG2XYMNQVPSXQCRQVPSQVQY5PNJV4N82MNYGGCRXVEJ8QCKXVEHXCMNWETPXGMNXETZXUCNSVMZXUURXVPKXANR2V35XSUNXVM9VCMNSEPCVVEKVVF4VGCKZDEHVD3RYDPKXQUNJCEJXEJS4EHJHC
+```
+
+---
