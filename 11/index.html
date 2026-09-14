@@ -1586,10 +1586,10 @@
 <p>If the <code>locktime</code> tag is not present, or is not a valid unix time, the lock is considered "permanent".</p>
 <p><a href="#locktime-multisig">Locktime Multisig</a> conditions apply if the <code>pubkeys</code> tag is present, <a href="#basic-case">Basic Case</a> conditions if not.</p>
 <h3 id="active-lock">Active Lock<a class="headerlink" href="#active-lock" title="Permanent link">&para;</a></h3>
-<p>If the <code>locktime</code> tag is a valid unix time and the mint's local clock is less than <code>locktime</code>, the lock is "active".</p>
+<p>If the <code>locktime</code> tag is a valid unix time and the mint's local clock is less than or equal to <code>locktime</code> (<code>now &lt;= locktime</code>), the lock is "active".</p>
 <p><a href="#locktime-multisig">Locktime Multisig</a> conditions apply if the <code>pubkeys</code> tag is present, <a href="#basic-case">Basic Case</a> conditions if not.</p>
 <h3 id="expired-lock">Expired Lock<a class="headerlink" href="#expired-lock" title="Permanent link">&para;</a></h3>
-<p>If the <code>locktime</code> tag is a valid unix time and the mint's local clock is greater than <code>locktime</code>, the lock has "expired".</p>
+<p>If the <code>locktime</code> tag is a valid unix time and the mint's local clock is greater than <code>locktime</code> (<code>now &gt; locktime</code>), the lock has "expired".</p>
 <p>Both <a href="#locktime-multisig">Locktime Multisig</a> and <a href="#refund-multisig">Refund Multisig</a> conditions apply if the <code>refund</code> tag is present, otherwise the proof is considered unlocked and spendable without a witness signature.</p>
 <blockquote>
 <p>[!NOTE]
