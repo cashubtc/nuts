@@ -1216,7 +1216,7 @@ For examples of valid DLEQ proofs, see the <a href="../tests/12-tests/">test vec
 
 <p><code>e</code> and <code>s</code> are the DLEQ proof.</p>
 <h3 id="user-to-user-dleq-in-proof">User to user: DLEQ in <code>Proof</code><a class="headerlink" href="#user-to-user-dleq-in-proof" title="Permanent link">&para;</a></h3>
-<p>In order for <code>Alice</code> to communicate the DLEQ to another user <code>Carol</code>, we extend the <code>Proof</code> (see <a href="../00/">NUT-00</a>) object and include the DLEQ proof. As explained below, we also need to include the blinding factor <code>r</code> for the proof to be convincing to another user <code>Carol</code>.</p>
+<p>In order for <code>Alice</code> to communicate the DLEQ to another user <code>Carol</code>, we extend the <code>Proof</code> (see <a href="../00/">NUT-00</a>) object and include the DLEQ proof. As explained below, <code>Alice</code> <strong>MUST</strong> also include the blinding factor <code>r</code> for the proof to be convincing to <code>Carol</code>.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
@@ -1233,7 +1233,7 @@ For examples of valid DLEQ proofs, see the <a href="../tests/12-tests/">test vec
 <p><code>e</code> and <code>s</code> are the challenge and response of the DLEQ proof returned by <code>Bob</code>, <code>r</code> is the blinding factor of <code>Alice</code> that was used to generate the <code>Proof</code>. <code>Alice</code> serializes these proofs like any other in a token (see <a href="../00/">NUT-00</a>) to send it to another user <code>Carol</code>.</p>
 <blockquote>
 <p>[!IMPORTANT]</p>
-<p><strong>Privacy:</strong> The blinding factor <code>r</code> should not be shared with the mint or otherwise, the mint will be able to associate the <code>BlindSignature</code> with the <code>Proof</code>.</p>
+<p><strong>Privacy:</strong> The entire <code>dleq</code> field <strong>SHOULD</strong> be removed before sending a <code>Proof</code> to the mint as an input. The mint can associate the <code>BlindSignature</code> with the <code>Proof</code> given <code>e</code> and <code>s</code>, or using the blinding factor <code>r</code>.</p>
 </blockquote>
 <h2 id="alice-minting-user-verifies-dleq-proof">Alice (minting user) verifies DLEQ proof<a class="headerlink" href="#alice-minting-user-verifies-dleq-proof" title="Permanent link">&para;</a></h2>
 <p>When minting or swapping tokens, <code>Alice</code> receives DLEQ proofs in the <code>BlindSignature</code> response from the mint <code>Bob</code>. <code>Alice</code> checks the validity of the DLEQ proofs for each ecash token she receives via the equations:</p>
