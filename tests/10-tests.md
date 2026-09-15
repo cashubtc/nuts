@@ -132,22 +132,42 @@ For contrast, a bearer proof with no conditions: private key `7` travels as spen
 
 ## Worked example: two leaves and a filled path
 
-A two-leaf tree under internal key `6`. Leaf 0 uses the **unallocated** type `0x04`, which makes this both a branch vector and a fail-closed vector: the commitment math below verifies, but a verifier **MUST** treat the `0x04` leaf as unsatisfiable, so a witness revealing it is rejected regardless of its (real) signature. Leaf 1 is an ordinary `after` leaf (key `3`, time `1758240000`) and is spendable once its locktime passes, with `path = [leaf_hash_0]`.
+A two-leaf tree under internal key `6`. Leaf 0 uses the **unallocated** type `0x05`, which makes this both a branch vector and a fail-closed vector: the commitment math below verifies, but a verifier **MUST** treat the `0x05` leaf as unsatisfiable, so a witness revealing it is rejected regardless of its (real) signature. Leaf 1 is an ordinary `after` leaf (key `3`, time `1758240000`) and is spendable once its locktime passes, with `path = [leaf_hash_0]`.
 
 ```json
 {
   "internal_key": "03fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556",
-  "leaf_0_unknown_type": "00040200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f90a002103acd484e2f0c7f65309ad178a9f559abde09796974c57e714c35f110dfc27ccbe",
+  "leaf_0_unknown_type": "00050200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f90a002103acd484e2f0c7f65309ad178a9f559abde09796974c57e714c35f110dfc27ccbe",
   "leaf_1_after": "00020200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f906000468cc9d00",
-  "leaf_hash_0": "fdb9a975d2d191fbfbe2ac40d70f49ffe73836f4bbb0f2bb2405f63e2cc029b2",
+  "leaf_hash_0": "8714a51c3019861df9c4d0d6a1f30f0465ea1252e9c3b949802f73eda61cb101",
   "leaf_hash_1": "80468218b6e329d4d80682883617af0acd1d4a9d5b1658fbc448cc4781b4f254",
-  "merkle_root": "4b88a91c09bbbd87f7e0e27a9f2d26fbe15c0a09b57656f0b5b5fe997428d8cd",
-  "tweak": "2c6aa2e8ebf952db486ab83a593eb7e93080b73afa363898fd2725ad1a9c2b43",
-  "secret": "02e02bae49d0eac930bd2bd710f87810080f30c00540b49d7fa4d648ac4689c5dd"
+  "merkle_root": "9d8170c0f86d30de108834ff1ee334decac6ae094fb07652801d9c159c7b1bed",
+  "tweak": "153e9c65e6bea3351f4e78145f328e5aae7e7a4722967bf347f057bcaa47bfba",
+  "secret": "02f4ff2c2894698847760b62bce9d0d6c6c745d0d85c83577a00337d75437bccf0"
 }
 ```
 
 `merkle_root = tagged_hash("Cashu_NutrootBranch", leaf_hash_1 || leaf_hash_0)`: the pair is sorted, so `leaf_hash_1` comes first. A witness revealing `leaf_0_unknown_type` with `path = [leaf_hash_1]` reconstructs the secret but **MUST** be rejected as unsatisfiable (unknown leaf type).
+
+## Worked example: a commit leaf
+
+The auditable lock below with a `commit` leaf beside it: same NUMS `K` (`u = 7`), same `threshold` leaf, plus a `commit` leaf whose `hash` is `SHA256("external data")`. The commit leaf is never spendable; it only changes the root, so the proof is bound to whatever the digest covers. `P`'s only path is the `threshold` leaf, revealed with `path = [leaf_hash_commit]`: the mint sees the commitment as one sibling hash and nothing more. A witness revealing `leaf_commit` **MUST** be rejected.
+
+```json
+{
+  "K": "028edfebd6fdea3e1d89359af20868a2e76315b36cdb1a79de497a1757ca7bd407",
+  "hash": "64451ff981aa92887b070762e97302df00a0ab97a853c323394b0a9cfaf46fae",
+  "leaf_threshold": "00010200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f90a000101",
+  "leaf_commit": "000408002064451ff981aa92887b070762e97302df00a0ab97a853c323394b0a9cfaf46fae",
+  "leaf_hash_threshold": "b957f8b50199184bb5b29cdd1e3e4b14c63f35501e843000a6fb30cd00793cd6",
+  "leaf_hash_commit": "20cccc22a45ddfdbec0647032487870dbeadb03471164eb6767b1234f9914f27",
+  "merkle_root": "1414741279014d1a3f1dcd44dc6c512db584ea2824447eac2859c0fc12b01fad",
+  "tweak": "2f2b4d5a1be62be21b2e7487f4f721ce7027fd17015d8e906a6de9c138253403",
+  "secret": "0217b9074d62e061a85411367f73dbcda377fa8029650b75671b12cd4c6b9b3c28"
+}
+```
+
+`merkle_root = tagged_hash("Cashu_NutrootBranch", leaf_hash_commit || leaf_hash_threshold)`: the pair is sorted, so the commit hash comes first. A `commit` leaf with any other field, or with `disclosure`, is malformed.
 
 ## Worked example: auditable lock with disclosure
 
