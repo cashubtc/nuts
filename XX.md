@@ -654,7 +654,7 @@ each funding output.
 
 > [!NOTE]
 > Under the planned V3 extension, these spending paths will instead be
-> represented by two leaves in a NUT root tree: one requiring both the sender's
+> represented by two leaves in a NUTroot tree: one requiring both the sender's
 > and receiver's signatures, and another allowing the sender alone to reclaim
 > the funds after expiry.
 >
@@ -693,6 +693,16 @@ tags are ordered `pubkeys`, `locktime`, `n_sigs`, `refund`, `n_sigs_refund`,
 then `sigflag`.
 
 ## Commitment Output Secrets (1-of-1 with Per-Proof Blinded Pubkeys)
+
+> [!NOTE]
+> Under the planned V3 extension, commitment outputs will use the NUTroot
+> key-spend path instead of a 1-of-1 P2PK condition. Each output will be locked
+> to a per-output blinded key of its recipient: Charlie for his balance, or
+> Alice for her remainder.
+>
+> NUTroot supports both key-path and script-leaf spending. These outputs need
+> only a single signature, so they will use the key path directly rather than a
+> leaf containing a single-key spending condition.
 
 Each commitment output is locked to a **unique** blinded pubkey derived from the specific `(amount, index)` of that output.
 
