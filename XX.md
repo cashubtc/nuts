@@ -51,16 +51,16 @@ Any array **MAY** be empty or omitted. A blinded message with `amount` `0` is a 
 
 ```
 required  = sum(fixed outputs) + melt.amount + melt.fee_reserve + fee
-draw      = required - sum(proofs)
+issued    = required - sum(proofs)
 ```
 
-`fee` is the input fee of the proofs ([NUT-02][02]) plus the [quote input fee](#quote-input-fee). `draw` is what the transaction takes from the mint quotes: it **MUST NOT** exceed their combined mintable amount, and it is taken from the quotes in the order listed, each in full until the last, which is drawn in part. Quotes are drawn exactly as a partial mint draws them ([NUT-04][04]): `amount_issued` grows by each quote's draw and the remainder stays mintable.
+`fee` is the input fee of the proofs ([NUT-02][02]) plus the [quote input fee](#quote-input-fee). `issued` is the amount issued against the mint quotes: it **MUST NOT** exceed their combined mintable amount, and it is issued against the quotes in the order listed, each in full until the last, which is issued against in part. Each quote is issued against exactly as a partial mint does it ([NUT-04][04]): `amount_issued` grows by the quote's share and the remainder stays mintable.
 
-If the proofs alone exceed `required`, the excess is change. After settlement the mint imprints `change = sum(proofs) + draw - fee - sum(fixed outputs) - melt.amount - fee_paid` into the blank outputs per [NUT-08][08]. A transaction with no melt quote and no blank outputs **MUST** balance exactly.
+If the proofs alone exceed `required`, the excess is change. After settlement the mint imprints `change = sum(proofs) + issued - fee - sum(fixed outputs) - melt.amount - fee_paid` into the blank outputs per [NUT-08][08]. A transaction with no melt quote and no blank outputs **MUST** balance exactly.
 
 ### Settlement
 
-A transaction with a melt quote follows [NUT-05][05]'s pending and settlement handling, including `prefer_async`: the proofs and the quote draws are pending while the payment is in flight, the outputs are signed only once it succeeds, and a failed payment leaves the proofs unspent and the quotes' mintable amounts untouched. A transaction with no melt quote settles at once.
+A transaction with a melt quote follows [NUT-05][05]'s pending and settlement handling, including `prefer_async`: the proofs and the quotes' issued amounts are pending while the payment is in flight, the outputs are signed only once it succeeds, and a failed payment leaves the proofs unspent and the quotes' mintable amounts untouched. A transaction with no melt quote settles at once.
 
 ## Response
 
