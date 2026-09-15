@@ -484,6 +484,17 @@ The melt shares the swap's `input_id` but not its `input_digest`, so neither wit
 }
 ```
 
+**Mint quote to melt.** Paying melt quote `quote-melt-0001` straight from mint quote `quote-mint-0001` in one transaction ([NUT-XX](../XX.md)): no proofs and no change outputs, so the transcript is the mint vector's quote input container followed by the melt vector's melt quote container. The quote input's bytes are unchanged, so it keeps the mint vector's `input_id`; the new transcript gives it a new `input_digest`, which its lock key signs:
+
+```json
+{
+  "transcript": "0200160100010802000f71756f74652d6d696e742d303030310400160100010802000f71756f74652d6d656c742d30303031",
+  "digest": "fdc2a7f407e99fd4a001b2c9eb705a87a890754dc82f7a604154e8013f6e0907",
+  "input_id": "c7892510d9bd10a53d590f3454790546f0b5ae46d3ee2b6905b77592e4cb0346",
+  "input_digest": "f730a60513aebe597c28893d90e5b1c75315f5c24b3e2bbbea7351783c0821f7"
+}
+```
+
 ## Transport strings
 
 Each string is its prefix plus base64url (no padding) of the JSON shown. The JSON is not canonical, so decoders parse rather than compare.
