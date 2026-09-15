@@ -1387,7 +1387,7 @@
 <li><code>quote</code> is the quote ID in <a href="https://www.rfc-editor.org/rfc/rfc9562">UUIDv7</a> format</li>
 <li><code>request</code> is the payment request for the quote</li>
 <li><code>unit</code> corresponds to the value provided in the request</li>
-<li><code>expiry</code> is the Unix timestamp until which the quote is valid (<code>null</code> if it does not expire)</li>
+<li><code>expiry</code> is the Unix timestamp until which the <code>request</code> can be paid (<code>null</code> if it does not expire)</li>
 <li><code>method</code> is the payment method of the quote</li>
 <li><code>amount_paid</code> is the total amount that has been paid to the mint for this quote, denominated in <code>unit</code></li>
 <li><code>amount_issued</code> is the total amount of ecash that has been issued for this quote, denominated in <code>unit</code></li>
@@ -1395,6 +1395,7 @@
 </ul>
 <p>Mints <strong>MUST</strong> include <code>amount_paid</code>, <code>amount_issued</code>, and <code>updated_at</code> in all mint quote responses. <code>amount_paid</code> and <code>amount_issued</code> <strong>MUST</strong> be non-negative integers, and <code>amount_issued</code> <strong>MUST NOT</strong> exceed <code>amount_paid</code>.</p>
 <p>The amount currently mintable for a quote is <code>amount_paid - amount_issued</code>. Mints <strong>MUST NOT</strong> issue ecash whose total output amount exceeds <code>amount_paid - amount_issued</code>. If a wallet mints less than the currently mintable amount, <code>amount_issued</code> only increases by the amount that was issued.</p>
+<p><code>expiry</code> is a deadline for payment, not for issuance. Mints <strong>MUST NOT</strong> refuse to issue a quote's currently mintable amount solely because <code>expiry</code> has passed. Mints <strong>MAY</strong> credit payments received after <code>expiry</code> (for example, a late on-chain payment).</p>
 <p>Mints <strong>MUST</strong> update <code>updated_at</code> whenever <code>amount_paid</code> or <code>amount_issued</code> changes. Mints <strong>MUST</strong> ensure that <code>updated_at</code> monotonically increases for each quote, even if multiple updates occur within the same timestamp resolution. Wallets that receive multiple responses for the same quote <strong>MUST NOT</strong> replace locally stored quote data with a response whose <code>updated_at</code> is lower than the latest processed value for that quote. Wallets <strong>MUST NOT</strong> decrease locally stored <code>amount_paid</code> or <code>amount_issued</code> values based on stale responses.</p>
 <blockquote>
 <p>[!CAUTION]</p>
