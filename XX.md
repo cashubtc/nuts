@@ -37,7 +37,7 @@ where `proofs` and `outputs` are as in [NUT-00][00], `melts` holds melt quote id
 
 `witness` has the same grammar as `Proof.witness` ([NUT-10](10.md#witnesses)): a key-path signature or a script-path witness over the quote input's [input digest](10.md#the-transaction-transcript). The quote's face `amount` is not sent; the mint holds it and the transcript commits it.
 
-Any array **MAY** be empty or omitted. A blinded message with `amount` `0` is a blank change output ([NUT-08][08]); every other output has a fixed amount.
+Any array **MAY** be empty or omitted. A blinded message with `amount` `0` is a blank change output ([NUT-08][08]); every other output has a fixed amount. Fixed and blank outputs **MAY** appear together.
 
 ### Rules
 
@@ -62,16 +62,31 @@ If the proofs alone exceed `required`, the excess is change. After settlement th
 
 A transaction with a melt quote follows [NUT-05][05]'s pending and settlement handling, including `prefer_async`: the proofs and the quotes' issued amounts are pending while the payment is in flight, the outputs are signed only once it succeeds, and a failed payment leaves the proofs unspent and the quotes' mintable amounts untouched. A transaction with no melt quote settles at once.
 
+The mint **MUST** keep a record of every transaction it accepts, keyed by its transaction digest ([NUT-10](10.md#the-transaction-transcript)), holding the state and, once settled, the signatures. The digest is the transaction's id: the wallet computes it to sign, and the mint computes it to verify.
+
 ## Response
 
 ```json
 {
+  "digest": <hex_str>,
+  "state": <str_enum[STATE]>,
   "signatures": <Array[BlindSignature|null]>,
   "melts": <Array[MeltQuoteResponse]>
 }
 ```
 
-`signatures` has one entry per element of `outputs`, in request order: a blind signature for every fixed output and for every blank output that received change, and `null` for a blank output imprinted with `0`. `melts` holds the [NUT-05][05] melt quote response for each entry of the request's `melts`, in order, and is empty if there were none. A pending transaction returns its melt quote with state `PENDING` and `signatures` empty, to be fetched as [NUT-05][05] describes once the quote is `PAID`.
+- `digest` is the transaction digest.
+- `state` is `PENDING` while a melt payment is in flight, `PAID` once the transaction has settled, or `FAILED` if the payment failed and the inputs were released.
+- `signatures` has one entry per element of `outputs`, in request order: a blind signature for every fixed output and for every blank output that received change, and `null` for a blank output imprinted with `0`. It is empty unless `state` is `PAID`.
+- `melts` holds the [NUT-05][05] melt quote response for each entry of the request's `melts`, in order, and is empty if there were none. Its `change` field is not used: this endpoint returns every output's signature in `signatures`.
+
+### Fetching a transaction
+
+```http
+GET https://mint.host:3338/v1/transaction/{digest}
+```
+
+returns the same response for a transaction the mint holds. Wallets poll it, not the melt quote, for a pending transaction. A `POST` whose digest the mint already holds **MUST** return that record rather than treat the inputs as spent again, so a wallet that lost the response can safely resend the request.
 
 ## Quote input fee
 
