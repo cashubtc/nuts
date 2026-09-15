@@ -59,21 +59,30 @@ here.
 >
 > With V1 and V2 keysets, the receiver can choose the output keyset when adding
 > their signature to close the channel because the sender's signature does not
-> commit to the output keyset IDs. With V3, the sender's signature will bind
-> those IDs. This NUT will therefore require receiver-initiated closing swaps to
-> use the channel's funding keyset, identified in the channel parameters, for
-> both inputs and outputs.
+> commit to the output keyset IDs. V3 will replace the `SIG_ALL` message with a
+> transaction transcript, signed by the signers, that includes the usual
+> transaction data and commits to the output keyset IDs. Its detailed
+> construction is outside the scope of this draft. This NUT will therefore
+> require the V3 stage-1 commitment swap to use the channel's funding keyset,
+> identified in the channel parameters, for both inputs and all commitment
+> outputs.
 >
 > That keyset must remain active for signing outputs throughout the channel's
 > lifetime. The proposed `active_until` field will let mints advertise how long
-> each active keyset will remain active. The sender should choose a keyset whose
+> each active keyset will remain active. A mint may extend `active_until`, but
+> must not move it earlier. The sender should choose a keyset whose
 > `active_until` is later than the channel expiry, and the receiver should verify
-> this before accepting the channel.
+> this before accepting the channel. Because `active_until` may be extended, it
+> is mint metadata rather than a channel parameter and is not committed to by the
+> `channel_id`.
 >
 > After expiry, the sender can reclaim the funds using only their own signature.
 > We recommend using the funding keyset for the recovery outputs while it remains
 > active, but this is not required: even with V3, the sender can sign a recovery
-> swap using another active output keyset.
+> swap using another active output keyset. The same applies when either party
+> independently spends their commitment proofs in stage 2: using the funding
+> keyset for the wallet outputs is recommended while it remains active, but is
+> not required.
 
 # Overview and terminology and determinism
 
@@ -213,9 +222,9 @@ complexity to ensure that the payments cover fees for both stages.
 
 > [!NOTE]
 > _Keyset malleability:_ The following applies only to V1 and V2 keysets.
-> Under the planned V3 extension, the sender's signature binds the output
-> keyset IDs, and receiver-initiated closure must use the funding keyset for
-> its outputs (see [Keyset versions](#keyset-versions)).
+> Under the planned V3 extension, the signed transaction transcript binds the
+> output keyset IDs, and the stage-1 commitment swap must use the funding keyset
+> for all commitment outputs (see [Keyset versions](#keyset-versions)).
 >
 > The keyset for the _funding outputs_ is defined in the _channel parameters_ and all
 > the proofs in the funding token must be in that keyset.
@@ -392,8 +401,8 @@ but the resulting outputs are ordered by amount (increasing) with index for tie-
 That algorithm gives us a set of amounts that reach a given target
 value when constructing the various kinds of P2PK outputs.
 Any time those outputs are spent, fees will be paid.
-The fee rate is `input_fee_ppk` for all the outputs in the channel,
-as we assume the same keyset is used in all outputs,
+The fee rate is `input_fee_ppk` for the funding proofs and commitment proofs,
+as we assume the same keyset is used for both.
 Therefore, the post-swap value of any set of deterministic outputs
 can be computed as follows, where `num_deterministic_outputs(x)` is
 the number of outputs selected by the deterministic algorithm described
@@ -447,8 +456,8 @@ perform two swaps during his exit.
 This `funding_token_amount` and the `capacity` are channel parameters.
 
 The fees in the first stage will always be `funding_token_amount - deterministic_value_after_fees(funding_token_amount)`.
-The fees in the second stage can vary, as they depend on the distribution between the two parties, and also due
-to the _Keyset Malleability_ issue discussed above.
+The fees in the second stage can vary, as they depend on the distribution between the two parties, and, for
+V1 and V2, due to the _Keyset Malleability_ issue discussed above.
 
 To make a payment which brings Charlie's balance to `balance`, the following describes how Alice computes the values of the various parts:
 
@@ -497,6 +506,10 @@ As these are all deterministic and based on information known to both parties,
 both parties can construct all these outputs and secrets and blinding factors.
 
 ## Deterministic Secret Serialization
+
+The serialization below specifies the V1/V2 construction in this draft. The
+planned V3 transcript and spending-condition encoding are outside its scope (see
+[Keyset versions](#keyset-versions)).
 
 The exact UTF-8 bytes of a `Secret` are blinded to construct each Cashu
 `BlindedMessage`. For the deterministic outputs defined by this NUT, Alice and
@@ -639,11 +652,14 @@ blind-signature blinding factor are still derived separately for each
 funding output.
 
 This does not prevent per-proof P2BK blinding of the commitment outputs.
-`SIG_ALL` applies to the funding proofs used as inputs and commits to the
-`amount` and `B_` of every commitment output. It does not require those
+For the V1/V2 construction specified here, `SIG_ALL` applies to the funding
+proofs used as inputs and commits to the `amount` and `B_` of every commitment
+output. It does not require those
 outputs to have identical P2PK spending conditions. Once issued as Proofs,
 the commitment outputs use the default `SIG_INPUTS` behavior, so each can
 have its own deterministic `e`, `E`, `p2pk_e`, and blinded recipient key.
+The planned V3 extension instead uses the signed transaction transcript
+described under [Keyset versions](#keyset-versions).
 
 Example funding token secret (JSON):
 
@@ -782,7 +798,7 @@ context    | amount | index
 > and then you append Alice's similarly ordered,
 > then you can apply a _stable sort_, such as Rust's `all_outputs.sort_by_key(|(output, _)| output.amount)` or Python's `sorted(all_outputs, key=lambda o: o.amount)` to get the required ordering.
 
-Alice then signs this (`SIG_ALL`).
+For the V1/V2 construction specified here, Alice then signs this (`SIG_ALL`).
 Alice can then send three pieces of data to Charlie: the `channel_id`, the balance for Charlie, and her signature.
 
 The `SIG_ALL` message is the NUT-11 swap aggregation in this exact transaction
@@ -798,6 +814,10 @@ where each `secret` is its exact canonical NUT-XX serialization, each `C` and
 base-10 ASCII encoding. Alice and Charlie MUST reconstruct the identical
 message before signing or verifying a balance update.
 
+The planned V3 extension will instead sign a transaction transcript that also
+commits to the output keyset IDs. Its construction is outside the scope of this
+draft (see [Keyset versions](#keyset-versions)).
+
 As already mentioned, Alice must send the full set of channel parameters to Charlie in the first payment - if she hasn't already sent them beforehand -
 but after this it is sufficient for her to send those three pieces of data.
 
@@ -809,6 +829,8 @@ When Charlie exits, he adds his signature to Alice's on the most recent transact
 sends the complete swap to the mint.
 This swap spends the _funding token_ and returns
 blind signatures (the deterministic outputs, signed by the mint) for both parties.
+Under the planned V3 extension, this stage-1 commitment swap uses the funding
+keyset for all commitment outputs (see [Keyset versions](#keyset-versions)).
 
 Alternatively, the two parties can cooperatively close using any balance, including a balance
 smaller than the most recent signed transaction, by applying both of their signatures
@@ -827,7 +849,12 @@ When closing the channel, both parties sign with their **blinded** secret keys:
 
 These signatures verify against the blinded pubkeys in the funding token.
 
-For the refund path controlled by the NUT-11 `locktime` tag (derived from `expiry_timestamp`), Alice signs with her **refund** blinded secret key derived from `p2bk_context = "sender_stage1_refund"`. This key corresponds to the blinded pubkey in the `refund` tag.
+For the refund path controlled by the NUT-11 `locktime` tag (derived from
+`expiry_timestamp`), Alice signs with her **refund** blinded secret key derived
+from `p2bk_context = "sender_stage1_refund"`. This key corresponds to the blinded
+pubkey in the `refund` tag. Under the planned V3 extension, this new single-signer
+authorization may use another active output keyset, as described under
+[Keyset versions](#keyset-versions).
 
 When spending the commitment outputs in stage 2:
 - **Charlie** signs each of his proofs with the per-proof blinded secret key for that `(amount, index)`, as described above.
@@ -838,8 +865,10 @@ via NUT-07 (token state check). NUT-17, if supported by the mint, helps here too
 
 Charlie should return Alice's blind signatures to her, but if he doesn't then Alice
 can use NUT-09 to restore the signatures.
-If Charlie chooses a different keyset (not `params.keyset_id`), Alice can
-use NUT-09 to learn the keyset that he selected.
+For V1 and V2, if Charlie chooses a different keyset (not
+`params.keyset_id`), Alice can use NUT-09 to learn the keyset that he selected.
+Under the planned V3 extension, the stage-1 commitment-output keyset is fixed by
+`params.keyset_id`.
 
 While we assume that Charlie will usually take the most recent commitment, as it's
 the most valuable, it is not guaranteed that he will do that.
@@ -877,14 +906,21 @@ The following information should be sent by Alice to Charlie with, or before, th
 enabling Charlie to verify everything. He can verify without communicating with the mint.
 
  - the channel parameters
- - the funding token, including the DLEQ proofs (NUT-12)
+ - the funding token, including the DLEQ proofs for V1 and V2 (NUT-12)
+
+Verification without contacting the mint assumes Charlie already has trusted
+mint and keyset metadata sufficient for these checks. Under the planned V3
+extension, this includes the mint's advertised `active_until` for the funding
+keyset.
 
 Charlie can then verify that the parameters are acceptable to him, by checking:
 
  - that the expiry time is reasonably far in the future
  - that the mint is a mint that he trusts, and the keyset is active for the correct `unit`
+ - under the planned V3 extension, that the mint's advertised `active_until` for
+   the keyset is later than `expiry_timestamp` (see [Keyset versions](#keyset-versions))
  - that the channel_id is computed correctly based on the parameters and the _channel secret_
- - the DLEQ proofs in the funding token are correct
+ - for V1 and V2, that the DLEQ proofs in the funding token are correct
  - the secrets in the funding token have the correct deterministic P2PK setup, with the keys and expiry and so on
  - the blinded pubkeys in the funding token are correctly derived:
    - `data` field matches Alice's blinded pubkey
@@ -924,6 +960,10 @@ commitment transaction that is formed deterministically will also have unspent o
 To improve privacy further, when the channel is closed and the first of the two stages
 is executed, both parties should delay the second stage.
 This delay is to make it more difficult for the mint to correlate the three 'exit swaps' with each other.
+Under the planned V3 extension, the stage-1 keyset requirement does not bind
+either party's independently authorized stage-2 wallet outputs to the funding
+keyset. Each party may select another active output keyset when completing stage
+2 (see [Keyset versions](#keyset-versions)).
 
 
 # proof-of-concept
