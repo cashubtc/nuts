@@ -1474,6 +1474,7 @@
 </code></pre></div>
 
 <p>where <code>quote</code> is the melt quote ID, <code>inputs</code> are the proofs with a total amount sufficient to cover the requested amount plus any fees, and <code>prefer_async</code> requests asynchronous processing when set to <code>true</code>.</p>
+<p>The <code>inputs</code>, and any <a href="../08/">NUT-08</a> change <code>outputs</code>, <strong>MUST</strong> be of the unit of the melt quote. The mint <strong>MUST</strong> reject a melt that mixes units (see <a href="../error_codes/">Error Codes</a> <code>11009</code> and <code>11010</code>).</p>
 <h4 id="synchronous-processing">Synchronous Processing<a class="headerlink" href="#synchronous-processing" title="Permanent link">&para;</a></h4>
 <blockquote>
 <p>[!IMPORTANT]

@@ -1241,6 +1241,7 @@
 <span class="p">}</span>
 </code></pre></div>
 
+<p>All <code>inputs</code> and <code>outputs</code> of a swap <strong>MUST</strong> be of the same currency unit. The mint <strong>MUST</strong> reject a swap that mixes units (see <a href="../error_codes/">Error Codes</a> <code>11009</code> and <code>11010</code>).</p>
 <p>With curl:</p>
 <div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://mint.host:3338/v1/swap<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
 <span class="o">{</span>
