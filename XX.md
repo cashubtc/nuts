@@ -645,12 +645,25 @@ they are blinded differently because they use different derivation contexts
 (`sender_stage1` and `sender_stage1_refund`), and therefore the mint cannot
 see that `data` and `refund` correspond to the same underlying party.
 
-When the funding proofs are spent together as `SIG_ALL` inputs, every
-funding proof MUST have the same P2PK `Secret.data` and `Secret.tags`, as
-required by NUT-11. Therefore, all funding proofs use the same blinded
-stage-1 sender, receiver, and refund pubkeys. The `Secret.nonce` and Cashu
-blind-signature blinding factor are still derived separately for each
-funding output.
+For V1 and V2, when the funding proofs are spent together as `SIG_ALL`
+inputs, every funding proof MUST have the same P2PK `Secret.data` and
+`Secret.tags`, as required by NUT-11. Therefore, all funding proofs use the
+same blinded stage-1 sender, receiver, and refund pubkeys. The `Secret.nonce`
+and Cashu blind-signature blinding factor are still derived separately for
+each funding output.
+
+> [!NOTE]
+> Under the planned V3 extension, these spending paths will instead be
+> represented by two leaves in a NUT root tree: one requiring both the sender's
+> and receiver's signatures, and another allowing the sender alone to reclaim
+> the funds after expiry.
+>
+> Unlike V1/V2 `SIG_ALL`, V3 will not require every funding proof to use
+> identical spending conditions. Each proof can therefore use independently
+> blinded sender, receiver, and refund keys while preserving the same
+> authorization and expiry rules. This removes the shared-key pattern across
+> funding proofs, making the channel construction less recognizable to the
+> mint.
 
 This does not prevent per-proof P2BK blinding of the commitment outputs.
 For the V1/V2 construction specified here, `SIG_ALL` applies to the funding
