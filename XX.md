@@ -50,6 +50,31 @@ validation does not require DLEQ, and its spending conditions use a
 substantially different encoding from the NUT-10/NUT-11 P2PK structure used
 here.
 
+> [!NOTE]
+> **Upcoming V3 support and keyset lifetimes**
+>
+> This draft currently focuses on V1 and V2 keysets to make the protocol
+> unambiguous and provide concrete test vectors. Support for V3 keysets and
+> `active_until` will be incorporated as those specifications develop.
+>
+> With V1 and V2 keysets, the receiver can choose the output keyset when adding
+> their signature to close the channel because the sender's signature does not
+> commit to the output keyset IDs. With V3, the sender's signature will bind
+> those IDs. This NUT will therefore require receiver-initiated closing swaps to
+> use the channel's funding keyset, identified in the channel parameters, for
+> both inputs and outputs.
+>
+> That keyset must remain active for signing outputs throughout the channel's
+> lifetime. The proposed `active_until` field will let mints advertise how long
+> each active keyset will remain active. The sender should choose a keyset whose
+> `active_until` is later than the channel expiry, and the receiver should verify
+> this before accepting the channel.
+>
+> After expiry, the sender can reclaim the funds using only their own signature.
+> We recommend using the funding keyset for the recovery outputs while it remains
+> active, but this is not required: even with V3, the sender can sign a recovery
+> swap using another active output keyset.
+
 # Overview and terminology and determinism
 
 Before defining everything in detail, we summarize the overall flow in order
