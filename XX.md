@@ -45,8 +45,9 @@ what is needed to construct and sign and verify the transactions.
 This draft supports NUT-02 V1 and V2 keysets. V1 keysets remain accepted but
 are discouraged; all published test vectors use V2 keysets.
 
-This draft will be extended to support V3 keysets. Unlike V1 and V2, V3 proof
-validation does not require DLEQ, and its spending conditions use a
+This draft will be extended to support V3 keysets. Unlike V1 and V2, the
+signatures in V3 proofs can be verified directly against the corresponding mint
+public keys, so DLEQ proofs are not needed. V3 spending conditions also use a
 substantially different encoding from the NUT-10/NUT-11 P2PK structure used
 here.
 
@@ -908,6 +909,10 @@ enabling Charlie to verify everything. He can verify without communicating with 
  - the channel parameters
  - the funding token, including the DLEQ proofs for V1 and V2 (NUT-12)
 
+For V3, no accompanying DLEQ proofs are needed because the signatures in the
+funding proofs can be verified directly against the corresponding mint public
+keys.
+
 Verification without contacting the mint assumes Charlie already has trusted
 mint and keyset metadata sufficient for these checks. Under the planned V3
 extension, this includes the mint's advertised `active_until` for the funding
@@ -921,6 +926,8 @@ Charlie can then verify that the parameters are acceptable to him, by checking:
    the keyset is later than `expiry_timestamp` (see [Keyset versions](#keyset-versions))
  - that the channel_id is computed correctly based on the parameters and the _channel secret_
  - for V1 and V2, that the DLEQ proofs in the funding token are correct
+ - for V3, that the signatures in the funding proofs verify directly against the
+   corresponding mint public keys; no DLEQ verification is required
  - the secrets in the funding token have the correct deterministic P2PK setup, with the keys and expiry and so on
  - the blinded pubkeys in the funding token are correctly derived:
    - `data` field matches Alice's blinded pubkey
