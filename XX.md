@@ -212,7 +212,12 @@ complexity to ensure that the payments cover fees for both stages.
 ```
 
 > [!NOTE]
-> _Keyset malleability:_ The keyset for the _funding outputs_ is defined in the _channel parameters_ and all
+> _Keyset malleability:_ The following applies only to V1 and V2 keysets.
+> Under the planned V3 extension, the sender's signature binds the output
+> keyset IDs, and receiver-initiated closure must use the funding keyset for
+> its outputs (see [Keyset versions](#keyset-versions)).
+>
+> The keyset for the _funding outputs_ is defined in the _channel parameters_ and all
 > the proofs in the funding token must be in that keyset.
 > When Charlie executes the commitment transaction, he can choose which keyset to use as the commitment outputs. He should choose the same keyset, but he is not required to do so.
 > In fact, if that keyset is no longer _active_, he will be required by the mint to choose a different keyset.
@@ -220,7 +225,7 @@ complexity to ensure that the payments cover fees for both stages.
 > This means that the fee rate in the second stage may be different from the fee rate in the first stage, and the final amounts after the second stage might not be what was expected.
 > We ignore this issue and assume that the same keyset will be used for all the outputs (funding outputs, and both sets of commitment outputs), and base all our fee calculations on this assumption.
 > If the assumption is wrong, and Charlie uses a different keyset, then this simply means that the final
-amounts that each party gets after completing the second stage of the exit will be slightly different than they expected.
+> amounts that each party gets after completing the second stage of the exit will be slightly different than they expected.
 
 # Channel parameters, `channel_id` and the channel secret.
 
@@ -241,8 +246,10 @@ and a minimum channel lifetime that Charlie requires, Alice defines the channel 
    Typically Alice chooses the minimum value satisfying that constraint, as described below.
 
  - `keyset_id`: a keyset for that unit at that mint.
-   It would normally be active when the channel is created, but it is not required
-   to remain active throughout the lifetime of the channel.
+   It would normally be active when the channel is created. For V1 and V2, it is
+   not required to remain active throughout the lifetime of the channel. The
+   planned V3 extension requires it to remain active past channel expiry (see
+   [Keyset versions](#keyset-versions)).
  - `input_fee_ppk`: the fee rate for that keyset.
  - `maximum_amount_for_one_output`: used in the deterministic amount-selection algorithm as an upper bound on the size of any individual output in the funding token or in the commitment outputs. May be helpful with privacy, in the case of large-capacity channels.
 
