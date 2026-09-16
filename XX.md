@@ -2,21 +2,23 @@
 
 `optional`
 `depends on: NUT-07`
-`uses: NUT-04, NUT-05`
+`uses: NUT-02, NUT-04, NUT-05, NUT-06, NUT-09, NUT-13`
 
 ---
 
-This NUT defines compact filters over the mint's state changes that the mint publishes for everyone, and that wallets match locally. Following ecash today means naming it: both `POST /v1/checkstate` ([NUT-07][07]) and a [NUT-17][17] subscription carry the exact identifiers a wallet is asking about. A filter carries none, so a wallet learns when its ecash has been spent, or when its quote has been paid, without telling the mint which. The same filters let it finish a seed restore without disclosing what it recovered.
+This NUT defines compact filters over the mint's state changes that the mint publishes for everyone, and that wallets match locally. Following ecash today means naming it: both `POST /v1/checkstate` ([NUT-07][07]) and a [NUT-17][17] subscription carry the exact identifiers a wallet is asking about. A filter carries none, so a wallet learns when its ecash has been spent, or when its quote has been paid, without telling the mint which. The same filters let it finish a seed restore without disclosing most of what it recovered.
 
-Testing an object against a filter returns one of two answers: no, or maybe. The encoding has no false negatives, so anything the mint put in a filter always matches it, and an object that does not match is not in that filter at all. A match is the weaker answer: it is almost always real, but about one test in 268 million is spurious at the recommended parameter, so a wallet confirms a match through [NUT-07][07] before acting. A wallet following its ecash therefore gets a negative answer almost every time, and makes an identifying request only when something has probably happened.
+Testing an object against a filter returns one of two answers: no, or maybe. There are no false negatives, so anything the mint inserted into a filter always matches it, and an object that does not match is not in that filter. A match is the weaker answer: a fraction of matches are spurious, at a probability that follows the fraction of bits the bitmap has set, so a wallet confirms a match through [NUT-07][07] before acting. A wallet following its ecash gets a negative answer almost every time, and makes an identifying request only when something has probably happened.
 
-Neither side does work that scales with the other. The mint builds one filter per epoch, once, and serves the same bytes to every wallet from a cache. The wallet fetches those bytes and tests as many of its own objects against them as it likes, offline.
+The per-operation work is bounded. One insertion into one block is two SHA-256 compressions and at most 16 bit writes. Testing one candidate against one block is at most 16 bit reads, and fewer in practice because the test stops at the first clear bit. A candidate's hashing happens once and is reused for every block and every width. Total wallet work still scales with the number of candidates, the states it follows, the sequences it follows and the blocks it tests.
+
+A sealed block never changes. The mint updates the block that is currently open, which is the only mutable thing it serves. Each kind of object has its own sequence of blocks, sized to the rate that kind runs at, so a quiet kind is not carried in a noisy one's bytes and a wallet downloads only the kinds it follows.
 
 ## Specifications
 
 ### Elements
 
-For every object whose observable state changes during an epoch, the mint inserts exactly one element into that epoch's filter:
+An element is the hash of a kind, an object identifier and a state:
 
 ```
 E = SHA256(DOMAIN_SEPARATOR || len32(kind) || kind || len32(id) || id || len32(state) || state)
@@ -30,194 +32,327 @@ Where:
 - `id` identifies the object, and depends on `kind`
 - `state` is the new state of the object, and depends on `kind`
 
-| `kind`        | `id`                                     | `state`                               |
-| ------------- | ---------------------------------------- | ------------------------------------- |
-| `proof_state` | the 33 bytes of the compressed point `Y` | `"UNSPENT"`, `"PENDING"` or `"SPENT"` |
-| `mint_quote`  | the UTF-8 encoded mint quote ID          | the empty string                      |
-| `melt_quote`  | the UTF-8 encoded melt quote ID          | `"UNPAID"`, `"PENDING"` or `"PAID"`   |
+| `kind`            | `id`                                      | `state`                               |
+| ----------------- | ----------------------------------------- | ------------------------------------- |
+| `proof_state`     | the 33 bytes of the compressed point `Y`  | `"UNSPENT"`, `"PENDING"` or `"SPENT"` |
+| `mint_quote`      | the UTF-8 encoded mint quote ID           | the empty string                      |
+| `melt_quote`      | the UTF-8 encoded melt quote ID           | `"UNPAID"`, `"PENDING"` or `"PAID"`   |
+| `blind_signature` | the 33 bytes of the compressed point `B_` | the empty string                      |
 
-The length prefixes keep the three fields unambiguous so that you can add a new kind without a registry of tags. A kind names the operation, not the payment method: BOLT11 ([NUT-23][23]), BOLT12 ([NUT-25][25]) and onchain ([NUT-30][30]) all share the melt state enum of [NUT-05][05], no mint quote carries a state in any method, and quote IDs are unique per mint ([NUT-04][04]) rather than per method. One filter sequence covers every kind and every method; splitting it would shrink the anonymity set and leak the method on a match.
+The length prefixes keep the three fields unambiguous, so a new kind can be added without a registry of tags. A kind names the operation rather than the payment method: BOLT11 ([NUT-23][23]), BOLT12 ([NUT-25][25]) and onchain ([NUT-30][30]) share the melt state enum of [NUT-05][05], no mint quote carries a state in any method, and quote IDs are unique per mint ([NUT-04][04]) rather than per method.
 
-Mints **MUST** hash the quote ID exactly as it was returned to the wallet. Implementations **MUST NOT** normalize its case and **MUST NOT** strip its hyphens. A published filter lets an attacker test a guessed quote ID, so a mint that publishes filters for a quote kind **MUST** generate that kind's quote IDs as [NUT-04][04] recommends, UUIDv7 with all 74 variable bits from a CSPRNG, and **MUST NOT** advertise a quote kind whose IDs are generated any other way.
+### Insertion events
 
-Binding `state` into the element keeps a proof state private end to end: a match reports the new state directly, so the wallet never has to send `Y` to learn it, and it computes one candidate per state it cares about, at most three per proof. Mint quotes carry no state because their accounting fields would disclose amounts, so a match means only that the quote changed and the wallet follows it with `GET /v1/mint/quote/{method}/{quote_id}`.
+A mint that advertises a kind **MUST** insert one element for each event in the table below, and **MUST NOT** insert an element for any other event of that kind.
 
-### Filter encoding
+| `kind`            | Insertion event                                                                                                                                                                    |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `proof_state`     | An existing proof transitions into the encoded state. The initial `UNSPENT` state created by issuance is not inserted. A transition back to `UNSPENT` after `PENDING` is inserted. |
+| `mint_quote`      | An existing mint quote changes after its creation. Creation alone is not inserted.                                                                                                 |
+| `melt_quote`      | An existing melt quote transitions into the encoded state after its creation. The initial state at creation is not inserted.                                                       |
+| `blind_signature` | The blind signature has been durably persisted and can be returned by `POST /v1/restore` ([NUT-09][09]).                                                                           |
 
-A filter is a Golomb-Rice coded set of the positions of its elements, following the construction of [BIP-158](https://github.com/bitcoin/bips/blob/master/bip-0158.mediawiki). With `P` the Golomb-Rice parameter:
+A `mint_quote` element carries the empty string as its state, so the same `E` is inserted again on every post-creation transition of that quote. A wallet that matches a `mint_quote` element learns only that the quote changed, and **MUST** fetch `GET /v1/mint/quote/{method}/{quote_id}` to learn its current state.
 
-1. Remove duplicate elements. `N` is the number of distinct elements that remain.
-2. For each element `E`, let `v` be the first 8 bytes of `E` read as a 64-bit unsigned integer in big-endian format, and compute the position `pos = (v * N * 2^P) >> 64`. This multiplication **MUST** be carried out in at least 128-bit arithmetic.
-3. Sort the positions in ascending order. Positions are **NOT** deduplicated: two distinct elements can land on the same position, which encodes as a difference of `0`.
-4. Compute the difference `d` between each position and its predecessor, taking `0` as the predecessor of the first.
-5. Encode each `d` as a Rice code: the quotient `d >> P` as that many `1` bits followed by a single `0` bit, then the low `P` bits of `d` in big-endian order.
-6. Concatenate all codes and pad the result with `0` bits to a byte boundary.
+A mint **MUST** durably commit a state change or a signature before the insertion recording it becomes visible in any block it serves. A crash **MUST NOT** leave a published element whose object the corresponding authoritative endpoint cannot yet report.
 
-Decoding reverses this. A decoder reads Rice codes while at least `P + 1` bits remain unread, and `N` is the number of values it read. This terminates because a code is at least `P + 1` bits long and the padding of step 6 is at most 7 bits, so padding can never complete one, and it is why `P` **MUST** be at least `7`. `N` is therefore not transmitted, and a wallet decodes a filter before it can place its own candidate. Deduplicating elements rather than positions in step 1 is what makes `N` recoverable: every distinct element contributes exactly one encoded value.
+Mints **MUST** hash the quote ID as it was returned to the wallet. Implementations **MUST NOT** normalize its case and **MUST NOT** strip its hyphens. A published filter lets an attacker test a guessed quote ID, so a mint that publishes filters for a quote kind **MUST** generate that kind's quote IDs as [NUT-04][04] recommends, UUIDv7 with all 74 variable bits from a CSPRNG, and **MUST NOT** advertise a quote kind whose IDs are generated any other way.
 
-This differs from [BIP-158](https://github.com/bitcoin/bips/blob/master/bip-0158.mediawiki) in two ways, both to cut the primitives an implementation needs. There is no SipHash step, because `E` is already a SHA-256 digest over a domain-separated preimage. And `M` is fixed to `2^P` rather than `1.497137 * 2^P`, which makes this Rice coding with a single parameter, at about half a bit per element.
+A `blind_signature` element records that the mint issued a signature on `B_`, which is what lets a wallet find its own past outputs without asking. It carries no state because issuance is a single event rather than an enum, and no amount because that would disclose one. It is also the only kind whose elements nobody but the issuing wallet can produce a candidate for: `B_ = Y + rG` needs the blinding factor as well as the secret, where a `proof_state` element needs only `Y`, which every previous holder of the proof knows.
 
-The probability that an element that is not in the filter matches it is `2^-P`, whatever `N` is. At the recommended `P = 28` an element costs about 29.6 bits, or 3.7 bytes, so a filter's size follows the number of state changes in its epoch while its false-positive rate does not. `P` **SHOULD** be chosen so that false positives stay rare across every filter a wallet tests, not one filter at a time, and mints **SHOULD NOT** use a `p` below `24`. Mints that consider their volume sensitive **MAY** pad a filter with elements drawn uniformly at random, which costs 3.7 bytes each and is undetectable because wallets test only specific candidates.
+This kind roughly doubles the elements a mint inserts, because a swap produces about as many outputs as it consumes inputs. Issuance has its own sequence and its own `b`, so covering it changes neither the rotation nor the block size of any other kind.
 
-### The `Filter` object
+Binding `state` into the element keeps a proof state private end to end: a match reports the new state directly, so the wallet never has to send `Y` to learn it, and it computes one candidate per state it cares about, at most three per proof. Mint quotes carry no state because their accounting fields would disclose amounts.
 
-```json
-{
-  "start": <int>,
-  "end": <int>,
-  "data": <hex_str>
-}
+A sequence covers one kind and, within that kind, every payment method. Splitting by method is forbidden: it would reveal which payment rail a wallet is following, it would fragment the anonymity set across several smaller sequences, and neither buys enough to justify the disclosure. Splitting by kind is what lets each kind be sized to the rate it runs at.
+
+### Positions
+
+An element sets up to 16 bits in a bitmap of `2^b` bits. Its positions are the 16 words of two SHA-256 digests:
+
+```
+W   = SHA256(E || u32be(0)) || SHA256(E || u32be(1))
+w_i = the i-th 32-bit big-endian word of W, for i from 0 to 15
+p_i = w_i >> (32 - b)
 ```
 
-Where:
+Where `u32be(j)` is a 32-bit unsigned counter in big-endian format.
 
-- `start` is the Unix timestamp at which the epoch began
-- `end` is the Unix timestamp at which the epoch ended
-- `data` is the hex-encoded Golomb-Rice coded set
+Position `p` is bit `0x80 >> (p & 7)` of byte `p >> 3` of the bitmap, so position `0` is the most significant bit of byte `0`. Two digests supply exactly 16 words, so nothing is left over and no partial word has to be handled.
 
-Epochs **MUST** be contiguous: a filter's `start` **MUST** equal the `end` of the filter before it. An epoch in which nothing changed **MUST** still produce a filter, with `data` set to the empty string, so that the history never has gaps. That chain is what a wallet checks to know it holds the whole history; nothing in a filter attests to its origin.
+Positions are taken from fixed 32-bit windows rather than from packed `b`-bit slices of a digest, because fixed windows nest and packed slices do not. For any `b'` at most `b`, the position of an element at width `b'` is `p_i >> (b - b')`. A wallet **SHOULD** cache the 16 words of an object rather than its positions, 64 bytes regardless of `b`, and derive a position for any width with one shift. Nesting is what lets a mint narrow a bitmap at seal, or raise `b` later, without any wallet recomputing a hash.
 
-### Fetching filters
+Two of an element's words **MAY** map to the same position at a given `b`, in which case the insertion sets fewer than 16 distinct bits. This needs no special handling, and the insertion still counts once.
 
-The mint publishes the parameters of its filters:
+> [!NOTE]
+>
+> The positions could come from a single digest by double hashing, `p_i = (h1 + i * h2) mod 2^b`. That construction degenerates with a power-of-two modulus whenever `h2` is even, since the positions are then confined to a coset, and the corrections for it are the sort of detail three implementations get three different ways. Two digests per object, computed once for the life of that object, is not worth optimizing.
+
+### Blocks
+
+A block covers one kind. It is a bitmap of `2^b` bits, all zero when it opens. The mint inserts an element by setting each of its positions. Bits are never cleared, so a block only ever gains elements.
+
+`count` is the number of insertion operations the mint has applied to the block. It is not published: the mint keeps it to know when to seal and how far to fold. Each operation increments `count` by one, whatever it sets, and this includes:
+
+- a repeat of an element already inserted into that block,
+- a noise insertion,
+- an insertion whose positions collide with each other or with bits an earlier insertion set.
+
+Defining `count` this way means a mint never has to keep an exact set of the elements in a block in order to deduplicate. Repeats and collisions leave the actual fill lower than `count` alone would suggest, so they cannot raise the false-positive probability above what the observed popcount indicates.
+
+A block **MUST** be sealed when `count` reaches the capacity for its `b`, or when `timeout` seconds have elapsed since the block opened, whichever comes first. A mint **MUST NOT** insert an element into a sealed block, and **MUST NOT** let a block's `count` exceed the capacity for its `b`. A seal on `timeout` **MUST** produce a block even when `count` is `0`, so that the sequence keeps advancing and a wallet can bound how stale its view is.
+
+Capacity is the insertion count at which the expected fill of the bitmap is approximately one half. `b` **MUST** be between `5` and `26`:
+
+```
+capacity = floor(2^b * 6931471805599453 / 160000000000000000)
+```
+
+That constant is the natural logarithm of two, and the expression is `2^b * ln2 / 16` rounded down. It is written as an integer ratio so that the seal point and the right-size fold land on the same value in every implementation, with no floating-point arithmetic in the rule. At `b = 20` it gives 45,426 insertions in a 128 KiB block.
+
+The false-positive probability of a block follows its observed fill rather than its `count`. With `f` the fraction of bits set, measured by taking the popcount of the bitmap and dividing by `2^b`, a candidate that was never inserted matches with estimated probability `f^16`. When `f` is `1/2` that probability is `2^-16`, one test in 65,536. Wallets **MAY** compute `f` from the bitmap and use `f^16` as the cost of testing that block. The popcount is the only thing a bitmap reports about how full it is, and it is the quantity the probability depends on.
+
+The expected fill at capacity is approximately one half, and the actual fill of any particular block is whatever its popcount says. Repeated elements, noise drawn on a position already set, and positions that collide all leave the actual fill lower, which lowers the false-positive probability rather than raising it.
+
+Wallets **SHOULD NOT** discard a block whose fill is above one half. Overfilling raises the probability but introduces no false negatives, so a clear bit still proves absence and the block's answers stay sound. Discarding the block leaves a hole in the height sequence, and confirming that gap through [NUT-07][07] discloses more than the extra confirmations a high probability would have cost.
+
+Sealing on fill is what bounds the probability. A bitmap's false-positive probability grows as it fills, so a filter sealed only by a clock would carry a probability that followed the mint's volume in that period, and the choice of 16 bits would mean nothing. Sealing on fill makes reaching the bound the event that ends the block, so a block sealed on saturation sits near it and one sealed on timeout sits below. The timeout is there for liveness rather than for the probability.
+
+A mint **SHOULD** seal a block that reached its `timeout` at the smallest `b'` that still holds its `count`, and **MAY** instead keep `b` fixed. Positions nest, so a wallet needs no extra work to test a block at a smaller width, and the byte length of a narrowed bitmap discloses nothing that `count` does not already state. Without this a low-volume mint would publish a full-size, nearly empty bitmap on every timeout.
+
+Mints that consider their activity sensitive **MAY** insert elements drawn uniformly at random alongside the real ones. A wallet cannot tell the two apart, because it only ever tests candidates it computed itself, and a random element matches one of those only at the block's false-positive probability. The popcount of a bitmap is the only estimate of how many insertions it holds, and it counts noise alongside the real ones, so what an observer reads off a block is not the number of objects whose state changed.
+
+Noise adds no bytes to a block, because the bitmap is the same size whatever its fill, but it consumes capacity and so shortens the rotation. How much it hides depends on how it is drawn: an observer able to estimate the rate at which a mint adds noise can subtract it.
+
+### Choosing `b`
+
+A block seals when it fills, so at `R` insertions a day a sequence rotates every `capacity / R` days. That cadence is how stale a wallet's view of that kind can be when it follows sealed blocks alone, and the block still filling is what it polls for a fresher answer.
+
+Mints **SHOULD** choose, for each kind, the smallest `b` whose capacity is at least the number of insertions they expect that kind to produce in a day, so that every sequence seals on saturation about once a day and the timeout stays a backstop rather than the usual case.
+
+Rotation and yearly retention at `b = 20`:
+
+| insertions/day | rotation at `b = 20` | retained per year |
+| -------------- | -------------------- | ----------------- |
+| 1,000          | every 45 days        | 1 MB              |
+| 10,000         | every 5 days         | 11 MB             |
+| 100,000        | every 10.9 hours     | 105 MB            |
+| 1,000,000      | every 1.1 hours      | 1.1 GB            |
+
+One `b` cannot serve that whole range, which is why `b` is chosen per kind rather than per mint. A kind doing 1,000 insertions a day at `b = 20` would rotate once every 45 days and publish a bitmap that is mostly empty; the rule puts it at `b = 15` and a 4 KiB block instead. A kind running at one insertion a second sits at `b = 21` and retains about 91 MB a year.
+
+Sizing each kind on its own is what keeps a quiet kind out of a noisy one's blocks. A mint seeing 1,000,000 proof state changes and 100 melt quotes a day runs `proof_state` at `b = 25`, a 4 MiB block that rotates every 1.5 days, and `melt_quote` at `b = 12`, a 512 B block that rotates every 1.8 days. A single sequence would have to hold both in the 4 MiB block, and a wallet following only melt quotes would download it to test 100 elements.
+
+A saturated block costs about `2 / ln2`, or 2.89, bytes per insertion whatever its `b`, so the bitmap bytes over a set of insertions are roughly the same however they are partitioned. Splitting by kind is not free beyond that. It adds:
+
+- rounding at small widths, where capacity is rounded down and the cost per insertion rises, to 4 bytes at `b = 5`,
+- blocks sealed on `timeout` rather than on fill, including empty ones,
+- per-sequence metadata, one response per kind,
+- an independently refreshed open block per sequence,
+- HTTP and JSON framing per request.
+
+What splitting buys is on the wallet's side: it downloads only the kinds it follows, at the width that kind needs.
+
+### Sequences
+
+A sequence is the ordered series of blocks for one kind. Each sequence numbers its blocks from `0` independently.
+
+- A mint **MAY** begin covering a new kind at any time. That sequence begins at height `0`, and its first block's `start` is the first moment it covers.
+- Absence of a match before a sequence's first `start` carries no meaning, because no element could have been inserted yet.
+- A mint **MUST NOT** present a sequence as covering events that occurred before it began maintaining that sequence.
+- A mint **MAY** stop covering a kind, and **MUST** then remove that kind from its [NUT-06][06] advertisement.
+- Sealed blocks **MUST** keep the `kind` and `height` they were published with.
+- A mint **MUST NOT** restart an existing kind at height `0` while presenting it as a continuation of the earlier sequence.
+
+A wallet that still holds blocks of the old sequence can notice a restart, because the heights the mint lists no longer reach the ones it already has, or a height it kept comes back with different bytes, which the availability rule below forbids. A wallet holding nothing cannot tell a restart from a mint that has only just begun covering the kind.
+
+### Fetching blocks
+
+One sequence is described per request. A wallet learns which kinds exist from the `kinds` array of the [NUT-06][06] setting below, and asks about one of them:
 
 ```http
-GET https://mint.host:3338/v1/filters/info
+GET https://mint.host:3338/v1/filters/info/{kind}
 ```
 
 The mint responds with a `GetFiltersInfoResponse`:
 
 ```json
 {
-  "p": <int>,
-  "epoch": <int>,
-  "kinds": <str[]>,
-  "page_size": <int>,
-  "first_page": <int>,
-  "current_page": <int>,
-  "current_page_count": <int>,
-  "earliest_start": <int>,
-  "latest_end": <int>,
-  "pending": <bool>
+  "b": <int>,
+  "timeout": <int>,
+  "open_interval": <int|null>,
+  "blocks": [
+    { "start": <int>, "end": <int|null> }
+  ]
 }
 ```
 
 Where:
 
-- `p` is the Golomb-Rice parameter `P`
-- `epoch` is the epoch duration in seconds; `3600` is **RECOMMENDED**, and mints **MAY** use longer
-- `kinds` are the `kind` values covered by the filters, each for every payment method the mint supports
-- `page_size` is the number of filters on a full page
-- `first_page` is the lowest page number the mint still serves
-- `current_page` is the page still being filled; every page below it is complete
-- `current_page_count` is how many filters `current_page` holds so far
-- `earliest_start` is the `start` of the oldest filter the mint still serves
-- `latest_end` is the `end` of the most recent filter
-- `pending` is whether the mint serves the pending filter described below
+- `b` is the base-2 logarithm of the bitmap size in bits of the block now open
+- `timeout` is the number of seconds after which an unsaturated block in that sequence seals; `604800` is **RECOMMENDED**, and mints **MUST NOT** use a value below `3600`
+- `open_interval` is the number of seconds between refreshes of the open block, or `null` when the mint does not serve one
+- `blocks` lists every block of that sequence, with the interval each one covers
+- `start` is the Unix timestamp at which a block opened
+- `end` is the Unix timestamp at which it was sealed, or `null` while it is still filling
 
-A value of `50` is **RECOMMENDED** for `page_size`. Filters grow with the mint's volume: at an hourly epoch and one state change per second, a filter is about 13 KB, so a page of 50 is about 650 KB, and a busier mint **SHOULD** advertise a smaller `page_size`.
+The rules:
 
-Filters are numbered from the mint's first epoch, oldest first. Page `k` holds the filters at positions `k * page_size` to `k * page_size + page_size - 1` in that numbering:
+- A block's height is its index in `blocks`, so the first entry is height `0` and the list holds every height the sequence has ever had.
+- The final entry is the block now filling, and is the only entry whose `end` is `null`. A sequence that has never sealed a block has exactly one entry.
+- An entry's `end` **MUST** be greater than or equal to its `start`, and **MUST** equal the `start` of the entry after it, which is the contiguity rule stated where a wallet can check it.
+- The open block can be fetched only when `open_interval` is not `null`.
 
-```http
-GET https://mint.host:3338/v1/filters/{page}
-```
+Mints **MUST** return `40002` for a kind they do not cover. The request has no other failure of its own.
 
-The mint responds with a `GetFiltersResponse`:
+The response grows for the life of the sequence, about 40 bytes an entry, so a year of daily rotation adds some 15 KB. A wallet needs it when it starts and when it wants the interval a height covers, not on every poll: to follow the open block it re-fetches the height it holds as open and advances when that comes back sealed.
 
-```json
-{
-  "page": <int>,
-  "filters": <Array[Filter]>
-}
-```
+A sequence carries its own `timeout` as well as its own `b`, so a mint can give a quiet kind a shorter backstop than a noisy one. A mint **MAY** change a sequence's `b` for blocks it has not yet opened, which costs wallets nothing as long as they cache words rather than positions.
 
-Within a page, the filters **MUST** be in ascending order of `start`. Mints **MUST** return an error for a page above `current_page` or below `first_page`.
-
-Page numbers are absolute: page `k` always names the same epochs, and pruning raises `first_page` without renumbering anything. Every page below `current_page` is full and never changes again, so mints **SHOULD** serve it with a long-lived immutable cache directive, and wallets **MAY** keep it indefinitely. Only `current_page` grows, once per epoch, so mints **MUST NOT** serve it with a cache lifetime longer than `epoch`. A page response carries nothing that changes, which is what lets a complete page stay byte-identical for every requester forever.
-
-A wallet records the last page it fetched in full and resumes there, fetching through `current_page`. Re-fetching `current_page` returns the filters it already holds plus any epoch that has closed since, so it **MUST** deduplicate on `start`. A wallet recovering from a seed ([NUT-13][13]) starts at `first_page`.
-
-Filters are public and identical for every requester. Mints **MAY** serve them from a cache, a mirror, or a content delivery network, and wallets **MAY** fetch them through any transport. A wallet that uses a mirror trusts it not to withhold filters, and a withheld filter looks exactly like an epoch in which nothing happened. Wallets **SHOULD** fetch filters over a transport that does not link them to their minting and melting requests, such as the mint's onion address if one is listed in `urls` ([NUT-06][06]).
-
-Mints **SHOULD** retain their entire filter history, which is what lets a wallet recover offline after a seed restore. It grows by about 117 MB a year at one state change per second, and a restore reads all of it.
-
-### The pending filter
-
-A closed epoch is up to `epoch` seconds behind. A wallet that wants a faster answer **MAY** poll the filter of the epoch that is still open, if the mint advertises `pending`:
+A block is fetched by its kind and its height:
 
 ```http
-GET https://mint.host:3338/v1/filters/pending
+GET https://mint.host:3338/v1/filters/blocks/{kind}/{height}
 ```
 
-The mint responds with a `PendingFilterResponse`:
+The mint responds with the block's bitmap as `application/octet-stream`: the `2^b / 8` bytes and nothing else. Everything else about the block is already known. `kind` and `height` are the URL the wallet asked for, `start` and `end` are that height's entry in `blocks`, and `b` is the body length, which **MUST** be `2^b / 8` bytes for some `b` between `5` and `26`. A body of any other length **MUST** be rejected and the height treated as not yet obtained.
 
-```json
-{
-  "start": <int>,
-  "data": <hex_str>
-}
-```
+Every height below the last index of `blocks` is sealed. The last index is the block now filling, which is how a wallet reaches a state change without waiting for the rotation. Mints **MUST** return `40001` for a height above the last index of `blocks`, and for that height itself when `open_interval` is `null`. Mints **MUST** return `40002` for a kind they do not cover.
 
-The pending filter is built and matched exactly like any other, but it has no `end` because its epoch has not closed. `start` is the moment that epoch began, and the closed filter carrying the same `start` supersedes it. Mints **MUST NOT** serve it from a cache and **SHOULD** mark it uncacheable. A mint that does not offer one **MUST** return `40001`.
+#### Open blocks
 
-`data` changes from one request to the next, and so does the `N` decoded from it, so a wallet **MUST** recompute the position of every candidate for every response it receives.
+A block's bitmap says nothing about whether it is sealed. The `blocks` list of `/v1/filters/info/{kind}` is the only indication: every height below the last index is sealed, and the last index is open. Wallets **MUST NOT** infer protocol state from cache headers, and mints **MUST NOT** rely on cache headers to convey it.
+
+Staleness in that list runs one way only, which is what makes it sufficient. A height the list reports as sealed is sealed permanently, because a sealed block never reopens. A height it reports as open may have sealed since the wallet read it, and the wallet learns that on its next read. So a wallet trusting a stale list can waste a fetch, but cannot mistake an open snapshot for a final block.
+
+- A sealed block **SHOULD** be served with a long-lived immutable cache policy.
+- An open block **MUST NOT** be served with `immutable`, and **SHOULD** be served with `max-age` equal to `open_interval`.
+- An open block response **SHOULD** carry an `ETag`, and that `ETag` **MUST** change whenever the serialized block changes.
+- Wallets **SHOULD** revalidate an open block with `If-None-Match`, and mints **MAY** answer `304 Not Modified`.
+- A wallet **MUST NOT** bookmark an open snapshot or cache it permanently.
+- A clear bit in an open snapshot proves absence only as of that snapshot.
+- A wallet **MUST** eventually fetch the sealed representation of that height.
+
+The same block URL returns an open block while that height is filling and its sealed final representation afterwards. A block is open in a response rather than in itself: a wallet that asks for the height it holds as open and receives a sealed block arrived after the seal and advances; one that receives an open block again did not. Neither is an error.
+
+Those rules are what keep a design with no false negatives from acquiring one. An open snapshot is a prefix of the block that will seal at that height, so a wallet that recorded a negative from it and moved on would never look at what arrived afterwards.
+
+Mints **SHOULD** refresh the open block on a fixed interval rather than serving the live bitmap, so that the moment an element arrived is disclosed at the granularity of `open_interval` rather than at whatever rate a client polls. Wallets **SHOULD NOT** poll faster than `open_interval`. The right-size fold can narrow `b` at seal, so the sealed block at a height may be narrower than the open block a wallet already tested; positions nest, so the candidate's words carry across unchanged.
+
+#### Availability
+
+A mint **MUST** retain every block it has sealed, and **MUST** return the same bytes for a height every time it serves it. Heights are therefore never dropped, which is what lets a block's position in `blocks` be its height, and what lets a wallet recover offline after a seed restore. Wallets and mirrors **MAY** retain sealed blocks indefinitely and serve them from anywhere.
+
+Retention is unbounded, so a sequence's storage grows for its lifetime at the rate the table above gives. Raising `b` does not change that: a block costs about 2.89 bytes an insertion whatever its width, so a larger `b` cuts the number of blocks and the length of `blocks`, not the bytes the history occupies.
+
+A mint **MAY** serve sealed blocks from a cache, a mirror or a content delivery network. A wallet that uses a mirror trusts it to serve what the mint published, and a block carries nothing binding it to its height, so a mirror answering one height with another's bytes is not detectable from the response. Wallets **SHOULD** fetch blocks over a transport that does not link them to their minting and melting requests, such as the mint's onion address if one is listed in `urls` ([NUT-06][06]).
+
+A block is served as its bytes, so there is no encoding overhead to recover. A bitmap near half fill is close to incompressible by construction, so `Content-Encoding: gzip` buys little on a block; mints and wallets **SHOULD** support it for `/v1/filters/info/{kind}`, where a run of ascending timestamps compresses well.
+
+> [!NOTE]
+>
+> Nothing a mint serves here attests to its own origin, so a mirror is trusted to the same degree the mint is. A future NUT could have the mint sign a commitment to its history, which would let a wallet verify any amount of mirrored data from one authenticated fetch. This NUT does not attempt it, because a mirror that alters a bitmap and a mint that never inserts an element are indistinguishable to a wallet, and the second is already accepted as undetectable.
 
 ### Matching
 
-To follow an object, the wallet computes the element `E` for each state it is interested in, and for each filter computes `pos` from `E` using the `N` decoded from that filter and the mint's `p`. The object matches if `pos` is among the positions encoded in the filter. Wallets **MUST** match on the position computed with the filter's own `N`: because `pos` depends on `N`, an element has a different position in every filter, and positions **MUST NOT** be cached across filters.
+To follow an object, the wallet computes the element `E` for each state it is interested in and derives the 16 words of each. For a block at width `b`, it shifts each word to a position and reads that bit. The object matches if all 16 bits are set, and a wallet **SHOULD** stop at the first bit that is clear, which is after two reads on average against a block near half fill.
+
+A candidate is tested only against the sequence for its kind. Its words are computed once and hold for every block in that sequence at any `b`, so the only per-candidate state is 64 bytes of words, and the only per-sequence state is one bookmark.
 
 Wallets **MUST NOT** treat a filter as authoritative:
 
-- A match **MAY** be a false positive, with probability `2^-P` per test.
-- The absence of a match is not evidence that no state change occurred. Filters can be delayed, pruned, or withheld.
+- A match **MAY** be a false positive, with estimated probability `f^16` for a block at observed fill `f`, which is `2^-16` at half fill.
+- The absence of a match is not evidence that no state change occurred. Blocks can be delayed or withheld.
+- The absence of a match in an open block means only that nothing had arrived as of that snapshot. Only a sealed block's absence covers its whole interval.
+- Nothing here attests that the mint inserted everything it should have. A mint that never inserts an element publishes blocks that look entirely normal.
 
 Before any irreversible action, such as deleting proofs from its database or releasing goods, a wallet **MUST** confirm the state through [NUT-07][07] or through the corresponding quote endpoint.
 
-> [!CAUTION]
->
-> Filters give the sender of a token a passive way to observe when it is redeemed. The sender knows `Y`, so it can compute the element and watch for it indefinitely at no cost. This cannot be fixed in any design of this kind, because before a token is redeemed the sender and the receiver hold byte-identical secrets. Receivers **SHOULD** swap incoming ecash immediately ([NUT-03][03]), which reduces what a sender can observe to the moment of receipt, and senders **SHOULD** discard `Y` once a token has been handed over.
+#### What a wallet discloses
+
+Every false positive costs a [NUT-07][07] request that discloses the `Y` behind it, so what a wallet spends on privacy is its candidates times the blocks it tests times the probability. The block count follows the rotation cadence rather than the mint's volume, and each sequence is sized for that cadence on its own, so splitting by kind does not change the budget. At the one-a-day cadence the sizing rule aims for, a wallet following 50 proofs across two states expects about 0.56 false positives a year, and a 10,000-proof cold restore over a year of history about 111. A mint that wants to spend less of that raises `b`, which cuts the number of blocks without changing the bytes per insertion, at the price of a coarser rotation and a staler view.
+
+Which sequences a wallet fetches says which kinds it follows. A wallet pulling only `blind_signature` is restoring; one pulling only `mint_quote` is waiting to be paid. Fetching every advertised sequence discloses no more than a single combined sequence would, and fetching a subset trades that distinction for bytes. Wallets that treat this as sensitive **SHOULD** fetch every advertised sequence when bandwidth allows; fetching a subset remains allowed as an explicit trade.
+
+A sealed block discloses only that its insertions landed somewhere between `start` and `end`. An open block discloses more, because whoever polls it sees each insertion arrive within one `open_interval`. Everyone who has held a proof knows its `Y` and can watch for its redemption at no cost, so what an open block changes for them is the resolution: against sealed blocks they learn which rotation the redemption fell in, against an open block which interval. A mint that finds that trade bad serves no open block.
 
 ### Wallet recovery
 
-A seed restore ([NUT-13][13]) ends with a [NUT-07][07] request carrying every recovered `Y`, including unspent ones, which is the heaviest disclosure a wallet makes. Filters replace that step: the wallet computes the `SPENT` element of each restored proof and tests it against the history, sending nothing. They do not replace [NUT-09][09], because the mint only learns `Y` when a proof is presented to it, so a proof that was issued and never spent has never appeared in a filter.
+A seed restore ([NUT-13][13]) is the most revealing thing a wallet does. It derives blinded messages in batches, posts each to `/v1/restore` ([NUT-09][09]), and stops only after three consecutive batches come back empty, so the requests cannot be pipelined: the next one depends on the answer to the last. It then checks every recovered proof with `POST /v1/checkstate` ([NUT-07][07]).
 
-A cold restore reads the whole retained history, far more bytes than the one `checkstate` it replaces, while a wallet already following filters pays nothing extra. Absence of a match means unspent only if the wallet holds every filter back to the first epoch in which the proof could have been spent, and a wallet whose `earliest_start` is later than that point **MUST** confirm the gap through [NUT-07][07].
+That hands the mint two things it did not have. The candidates it never signed disclose how far the wallet's counter ever ran, and the closing `checkstate` discloses `Y` for proofs the mint has never seen, which are the wallet's live money.
+
+A mint that covers both `proof_state` and `blind_signature` removes both. A wallet **MAY** then restore as follows, and otherwise restores as [NUT-13][13] describes:
+
+1. Fetch every keyset the mint has ever used with `GET /v1/keysets` ([NUT-02][02]). Restore runs per keyset, because [NUT-13][13] keeps a counter per keyset, and inactive keysets hold recoverable ecash.
+2. Read the `blind_signature` and `proof_state` sequences from `/v1/filters/info/{kind}`, and start at height `0`. A wallet that knows when its seed was created can instead start at the last height whose `start` precedes that moment. The quote sequences play no part in a restore.
+3. Fetch the blocks in that range. A wallet that already follows filters holds them.
+4. For each keyset and each counter below the wallet's limit, derive `secret` and `r` as [NUT-13][13] prescribes, compute `B_`, and test its `blind_signature` element. This is local work and costs no request.
+5. Send the matches to `POST /v1/restore` ([NUT-09][09]), in batches no larger than `max_array_length` ([NUT-06][06]).
+6. Unblind each returned `BlindSignature` with the `r` from step 4 and assemble the proofs.
+7. Test each recovered proof's `SPENT` element against the `proof_state` sequence to learn which are probably already spent.
+
+Step 5 cannot be removed. Only the mint holds the private key, so only the mint can produce `C_`, and the amount rides on the mint's per-amount key rather than on the wallet's secret, so the mint supplies that too. The `amount` a wallet sends in step 5 is not used to find the signature; the mint looks the output up by `B_` and returns the amount it actually signed.
+
+Wallets **MUST NOT** discard a recovered proof because its `SPENT` element matched. A match is probabilistic and deleting is not: a live proof matches somewhere in a year of blocks about once in one hundred and eighty, so a wallet holding five hundred live proofs would destroy roughly three of them on every restore. Step 7 ranks proofs, it does not remove them, and the rule above stands: confirm through [NUT-07][07] first. This is why step 5 asks for every issuance match rather than only the live ones.
+
+The same probability bounds how far to scan. [NUT-13][13] stops after three hundred counters because every extension costs a round trip; here an extension costs no request, and the per-candidate work is the derivation a wallet would have performed anyway to build a message to send. But a candidate matches spuriously at that same probability, and each one puts a `B_` the mint never signed into the restore request, which is the disclosure this removes. Scanning is bought at roughly half a percent of the swept range. [NUT-13][13] discloses three hundred unused candidates per keyset unconditionally, so a wallet can sweep some fifty thousand counters per keyset before matching that, and discloses no `Y` at any range. Wallets **SHOULD** choose the limit against that budget rather than against how fast they can derive.
+
+Absence of a match means unspent only if the wallet holds every block back to the first one in which the proof could have been spent. A wallet whose proofs predate the mint's `proof_state` sequence, because the mint began covering that kind later, **MUST** confirm the gap through [NUT-07][07].
+
+> [!NOTE]
+>
+> `B_` identifies the wallet that created it more strongly than `Y` identifies the wallet holding it, because `B_ = Y + rG` can only be reproduced by whoever knows the blinding factor, while `Y` is known to everyone who has ever held the proof. Sending a `B_` the mint has already signed tells it nothing new; sending one it has not tells it the sender authored that output.
+
+A wallet restoring against a mint that publishes no filters **SHOULD** still avoid [NUT-13][13]'s order, which sends every candidate `B_` and then every recovered `Y`. Deriving `Y` for the range, checking it with [NUT-07][07] in batches, and calling [NUT-09][09] only for what came back unspent reaches the same result in far fewer requests, disclosing far fewer `B_`. It discloses `Y` instead, so it is second best. This is also the answer to the alternative [NUT-13][13] leaves open, downloading the mint's entire database: filters are that idea done compactly, and a full dump of every signature ever issued carries the same information at many times the size without removing step 5.
+
+## Test vectors
+
+The element construction, the position derivation, the nesting rule and the bitmap layout are covered by [test vectors][tests]. They are normative: an implementation that does not reproduce them will not interoperate. Every value there is produced by a reference script included in the same file.
 
 ## Example
 
-A mint whose history is two epochs long has one page, still filling:
+A wallet reads a sequence, then fetches a block from it:
 
 ```bash
-curl -X GET https://mint.host:3338/v1/filters/0
+curl -X GET https://mint.host:3338/v1/filters/info/proof_state
 ```
-
-Response from the mint:
 
 ```json
 {
-  "page": 0,
-  "filters": [
-    {
-      "start": 1701704757,
-      "end": 1701708357,
-      "data": "047ea0665b049eabb17be54217aa442744d190"
-    },
-    {
-      "start": 1701708357,
-      "end": 1701711957,
-      "data": ""
-    }
+  "b": 10,
+  "timeout": 604800,
+  "open_interval": 60,
+  "blocks": [
+    { "start": 1701704757, "end": 1701708357 },
+    { "start": 1701708357, "end": null }
   ]
 }
 ```
+
+Height `0` is sealed and height `1` is filling. Fetching the sealed one:
+
+```bash
+curl -X GET https://mint.host:3338/v1/filters/blocks/proof_state/0
+```
+
+The response is 128 bytes of `application/octet-stream`, which tells the wallet `b = 10`, and in hex is:
+
+```
+00080020400014820048000000000208020000400800100200402200000400200000000400000000
+000a408000002400000202400000000010800000008001c3000810000480010000c04004001240080
+800011000080002080100000008000000c0000004000000014400800080000000002004400000000
+000000085010800
+```
+
+That bitmap is the five `proof_state` `SPENT` elements of the test vectors, 76 of its 1024 bits set. `b = 10` holds only 44 insertions, so no real mint would use it; it is small enough to print.
 
 ## Error codes
 
 See [Error Codes][errors]:
 
-- `40001`: Filter not available
-- `40002`: Filter page out of range
+- `40001`: Filter block out of range
+- `40002`: Unknown filter kind
 
 ## Mint info setting
 
@@ -227,12 +362,12 @@ Mints signal support for compact state filters via [NUT-06][06] using the follow
 "nuts": {
     "XX": {
       "supported": true,
-      "kinds": ["proof_state", "mint_quote", "melt_quote"]
+      "kinds": ["proof_state", "mint_quote", "melt_quote", "blind_signature"]
     }
 }
 ```
 
-`kinds` is the array of `kind` values covered by the mint's filters. A mint that advertises a kind covers it for every payment method it supports; partial coverage is not expressible, because a match would then disclose the method. The filters' parameters are served by `GET /v1/filters/info` to provide a single source of truth.
+`kinds` is the array of `kind` values covered by the mint's filters, one sequence each. A mint that advertises a kind covers it for every payment method it supports; partial coverage is not expressible. A mint that stops covering a kind **MUST** remove it from this array. This array is how a wallet discovers which kinds exist. Each sequence's parameters and heights are served by `GET /v1/filters/info/{kind}`, which is the single source of truth for them.
 
 [00]: 00.md
 [01]: 01.md
@@ -253,3 +388,4 @@ Mints signal support for compact state filters via [NUT-06][06] using the follow
 [25]: 25.md
 [30]: 30.md
 [errors]: error_codes.md
+[tests]: tests/XX-tests.md
