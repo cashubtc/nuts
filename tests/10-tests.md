@@ -355,7 +355,7 @@ Each signature **MUST** verify only against its corresponding `input_digest`; ne
 }
 ```
 
-**Melt.** Paying melt quote `quote-melt-0001` (amount 8, no change outputs) with the swap's 8-sat proof as the only input; the melt quote is the only output, binding its quote id and amount:
+**Melt.** Paying melt quote `quote-melt-0001` (quote amount 8 with a fee reserve of 0, so the output's amount is 8; no change outputs) with the swap's 8-sat proof as the only input; the melt quote is the only output, binding its quote id and that amount:
 
 ```json
 {
