@@ -365,7 +365,7 @@ Each signature **MUST** verify only against its corresponding `input_digest`; ne
 }
 ```
 
-Each input's `Y` and container record, then the transcript and digests. Only the v3 input derives and signs an input digest; the pre-v3 input carries its own [NUT-11](../11.md) or bare witness as before, and its `input_id` is listed only to check the container bytes:
+Each input's `Y` and container record, then the transcript and digests. Only the v3 input derives and signs an input digest; the pre-v3 input carries its own [NUT-11](../legacy/11.md) or bare witness as before, and its `input_id` is listed only to check the container bytes:
 
 ```json
 {
