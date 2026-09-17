@@ -190,8 +190,8 @@ Spending this proof as the sole input of the [swap transaction](#transaction-tra
 ```json
 {
   "transaction_digest": "882b3bd6dba132160a3349fc64017214be68e3e150242f2a6f4ddfcb4aef49e6",
-  "input_id": "71ab32aa7d1b611bb7ddfc63c34b67a9aacde5c027cebd4227e819afb8eaf6dd",
-  "input_digest": "1f2cc22d83da66466ce82250f41977b59f97ffc97d1cb4a8933654c6413fdf24"
+  "input_id": "1dda37bd259a04b176587b5804b192559f1b90608243ec5a3ba7b4d37b061f81",
+  "input_digest": "1732e47d4ce0b6510a51c88ccc41cb7b5fe673987e635738d54d8ca9686336d1"
 }
 ```
 
@@ -205,7 +205,7 @@ Spending this proof as the sole input of the [swap transaction](#transaction-tra
     "path": []
   },
   "signatures": [
-    "3b213cc219a97ab9fafbc91386e2996c9bf5d1973699d5647003728fc95cc8cc9a5fe6e06f5d3e920bb82433e31006a82e25116aa6a120eab5a8e20805d593b0"
+    "4cc8e5af02375b2497f5ad1c0241ea2de2b9ead33a6b5abd809bf27f8563967a13a0b484333e90e1d8622d5e884156ea40e1000587c25afe9904e1dbb85d0660"
   ]
 }
 ```
@@ -249,7 +249,7 @@ An aggregated internal key commits to having no script path with the empty tweak
 
 ## Transaction transcripts
 
-`transaction_digest = SHA256(transcript)`; each input signs `input_digest = tagged_hash("Cashu_TransactionInput", transaction_digest || input_id)`, where `input_id = SHA256(input container record)`. The single-input transactions below place that container first; the separate multi-input vector identifies both containers explicitly. The `digest` key in each vector is the transaction digest. The keyset is a v3 keyset with id `02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6` (contributing raw bytes); quote ids contribute UTF-8 bytes; amounts are minimal big-endian. Single-proof examples use [NUT-13 V3](13-tests.md) counter `0`; the multi-input example also uses counter `1`.
+`transaction_digest = SHA256(transcript)`; each input signs `input_digest = tagged_hash("Cashu_TransactionInput", transaction_digest || input_id)`, where `input_id = SHA256(input container record)`. The single-input transactions below place that container first; the separate multi-input vector identifies both containers explicitly. The `digest` key in each vector is the transaction digest. The keyset is a v3 keyset with id `02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6` (contributing raw bytes); a proof input's `03` is its `Y`, 48 bytes on a v3 keyset and 33 on a pre-v3 one (the mixed-keyset vector has both); quote ids contribute UTF-8 bytes; amounts are minimal big-endian. Single-proof examples use [NUT-13 V3](13-tests.md) counter `0`; the multi-input example also uses counter `1`.
 
 **Swap.** A `PostSwapRequest` ([NUT-03](../03.md)) spending one 8-sat proof into two 4-sat outputs:
 
@@ -282,10 +282,10 @@ serializes to the following transcript and digest:
 
 ```json
 {
-  "transcript": "01007f0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f603002102e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b04003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332703005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd5503005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
-  "digest": "5985ee7a424a7d9ce66441eacac3165d0d933c4c31315c7cb2dacdb9579d01bb",
-  "input_id": "56db6f708b5b9ad59d160a6014321a76916bb41141b360d30c85c06d497cfd80",
-  "input_digest": "d988bdcfa1d7699324894fc5dba3a70e7bca534e644b257c9700debb424b4ec8"
+  "transcript": "01008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332703005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd5503005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
+  "digest": "7d4783154ee7e697df3087d00206a26f74dab34fd469270f749ca14cc852d2aa",
+  "input_id": "44002fef2fb9ce3168f3a4e88315290a890080c6c333c2fc47d5327f6c3616f3",
+  "input_digest": "867091ad6dba3069bcff610e29300b5c1e2d89f0e5165f17d155000e77d18f9c"
 }
 ```
 
@@ -294,7 +294,7 @@ and the input's key-path witness over its `input_digest` is:
 ```json
 {
   "signatures": [
-    "678c1e71b29552ad86069bcc6d1965028b31df1e4dedf69fe5274ffefcad8c77593e474f581e7b43d9e5f8815c0babb607b17f22536ef5f2354889f088da3979"
+    "a46a08f9cf25bee38abe8e83a57dae316b64e826f3bd1a7261d3230cb97a70d910ffda84536464853b651cafeb3167affc13d1456d0647cdc685422ba56509a2"
   ]
 }
 ```
@@ -314,23 +314,79 @@ The transaction and per-input digests, with each proof's key-path signature:
 
 ```json
 {
-  "digest": "1544d76f577b7d567f429b482c1c081796f68f201edb3cafa75f68619d018a88",
+  "digest": "9517f426f14d8dcf29aa4e44832f7cba5c44d754f2dde955fecdc0ad731610d6",
   "inputs": [
     {
-      "input_id": "56db6f708b5b9ad59d160a6014321a76916bb41141b360d30c85c06d497cfd80",
-      "input_digest": "0054406a4cf6bbfc11fed28e7c896310f43d1f8eea4d0f2f015541d5c4e86756",
-      "signature": "f3d44abd44e262734e40f57bf3e3c4f60ab61242f7eb9751d149729e083621387ddca3141baffdda3b902068c2dd94aec5a16ade6b1153f3cf1ef0e1c6facc49"
+      "input_id": "44002fef2fb9ce3168f3a4e88315290a890080c6c333c2fc47d5327f6c3616f3",
+      "input_digest": "3c5ccb851c32f9822edc9f0851319a056e326a9020bc215c8409317e74a9aa1b",
+      "signature": "51133bcfc80eb634ee6e746839d2abebd2741bd7b06cdef88356c8bc09555202b9a3b3666df73bc24a544d2010fde8fb3baec9feb4f4c30280dfc7a48c88280f"
     },
     {
-      "input_id": "3fe70f160a85a6fe4586b1643767099dbdb78b740d2a4ce281e8e435e6e83a54",
-      "input_digest": "bdef95d2bb49c0d4d6de2119bf009808eb9d87141c9f539113c0a8d546aa234b",
-      "signature": "d3f93b9ae50290a82374d1382985b8fcae4658ab6d4c5e9454e41ce22d344a2ca2a6e9f04cdd199b4bbfb2becf0f260b86a5cbd500734a88f138cf7226b51ad1"
+      "input_id": "08960176e1785139ef04dc5ba5cd0484a285bd90907540a1b53e73767d6ffdaf",
+      "input_digest": "720c3e060e4a01f7d064eec0ecde6cc6e65e60e6f527231b71c3112e32f68acf",
+      "signature": "5069c493d313df6ab8728402cdf62e2998409c547ab4f22f121e07ff4af014bc0ce892b080c4ee3d188f709cc7bce4f288aa7f22862ad9ddc4569aa42d76135a"
     }
   ]
 }
 ```
 
 Each signature **MUST** verify only against its corresponding `input_digest`; neither signs the shared `digest`.
+
+**Mixed keysets.** A transaction may spend pre-v3 and v3 inputs together (the migration path: old inputs, v3 outputs). Every proof input's `03` is its `Y`: `hash_to_curve_G1` on the v3 keyset, [NUT-00](../00.md)'s secp256k1 `hash_to_curve` on the pre-v3 one, each over the secret's UTF-8 bytes. Here the swap's v3 input is joined by a pre-v3 input on keyset `00456a94ab4e1c46` (a v0 id, contributing its 8 raw bytes), paying two outputs of `8` and `2` on the v3 keyset:
+
+```json
+{
+  "inputs": [
+    {
+      "amount": 8,
+      "id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
+      "secret": "02e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b",
+      "C": "84d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327"
+    },
+    {
+      "amount": 2,
+      "id": "00456a94ab4e1c46",
+      "secret": "d341ee4871f1f889041e63cf0d3823c713eea6aff01e80f1719f08f9e5be98f6",
+      "C": "02a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba2"
+    }
+  ],
+  "outputs": [
+    {
+      "amount": 8,
+      "id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
+      "B_": "b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55"
+    },
+    {
+      "amount": 2,
+      "id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
+      "B_": "b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55"
+    }
+  ]
+}
+```
+
+Each input's `Y` and container record, then the transcript and digests. Only the v3 input derives and signs an input digest; the pre-v3 input carries its own [NUT-11](../11.md) or bare witness as before, and its `input_id` is listed only to check the container bytes:
+
+```json
+{
+  "inputs": [
+    {
+      "Y": "a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a73",
+      "container": "01008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327",
+      "input_id": "44002fef2fb9ce3168f3a4e88315290a890080c6c333c2fc47d5327f6c3616f3",
+      "input_digest": "3f48aab72fb7ec0e29d1fa49e4e194f09110068fe94a95e8553f53755af55837",
+      "signature": "4c4906b9093e30e404f29898d3905e14bc3ff85754cb210dc62f7da6b3e0bb612f3a09f5c33b0b504f389ba998d20f42f7dba80ceb22cd6cb0201b47e5e0dce7"
+    },
+    {
+      "Y": "029ef117210f475254efd911de93a9d22d471e356f5b1e3f00df8c24bbb37bd3ae",
+      "container": "0100570100010202000800456a94ab4e1c46030021029ef117210f475254efd911de93a9d22d471e356f5b1e3f00df8c24bbb37bd3ae04002102a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba2",
+      "input_id": "22df4d688b7337f49aa47dd5d0dc6578506229c36908d79608c50d7814d1bd04"
+    }
+  ],
+  "transcript": "01008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d033270100570100010202000800456a94ab4e1c46030021029ef117210f475254efd911de93a9d22d471e356f5b1e3f00df8c24bbb37bd3ae04002102a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba203005b0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd5503005b0100010202002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
+  "digest": "e8eb75f3f209bbf592e7cc7ed727dcd33fe118add5ab7a992a3a2d7a9392d893"
+}
+```
 
 **Mint.** Executing mint quote `quote-mint-0001` (amount 8, [NUT-04](../04.md#nutroot-transactions-v3-keysets)) with one 8-sat output. The quote is the transaction's only input; its lock key signs this digest via the mint request's `signature` field:
 
@@ -359,10 +415,10 @@ Each signature **MUST** verify only against its corresponding `input_digest`; ne
 
 ```json
 {
-  "transcript": "01007f0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f603002102e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b04003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d033270400160100010802000f71756f74652d6d656c742d30303031",
-  "digest": "a8ecb925d2f3e63b0a17233ff921fc94f5c785cc4c3ffbcef8bca56b8a53366c",
-  "input_id": "56db6f708b5b9ad59d160a6014321a76916bb41141b360d30c85c06d497cfd80",
-  "input_digest": "4a61b7d01d6389091d540dd829d767c5571ee391f5a9571efc6f27c8adb7824e"
+  "transcript": "01008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d033270400160100010802000f71756f74652d6d656c742d30303031",
+  "digest": "1245d154ac77eaa2fa7107d236ca4f884b98babf0fd3812c660a364ded3618a0",
+  "input_id": "44002fef2fb9ce3168f3a4e88315290a890080c6c333c2fc47d5327f6c3616f3",
+  "input_digest": "269af868bed9f69ccb9de137ce2307a1d11f981fd936035debcfa0314d80a7e2"
 }
 ```
 
@@ -372,10 +428,10 @@ The melt spends the swap's proof, so it shares the swap's `input_id`; the differ
 
 ```json
 {
-  "transcript": "01007f0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f603002102e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b04003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332703005a01000002002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd5503005a01000002002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd550400160100010802000f71756f74652d6d656c742d30303031",
-  "digest": "a17e91f4243d58376fbfed65a3bbb73fdfa5889adbe999e9992bc4e4162531fd",
-  "input_id": "56db6f708b5b9ad59d160a6014321a76916bb41141b360d30c85c06d497cfd80",
-  "input_digest": "0c0b95cf065bf515aa40b308f17ce91c2b311a08d4b314a1333ffa65ba52465e"
+  "transcript": "01008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332703005a01000002002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd5503005a01000002002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd550400160100010802000f71756f74652d6d656c742d30303031",
+  "digest": "9443ab45dd96f0476d058c41f120c74838412eea361752bf45a2211e42aaffb4",
+  "input_id": "44002fef2fb9ce3168f3a4e88315290a890080c6c333c2fc47d5327f6c3616f3",
+  "input_digest": "1604341ea199ab31b9890f02bfb559ae7f767ac9eaf03b315e4aa274458a105d"
 }
 ```
 
@@ -383,7 +439,7 @@ The melt spends the swap's proof, so it shares the swap's `input_id`; the differ
 
 Both strings are the prefix followed by base64url (no padding) of the JSON shown; the JSON is not canonical, so decoders parse rather than compare. Amounts are JSON integers.
 
-**Signing package.** The [auditable lock](#worked-example-auditable-lock-with-disclosure) spent through its one leaf as the sole input of the [swap](#transaction-transcripts) (8 sat in, two 4-sat outputs). The package carries the transaction's inputs and outputs, and one spend awaiting signatures; `path` is empty because the tree has one leaf, and there is no `E` or `slots` because the key is not blinded:
+**Signing package.** The [auditable lock](#worked-example-auditable-lock-with-disclosure) spent through its one leaf as the sole input of the [swap](#transaction-transcripts) (8 sat in, two 4-sat outputs). The package carries the transaction's inputs (by `Y`, as the transcript does; the spend entry names its proof's secret) and outputs, and one spend awaiting signatures; `path` is empty because the tree has one leaf, and there is no `E` or `slots` because the key is not blinded:
 
 ```json
 {
@@ -393,7 +449,7 @@ Both strings are the prefix followed by base64url (no padding) of the JSON shown
     {
       "amount": 8,
       "id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
-      "secret": "02fc11bf4f939f2bfd47e4cee799c8254fc4acc27a134c729edfc3c6a3c13a053b",
+      "Y": "aaba46a463d3d10b59fa1532a32d9a5e8fa8e9962a8c6571917981a6fa4d5fafb08c21bbff94189e24e5c256fc0a7fe7",
       "C": "84d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327"
     }
   ],
@@ -424,13 +480,13 @@ Both strings are the prefix followed by base64url (no padding) of the JSON shown
 ```
 
 ```
-nutspAeyJ2ZXJzaW9uIjoibnV0c3BBIiwidHlwZSI6InN3YXAiLCJpbnB1dHMiOlt7ImFtb3VudCI6OCwiaWQiOiIwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYiLCJzZWNyZXQiOiIwMmZjMTFiZjRmOTM5ZjJiZmQ0N2U0Y2VlNzk5YzgyNTRmYzRhY2MyN2ExMzRjNzI5ZWRmYzNjNmEzYzEzYTA1M2IiLCJDIjoiODRkMWI3MjkxYWU1NzM3ZjNjODUxYWEzM2NhZmUwZjdhZmViNWNjYjRkYTA4NmM0ODJiYjg1Yjc1MjVlNjE1NDdmMWI1YTZkMWEwMWIxZmVkMWY5NjBkMWE5ZDAzMzI3In1dLCJvdXRwdXRzIjpbeyJhbW91bnQiOjQsImlkIjoiMDJiN2UwNzdkMDIwZmFiZWQ0NTZhNmJlMTM4YThlMjBlOWVmNDBiNDRkODczZmExMmMwMDViNjU2ZWIwY2Y5OWY2IiwiQl8iOiJiNDJhMGJjYzM5NTk4ZGIxZGNhNjE3YWVlYTZiYzM2N2YyNTY2NjM2ODI2ZGM5NjFhNTRmYWFlMTViM2I4ZDEwYWZjMWNiMDIwNmU3MGFiM2IwZTEyYzJiOTQ3OGNkNTUifSx7ImFtb3VudCI6NCwiaWQiOiIwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYiLCJCXyI6ImI0MmEwYmNjMzk1OThkYjFkY2E2MTdhZWVhNmJjMzY3ZjI1NjY2MzY4MjZkYzk2MWE1NGZhYWUxNWIzYjhkMTBhZmMxY2IwMjA2ZTcwYWIzYjBlMTJjMmI5NDc4Y2Q1NSJ9XSwic3BlbmRzIjpbeyJzZWNyZXQiOiIwMmZjMTFiZjRmOTM5ZjJiZmQ0N2U0Y2VlNzk5YzgyNTRmYzRhY2MyN2ExMzRjNzI5ZWRmYzNjNmEzYzEzYTA1M2IiLCJsZWFmIjoiMDAwMTAyMDAwMTAxMDQwMDIxMDJmOTMwOGEwMTkyNThjMzEwNDkzNDRmODVmODlkNTIyOWI1MzFjODQ1ODM2Zjk5YjA4NjAxZjExM2JjZTAzNmY5MGEwMDAxMDEiLCJjb250cm9sIjp7IksiOiIwMjhlZGZlYmQ2ZmRlYTNlMWQ4OTM1OWFmMjA4NjhhMmU3NjMxNWIzNmNkYjFhNzlkZTQ5N2ExNzU3Y2E3YmQ0MDciLCJwYXRoIjpbXX0sInNpZ25hdHVyZXMiOltdfV19
+nutspAeyJ2ZXJzaW9uIjoibnV0c3BBIiwidHlwZSI6InN3YXAiLCJpbnB1dHMiOlt7ImFtb3VudCI6OCwiaWQiOiIwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYiLCJZIjoiYWFiYTQ2YTQ2M2QzZDEwYjU5ZmExNTMyYTMyZDlhNWU4ZmE4ZTk5NjJhOGM2NTcxOTE3OTgxYTZmYTRkNWZhZmIwOGMyMWJiZmY5NDE4OWUyNGU1YzI1NmZjMGE3ZmU3IiwiQyI6Ijg0ZDFiNzI5MWFlNTczN2YzYzg1MWFhMzNjYWZlMGY3YWZlYjVjY2I0ZGEwODZjNDgyYmI4NWI3NTI1ZTYxNTQ3ZjFiNWE2ZDFhMDFiMWZlZDFmOTYwZDFhOWQwMzMyNyJ9XSwib3V0cHV0cyI6W3siYW1vdW50Ijo0LCJpZCI6IjAyYjdlMDc3ZDAyMGZhYmVkNDU2YTZiZTEzOGE4ZTIwZTllZjQwYjQ0ZDg3M2ZhMTJjMDA1YjY1NmViMGNmOTlmNiIsIkJfIjoiYjQyYTBiY2MzOTU5OGRiMWRjYTYxN2FlZWE2YmMzNjdmMjU2NjYzNjgyNmRjOTYxYTU0ZmFhZTE1YjNiOGQxMGFmYzFjYjAyMDZlNzBhYjNiMGUxMmMyYjk0NzhjZDU1In0seyJhbW91bnQiOjQsImlkIjoiMDJiN2UwNzdkMDIwZmFiZWQ0NTZhNmJlMTM4YThlMjBlOWVmNDBiNDRkODczZmExMmMwMDViNjU2ZWIwY2Y5OWY2IiwiQl8iOiJiNDJhMGJjYzM5NTk4ZGIxZGNhNjE3YWVlYTZiYzM2N2YyNTY2NjM2ODI2ZGM5NjFhNTRmYWFlMTViM2I4ZDEwYWZjMWNiMDIwNmU3MGFiM2IwZTEyYzJiOTQ3OGNkNTUifV0sInNwZW5kcyI6W3sic2VjcmV0IjoiMDJmYzExYmY0ZjkzOWYyYmZkNDdlNGNlZTc5OWM4MjU0ZmM0YWNjMjdhMTM0YzcyOWVkZmMzYzZhM2MxM2EwNTNiIiwibGVhZiI6IjAwMDEwMjAwMDEwMTA0MDAyMTAyZjkzMDhhMDE5MjU4YzMxMDQ5MzQ0Zjg1Zjg5ZDUyMjliNTMxYzg0NTgzNmY5OWIwODYwMWYxMTNiY2UwMzZmOTBhMDAwMTAxIiwiY29udHJvbCI6eyJLIjoiMDI4ZWRmZWJkNmZkZWEzZTFkODkzNTlhZjIwODY4YTJlNzYzMTViMzZjZGIxYTc5ZGU0OTdhMTc1N2NhN2JkNDA3IiwicGF0aCI6W119LCJzaWduYXR1cmVzIjpbXX1dfQ
 ```
 
-Key `3` signs the spend's input digest (`db64ca49...`, see the worked example) and returns the package with `signatures` filled, which merges back into the transaction as the [script-path witness](#worked-example-auditable-lock-with-disclosure) shown there:
+Key `3` signs the spend's input digest (`1732e47d...`, see the worked example) and returns the package with `signatures` filled, which merges back into the transaction as the [script-path witness](#worked-example-auditable-lock-with-disclosure) shown there:
 
 ```
-nutspAeyJ2ZXJzaW9uIjoibnV0c3BBIiwidHlwZSI6InN3YXAiLCJpbnB1dHMiOlt7ImFtb3VudCI6OCwiaWQiOiIwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYiLCJzZWNyZXQiOiIwMmZjMTFiZjRmOTM5ZjJiZmQ0N2U0Y2VlNzk5YzgyNTRmYzRhY2MyN2ExMzRjNzI5ZWRmYzNjNmEzYzEzYTA1M2IiLCJDIjoiODRkMWI3MjkxYWU1NzM3ZjNjODUxYWEzM2NhZmUwZjdhZmViNWNjYjRkYTA4NmM0ODJiYjg1Yjc1MjVlNjE1NDdmMWI1YTZkMWEwMWIxZmVkMWY5NjBkMWE5ZDAzMzI3In1dLCJvdXRwdXRzIjpbeyJhbW91bnQiOjQsImlkIjoiMDJiN2UwNzdkMDIwZmFiZWQ0NTZhNmJlMTM4YThlMjBlOWVmNDBiNDRkODczZmExMmMwMDViNjU2ZWIwY2Y5OWY2IiwiQl8iOiJiNDJhMGJjYzM5NTk4ZGIxZGNhNjE3YWVlYTZiYzM2N2YyNTY2NjM2ODI2ZGM5NjFhNTRmYWFlMTViM2I4ZDEwYWZjMWNiMDIwNmU3MGFiM2IwZTEyYzJiOTQ3OGNkNTUifSx7ImFtb3VudCI6NCwiaWQiOiIwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYiLCJCXyI6ImI0MmEwYmNjMzk1OThkYjFkY2E2MTdhZWVhNmJjMzY3ZjI1NjY2MzY4MjZkYzk2MWE1NGZhYWUxNWIzYjhkMTBhZmMxY2IwMjA2ZTcwYWIzYjBlMTJjMmI5NDc4Y2Q1NSJ9XSwic3BlbmRzIjpbeyJzZWNyZXQiOiIwMmZjMTFiZjRmOTM5ZjJiZmQ0N2U0Y2VlNzk5YzgyNTRmYzRhY2MyN2ExMzRjNzI5ZWRmYzNjNmEzYzEzYTA1M2IiLCJsZWFmIjoiMDAwMTAyMDAwMTAxMDQwMDIxMDJmOTMwOGEwMTkyNThjMzEwNDkzNDRmODVmODlkNTIyOWI1MzFjODQ1ODM2Zjk5YjA4NjAxZjExM2JjZTAzNmY5MGEwMDAxMDEiLCJjb250cm9sIjp7IksiOiIwMjhlZGZlYmQ2ZmRlYTNlMWQ4OTM1OWFmMjA4NjhhMmU3NjMxNWIzNmNkYjFhNzlkZTQ5N2ExNzU3Y2E3YmQ0MDciLCJwYXRoIjpbXX0sInNpZ25hdHVyZXMiOlsiM2IyMTNjYzIxOWE5N2FiOWZhZmJjOTEzODZlMjk5NmM5YmY1ZDE5NzM2OTlkNTY0NzAwMzcyOGZjOTVjYzhjYzlhNWZlNmUwNmY1ZDNlOTIwYmI4MjQzM2UzMTAwNmE4MmUyNTExNmFhNmExMjBlYWI1YThlMjA4MDVkNTkzYjAiXX1dfQ
+nutspAeyJ2ZXJzaW9uIjoibnV0c3BBIiwidHlwZSI6InN3YXAiLCJpbnB1dHMiOlt7ImFtb3VudCI6OCwiaWQiOiIwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYiLCJZIjoiYWFiYTQ2YTQ2M2QzZDEwYjU5ZmExNTMyYTMyZDlhNWU4ZmE4ZTk5NjJhOGM2NTcxOTE3OTgxYTZmYTRkNWZhZmIwOGMyMWJiZmY5NDE4OWUyNGU1YzI1NmZjMGE3ZmU3IiwiQyI6Ijg0ZDFiNzI5MWFlNTczN2YzYzg1MWFhMzNjYWZlMGY3YWZlYjVjY2I0ZGEwODZjNDgyYmI4NWI3NTI1ZTYxNTQ3ZjFiNWE2ZDFhMDFiMWZlZDFmOTYwZDFhOWQwMzMyNyJ9XSwib3V0cHV0cyI6W3siYW1vdW50Ijo0LCJpZCI6IjAyYjdlMDc3ZDAyMGZhYmVkNDU2YTZiZTEzOGE4ZTIwZTllZjQwYjQ0ZDg3M2ZhMTJjMDA1YjY1NmViMGNmOTlmNiIsIkJfIjoiYjQyYTBiY2MzOTU5OGRiMWRjYTYxN2FlZWE2YmMzNjdmMjU2NjYzNjgyNmRjOTYxYTU0ZmFhZTE1YjNiOGQxMGFmYzFjYjAyMDZlNzBhYjNiMGUxMmMyYjk0NzhjZDU1In0seyJhbW91bnQiOjQsImlkIjoiMDJiN2UwNzdkMDIwZmFiZWQ0NTZhNmJlMTM4YThlMjBlOWVmNDBiNDRkODczZmExMmMwMDViNjU2ZWIwY2Y5OWY2IiwiQl8iOiJiNDJhMGJjYzM5NTk4ZGIxZGNhNjE3YWVlYTZiYzM2N2YyNTY2NjM2ODI2ZGM5NjFhNTRmYWFlMTViM2I4ZDEwYWZjMWNiMDIwNmU3MGFiM2IwZTEyYzJiOTQ3OGNkNTUifV0sInNwZW5kcyI6W3sic2VjcmV0IjoiMDJmYzExYmY0ZjkzOWYyYmZkNDdlNGNlZTc5OWM4MjU0ZmM0YWNjMjdhMTM0YzcyOWVkZmMzYzZhM2MxM2EwNTNiIiwibGVhZiI6IjAwMDEwMjAwMDEwMTA0MDAyMTAyZjkzMDhhMDE5MjU4YzMxMDQ5MzQ0Zjg1Zjg5ZDUyMjliNTMxYzg0NTgzNmY5OWIwODYwMWYxMTNiY2UwMzZmOTBhMDAwMTAxIiwiY29udHJvbCI6eyJLIjoiMDI4ZWRmZWJkNmZkZWEzZTFkODkzNTlhZjIwODY4YTJlNzYzMTViMzZjZGIxYTc5ZGU0OTdhMTc1N2NhN2JkNDA3IiwicGF0aCI6W119LCJzaWduYXR1cmVzIjpbIjRjYzhlNWFmMDIzNzViMjQ5N2Y1YWQxYzAyNDFlYTJkZTJiOWVhZDMzYTZiNWFiZDgwOWJmMjdmODU2Mzk2N2ExM2EwYjQ4NDMzM2U5MGUxZDg2MjJkNWU4ODQxNTZlYTQwZTEwMDA1ODdjMjVhZmU5OTA0ZTFkYmI4NWQwNjYwIl19XX0
 ```
 
 **Spend receipt.** The payer's receipt for the [swap](#transaction-transcripts)'s bearer input: its [V4 token](#v4-tokens-with-spend-info) (with `spend_info.k`, harmless once spent), and one receipt whose `transcript` is the swap's TLV transcript, so `SHA256(transcript)` is the transaction digest. `Y`, `input_digest`, the witness and the commitment are the [NUT-07 vector](07-tests.md)'s:
@@ -442,17 +498,17 @@ nutspAeyJ2ZXJzaW9uIjoibnV0c3BBIiwidHlwZSI6InN3YXAiLCJpbnB1dHMiOlt7ImFtb3VudCI6OC
     {
       "Y": "a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a73",
       "keysetId": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
-      "inputDigest": "d988bdcfa1d7699324894fc5dba3a70e7bca534e644b257c9700debb424b4ec8",
-      "witness": "{\"signatures\":[\"678c1e71b29552ad86069bcc6d1965028b31df1e4dedf69fe5274ffefcad8c77593e474f581e7b43d9e5f8815c0babb607b17f22536ef5f2354889f088da3979\"]}",
-      "commitment": "36c3dac6f3d99dc42dc05ddc1eb5d1b619b70e6a4433c0e1a115126aecdbc0cf",
-      "transcript": "01007f0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f603002102e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b04003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332703005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd5503005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55"
+      "inputDigest": "867091ad6dba3069bcff610e29300b5c1e2d89f0e5165f17d155000e77d18f9c",
+      "witness": "{\"signatures\":[\"a46a08f9cf25bee38abe8e83a57dae316b64e826f3bd1a7261d3230cb97a70d910ffda84536464853b651cafeb3167affc13d1456d0647cdc685422ba56509a2\"]}",
+      "commitment": "80ef4c3484dd76f89eab82d2a24178f89259507cb6d1c5dfc3cb573fa9597f5b",
+      "transcript": "01008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332703005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd5503005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55"
     }
   ]
 }
 ```
 
 ```
-nutrcAeyJ0b2tlbiI6ImNhc2h1Qm8yRnRjV2gwZEhCek9pOHZiV2x1ZEM1MFpYTjBZWFZqYzJGMFlYU0JvbUZwU0FLMzRIZlFJUHEtWVhDQnBHRmhDR0Z6ZUVJd01tVTJaVGRqWm1FM1lqZ3laRFJpTTJJME5EbG1ZVFkwTmpaak9Ea3pORFk1WVRjeU4yUXdNakUwWkRRNFpHSTBPVFUyWVRZd05UUmlPREF5TW1FeU9XSmhZMWd3aE5HM0tScmxjMzg4aFJxalBLX2c5Nl9yWE10Tm9JYkVncnVGdDFKZVlWUl9HMXB0R2dHeF90SDVZTkdwMERNblluTnBvV0ZyV0NCSEdXM0FnUlVNNFRfUTVIaTR0eGd4dUNXLU9KSVJ5Y1ZxZ0dLbUd2Y0RSdyIsInJlY2VpcHRzIjpbeyJZIjoiYTBhY2Y5MzlmMDMzZTNkMGFlOWI1Zjc4NDM0MWZhZGEzODM2N2VlYzE5MGVkZmIzNGUxZjBjY2U5MDUwYzgwNjcyZGJlZTc3YTc1MTJiNzI0MzU0NGM4NWFlMjkwYTczIiwia2V5c2V0SWQiOiIwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYiLCJpbnB1dERpZ2VzdCI6ImQ5ODhiZGNmYTFkNzY5OTMyNDg5NGZjNWRiYTNhNzBlN2JjYTUzNGU2NDRiMjU3Yzk3MDBkZWJiNDI0YjRlYzgiLCJ3aXRuZXNzIjoie1wic2lnbmF0dXJlc1wiOltcIjY3OGMxZTcxYjI5NTUyYWQ4NjA2OWJjYzZkMTk2NTAyOGIzMWRmMWU0ZGVkZjY5ZmU1Mjc0ZmZlZmNhZDhjNzc1OTNlNDc0ZjU4MWU3YjQzZDllNWY4ODE1YzBiYWJiNjA3YjE3ZjIyNTM2ZWY1ZjIzNTQ4ODlmMDg4ZGEzOTc5XCJdfSIsImNvbW1pdG1lbnQiOiIzNmMzZGFjNmYzZDk5ZGM0MmRjMDVkZGMxZWI1ZDFiNjE5YjcwZTZhNDQzM2MwZTFhMTE1MTI2YWVjZGJjMGNmIiwidHJhbnNjcmlwdCI6IjAxMDA3ZjAxMDAwMTA4MDIwMDIxMDJiN2UwNzdkMDIwZmFiZWQ0NTZhNmJlMTM4YThlMjBlOWVmNDBiNDRkODczZmExMmMwMDViNjU2ZWIwY2Y5OWY2MDMwMDIxMDJlNmU3Y2ZhN2I4MmQ0YjNiNDQ5ZmE2NDY2Yzg5MzQ2OWE3MjdkMDIxNGQ0OGRiNDk1NmE2MDU0YjgwMjJhMjliMDQwMDMwODRkMWI3MjkxYWU1NzM3ZjNjODUxYWEzM2NhZmUwZjdhZmViNWNjYjRkYTA4NmM0ODJiYjg1Yjc1MjVlNjE1NDdmMWI1YTZkMWEwMWIxZmVkMWY5NjBkMWE5ZDAzMzI3MDMwMDViMDEwMDAxMDQwMjAwMjEwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYwMzAwMzBiNDJhMGJjYzM5NTk4ZGIxZGNhNjE3YWVlYTZiYzM2N2YyNTY2NjM2ODI2ZGM5NjFhNTRmYWFlMTViM2I4ZDEwYWZjMWNiMDIwNmU3MGFiM2IwZTEyYzJiOTQ3OGNkNTUwMzAwNWIwMTAwMDEwNDAyMDAyMTAyYjdlMDc3ZDAyMGZhYmVkNDU2YTZiZTEzOGE4ZTIwZTllZjQwYjQ0ZDg3M2ZhMTJjMDA1YjY1NmViMGNmOTlmNjAzMDAzMGI0MmEwYmNjMzk1OThkYjFkY2E2MTdhZWVhNmJjMzY3ZjI1NjY2MzY4MjZkYzk2MWE1NGZhYWUxNWIzYjhkMTBhZmMxY2IwMjA2ZTcwYWIzYjBlMTJjMmI5NDc4Y2Q1NSJ9XX0
+nutrcAeyJ0b2tlbiI6ImNhc2h1Qm8yRnRjV2gwZEhCek9pOHZiV2x1ZEM1MFpYTjBZWFZqYzJGMFlYU0JvbUZwU0FLMzRIZlFJUHEtWVhDQnBHRmhDR0Z6ZUVJd01tVTJaVGRqWm1FM1lqZ3laRFJpTTJJME5EbG1ZVFkwTmpaak9Ea3pORFk1WVRjeU4yUXdNakUwWkRRNFpHSTBPVFUyWVRZd05UUmlPREF5TW1FeU9XSmhZMWd3aE5HM0tScmxjMzg4aFJxalBLX2c5Nl9yWE10Tm9JYkVncnVGdDFKZVlWUl9HMXB0R2dHeF90SDVZTkdwMERNblluTnBvV0ZyV0NCSEdXM0FnUlVNNFRfUTVIaTR0eGd4dUNXLU9KSVJ5Y1ZxZ0dLbUd2Y0RSdyIsInJlY2VpcHRzIjpbeyJZIjoiYTBhY2Y5MzlmMDMzZTNkMGFlOWI1Zjc4NDM0MWZhZGEzODM2N2VlYzE5MGVkZmIzNGUxZjBjY2U5MDUwYzgwNjcyZGJlZTc3YTc1MTJiNzI0MzU0NGM4NWFlMjkwYTczIiwia2V5c2V0SWQiOiIwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYiLCJpbnB1dERpZ2VzdCI6Ijg2NzA5MWFkNmRiYTMwNjliY2ZmNjEwZTI5MzAwYjVjMWUyZDg5ZjBlNTE2NWYxN2QxNTUwMDBlNzdkMThmOWMiLCJ3aXRuZXNzIjoie1wic2lnbmF0dXJlc1wiOltcImE0NmEwOGY5Y2YyNWJlZTM4YWJlOGU4M2E1N2RhZTMxNmI2NGU4MjZmM2JkMWE3MjYxZDMyMzBjYjk3YTcwZDkxMGZmZGE4NDUzNjQ2NDg1M2I2NTFjYWZlYjMxNjdhZmZjMTNkMTQ1NmQwNjQ3Y2RjNjg1NDIyYmE1NjUwOWEyXCJdfSIsImNvbW1pdG1lbnQiOiI4MGVmNGMzNDg0ZGQ3NmY4OWVhYjgyZDJhMjQxNzhmODkyNTk1MDdjYjZkMWM1ZGZjM2NiNTczZmE5NTk3ZjViIiwidHJhbnNjcmlwdCI6IjAxMDA4ZTAxMDAwMTA4MDIwMDIxMDJiN2UwNzdkMDIwZmFiZWQ0NTZhNmJlMTM4YThlMjBlOWVmNDBiNDRkODczZmExMmMwMDViNjU2ZWIwY2Y5OWY2MDMwMDMwYTBhY2Y5MzlmMDMzZTNkMGFlOWI1Zjc4NDM0MWZhZGEzODM2N2VlYzE5MGVkZmIzNGUxZjBjY2U5MDUwYzgwNjcyZGJlZTc3YTc1MTJiNzI0MzU0NGM4NWFlMjkwYTczMDQwMDMwODRkMWI3MjkxYWU1NzM3ZjNjODUxYWEzM2NhZmUwZjdhZmViNWNjYjRkYTA4NmM0ODJiYjg1Yjc1MjVlNjE1NDdmMWI1YTZkMWEwMWIxZmVkMWY5NjBkMWE5ZDAzMzI3MDMwMDViMDEwMDAxMDQwMjAwMjEwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYwMzAwMzBiNDJhMGJjYzM5NTk4ZGIxZGNhNjE3YWVlYTZiYzM2N2YyNTY2NjM2ODI2ZGM5NjFhNTRmYWFlMTViM2I4ZDEwYWZjMWNiMDIwNmU3MGFiM2IwZTEyYzJiOTQ3OGNkNTUwMzAwNWIwMTAwMDEwNDAyMDAyMTAyYjdlMDc3ZDAyMGZhYmVkNDU2YTZiZTEzOGE4ZTIwZTllZjQwYjQ0ZDg3M2ZhMTJjMDA1YjY1NmViMGNmOTlmNjAzMDAzMGI0MmEwYmNjMzk1OThkYjFkY2E2MTdhZWVhNmJjMzY3ZjI1NjY2MzY4MjZkYzk2MWE1NGZhYWUxNWIzYjhkMTBhZmMxY2IwMjA2ZTcwYWIzYjBlMTJjMmI5NDc4Y2Q1NSJ9XX0
 ```
 
 A verifier recomputes `input_digest` from `transcript` and the token's proof, the commitment from `Y`, `input_digest` and the witness, and checks the witness signature against the secret over `input_digest`; matching the commitment against the mint's for `Y` ties the receipt to the spend.
