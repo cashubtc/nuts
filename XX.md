@@ -96,9 +96,8 @@ the capacity and the expiry and so on.
 There is a corresponding _channel id_, which is defined deterministically from those parameters
 and also from a _channel secret_ derived via Diffie-Hellman.
 
-*Determinism*. From this point onwards, everything - except the signatures from the mint and the
-signatures from both parties - is
-deterministic and is known to both parties.
+*Determinism*. The funding and commitment outputs - except the signatures from
+the mint - are deterministic and are known to both parties.
 The amounts of the individual outputs and blinding factors in the
 funding token are a deterministic function of the channel parameters,
 as are the tweaks that are applied to the public keys
@@ -147,6 +146,9 @@ and construct her 1-of-1 P2PK proofs.
 
 If Charlie never exits, Alice can wait until the channel's _expiry_ time
 and then she can spend all of the _funding token_ with just her signature.
+For anyone-can-spend wallet outputs from this refund, Alice MUST use secret
+material unavailable to Charlie, such as fresh randomness or deterministic
+derivation from her private wallet seed, rather than shared channel data alone.
 
 There are three kinds of blinded P2PK outputs, the _funding outputs_ and the
 _commitment outputs_ for each of the two parties.
