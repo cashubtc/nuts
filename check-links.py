@@ -13,7 +13,7 @@ ROOTS = ["*.md", "tests/*.md", "suppl/*.md", "legacy/*.md", "legacy/tests/*.md"]
 # Prose that belongs in legacy/, listed per file where a current NUT may still
 # name it: a hit outside this map is either new legacy text or a stale mention.
 ALLOWED_LEGACY_MENTIONS = {
-    "00.md", "01.md", "07.md", "10.md", "13.md", "18.md", "20.md", "22.md",
+    "00.md", "01.md", "07.md", "10.md", "13.md", "18.md", "22.md",
     "24.md", "02.md", "03.md", "23.md", "28.md", "29.md", "README.md",
     "tests/28-tests.md", "26.md", "tests/10-tests.md",
 }
