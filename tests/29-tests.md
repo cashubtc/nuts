@@ -164,12 +164,12 @@ signature[0]: 0c39431338a0202568b9a1d4215c99f179cbb8ee5472ac5ae7133fbb8f99cafbb9
 
 ## Nutroot batch mint (v3 keysets)
 
-A [v3 batch](../29.md#nutroot-transactions-v3-keysets) is one transaction with every quote as an input, so `signatures[i]` signs quote `i`'s own [NUT-10 input digest](10-tests.md#transaction-transcripts) over the shared transcript. Combining two locked quotes (`quote-mint-0002` for 5 sats, `quote-mint-0003` for 3 sats) into the [NUT-10 mint vector](10-tests.md#transaction-transcripts)'s 8-sat output, with the [NUT-20 v3 quote lock keys](20-test.md#deterministic-quote-locking-key-derivation-v3-keysets) of counters `0` and `1` as the lock keys:
+A [v3 batch](../29.md#nutroot-transactions-v3-keysets) is one transaction with every quote as an input, so `signatures[i]` signs quote `i`'s own [NUT-10 input digest](10-tests.md#transaction-transcripts) over the shared transcript. Combining two locked quotes (`quote-mint-0002` for 5 sats, `quote-mint-0003` for 3 sats) into the [NUT-10 mint vector](10-tests.md#transaction-transcripts)'s 8-sat output, with the [NUT-13 quote lock keys](13-tests.md#version-3-secret-derivation) of counters `0` and `1` as the lock keys:
 
 ```json
 {
   "transcript": "0200160100010502000f71756f74652d6d696e742d303030320200160100010302000f71756f74652d6d696e742d3030303303005b0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
-  "digest": "577f67746c7255f031f409601229309982b5a3ec1b32f1a5c75ad271346d0c32"
+  "digest": "7309fef139318f9dc3faa7ec0b92208e6ff231ad007c6c3fcfc80343b4ad5bb7"
 }
 ```
 
@@ -179,17 +179,17 @@ The per-quote digests and signatures; neither signature verifies against the sha
 [
   {
     "quote_id": "quote-mint-0002",
-    "lock_pubkey": "039b390a9a298305cc43dbec906ceb1caae1187a8d16a3f45b945442ae7339d746",
+    "lock_pubkey": "0292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d209812",
     "input_id": "aaf0905f583d015ad1640e530c768797eab855034051e74fb7f725b5bdb96131",
-    "input_digest": "ca742311db92f0829e44d3760d48a4ea1c524d58880a5fae3281cdeb54e9ce00",
-    "signature": "52cdccf807eb622af34c5b31bff51db40971a49398d7f1d2b8b085e0772d3b76d5b4e4cdfeef409abb8505f09200a6e80f59bbebb6567958cc63ba0cfeb56444"
+    "input_digest": "04b6a1306d1a12640a91421b0117bbdf2880e6f186a0cbd2211db077e82019f0",
+    "signature": "ee4e7131dad86f2d5c3f25f021e437cdeefe68ceff2bbe95e4a36974f4d78358b633ed7eb2cab2cac0d36f05669b1568c4b8b86cd4274cba0a596e5d87d63f6b"
   },
   {
     "quote_id": "quote-mint-0003",
-    "lock_pubkey": "0332ef3eb87a93da987406ed1fe96a44541ea0daa175e53e7ffc1155bb09b47b38",
+    "lock_pubkey": "02b357c1ec7bdd73e4ede25d68619ee607c632409e89bcc518a82370b3f499615d",
     "input_id": "9976dbe45223a102e176fa2ede6973244157c5b82257d6e3e0f4977b32f0c706",
-    "input_digest": "6d0c4ea825ae8550ef7438299079b4bc656d67c480884475df5b425c8bca45c4",
-    "signature": "7b041b52eed0c9568b8ddd58d779665765f28ceaa4e773389da789e5512d5eda850666b576c5e6955aad5ba43c5624f398e763a79e4199a3828f117d26cc1807"
+    "input_digest": "27aa267c0541b638c93b3d8c6324005654e9ac2663795c100c1d7dc8370dc2c5",
+    "signature": "83a816f0bb9137e3523711e6136ce565229d0bd45ef2d0090a89b1c653046fc5fa067210310990ab3aed1ffabcb24a67f2db7d7700cc1243c5de20017b717728"
   }
 ]
 ```

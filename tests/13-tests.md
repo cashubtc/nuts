@@ -142,6 +142,8 @@ The values derived for counters `0` to `3` are:
 
 The rejection loops are not decoration: for counters `0` to `3` the `0x00` branch accepts at attempts `0, 0, 0, 0` and the `0x01` branch at attempts `7, 1, 2, 2` (earlier attempts produce `x >= BLS_FR_ORDER`). An implementation that omits the loop, skips the length framing, or reuses the V2 message computes different values and fails these vectors.
 
+Counter `0` also carries `Y = hash_to_curve_G1(secret_bytes)` over the **decoded 33 bytes** of the secret, pinning the binary-secret hashing rule ([NUT-00](../00.md#secret-bytes)).
+
 The **leaf keys** (type `0x03`) at counter `0`, with the index suffix `u32_BE(i)`:
 
 ```json
@@ -169,9 +171,28 @@ The **leaf keys** (type `0x03`) at counter `0`, with the index suffix `u32_BE(i)
 
 **NOTE**:`i` is not a leaf's position: recover by deriving candidates and matching the tree's keys by value.
 
-Type `0x04` quote lock keys have their own vectors in [NUT-20](20-test.md#deterministic-quote-locking-key-derivation-v3-keysets).
+Type `0x04` quote lock keys frame the mint's [NUT-06](../06.md) identity `pubkey` as `scope_bytes` instead of a keyset id, on a counter of their own. With the same seed and the NUT-06 example identity:
 
-Counter `0` also carries `Y = hash_to_curve_G1(secret_bytes)` over the **decoded 33 bytes** of the secret, pinning the binary-secret hashing rule ([NUT-00](../00.md#secret-bytes)).
+```json
+{
+  "mint_pubkey": "0338596797cef0627f653cd6568387361b00314add55d9f1ea9c94f46ae421e3da"
+}
+```
+
+```json
+[
+  {
+    "counter": 0,
+    "privkey": "8140af6b627ddf38f9148c7266dca12d396de9266859648df699727c5b205a99",
+    "pubkey": "0292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d209812"
+  },
+  {
+    "counter": 1,
+    "privkey": "5980da641d9391abed79f528dbea0b85a61cff419bc93bce744d105779413b7a",
+    "pubkey": "02b357c1ec7bdd73e4ede25d68619ee607c632409e89bcc518a82370b3f499615d"
+  }
+]
+```
 
 ## P2PK Derivation (pre-v3 keysets)
 
