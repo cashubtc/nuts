@@ -41,14 +41,15 @@ The presence of the setting indicates that the mint supports this NUT.
 The metadata fills gaps; it **MUST NOT** change how amounts of units that are already defined elsewhere are interpreted. Wallets determine the precision of a unit in the following order:
 
 1. For the units defined in [NUT-01][01] (`btc`, `sat`, `msat`, `auth`), wallets **MUST** use the values defined there (`btc`: 8 decimal places, all others: 0).
-2. For ISO 4217 currency codes, wallets **MUST** use the Minor Unit of the currency as defined by ISO 4217.
-3. For all other units, wallets use the published precision for display.
+2. For ISO 4217 currency codes with a defined Minor Unit, wallets **MUST** use that Minor Unit.
+3. For stablecoin currency codes a wallet recognises as pegged to a currency covered by rules 1 or 2, wallets **SHOULD** use the Minor Unit of the pegged currency ([NUT-01][01]).
+4. For all other units, wallets use the published precision for display.
 
-Mints **MAY** publish metadata for units covered by rules 1 and 2. If they do, the published `precision` **MUST** match the values defined there. Wallets use the values of rules 1 and 2 regardless of what is published; a mismatch has no further consequence.
+Mints **SHOULD** publish metadata for the stablecoin and custom currency codes they support.
 
-[NUT-01][01] requires stablecoin amounts to represent the Minor Unit of the pegged currency. A wallet cannot verify which currency an unknown stablecoin code is pegged to. For codes a wallet does not recognize, rule 3 applies: the published metadata communicates the result of the [NUT-01][01] requirement.
+If a unit is not covered by rules 1 to 3 and the mint publishes no metadata for it, wallets **MUST NOT** assume a precision and **SHOULD** display the raw amount together with the unit string.
 
-If a unit is not covered by rules 1 and 2 and the mint publishes no metadata for it, wallets **MUST NOT** guess a precision and **SHOULD** display the raw amount together with the unit string. Metadata ignored under the wallet handling rules below is treated as absent for this purpose.
+Metadata ignored under the wallet handling rules below is treated as absent for this purpose.
 
 ## Wallet handling
 
