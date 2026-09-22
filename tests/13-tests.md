@@ -7,7 +7,7 @@ The integer representation of a keyset with an ID `009a1f293253e41e` and its cor
 ```json
 {
   "keyset_id": "009a1f293253e41e",
-  "keyest_id_int": 864559728,
+  "keyset_id_int": 864559728,
   "derivation_path": "m/129372'/0'/864559728'/{counter}'"
 }
 ```
@@ -60,7 +60,7 @@ The corresponding derivation paths are
 
 ## Version 2: Secret derivation
 
-Using [NUT-13](13.md) derivation procedure for V2 with keyset ID `015ba18a8adcd02e715a58358eb618da4a4b3791151a4bee5e968bb88406ccf76a`, we derive values starting from the following BIP39 mnemonic:
+Using [NUT-13](../13.md) derivation procedure for V2 with keyset ID `015ba18a8adcd02e715a58358eb618da4a4b3791151a4bee5e968bb88406ccf76a`, we derive values starting from the following BIP39 mnemonic:
 
 ```json
 {
@@ -94,7 +94,7 @@ The corresponding blinding factors `r` are:
 
 ## P2PK Derivation
 
-Using [NUT-13](13.md) derivation procedure for P2PK, we derive values starting from the following BIP39 mnemonic:
+Using [NUT-13](../13.md) derivation procedure for P2PK, we derive values starting from the following BIP39 mnemonic:
 
 ```json
 {
