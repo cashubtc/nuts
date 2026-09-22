@@ -30,6 +30,8 @@ The setting is an array of metadata objects with the fields:
 
 Mints **MUST NOT** publish multiple entries for the same `unit`. Array order has no significance. Different units may share the same precision, name, or symbol.
 
+Wallets **MUST** ignore any entry with a missing or non-string unit, or a precision that is not an integer in range.
+
 For example, with the metadata above, the amount `500` of the unit `ora` is displayed as `5.00 ora`.
 
 The metadata is scoped to the publishing mint and applies to all of its keysets of that unit. Mints **MUST NOT** change the precision of an existing unit. Mints **SHOULD** keep names and symbols stable over time. Wallets **SHOULD** refresh the metadata together with the rest of the info response.
