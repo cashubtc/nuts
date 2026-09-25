@@ -332,7 +332,7 @@ The transaction and per-input digests, with each proof's key-path signature:
 
 Each signature **MUST** verify only against its corresponding `input_digest`; neither signs the shared `digest`.
 
-**Mixed keysets.** A transaction may spend pre-v3 and v3 inputs together (the migration path: old inputs, v3 outputs). Every proof input's `03` is its `Y`: `hash_to_curve_G1` on the v3 keyset, [NUT-00](../00.md)'s secp256k1 `hash_to_curve` on the pre-v3 one, each over the secret's UTF-8 bytes. Here the swap's v3 input is joined by a pre-v3 input on keyset `00456a94ab4e1c46` (a v0 id, contributing its 8 raw bytes), paying two outputs of `8` and `2` on the v3 keyset:
+**Mixed keysets.** A transaction may spend pre-v3 and v3 inputs together (the migration path: old inputs, v3 outputs). Every proof input's `03` is its `Y` under its own keyset's version ([NUT-10](../10.md#nutroot-secrets-v3-keysets), [NUT-00](../00.md)). Here the swap's v3 input is joined by a pre-v3 input on keyset `00456a94ab4e1c46` (a v0 id, contributing its 8 raw bytes), paying two outputs of `8` and `2` on the v3 keyset:
 
 ```json
 {
