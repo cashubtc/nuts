@@ -411,6 +411,25 @@ Each input's `Y` and container record, then the transcript and digests. Only the
 }
 ```
 
+**Partial mint.** Issuing 4 against 8-sat mint quote `quote-mint-0004`, with one 4-sat output. The quote input commits the 4 issued, not the quote's amount:
+
+```
+02 0016 | 01 0001 04 | 02 000f 71756f...303034
+```
+
+```json
+{
+  "transcript": "0200160100010402000f71756f74652d6d696e742d3030303403005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
+  "digest": "e02e360bcd1f8350548ad44518f911eb026d4118aa068f1ec31935fa1ff83541",
+  "lock_pubkey": "0292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d209812",
+  "input_id": "8a290719012a102a7de2957618a858a62075ef5651b84e3cb7287a5fc9959998",
+  "input_digest": "7578e345637e38e71f68291a43d439d5284c3d16b02521660c8cd08dd3db2371",
+  "signature": "1b6de2bf4674d6b6f8ea63ee221bd7c6d382166e8d6fb942d85133d31135402239b9bb3eb339476c76a192805aceaab59a3df3768d402d70639bb9cbec46c5cc"
+}
+```
+
+The signature **MUST NOT** verify over the transcript that commits `8`.
+
 **Batched mint.** A [NUT-29](../29.md) batch of two quotes, `quote-mint-0002` and `quote-mint-0003`, with `quote_amounts` of `[5, 3]` and the mint vector's 8-sat output. Each quote input commits its `quote_amounts` entry, and each lock key signs its own input digest:
 
 ```
