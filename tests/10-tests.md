@@ -411,6 +411,36 @@ Each input's `Y` and container record, then the transcript and digests. Only the
 }
 ```
 
+**Batched mint.** A [NUT-29](../29.md) batch of two quotes, `quote-mint-0002` and `quote-mint-0003`, with `quote_amounts` of `[5, 3]` and the mint vector's 8-sat output. Each quote input commits its `quote_amounts` entry, and each lock key signs its own input digest:
+
+```
+02 0016 | 01 0001 05 | 02 000f 71756f...303032
+02 0016 | 01 0001 03 | 02 000f 71756f...303033
+```
+
+```json
+{
+  "transcript": "0200160100010502000f71756f74652d6d696e742d303030320200160100010302000f71756f74652d6d696e742d3030303303005b0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
+  "digest": "7309fef139318f9dc3faa7ec0b92208e6ff231ad007c6c3fcfc80343b4ad5bb7",
+  "inputs": [
+    {
+      "quote_id": "quote-mint-0002",
+      "lock_pubkey": "0292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d209812",
+      "input_id": "aaf0905f583d015ad1640e530c768797eab855034051e74fb7f725b5bdb96131",
+      "input_digest": "04b6a1306d1a12640a91421b0117bbdf2880e6f186a0cbd2211db077e82019f0",
+      "signature": "ee4e7131dad86f2d5c3f25f021e437cdeefe68ceff2bbe95e4a36974f4d78358b633ed7eb2cab2cac0d36f05669b1568c4b8b86cd4274cba0a596e5d87d63f6b"
+    },
+    {
+      "quote_id": "quote-mint-0003",
+      "lock_pubkey": "02b357c1ec7bdd73e4ede25d68619ee607c632409e89bcc518a82370b3f499615d",
+      "input_id": "9976dbe45223a102e176fa2ede6973244157c5b82257d6e3e0f4977b32f0c706",
+      "input_digest": "27aa267c0541b638c93b3d8c6324005654e9ac2663795c100c1d7dc8370dc2c5",
+      "signature": "83a816f0bb9137e3523711e6136ce565229d0bd45ef2d0090a89b1c653046fc5fa067210310990ab3aed1ffabcb24a67f2db7d7700cc1243c5de20017b717728"
+    }
+  ]
+}
+```
+
 **Melt.** Paying melt quote `quote-melt-0001` (quote amount 8 with a fee reserve of 0, so the output's amount is 8; no change outputs) with the swap's 8-sat proof as the only input; the melt quote is the only output, binding its quote id and that amount:
 
 ```json
