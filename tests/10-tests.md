@@ -495,6 +495,26 @@ The melt spends the swap's proof, so it shares the swap's `input_id`; the differ
 }
 ```
 
+**Proof to change quote.** Parking the swap's 8-sat proof in a change quote locked to key `5` ([NUT-XX](../XX.md)): the change quote output is the only output, and binds the lock key alone.
+
+The change quote container, spelled out:
+
+```
+06 0024 | 01 0021 022f8b...40efe4
+```
+
+The proof input keeps the swap's `input_id`:
+
+```json
+{
+  "change_container": "060024010021022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4",
+  "transcript": "01008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327060024010021022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4",
+  "digest": "80e4d96cc790582b2942475875785a8f2d9620e07cff6c2cace25f048d83b106",
+  "input_id": "44002fef2fb9ce3168f3a4e88315290a890080c6c333c2fc47d5327f6c3616f3",
+  "input_digest": "bffb1f8bdf9468802ff97ff9be88b2e89185341072ab587bac26952cfb70c72c"
+}
+```
+
 ## Transport strings
 
 Both strings are the prefix followed by base64url (no padding) of the JSON shown; the JSON is not canonical, so decoders parse rather than compare. Amounts are JSON integers.
