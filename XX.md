@@ -21,13 +21,13 @@ The request is the [transaction transcript](10.md#the-transaction-transcript) in
   "proofs": <Array[Proof]>,
   "quotes": <Array[QuoteInput]>,
   "blinded_messages": <Array[BlindedMessage]>,
-  "melts": <Array[str]>,
+  "melts": <Array[MeltOutput]>,
   "change": <hex_str>, // optional
   "prefer_async": <bool> // optional: false if omitted
 }
 ```
 
-where `proofs` and `blinded_messages` are as in [NUT-00][00], `melts` holds melt quote ids ([NUT-05][05]), `change` is the lock key of the [change quote](#change-quote), a 33-byte compressed secp256k1 public key, and a `QuoteInput` is a paid mint quote ([NUT-04][04]), the amount this transaction issues against it, and its witness:
+where `proofs` and `blinded_messages` are as in [NUT-00][00], `change` is the lock key of the [change quote](#change-quote), a 33-byte compressed secp256k1 public key, and a `QuoteInput` is a paid mint quote ([NUT-04][04]), the amount this transaction issues against it, and its witness:
 
 ```json
 {
@@ -39,6 +39,16 @@ where `proofs` and `blinded_messages` are as in [NUT-00][00], `melts` holds melt
 
 `witness` has the same grammar as `Proof.witness` ([NUT-10](10.md#witnesses)): a key-path signature or a script-path witness over the quote input's [input digest](10.md#the-transaction-transcript).
 
+A `MeltOutput` is a melt quote ([NUT-05][05]), the fee reserve this transaction commits to it, and for a quote offering `fee_options` ([NUT-30][30]) the selected fee option:
+
+```json
+{
+  "quote": <str>,
+  "fee_reserve": <int>,
+  "fee_index": <int> // only if the quote offers fee_options
+}
+```
+
 Any array **MAY** be empty or omitted. A blinded message with `amount` `0` **MUST** be rejected: change goes to the change quote.
 
 ### Rules
@@ -47,7 +57,7 @@ Any array **MAY** be empty or omitted. A blinded message with `amount` `0` **MUS
 - Every v3 input **MUST** carry a witness over its input digest; pre-v3 proofs keep their own rules, per [NUT-10](10.md#the-signing-rule). A pre-v3 proof with `SIG_ALL` ([NUT-11][11]) **MUST** be rejected: NUT-11 defines no `SIG_ALL` message for this endpoint.
 - Every mint quote **MUST** be locked and in the transaction's unit. Its `amount` **MUST** be positive and **MUST NOT** exceed its mintable amount, `amount_paid - amount_issued` ([NUT-04][04]).
 - All `blinded_messages` **MUST** share one keyset in the transaction's unit ([NUT-04](04.md#nutroot-transactions-v3-keysets)).
-- `melts` **MUST NOT** hold more than one quote; multi-melt is reserved for future specification. The quote **MUST** be in the transaction's unit, and its method is the one it was quoted under.
+- `melts` **MUST NOT** hold more than one quote; multi-melt is reserved for future specification. The quote **MUST** be in the transaction's unit, and its method is the one it was quoted under. Its `fee_reserve` **MUST** equal the quote's `fee_reserve`, or the `fee_reserve` of the entry its `fee_index` names.
 
 ### Balance
 
@@ -134,3 +144,4 @@ A mint that does not charge advertises `0`.
 [05]: 05.md
 [10]: 10.md
 [11]: 11.md
+[30]: 30.md
