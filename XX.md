@@ -18,16 +18,16 @@ The request is the [transaction transcript](10.md#the-transaction-transcript) in
 
 ```json
 {
-  "proofs": <Array[Proof]>,
-  "quotes": <Array[QuoteInput]>,
-  "blinded_messages": <Array[BlindedMessage]>,
-  "melts": <Array[MeltOutput]>,
-  "change": <hex_str>, // optional
+  "proof_inputs": <Array[Proof]>,
+  "mint_quote_inputs": <Array[QuoteInput]>,
+  "blinded_outputs": <Array[BlindedMessage]>,
+  "melt_quote_outputs": <Array[MeltOutput]>,
+  "change_pubkey": <hex_str>, // optional
   "prefer_async": <bool> // optional: false if omitted
 }
 ```
 
-where `proofs` and `blinded_messages` are as in [NUT-00][00], `change` is the lock key of the [change quote](#change-quote), a 33-byte compressed secp256k1 public key, and a `QuoteInput` is a paid mint quote ([NUT-04][04]), the amount this transaction issues against it, and its witness:
+where `proof_inputs` and `blinded_outputs` are as in [NUT-00][00], `change_pubkey` is the lock key of the [change quote](#change-quote), a 33-byte compressed secp256k1 public key, and a `QuoteInput` is a paid mint quote ([NUT-04][04]), the amount this transaction issues against it, and its witness:
 
 ```json
 {
@@ -56,25 +56,22 @@ Any array **MAY** be empty or omitted. A blinded message with `amount` `0` **MUS
 - The transaction **MUST** have at least one input and one output, and **MUST NOT** repeat a proof `Y` or a mint quote id ([NUT-10][10]).
 - Every v3 input **MUST** carry a witness over its input digest; pre-v3 proofs keep their own rules, per [NUT-10](10.md#the-signing-rule). A pre-v3 proof with `SIG_ALL` ([NUT-11][11]) **MUST** be rejected: NUT-11 defines no `SIG_ALL` message for this endpoint.
 - Every mint quote **MUST** be locked and in the transaction's unit. Its `amount` **MUST** be positive and **MUST NOT** exceed its mintable amount, `amount_paid - amount_issued` ([NUT-04][04]).
-- All `blinded_messages` **MUST** share one keyset in the transaction's unit ([NUT-04](04.md#nutroot-transactions-v3-keysets)).
-- `melts` **MUST NOT** hold more than one quote; multi-melt is reserved for future specification. The quote **MUST** be in the transaction's unit, and its method is the one it was quoted under. Its `fee_reserve` **MUST** equal the quote's `fee_reserve`, or the `fee_reserve` of the entry its `fee_index` names.
+- All `blinded_outputs` **MUST** share one keyset in the transaction's unit ([NUT-04](04.md#nutroot-transactions-v3-keysets)).
+- `melt_quote_outputs` **MUST NOT** hold more than one quote; multi-melt is reserved for future specification. The quote **MUST** be in the transaction's unit, and its method is the one it was quoted under. Its `fee_reserve` **MUST** equal the quote's `fee_reserve`, or the `fee_reserve` of the entry its `fee_index` names.
 
 ### Balance
 
 ```
-inputs    = sum(proofs) + sum(quote amounts)
-required  = sum(blinded_messages) + melt.amount + melt.fee_reserve + fee
+amount_in  = sum(proof_inputs) + sum(mint quote input amounts)
+amount_out = sum(blinded_outputs) + melt.amount + melt.fee_reserve + fee
+change     = amount_in - amount_out + melt.fee_reserve - melt_fee_paid
 ```
 
-Proofs are spent in full. Each quote's `amount_issued` grows by its input `amount`, as in a partial mint ([NUT-04][04]), and the remainder stays mintable. `fee` is the input fee of the proofs ([NUT-02][02]) plus the [quote input fee](#quote-input-fee).
+Proofs are spent in full. Each quote's `amount_issued` grows by its input `amount`, as in a partial mint ([NUT-04][04]), and the remainder stays mintable. `fee` is the input fee of the proofs ([NUT-02][02]) plus the [quote input fee](#quote-input-fee), and `amount_out` includes it. `melt_fee_paid` is what the payment actually cost, known only at settlement; it never exceeds `melt.fee_reserve`.
 
-Without a `change` output, `inputs` **MUST** equal `required`. With a `change` output, `inputs` **MUST NOT** be less than `required`, and after settlement the balance is returned as change:
+Without a `change_pubkey`, `amount_in` **MUST** equal `amount_out`. With a `change_pubkey`, `amount_in` **MUST NOT** be less than `amount_out`, and after settlement the balance is returned as `change`.
 
-```
-change = inputs - fee - sum(blinded_messages) - melt.amount - fee_paid
-```
-
-A melt output without a `change` output leaves its unspent fee reserve with the mint, as in a [NUT-05][05] melt without change outputs.
+A melt output without a `change_pubkey` leaves its unspent fee reserve with the mint, as in a [NUT-05][05] melt without change outputs.
 
 ### Settlement
 
@@ -84,7 +81,7 @@ The mint **MUST** keep a record of every transaction it accepts, keyed by its tr
 
 ## Change quote
 
-On settlement with positive change, the mint creates a [NUT-04][04] mint quote with method `change`, in the transaction's unit, locked to the `change` key, with `amount_paid` and a method-specific `amount` equal to the change, and `request` the transaction digest. Its id is a fresh quote id, as for any mint quote. The method name `change` is reserved for these quotes. With zero change, no quote is created.
+On settlement with positive change, the mint creates a [NUT-04][04] mint quote with method `change`, in the transaction's unit, locked to the `change_pubkey`, with `amount_paid` and a method-specific `amount` equal to the change, and `request` the transaction digest. Its id is a fresh quote id, as for any mint quote. The method name `change` is reserved for these quotes. With zero change, no quote is created.
 
 A change quote is fetched at `GET /v1/mint/quote/change/{quote_id}` and redeemed like any locked quote: at `POST /v1/mint/change`, or as a quote input to another transaction. There is no `POST /v1/mint/quote/change`; only a transaction creates one.
 
@@ -97,16 +94,16 @@ A wallet that lost its state finds its change quotes by lock key, like any locke
   "digest": <hex_str>,
   "state": <str_enum[STATE]>,
   "signatures": <Array[BlindSignature]>,
-  "melts": <Array[MeltQuoteResponse]>,
-  "change": <MintQuoteResponse|null>
+  "melt_quotes": <Array[MeltQuoteResponse]>,
+  "change_quote": <MintQuoteResponse|null>
 }
 ```
 
 - `digest` is the transaction digest.
 - `state` is `PENDING` while a melt payment is in flight, `PAID` once the transaction has settled, or `FAILED` if the payment failed and the inputs were released.
-- `signatures` has one blind signature per element of `blinded_messages`, in request order. It is empty unless `state` is `PAID`.
-- `melts` holds the [NUT-05][05] melt quote response for each entry of the request's `melts`, in order, and is empty if there were none. Its `change` field is not used.
-- `change` is the change quote's [NUT-04][04] response once `state` is `PAID` and the change is positive, and `null` otherwise.
+- `signatures` has one blind signature per element of `blinded_outputs`, in request order. It is empty unless `state` is `PAID`.
+- `melt_quotes` holds the [NUT-05][05] melt quote response for each entry of the request's `melt_quote_outputs`, in order, and is empty if there were none. Its `change` field is not used.
+- `change_quote` is the change quote's [NUT-04][04] response once `state` is `PAID` and the change is positive, and `null` otherwise.
 
 ### Fetching a transaction
 
