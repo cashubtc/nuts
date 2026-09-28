@@ -85,8 +85,6 @@ On settlement with positive change, the mint creates a [NUT-04][04] mint quote w
 
 A change quote is fetched at `GET /v1/mint/quote/change/{quote_id}` and redeemed like any locked quote: at `POST /v1/mint/change`, or as a quote input to another transaction. There is no `POST /v1/mint/quote/change`; only a transaction creates one.
 
-A wallet that lost its state finds its change quotes by lock key, like any locked quote, under the method `change`.
-
 ## Response
 
 ```json
