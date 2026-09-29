@@ -484,6 +484,37 @@ The melt spends the swap's proof, so it shares the swap's `input_id`; the differ
 }
 ```
 
+**Mint quote to melt.** Paying melt quote `quote-melt-0001` straight from mint quote `quote-mint-0001` in one transaction ([NUT-XX](../XX.md)): no proofs and no change outputs, so the transcript is the mint vector's quote input container followed by the melt vector's melt quote container. The quote input's bytes are unchanged, so it keeps the mint vector's `input_id`; the new transcript gives it a new `input_digest`, which its lock key signs:
+
+```json
+{
+  "transcript": "0200160100010802000f71756f74652d6d696e742d303030310400160100010802000f71756f74652d6d656c742d30303031",
+  "digest": "fdc2a7f407e99fd4a001b2c9eb705a87a890754dc82f7a604154e8013f6e0907",
+  "input_id": "c7892510d9bd10a53d590f3454790546f0b5ae46d3ee2b6905b77592e4cb0346",
+  "input_digest": "f730a60513aebe597c28893d90e5b1c75315f5c24b3e2bbbea7351783c0821f7"
+}
+```
+
+**Proof to change quote.** Parking the swap's 8-sat proof in a change quote locked to key `5` ([NUT-XX](../XX.md)): the change quote output is the only output, and binds the lock key alone.
+
+The change quote container, spelled out:
+
+```
+06 0024 | 01 0021 022f8b...40efe4
+```
+
+The proof input keeps the swap's `input_id`:
+
+```json
+{
+  "change_container": "060024010021022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4",
+  "transcript": "01008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327060024010021022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4",
+  "digest": "80e4d96cc790582b2942475875785a8f2d9620e07cff6c2cace25f048d83b106",
+  "input_id": "44002fef2fb9ce3168f3a4e88315290a890080c6c333c2fc47d5327f6c3616f3",
+  "input_digest": "bffb1f8bdf9468802ff97ff9be88b2e89185341072ab587bac26952cfb70c72c"
+}
+```
+
 ## Transport strings
 
 Both strings are the prefix followed by base64url (no padding) of the JSON shown; the JSON is not canonical, so decoders parse rather than compare. Amounts are JSON integers.
