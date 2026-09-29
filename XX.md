@@ -58,6 +58,7 @@ Any array **MAY** be empty or omitted. A blinded message with `amount` `0` **MUS
 - Every mint quote **MUST** be locked and in the transaction's unit. Its `amount` **MUST** be positive and **MUST NOT** exceed its mintable amount, `amount_paid - amount_issued` ([NUT-04][04]).
 - All `blinded_outputs` **MUST** share one keyset in the transaction's unit ([NUT-04](04.md#nutroot-transactions-v3-keysets)).
 - `melt_quote_outputs` **MUST NOT** hold more than one quote; multi-melt is reserved for future specification. The quote **MUST** be in the transaction's unit, and its method is the one it was quoted under. Its `fee_reserve` **MUST** equal the quote's `fee_reserve`, or the `fee_reserve` of the entry its `fee_index` names.
+- A transaction with a melt quote and `blinded_outputs` **MUST** carry a `change_pubkey`: the outputs cannot be signed if their keyset is inactivated before the payment settles ([NUT-02](02.md#active-keysets)), and the change quote is where their value goes.
 
 ### Balance
 
@@ -75,7 +76,9 @@ A melt output without a `change_pubkey` leaves its unspent fee reserve with the 
 
 ### Settlement
 
-A transaction with a melt quote follows [NUT-05][05]'s pending and settlement handling, including `prefer_async`: the proofs and each quote input's `amount` are pending while the payment is in flight, the blinded messages are signed and the change quote created only once it succeeds, and a failed payment leaves the proofs unspent and the quotes' mintable amounts untouched. A transaction with no melt quote settles at once.
+A transaction with a melt quote follows [NUT-05][05]'s pending and settlement handling, including `prefer_async`: the proofs and each quote input's `amount` are pending while the payment is in flight, the blinded messages are signed and the change quote created only once it succeeds, and a failed payment leaves the proofs unspent and the quotes' mintable amounts untouched.
+
+If the keyset of `blinded_outputs` has been inactivated by the time the payment settles, the mint cannot sign them ([NUT-02](02.md#active-keysets)). It then settles as if the request had no `blinded_outputs`: `signatures` is empty and their amount goes to the change quote. A transaction with no melt quote settles at once.
 
 The mint **MUST** keep a record of every transaction it accepts, keyed by its transaction digest ([NUT-10](10.md#the-transaction-transcript)), holding the state and, once settled, the signatures and change quote. The digest is the transaction's id: the wallet computes it to sign, and the mint computes it to verify.
 
