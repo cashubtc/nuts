@@ -436,3 +436,41 @@ Encoded:
 ```
 CREQB1QYQP2URJV4NX2UNJV4J97EN9V40K6ET5DPHKGUCZQQYQQQQQQQQQQQRYQVQQZQQ9QQVXSAR5WPEN5TE0D45KUAPWV4UXZMTSD3JJUCM0D5YSQQGPPGQQJQGQQE3X7MR5XYCS5QQ5QYQQVCN0D36RZVSZQQYQQQQQQQQQQQQ9FJ2568
 ```
+
+---
+
+### Payment Request with an Amountless Extra
+
+A restaurant requests payment for a meal and offers a separate, amountless tip request. The extra request is encoded as a nested TLV stream in tag `0x0b`.
+
+```json
+{
+  "i": "meal-123",
+  "a": 2100,
+  "u": "sat",
+  "d": "Dinner",
+  "t": [
+    {
+      "t": "post",
+      "a": "https://restaurant.example/pay"
+    }
+  ],
+  "e": {
+    "i": "tip-123",
+    "u": "sat",
+    "d": "Optional tip",
+    "t": [
+      {
+        "t": "post",
+        "a": "https://staff.example/tip"
+      }
+    ]
+  }
+}
+```
+
+Encoded:
+
+```
+CREQB1QYQQSMT9V9KZ6VFJXVPQQZQQQQQQQQQQPQ6QXQQPQQRQQPJYD9HXUETJQUQZ2QGQQYQSYQQ7DP68GURN8GHJ7UN9WD6XZATJV9H8GTN90PSK6URVV5HHQCTEPVQYQQGQQA6XJUPDXYERXQCQQYQQVQQVFAC8G6T0DESKCGR5D9CQWQPQQYQQZQGZQQVKSAR5WPEN5TE0WD6XZENX9EJHSCTDWPKX2TM5D9CQ3TZTL6
+```

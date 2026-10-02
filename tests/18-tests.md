@@ -178,3 +178,39 @@ Encoded:
 ```
 creqApmFpdXByZWZlcnJlZF9mZWVfbWV0aG9kc2FhGGRhdWNzYXRhbYF4GGh0dHBzOi8vbWludC5leGFtcGxlLmNvbWJtcPVic22CoWJtbmZib2x0MTGiYm1uZmJvbHQxMmJtZgU=
 ```
+
+### Payment Request with an Amountless Extra
+
+A restaurant requests payment for a meal and offers a separate, amountless tip request. The two payments use different ids and HTTP endpoints.
+
+```json
+{
+  "i": "meal-123",
+  "a": 2100,
+  "u": "sat",
+  "d": "Dinner",
+  "t": [
+    {
+      "t": "post",
+      "a": "https://restaurant.example/pay"
+    }
+  ],
+  "e": {
+    "i": "tip-123",
+    "u": "sat",
+    "d": "Optional tip",
+    "t": [
+      {
+        "t": "post",
+        "a": "https://staff.example/tip"
+      }
+    ]
+  }
+}
+```
+
+Encoded:
+
+```
+creqApmF0gaNhdGRwb3N0YWF4Hmh0dHBzOi8vcmVzdGF1cmFudC5leGFtcGxlL3BheWFn92FpaG1lYWwtMTIzYWEZCDRhdWNzYXRhZGZEaW5uZXJhZaRhdIGjYXRkcG9zdGFheBlodHRwczovL3N0YWZmLmV4YW1wbGUvdGlwYWf3YWlndGlwLTEyM2F1Y3NhdGFkbE9wdGlvbmFsIHRpcA==
+```
