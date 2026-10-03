@@ -32,11 +32,12 @@ Every NUT file follows these conventions:
 - **Filename**: Zero-padded two-digit number matching the NUT number (e.g. `30.md` for NUT-30).
 - **Title**: `# NUT-NN: Title` as the first line.
 - **Status badge**: `` `mandatory` `` or `` `optional` `` on its own line after the title.
-- **Dependencies** (if any): `` `depends on: NUT-NN` `` and/or `` `uses: NUT-NN` `` on separate lines.
+- **Dependencies** (if any): `` `depends on: NUT-NN` `` and/or `` `uses: NUT-NN` `` on separate lines in the header block.
+- **Used-by** (if any): `` `used in: NUT-NN` `` declares the inverse relationship, naming the NUTs that build on this one (e.g. NUT-04, NUT-05, NUT-07, NUT-09, NUT-10, NUT-21).
 - **Horizontal rule**: `---` separating the header block from the body.
 - **RFC 2119 language**: Use `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, `MAY`, and `CAN` (capitalized) per RFC 2119 when specifying protocol requirements.
 - **API endpoints**: All REST endpoints use the `/v1/` prefix. Show the HTTP method and URL in a ` ```http ` code block, followed by request/response bodies in ` ```json ` blocks.
-- **Type annotations in JSON**: Use angle-bracket placeholders for types: `<str>`, `<int>`, `<bool>`, `<Array[Type]>`, `<optional>`.
+- **Type annotations in JSON**: Use `` `<angle-bracket>` `` placeholders to annotate the type of a field instead of writing a concrete value (e.g. `<str>`, `<int>`, `<Array[Proof]>`). The types used across the existing NUTs are loose and not a fixed enumeration, so pick whatever placeholder is clearest rather than treating these as a closed set.
 - **Curl examples**: Include a `bash` code block with a representative `curl` command when documenting an endpoint.
 - **Mint info settings**: If the NUT is discoverable via NUT-06, include a `## Mint info setting` section showing the JSON structure under `"nuts"`.
 - **Reference links**: Every NUT file ends with a block of reference-style Markdown links. At minimum include all NUTs referenced in the document. The full block looks like:
@@ -52,12 +53,14 @@ Every NUT file follows these conventions:
 
 When creating a new NUT, use this skeleton:
 
-```markdown
+````markdown
 # NUT-NN: Title
 
 `optional`
 
 `depends on: NUT-XX`
+
+`used in: NUT-YY`
 
 ---
 
@@ -71,40 +74,41 @@ Details, protocol flow, and requirements using RFC 2119 language.
 
 **Request** of `Alice`:
 
-\`\`\`http
+```http
 POST https://mint.host:3338/v1/endpoint
-\`\`\`
+```
 
 With the data being of the form `PostExampleRequest`:
 
-\`\`\`json
+```json
 {
   "field": <type>
 }
-\`\`\`
+```
 
 If successful, `Bob` will respond with a `PostExampleResponse`:
 
-\`\`\`json
+```json
 {
   "field": <type>
 }
-\`\`\`
+```
 
 ## Mint info setting
 
-\`\`\`json
+```json
 "nuts": {
-    "NN": {
-      ...
-    }
+  "NN": {
+    ...
+  }
 }
-\`\`\`
+```
 
 [00]: 00.md
 [01]: 01.md
+
 ...
-```
+````
 
 ## Formatting
 
@@ -117,7 +121,7 @@ Always run the check before committing. If Prettier reformats your changes, that
 
 ## Test Vectors
 
-Test vector files live in `tests/` and are named `NN-tests.md` (matching the NUT number). Add or update test vectors when a NUT involves:
+Test vector files live in `tests/` and are named `NN-tests.md` (matching the NUT number); a few older files use the singular `NN-test.md`. Add or update test vectors when a NUT involves:
 
 - Cryptographic operations (hashing, signing, blinding, DLEQ)
 - Serialization or encoding formats (token encoding, bech32m, CBOR)
