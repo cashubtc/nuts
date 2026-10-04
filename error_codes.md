@@ -59,6 +59,7 @@
 | 13044 | Missing or insufficient registration fee                    | [NUT-CTF][CTF]                                                                                   |
 | 13045 | Hash to curve failed                                        | [NUT-CTF][CTF]                                                                                   |
 | 13046 | EC point operation failed                                   | [NUT-CTF][CTF]                                                                                   |
+| 13049 | Conflicting valid oracle attestations                       | [NUT-CTF][CTF], [NUT-CTF-numeric][CTF-numeric] |
 
 [00]: 00.md
 [01]: 01.md

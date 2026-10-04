@@ -35,7 +35,12 @@ For a face value of `amount`:
 - LO holder redeems: `floor(amount * lo_payout_ratio)`
 - Dust: `amount - floor(amount * hi_payout_ratio) - floor(amount * lo_payout_ratio)` is retained by the mint.
 
-`HI + LO <= amount` always, so a single redemption never pays out more than the face value. Because `floor` is subadditive (`floor(a * r) + floor(b * r) <= floor((a + b) * r)`), splitting or consolidating proofs before redemption can only reduce a holder's payout, never increase it (see [Conservation](#conservation)).
+`amount` is the sum of eligible input amounts in one redemption request.
+Round once for that request, not once per proof. `HI + LO <= amount` always.
+For a fixed ratio, `floor(a * r) + floor(b * r) <= floor((a + b) * r)`.
+Splitting redemption into separate requests cannot increase the payout before
+fees. Combining requests can reduce rounding loss. Merely changing proof
+denominations within one request does not change its payout.
 
 **Edge cases**:
 
@@ -54,7 +59,7 @@ lo_payout_ratio = 1 - 0.2 = 0.8
 For 100 sats face value:
 
 - HI: `floor(100 * 0.2)` = 20 sats
-- LO: `100 - 20` = 80 sats
+- LO: `floor(100 * 0.8)` = 80 sats
 
 ## Condition Registration
 
@@ -144,6 +149,13 @@ The oracle signs individual digits per the [DLC specification](https://github.co
 
 The witness uses `digit_sigs` (array of per-digit signatures) instead of `oracle_sig` (single signature) used in [NUT-CTF][CTF] enum conditions. The mint identifies which format to expect based on the `condition_type` of the condition referenced by the input keyset.
 
+Numeric entries do not require the enum `outcome` field. Condition info returns
+the accepted `digit_sigs` in `attestation.oracle_sigs`. The recorded
+`winning_outcome` is the reconstructed signed integer as a decimal string,
+before clamping to the payout bounds. All counted oracles MUST attest to the
+same value. Client verification is optional under NUT-CTF. A client MUST verify
+the signatures before labeling the numeric result oracle-authenticated.
+
 ### Verification
 
 The mint:
@@ -176,7 +188,13 @@ Same attestation, same range:
 
 ### Conservation
 
-For a face value `amount`, the mint pays `floor(amount * hi_payout_ratio)` to HI and `floor(amount * lo_payout_ratio)` to LO, and retains the dust `amount - HI - LO` as mint revenue. Total payout is at most `amount`. This rule is partition-invariant: a holder cannot raise a payout by splitting or merging proofs (same-keyset [NUT-03][03] swaps) before redemption, because flooring each leg independently only reduces the sum. The mint MUST settle each leg with exact integer arithmetic; the dust is not condition collateral.
+For equal face amounts of HI and LO, the combined payout is at most `amount`.
+The mint retains `amount - HI - LO` as rounding dust. It MUST floor each leg
+independently with exact integer arithmetic. It MUST NOT assign the remainder
+to LO. For example, at the midpoint an amount of 3 pays 1 to HI and 1 to LO.
+Rounding is not invariant across separate redemption requests: two amounts of
+3 pay 2 on either leg, whereas one amount of 6 pays 3. This reduces rounding
+loss without creating value above the unrounded proportional entitlement.
 
 ## Convert (Split and Merge)
 
