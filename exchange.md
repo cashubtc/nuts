@@ -29,12 +29,12 @@ swaps into one mint transaction: each must be settled separately.
 
 A Cashu mint already validates proof signatures, maintains spentness, and issues
 blind signatures. This NUT uses that existing authority as the atomic settlement
-layer, removing the interactive claim sequence and the locktime free option it
-creates.
+layer, removing the interactive claim sequence. A submitter still controls
+whether and when to submit an authorized request before expiry.
 
 ### Model
 
-Each participant first locks its bearer proofs to a receive-output commitment
+An owner can lock its bearer proofs to a receive-output commitment
 via a [NUT-10][10] `PAY_TO_UNLOCK` condition. The participants' conditioned
 proofs and public receive descriptors are assembled into one settlement request
 and submitted to the mint. The mint validates every condition and conserves
@@ -44,8 +44,9 @@ signatures in one transaction — or changes nothing.
 Two preparation patterns are supported: a **direct two-party swap** where both
 participants are online, and a **coordinator-mediated swap** where a relay
 assembles matched participants' material (see [Preparation](#preparation)). A
-coordinator or relay is **optional** and has no on-mint authority: any holder of
-all the valid authorizations may submit a request.
+coordinator or relay is **optional**. Any holder of all required authorizations
+may submit. When `coordinator_pubkey` is present, the bound coordinator must
+also sign the request. Bare records are permitted under validation rule 3.
 
 ### Trust boundary and anonymity
 
@@ -54,10 +55,9 @@ The mint is trusted for the same things [NUT-11][11] P2PK already trusts it
 atomic database commit**. No transparency or accountability layer is defined
 here. Two mitigations bound the added trust:
 
-1. **A violation is transcript-checkable.** Any party holding the full transcript
-   (inputs, conditions, output commitments, signatures, expiry) can prove the mint
-   accepted an exchange that violates a condition or a conservation rule. This
-   is incidental verifiability, not a published audit log.
+1. **Participants can check their returned outputs.** Retained commitments and
+   mint signatures permit local verification. This NUT does not define an
+   authenticated mint receipt that proves acceptance of the exact request.
 2. **Protocol fields carry no stable owner identity.** Fresh per-authorization
    `nonce`, refund key, proof secret, and output secret prevent the mint from
    performing _identity-selective_ betrayal from protocol fields alone. The mint
@@ -72,7 +72,7 @@ Version 1 supports:
 - one mint;
 - two or more participants in one atomic two-class exchange (any N-vs-M shape);
 - exactly two existing asset classes, one offered per side;
-- owner-precommitted blinded receive outputs, with optional change outputs in the
+- owner-precommitted blinded receive outputs for locked records, with optional change outputs in the
   offer keyset and alternative output bundles for FAK-style orders;
 - per-asset-class conservation; and
 - one atomic commit (all participants settle or none).
@@ -215,7 +215,7 @@ receive keyset.
 ### Receive-output commitment
 
 The receive destination is the owner's ordered list of `BlindedMessage` values,
-including any change outputs. The canonical encoding of one entry is:
+including any change outputs. One wire entry is:
 
 ```json
 {"amount": <uint>, "id": "<keyset_id>", "B_": "<hex_str>"}
@@ -235,7 +235,7 @@ H_recv = tagged_hash("Cashu/PAY_TO_UNLOCK/recv", recv_canonical)
 ```
 
 where `tagged_hash(tag, msg) = SHA256(SHA256(tag) || SHA256(tag) || msg)` and
-each `entry_canonical` is `{"amount":"<decimal_str>","id":"<keyset_id>","B_":"<hex>"}`.
+each `entry_canonical` is `{"B_":"<hex>","amount":"<decimal_str>","id":"<keyset_id>"}`.
 Amounts are unsigned 64-bit integers; the mint MUST reject outputs whose amounts
 are not representable as u64.
 
@@ -436,6 +436,10 @@ received.
 
 ### Refund
 
+Here, "refund" means reclaiming expired order funds through NUT-03. It is not
+discretionary compensation by a mint operator. Wire tags and signature domains
+retain the name `refund`.
+
 A `PAY_TO_UNLOCK` proof has two mutually exclusive spend paths:
 
 - **Before `expiry`**: only as an input to `/v1/exchange`.
@@ -454,8 +458,11 @@ A `PAY_TO_UNLOCK` proof has two mutually exclusive spend paths:
   be included in its own preimage). **All `amount` fields are encoded as decimal
   strings** (same rule as participant canonicalization). The mint verifies:
   current time ≥ `expiry`; signature valid under `refund` public key; swap issues
-  outputs in an active keyset of the same unit as `offer_keyset`. Otherwise
-  rejected.
+  outputs in an active keyset of the same economic asset as `offer_keyset`.
+  Regular inputs return regular outputs of the same unit. An asset extension
+  MUST also preserve its asset identity. For CTF this includes the condition
+  and outcome collection. Same-asset key rotation is allowed; a shared unit
+  alone does not establish asset equivalence. Otherwise rejected.
 
 The `refund` signature owner-gates the reclaim path: without it, any holder of
 the bearer proof could refund it to itself. Liveness is preserved: a failed
@@ -488,8 +495,11 @@ counterparty, not the change recipient).
 ```
 
 `max_alt_outputs` bounds the number of alternative `H_recv` values per
-condition. `max_expiry_seconds` bounds condition lifetime at [NUT-03][03] swap
-time.
+condition. Wallets MUST bound a new authorization's lifetime by
+`max_expiry_seconds` when preparing it. The mint cannot inspect a blinded
+NUT-10 secret at NUT-03 issuance. At settlement admission it MUST reject an
+authorization whose `expiry` exceeds its current Unix time plus this bound.
+This check bounds remaining lifetime; it does not prove creation time.
 
 ## FAQ
 
@@ -499,11 +509,10 @@ wallet-chosen blinded point `B_`. Only the wallet that knows the secret and
 blinding factor can unblind the signature and build the proof.
 
 **Can a submitter or coordinator steal the funds?**
-No. (1) It receives only the _blinded_ receive messages; without the blinding
-factors it cannot unblind signatures. (2) Inputs are locked by `PAY_TO_UNLOCK`
-to owner-authorised bundles — including change outputs, which use the owner's
-blinding factors. (3) The only theft vector is the refund key; the owner keeps
-a fresh one per authorization.
+Locked records bind outputs to owner-authorized bundles. The owner retains
+their secrets, blinding factors, and refund key. This protection does not apply
+to bare bearer inputs disclosed to the coordinator. See the bearer-material
+caution above. A coordinator can also withhold submission before expiry.
 
 **How does FAK work?**
 Use `alt_outputs` + `allow_change` + `min_output_amount`. One proof authorises a
