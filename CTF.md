@@ -143,7 +143,8 @@ Conditions are registered via `POST /v1/conditions` before any operations on con
   "attestation": {
     "status": <str>,
     "winning_outcome": <str>,
-    "attested_at": <int>
+    "attested_at": <int>,
+    "oracle_sigs": <Array[OracleSig]>
   }
 }
 ```
@@ -159,6 +160,15 @@ Conditions are registered via `POST /v1/conditions` before any operations on con
   - `status`: `"pending"` | `"attested"` | `"expired"` | `"violation"`
   - `winning_outcome`: Attested outcome string (`null` if pending)
   - `attested_at`: Unix timestamp (`null` if pending)
+  - `oracle_sigs` (optional): Accepted public evidence in the [redemption witness](#redemption-witness) format. Numeric conditions use the digit signatures defined in [NUT-CTF-numeric][CTF-numeric].
+
+For an oracle-attested result, the mint MUST make the accepted evidence
+available on request while it retains the condition record. It need not repeat
+the evidence in every response. The evidence contains signatures from at least
+`threshold` distinct registered oracles. It MUST verify against the registered
+announcements and recorded result. Registration parameters and announcements
+MUST NOT change after registration. A discretionary refund does not require
+oracle evidence and is not an oracle attestation.
 
 ### Get Conditions
 
@@ -168,17 +178,25 @@ GET https://mint.host:3338/v1/conditions
 
 **Query parameters:**
 
-- `since` (optional): Unix timestamp. Returns conditions with `registered_at >= since`. Wallets SHOULD first fetch all, then use `since` for incremental sync.
+- `since` (optional): Unix timestamp. Selects conditions with `registered_at >= since`. This filter discovers registrations, not later attestation changes.
 - `limit` (optional): Maximum conditions per response.
+- `cursor` (optional): Opaque continuation returned as `next_cursor` by the previous page. Clients MUST retain the same `since` and `status` filters while using it.
 - `status` (optional, repeatable): Filter by `attestation.status`. E.g., `?status=pending&status=attested`. Conditions without `attestation` are treated as `pending`.
 
-Mints MUST return results ordered by `registered_at` ascending. Clients paginate by setting `since` to the last `registered_at` received and MUST deduplicate by `condition_id`. See [supplementary material](suppl/CTF.md#qa-design-decisions) for pagination rationale.
+Mints MUST order results by `(registered_at, condition_id)` ascending. A cursor
+continues strictly after both values of the last returned entry, including
+when entries share a timestamp. Mints MUST reject malformed cursors and cursors
+used with different filters. The mint MUST use a bounded default and maximum
+page size. Clients follow `next_cursor` until it is `null` and deduplicate by
+`condition_id`. This is not a snapshot or a change feed. Clients refresh known
+conditions through the individual condition endpoint to obtain attestations.
 
 **Response** of `Bob`:
 
 ```json
 {
-  "conditions": <Array[ConditionInfo]>
+  "conditions": <Array[ConditionInfo]>,
+  "next_cursor": <str_or_null>
 }
 ```
 
@@ -194,11 +212,12 @@ GET https://mint.host:3338/v1/conditions/{condition_id}
 
 **Response** of `Bob`:
 
-```json
-{
-  "condition": <ConditionInfo>
-}
-```
+The response body is the `ConditionInfo` object, without a `condition` wrapper.
+
+Clients MAY set `include_oracle_sigs=true` to request the recorded oracle
+evidence. For an oracle-attested result, the mint MUST include `oracle_sigs`
+when this parameter is true. A pending condition or discretionary refund
+without an oracle attestation has no such evidence.
 
 ### Register Condition
 
@@ -325,8 +344,11 @@ GET https://mint.host:3338/v1/conditional_keysets
 - `since` (optional): Unix timestamp. Returns keysets with `registered_at >= since`.
 - `limit` (optional): Maximum keysets per response.
 - `active` (optional): Boolean filter on `active` flag.
+- `cursor` (optional): Opaque continuation from `next_cursor`. Keep the same `since` and `active` filters.
 
-Mints MUST return results ordered by `registered_at` ascending. Same pagination approach as `GET /v1/conditions`.
+Use the condition-list pagination rules, with `(registered_at, id)` as the
+order and cursor position. Return `next_cursor` with each response. `since`
+discovers registrations; it does not report later keyset activity changes.
 
 **Response** of `Bob`:
 
@@ -346,7 +368,8 @@ Structurally identical to `GET /v1/keysets` ([NUT-02][02]) with four additional 
       "outcome_collection_id": <hex_str>,
       "registered_at": <int>
     }
-  ]
+  ],
+  "next_cursor": <str_or_null>
 }
 ```
 
@@ -365,7 +388,8 @@ When redeeming via `POST /v1/redeem_outcome`, each input `Proof` MUST include a 
   "oracle_sigs": [
     {
       "oracle_pubkey": <hex_str>,
-      "oracle_sig": <hex_str>
+      "oracle_sig": <hex_str>,
+      "outcome": <str>
     }
   ]
 }
@@ -374,6 +398,7 @@ When redeeming via `POST /v1/redeem_outcome`, each input `Proof` MUST include a 
 - `oracle_sigs`: Array with at least `threshold` entries from distinct oracles
   - `oracle_pubkey`: 32-byte x-only key (64-char hex)
   - `oracle_sig`: 64-byte Schnorr signature (128-char hex) on the winning outcome
+  - `outcome`: The signed enum outcome, normalized to UTF-8 NFC. It MUST be a member of the registered outcome list.
 
 Always use the array format, even for single-oracle markets (threshold=1).
 
@@ -425,22 +450,72 @@ Mints implementing NUT-CTF MUST enforce these rules on [NUT-03][03] swap:
 
 All conditional-to-regular conversions go through `POST /v1/redeem_outcome`. Movement of value **across** outcome collections within a condition (regrouping, or crossing the collateral boundary) goes through the payoff-preserving `POST /v1/ctf/convert` operation ([NUT-CTF-split-merge][CTF-split-merge]), never a NUT-03 swap.
 
+### Other Mint Operations
+
+NUT-03 MUST check both input and output keyset classes. Checking only
+conditional inputs does not prevent regular inputs from creating conditional
+outputs. Lightning melt operations MUST use regular keysets for input payment
+and change. A conditional proof is not regular payment merely because its
+keyset has the same unit. This does not prohibit face-backed conditional
+issuance under the [issuance invariant][CTF-split-merge].
+
+Every endpoint that consumes proofs MUST also enforce their spending
+conditions. A valid mint signature does not satisfy P2PK, HTLC, or other
+spending conditions. If an endpoint has no defined witness or signature
+preimage for a condition, it MUST reject that input. A holder can first unlock
+it through a valid NUT-03 swap. Oracle evidence does not replace spending
+authorization. These rules do not define a discretionary operator refund API.
+
 ## Redemption Verification
 
 When `Bob` receives a `POST /v1/redeem_outcome` request:
 
 1. All inputs MUST use the same conditional keyset
 2. All outputs MUST use a regular keyset with the same unit
-3. If `Bob` already has a valid attestation for this outcome collection, MAY skip steps 4-5
-4. Each input MUST include valid `witness` with `oracle_sigs`
-5. Verify at least `threshold` signatures from distinct oracles using [DLC signing algorithm](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Oracle.md#signing-algorithm) with tagged hash `"DLC/oracle/attestation/v0"` and UTF-8 NFC-normalized outcome string
+3. If a valid attestation is already recorded, omitted oracle evidence uses that record. Supplied evidence MUST still be validated.
+4. Without a recorded attestation, each input MUST include valid `witness` with `oracle_sigs`.
+5. Verify at least `threshold` signatures from distinct registered oracles for one outcome using the [DLC signing algorithm](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Oracle.md#signing-algorithm). Each signature MUST use its oracle's announced nonce and the tagged hash `"DLC/oracle/attestation/v0"`. Reject conflicting valid outcomes, including a conflict with the recorded result (error 13049).
 6. Verify this outcome collection contains the attested atomic outcome
 
 ### Attestation Handling
 
-The mint MUST persistently record the first valid attestation (atomic winning outcome + timestamp) for each condition. This record MUST survive restarts.
+The mint MUST persist the first valid outcome, timestamp, and accepted
+`oracle_sigs` atomically for each condition. This record MUST survive restarts.
+A concurrent or repeated attestation for the same result MUST NOT replace the
+first record. A conflicting result MUST NOT change it. The mint MAY record
+valid public oracle evidence even when a later redemption step fails.
 
-The mint MUST NOT process redemptions for non-winning keysets. If a valid signature for a different outcome is received (a DLC protocol violation), the mint MUST reject it and MUST log the conflict. Mints SHOULD expose violations via condition info.
+For ordinary oracle-based redemption, the mint MUST NOT process redemptions
+for non-winning keysets. If a valid
+signature for a different outcome is received, the mint MUST reject it with
+13049 and log the conflict. Mints SHOULD expose violations via condition info
+without replacing the accepted result or its evidence. Error 13015 is not
+evidence that a holding has lost.
+
+### Client Verification
+
+Before treating a reported result as oracle-authenticated, clients MUST verify
+its signatures against the intended registered oracle announcements,
+threshold, and outcome descriptor. Verify announcement signatures and each
+attestation's announced nonce. Numeric verification also binds the numeric
+parameters and digit positions. A condition ID alone does not commit every
+registration parameter. Do not trust a substituted announcement or threshold
+merely because the mint returns the expected ID.
+
+A client MAY obtain evidence from the mint or another source and cache the
+verified result. Client-side oracle verification is OPTIONAL for redemption.
+A client that does not have verified evidence SHOULD warn that the mint's
+reported outcome is not verified as a statement by the intended oracle.
+Absence of evidence alone need not block redemption or a discretionary refund.
+The client need not download or verify the same evidence on each response.
+A changed reported outcome is not authenticated by old evidence.
+A mint's outcome string, status, or error code alone is insufficient to prove
+oracle attestation. A client MAY accept a discretionary operator refund without
+an oracle signature. It MUST NOT present that refund as an oracle-authenticated
+outcome. Verification authenticates the oracle result; it does not force a
+dishonest mint to pay. Oracle verification policy does not replace verification
+of received Cashu proofs or authorize deletion of holdings from an unsigned
+status alone.
 
 ## Vesting Period
 
@@ -453,7 +528,10 @@ The mint MAY deactivate conditional keysets after a vesting period following eve
 
 ### Oracle Non-Attestation
 
-If the oracle does not attest within expected time, the mint MAY refund conditional tokens to regular ecash at its discretion.
+If the oracle does not attest within expected time, the mint operator MAY
+arrange a discretionary refund. Eligibility, amount, and refund asset require
+a human decision and are outside this protocol. This is not ordinary NUT-03
+unlocking of proofs whose spending conditions have been met.
 
 ## Error Codes
 
@@ -477,6 +555,7 @@ If the oracle does not attest within expected time, the mint MAY refund conditio
 | 13046 | EC point operation failed                                   |
 | 13047 | Insufficient or invalid change outputs                      |
 | 13048 | Unsupported CTF collateral unit                             |
+| 13049 | Conflicting valid oracle attestations                       |
 
 ## Mint Info Setting
 

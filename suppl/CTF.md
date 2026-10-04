@@ -2,13 +2,13 @@
 
 ## Q&A: Design Decisions
 
-### Why "download all, then sync" instead of server-side filtering?
+### Why use a cursor in addition to `since`?
 
-Supporting complex query combinations (filter by oracle, by unit, by date range, etc.) increases server complexity and creates a DoS vector — an attacker can craft expensive queries to burden the mint. More importantly, fine-grained server-side filtering leaks information about which conditions a wallet cares about, potentially revealing trading positions to the mint. The "download all, then sync with `since`" pattern keeps the server stateless and simple: every client gets the same data, preserving privacy. Since the total number of conditions on a single mint is expected to remain manageable, full downloads are practical.
-
-### Why `>=` instead of `>` for the `since` parameter?
-
-Unix timestamps have second-level precision. If two conditions are registered within the same second and the client uses `>` (strict greater-than), it could silently skip items that share the boundary timestamp. Using `>=` (greater-than-or-equal) guarantees that no items are missed at the cost of re-delivering boundary items. Clients MUST deduplicate by `condition_id` (or keyset `id` for the keysets endpoint), which is trivial with a local set.
+A timestamp alone cannot page through more than one page of registrations
+created in the same second. The cursor includes the timestamp and stable ID.
+`since` remains a registration filter. It cannot discover an attestation added
+to an older condition. Individual condition queries reveal interest to the
+mint; this protocol does not promise query privacy.
 
 ### When should users merge vs. wait for resolution?
 
@@ -45,9 +45,14 @@ Key difference: [NUT-11][11] and [NUT-14][14] witnesses are triggered by the **s
 
 This specification does NOT use adaptor signatures. In Cashu's custodial model, the mint directly verifies the oracle's BIP 340 signature — no adaptor encryption/decryption is needed.
 
-### Note on oracle attestation optionality
+### Oracle evidence and mint trust
 
-Oracle attestation is optional in principle. When the mint operator serves as the oracle (e.g., resolving disputes manually), no external attestation is needed. However, oracle attestation is useful for two reasons: (1) It provides a standardized way for mints to verify redemption claims, and (2) When combined with DLEQ Proof ([NUT-12][12]) and [Proof of Liabilities](https://gist.github.com/callebtc/ed5228d1d8cbaade0104db5d1cf63939), it can serve as a fraud proof if the mint fails to honor valid redemptions.
+Oracle-authenticated resolution uses the registered oracle's DLC evidence,
+even when the mint operator also acts as the oracle. Clients can fetch and
+verify this evidence once, then retain it. It need not appear in every response.
+Discretionary refunds are a separate human-operated exception and need no
+oracle signature. Signature verification does not prove the real-world result
+is true or guarantee payment by the mint.
 
 [00]: ../00.md
 [02]: ../02.md
