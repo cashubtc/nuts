@@ -659,6 +659,11 @@ each funding output.
 > represented by two leaves in a NUTroot tree: one requiring both the sender's
 > and receiver's signatures, and another allowing the sender alone to reclaim
 > the funds after expiry.
+> The internal key will be a deterministically derived per-proof NUMS offset,
+> making key-path spending unavailable. Both parties will reconstruct the
+> complete tree and verify the NUMS offset, excluding hidden spending paths.
+> The leaf keys, leaves, offsets, resulting secrets, and issuance blinding
+> factors will remain deterministic and reconstructible by both parties.
 >
 > Unlike V1/V2 `SIG_ALL`, V3 will not require every funding proof to use
 > identical spending conditions. Each proof can therefore use independently
@@ -697,14 +702,31 @@ then `sigflag`.
 ## Commitment Output Secrets (1-of-1 with Per-Proof Blinded Pubkeys)
 
 > [!NOTE]
-> Under the planned V3 extension, commitment outputs will use the NUTroot
-> key-spend path instead of a 1-of-1 P2PK condition. Each output will be locked
-> to a per-output blinded key of its recipient: Charlie for his balance, or
-> Alice for her remainder.
+> Under the planned V3 extension, commitment outputs will use script-only
+> NUTroot secrets with exactly one 1-of-1 threshold leaf naming the recipient's
+> deterministically NUT-28-blinded key. The internal key will be a deterministic
+> per-output NUMS offset, making key-path spending unavailable.
 >
-> NUTroot supports both key-path and script-leaf spending. These outputs need
-> only a single signature, so they will use the key path directly rather than a
-> leaf containing a single-key spending condition.
+> The recipient-key derivation remains deterministic, as in V1/V2, with a
+> distinct derived ephemeral for each output. Under the current V3 NUT-28 slot
+> map, the sole leaf key occupies slot `1`; slot `0` is reserved for the internal
+> key, and the NUMS internal key is not ECDH-blinded. This preserves the
+> deterministic approach, not necessarily the same key bytes as V1/V2.
+> The offsets, leaves, secrets, and issuance blinding factors are likewise
+> deterministic; exact V3 derivation and encoding rules will be specified later.
+>
+> The two-stage exit remains mandatory, with the existing two-stage fee
+> provisioning. Each recipient MUST sweep their commitment proofs into fresh
+> outputs derived from recipient-private wallet material before treating them
+> as ordinary transferable wallet proofs. Derived leaf private keys MUST NOT
+> be exported or re-gifted: the other channel participant knows the tweaks and
+> could recover the underlying recipient private key from them.
+>
+> The single-leaf structure deliberately distinguishes these intermediate
+> proofs from ordinary bare-key proofs, reducing accidental bypass of the sweep.
+> This is an implementation safeguard, not cryptographic enforcement of the
+> sweep or protection against disclosure of a leaf private key. Signing the
+> stage-2 script-path spend does not disclose that private key.
 
 Each commitment output is locked to a **unique** blinded pubkey derived from the specific `(amount, index)` of that output.
 
@@ -843,6 +865,16 @@ message before signing or verifying a balance update.
 The planned V3 extension will instead sign a transaction transcript that also
 commits to the output keyset IDs. Its construction is outside the scope of this
 draft (see [Keyset versions](#keyset-versions)).
+
+> [!NOTE]
+> Under the current V3 proposal there is one transcript for the entire swap,
+> but each input signs a distinct input digest derived from that transcript
+> and its own input identifier. Every signature still commits to all inputs
+> and outputs. A V3 payment update therefore carries an ordered vector of
+> Alice's signatures, one per funding proof, rather than one V1/V2 `SIG_ALL`
+> signature. Charlie verifies the complete vector and adds his corresponding
+> signature to each funding input when closing. Exact ordering and encoding
+> will be specified in the V3 extension.
 
 As already mentioned, Alice must send the full set of channel parameters to Charlie in the first payment - if she hasn't already sent them beforehand -
 but after this it is sufficient for her to send those three pieces of data.
