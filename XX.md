@@ -11,6 +11,14 @@ Using public information such as Charlie's public key and his preferred mints an
 Alice prepares a _funding token_
 and she can send an initial payment to Charlie without any prior involvement from Charlie.
 
+**No interactive channel setup is required.** Alice needs Charlie's public key
+and sufficient information about his accepted mints, units, keysets, and channel
+policy. These may already be published, for example through Nostr, so Alice
+need not exchange any messages with Charlie before sending the first payment.
+Alice obtains the funding proofs from the mint and sends them, the channel
+parameters, and the first signed payment to Charlie. Charlie does not need to
+participate in funding or register the channel with the mint.
+
 Throughout the lifetime of the channel, Alice signs transactions which redistribute
 ('commit') the value in that funding token between herself and Charlie,
 where each transaction increases the balance in favour of Charlie and decreases hers.
@@ -19,21 +27,36 @@ Charlie does not need to trust Alice; he can verify each channel transaction
 locally without needing to check anything with the mint.
 He does not need to contact the mint until he decides to close the channel.
 
+**This includes the first payment.** Provided Charlie already has the trusted
+mint and keyset metadata required by this specification, he can verify the
+funding proofs, their deterministic spending conditions, the channel parameters,
+and Alice's commitment signatures locally. No mint state-check request is
+required for normal initial acceptance under the channel's security assumptions.
+Offline acceptance depends on Charlie retaining the channel and replay-protection
+state described below, enforcing the expiry policy, and trusting the mint.
+Signature verification alone is not a general proof that an arbitrary token
+is unspent.
+
 Charlie can unilaterally exit at any time, by adding his signature to the most recent
 signature from Alice and swapping the _funding token_ for the outputs.
 Alice can then immediately claim her balance, even if Charlie does not cooperate with her.
 If Charlie never exits, there is an expiry time in the channel and Alice is able to
 unilaterally reclaim the entire funding token when that expiry time is reached.
 
-The mint, Bob, is involved only at the start for the initial swap where Alice prepares
-the _funding token_, and at the end where each of the two parties swap their
-final balances into their wallets.
+The mint, Bob, participates in funding and settlement: Alice obtains signatures
+on the funding outputs, Charlie executes the closing swap, and each party sweeps
+their commitment proofs into their wallet. Subsequent payments between setup
+and closure require communication only between Alice and Charlie. The mint
+receives no request for each payment and does not observe the number or timing
+of those off-chain updates through the protocol.
 
 No change or extension to the mint's behaviour is needed.
 The mint simply sees and executes standard P2PK swaps.
-The mint doesn't know that there is a channel, due to various techniques - including
-pay-to-blinded-pubkey (NUT-28) - which make it difficult for
-the mint to correlate the swaps and tokens.
+The mint receives no explicit channel identifier or off-chain payment history.
+Settlement can nevertheless reveal a recognizable channel-like spending structure.
+Blind signatures and pay-to-blinded-pubkey (NUT-28) limit direct linkage, but
+amounts and timing can still help correlate transactions (see
+[Privacy and correlation](#privacy-and-correlation)).
 
 This document doesn't discuss transport of the payments.
 This doesn't discuss how prices will be negotiated.
@@ -1019,7 +1042,37 @@ As it's a new channel, and assuming the verification is successful, Charlie know
 the funding token is valid and hasn't already been spent, and he knows that any
 commitment transaction that is formed deterministically will also have unspent outputs.
 
-# Timing
+# Privacy and correlation
+
+The mint does not observe individual off-chain payments or intermediate balances.
+However, **channel closure is not necessarily indistinguishable from other mint
+activity**. The funding proofs reveal a joint-signature spending structure when
+spent: the P2PK conditions in V1/V2, or the exercised 2-of-2 leaves under the
+planned V3 extension. V3's unused refund leaves remain hidden behind their
+commitments. The revealed structure can make the swap recognizable as likely
+channel activity, although it does not uniquely identify this protocol.
+
+Normally, one closing swap spends the funding proofs of one channel. The mint
+therefore observes its total nominal funding amount and may infer an approximate
+capacity. It does not necessarily learn the exact `capacity` parameter:
+`funding_token_amount` includes fee provisioning and may exceed the minimum.
+
+**The closing swap does not explicitly disclose the allocation between Alice
+and Charlie.** Outputs are blinded and carry no recipient labels visible to the
+mint. Nevertheless, the mint sees their denominations, count, and order. The
+deterministic amount decomposition and ordering can constrain, or sometimes
+reveal, the possible balance split. The protocol does not guarantee that the
+two balances remain information-theoretically hidden.
+
+When a recipient later spends commitment proofs, blind issuance prevents a
+direct cryptographic link to the blinded outputs of the closing swap. Their
+value can also differ substantially from the channel's total funding amount,
+making simple total-amount matching less useful. Correlation may still be
+possible through denominations, amounts, timing, keysets, network observations,
+or a small anonymity set. This also applies to attempts to associate subsequent
+wallet swaps or melts with the channel's settlement.
+
+## Timing and optional privacy practices
 
 To improve privacy further, when the channel is closed and the first of the two stages
 is executed, both parties should delay the second stage.
@@ -1028,6 +1081,29 @@ Under the planned V3 extension, the stage-1 keyset requirement does not bind
 either party's independently authorized stage-2 wallet outputs to the funding
 keyset. Each party may select another active output keyset when completing stage
 2 (see [Keyset versions](#keyset-versions)).
+
+Wallets may further reduce some correlation signals by:
+
+- Using common funding-size buckets, such as 1,000 or 100,000 sats where
+  appropriate. Standardizing the mint-visible funding amounts and denomination
+  policies matters more directly than standardizing capacity labels alone.
+- Separating the timing of closure and the recipients' sweeps instead of
+  executing all three exit swaps immediately.
+- Sweeping subsets of a channel's commitment proofs in separate transactions,
+  so that an individual sweep need not reveal a party's entire allocation.
+- Combining commitment proofs from multiple channels in a sweep, where
+  supported, to make a simple one-channel-to-one-sweep association less reliable.
+
+These practices do not guarantee unlinkability. Splitting sweeps can increase
+fees through per-transaction rounding; batching can create new associations
+among inputs spent together. Implementations must account for these tradeoffs
+rather than assuming that the original two-stage fee estimate covers every
+alternative execution pattern.
+
+Unswept commitment proofs remain intermediate, non-exportable proofs. Partial
+or delayed sweeping does not remove the requirement to sweep each proof into
+outputs derived from recipient-private wallet material before treating it as
+ordinary transferable wallet value.
 
 
 # proof-of-concept
