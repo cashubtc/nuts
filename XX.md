@@ -98,6 +98,8 @@ The mint **MUST** keep a record of every transaction it accepts, keyed by its tr
 
 On settlement, the mint creates for each change quote output a [NUT-04][04] mint quote with method `change`, in the transaction's unit, locked to its `pubkey`, with `amount_paid` and a method-specific `amount` equal to the output's `amount`, or to `change` for the remainder quote, and `request` the transaction digest. Its id is a fresh quote id, as for any mint quote. The method name `change` is reserved for these quotes. A remainder quote with zero change is not created.
 
+A seeded wallet **SHOULD** derive its own change quote lock keys per [NUT-13](13.md#v3-message) with `derivation_type_byte` `0x04`. [NUT-09][09] restore does not recover change quotes, so a wallet **SHOULD** redeem its own promptly.
+
 A change quote is fetched at `GET /v1/mint/quote/change/{quote_id}` and redeemed like any locked quote: at `POST /v1/mint/change`, or as a quote input to another transaction. There is no `POST /v1/mint/quote/change`; only a transaction creates one.
 
 ## Response
@@ -152,6 +154,7 @@ A mint that does not charge advertises `0`.
 [03]: 03.md
 [04]: 04.md
 [05]: 05.md
+[09]: 09.md
 [10]: 10.md
 [11]: 11.md
 [30]: 30.md
