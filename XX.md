@@ -87,7 +87,7 @@ here.
 > transaction transcript, signed by the signers, that includes the usual
 > transaction data and commits to the output keyset IDs. Its detailed
 > construction is outside the scope of this draft. This NUT will therefore
-> require the V3 stage-1 commitment swap to use the channel's funding keyset,
+> require the V3 presigned stage-1 commitment swap to use the channel's funding keyset,
 > identified in the channel parameters, for both inputs and all commitment
 > outputs.
 >
@@ -682,11 +682,22 @@ each funding output.
 > represented by two leaves in a NUTroot tree: one requiring both the sender's
 > and receiver's signatures, and another allowing the sender alone to reclaim
 > the funds after expiry.
-> The internal key will be a deterministically derived per-proof NUMS offset,
-> making key-path spending unavailable. Both parties will reconstruct the
-> complete tree and verify the NUMS offset, excluding hidden spending paths.
-> The leaf keys, leaves, offsets, resulting secrets, and issuance blinding
-> factors will remain deterministic and reconstructible by both parties.
+> The internal key will be the MuSig2 aggregate of the per-proof sender and
+> receiver funding keys, allowing an optional cooperative key-path close.
+> Derive separate scalar tweaks from the channel secret, binding the channel ID,
+> amount, and occurrence index, with distinct contexts such as
+> `funding/musig/sender`, `funding/musig/receiver`, and `funding/refund/sender`.
+> This gives each funding proof distinct participant keys and an internal key;
+> do not apply one shared tweak to both participants' keys. The aggregate key,
+> leaves, final secret, and issuance blinding factor remain deterministic.
+>
+> Both parties will verify the expected MuSig2 aggregate and complete tree.
+> Key aggregation uses a fixed sender/receiver order, and cooperative signing
+> must account for the Cashu NUTroot tree tweak and parity rules. Exact
+> derivation, aggregation, and encoding rules will be specified in the V3 extension.
+> The 2-of-2 leaf remains the receiver's noninteractive closing path using
+> Alice's stored update signatures; the timed refund remains Alice's independent
+> recovery path. Ordinary channel updates do not involve MuSig2 sessions.
 >
 > Unlike V1/V2 `SIG_ALL`, V3 will not require every funding proof to use
 > identical spending conditions. Each proof can therefore use independently
@@ -738,9 +749,9 @@ then `sigflag`.
 > The offsets, leaves, secrets, and issuance blinding factors are likewise
 > deterministic; exact V3 derivation and encoding rules will be specified later.
 >
-> The two-stage exit remains mandatory, with the existing two-stage fee
-> provisioning. Each recipient MUST sweep their commitment proofs into fresh
-> outputs derived from recipient-private wallet material before treating them
+> When commitment proofs are created, the two-stage exit remains mandatory,
+> with the existing two-stage fee provisioning. Each recipient MUST sweep them
+> into fresh outputs derived from recipient-private wallet material before treating them
 > as ordinary transferable wallet proofs. Derived leaf private keys MUST NOT
 > be exported or re-gifted: the other channel participant knows the tweaks and
 > could recover the underlying recipient private key from them.
@@ -904,6 +915,30 @@ but after this it is sufficient for her to send those three pieces of data.
 
 # Closing the channel
 
+> [!NOTE]
+> Under the planned V3 extension, the parties may instead cooperatively close
+> through the MuSig2 key path, directly into fresh wallet outputs that each
+> party creates from private material at closing time. Both verify the complete
+> transaction before signing. No intermediate commitment proofs are created,
+> so this path requires no second-stage sweep. By default Charlie receives the
+> agreed balance and Alice receives the remainder after the funding-input fee,
+> including all savings from avoiding stage 2. Funding still covers the two-stage
+> fallback; cooperation is never required to obtain the channel's guarantees.
+>
+> After agreeing the transaction, MuSig2 signing uses two rounds: public nonces,
+> then partial signatures. One session per funding proof proceeds in parallel,
+> with distinct nonce pairs for every session and signing attempt; round messages
+> may be batched. Each session signs its input-specific digest for the final
+> NUTroot-tweaked key. Nonces must never be reused or derived from shared channel
+> material. Each party retains its output construction data for NUT-09 recovery
+> if the submitting party withholds the returned blind signatures.
+>
+> Because this is newly authorized, the parties may agree on other active output
+> keysets. The funding-keyset restriction below applies to presigned threshold-leaf
+> closes. If cooperation fails, Charlie retains that closing path and Alice retains
+> the timed refund. Expiry enables the refund without disabling either joint path;
+> Charlie must close with sufficient margin before expiry.
+
 Most of the commitment transactions are never sent to the mint.
 
 When Charlie exits, he adds his signature to Alice's on the most recent transaction and
@@ -1047,22 +1082,27 @@ commitment transaction that is formed deterministically will also have unspent o
 The mint does not observe individual off-chain payments or intermediate balances.
 However, **channel closure is not necessarily indistinguishable from other mint
 activity**. The funding proofs reveal a joint-signature spending structure when
-spent: the P2PK conditions in V1/V2, or the exercised 2-of-2 leaves under the
-planned V3 extension. V3's unused refund leaves remain hidden behind their
-commitments. The revealed structure can make the swap recognizable as likely
-channel activity, although it does not uniquely identify this protocol.
+spent through the joint script path: the P2PK conditions in V1/V2, or the
+exercised 2-of-2 leaves under the planned V3 extension. V3's unused refund
+leaves remain hidden behind their commitments. The revealed structure can make
+the swap recognizable as likely channel activity, although it does not uniquely
+identify this protocol. A cooperative V3 MuSig2 key-path close instead has ordinary
+key-path witnesses: it reveals neither the two-party authorization nor the tree's
+existence. Amounts, timing, and input grouping can still provide correlation clues.
 
 Normally, one closing swap spends the funding proofs of one channel. The mint
 therefore observes its total nominal funding amount and may infer an approximate
 capacity. It does not necessarily learn the exact `capacity` parameter:
 `funding_token_amount` includes fee provisioning and may exceed the minimum.
 
-**The closing swap does not explicitly disclose the allocation between Alice
-and Charlie.** Outputs are blinded and carry no recipient labels visible to the
+For a deterministic threshold-leaf close, **the closing swap does not explicitly
+disclose the allocation between Alice and Charlie.** Outputs are blinded and carry no recipient labels visible to the
 mint. Nevertheless, the mint sees their denominations, count, and order. The
 deterministic amount decomposition and ordering can constrain, or sometimes
 reveal, the possible balance split. The protocol does not guarantee that the
-two balances remain information-theoretically hidden.
+two balances remain information-theoretically hidden. A cooperative V3 close uses
+fresh wallet outputs chosen at closing time rather than this deterministic split
+construction, but their visible amounts and timing can still leak information.
 
 When a recipient later spends commitment proofs, blind issuance prevents a
 direct cryptographic link to the blinded outputs of the closing swap. Their
