@@ -4,7 +4,7 @@ These vectors cover [nutroot secrets](../10.md#nutroot-secrets-v3-keysets) (v3 k
 
 ## Conventions
 
-Tagged hashes use the tags `Cashu_NutrootLeaf`, `Cashu_NutrootBranch` and `Cashu_NutrootTweak`; receiver-keyed blinding uses `Cashu_P2BK_v1` ([NUT-28](../28.md)); per-input signing messages use the tag `Cashu_TransactionInput`; the NUMS point is `0250929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0`. These are the normative constants of [NUT-10](../10.md), restated here so the vectors read standalone. Each tag hashes (SHA-256 of its UTF-8 bytes) to the `tag_hash` an implementation prefixes twice:
+Tag hashes ([NUT-10](../10.md)); the NUMS point is `0250929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0`:
 
 | Tag                      | `SHA256(tag)`                                                      |
 | ------------------------ | ------------------------------------------------------------------ |
@@ -43,11 +43,11 @@ The `after` leaf used throughout, spelled out (`n = 1`, `keys = [key 4]`, `time 
 }
 ```
 
-`threshold_1of1_key3_disclosure` appends the `disclosure` field (`0a000101`): satisfaction is unchanged, and a spend through it is published ([NUT-07 vectors](07-tests.md)).
+`threshold_1of1_key3_disclosure` appends the `disclosure` field (`0a000101`).
 
 ## The tree fold
 
-A three-leaf tree (`threshold_1of1_key3`, `after_1of1_key4`, `hashlock_1of1_key3`, in transmitted order) exercises the sorted odd-count fold: ascending by leaf hash the order is `h0, h2, h1`, so `h0` and `h2` pair, `h1` is promoted unchanged, and the two hashes at the next level pair. The merkle path for leaf 2 is therefore `[h0, h1]`.
+A three-leaf tree (`threshold_1of1_key3`, `after_1of1_key4`, `hashlock_1of1_key3`, in transmitted order). Sorted by leaf hash the order is `h0, h2, h1`: `h0` and `h2` pair and `h1` is promoted, so the path for leaf 2 is `[h0, h1]`.
 
 ```json
 {
@@ -66,9 +66,9 @@ A three-leaf tree (`threshold_1of1_key3`, `after_1of1_key4`, `hashlock_1of1_key3
 }
 ```
 
-`secret = internal_key + tagged_hash("Cashu_NutrootTweak", internal_key || root)*G`, and the commitment also verifies through `path_for_index_2` from leaf 2 alone.
+The commitment also verifies through `path_for_index_2` from leaf 2 alone.
 
-Duplicate leaves fold without deduplication: two copies of `threshold_1of1_key3` under internal key `6` commit `root = tagged_hash("Cashu_NutrootBranch", h || h)`, distinct from the single-leaf root `h`, and either copy spends with `path = [h]`:
+Two copies of `threshold_1of1_key3` under internal key `6`: the root is `tagged_hash("Cashu_NutrootBranch", h || h)`, not the single-leaf `h`, and either copy spends with `path = [h]`:
 
 ```json
 {
@@ -101,9 +101,9 @@ Alice pays Carol, refundable to Alice after `time`. Carol's static key is key `3
 }
 ```
 
-Here `merkle_root = tagged_hash("Cashu_NutrootLeaf", leaf)` (single leaf), and `keypath_priv = (3 + slot0_r + tweak) mod n`, the key Carol signs with.
+`keypath_priv` is the key Carol signs with.
 
-The witnesses below sign an **illustrative** input digest, `SHA256("illustrative transaction transcript")` = `e1d7170b89a2b6eedec90453e32b6c320dfadd590e6a6454bddec95a0e3834cd` (a real spend derives its input digest from the transaction transcript, see below). Carol's key-path witness:
+The witnesses below sign an **illustrative** input digest, `SHA256("illustrative transaction transcript")` = `e1d7170b89a2b6eedec90453e32b6c320dfadd590e6a6454bddec95a0e3834cd`. Carol's key-path witness:
 
 ```json
 {
@@ -113,7 +113,7 @@ The witnesses below sign an **illustrative** input digest, `SHA256("illustrative
 }
 ```
 
-Alice's script-path witness after the locktime (empty path, single-leaf tree; her signature verifies against key `4` listed in the leaf):
+Alice's script-path witness after the locktime:
 
 ```json
 {
@@ -132,7 +132,7 @@ For contrast, a bearer proof with no conditions: private key `7` travels as spen
 
 ## Worked example: two leaves and a filled path
 
-A two-leaf tree under internal key `6`. Leaf 0 uses the **unallocated** type `0x05`, which makes this both a branch vector and a fail-closed vector: the commitment math below verifies, but a verifier **MUST** treat the `0x05` leaf as unsatisfiable, so a witness revealing it is rejected regardless of its (real) signature. Leaf 1 is an ordinary `after` leaf (key `3`, time `1758240000`) and is spendable once its locktime passes, with `path = [leaf_hash_0]`.
+A two-leaf tree under internal key `6`. Leaf 0 has the unallocated type `0x05`; leaf 1 is an `after` leaf (key `3`, time `1758240000`), spendable with `path = [leaf_hash_0]` once its locktime passes.
 
 ```json
 {
@@ -147,11 +147,11 @@ A two-leaf tree under internal key `6`. Leaf 0 uses the **unallocated** type `0x
 }
 ```
 
-`merkle_root = tagged_hash("Cashu_NutrootBranch", leaf_hash_1 || leaf_hash_0)`: the pair is sorted, so `leaf_hash_1` comes first. A witness revealing `leaf_0_unknown_type` with `path = [leaf_hash_1]` reconstructs the secret but **MUST** be rejected as unsatisfiable (unknown leaf type).
+A witness revealing `leaf_0_unknown_type` with `path = [leaf_hash_1]` reconstructs the secret but **MUST** be rejected (unknown leaf type).
 
 ## Worked example: a commit leaf
 
-The auditable lock below with a `commit` leaf beside it: same NUMS `K` (`u = 7`), same `threshold` leaf, plus a `commit` leaf whose `hash` is `SHA256("external data")`. The commit leaf is never spendable; it only changes the root, so the proof is bound to whatever the digest covers. `P`'s only path is the `threshold` leaf, revealed with `path = [leaf_hash_commit]`: the mint sees the commitment as one sibling hash and nothing more. A witness revealing `leaf_commit` **MUST** be rejected.
+The auditable lock below plus a `commit` leaf whose `hash` is `SHA256("external data")` (same NUMS `K`, `u = 7`). `P` spends through the `threshold` leaf with `path = [leaf_hash_commit]`; a witness revealing `leaf_commit` **MUST** be rejected.
 
 ```json
 {
@@ -167,7 +167,7 @@ The auditable lock below with a `commit` leaf beside it: same NUMS `K` (`u = 7`)
 }
 ```
 
-`merkle_root = tagged_hash("Cashu_NutrootBranch", leaf_hash_commit || leaf_hash_threshold)`: the pair is sorted, so the commit hash comes first. A `commit` leaf with any other field, or with `disclosure`, is malformed.
+A `commit` leaf with any other field, or with `disclosure`, is malformed.
 
 ## Worked example: auditable lock with disclosure
 
@@ -210,11 +210,11 @@ Spending this proof as the sole input of the [swap transaction](#transaction-tra
 }
 ```
 
-The `disclosure` field commits this spend to publication: the mint returns the exact witness string and its input digest through NUT-07, and the [NUT-07 vectors](07-tests.md) carry the matching commitment and opening.
+The [NUT-07 vectors](07-tests.md) carry the matching commitment and opening.
 
 ## Rejection vectors
 
-An unknown field rejects, and odd type numbers are reserved with none allocated, so this leaf (`threshold_1of1_key3` with a four-byte field `0x09` appended) is malformed:
+`threshold_1of1_key3` with a four-byte field `0x09` appended is malformed:
 
 ```json
 {
@@ -222,7 +222,7 @@ An unknown field rejects, and odd type numbers are reserved with none allocated,
 }
 ```
 
-`disclosure` fails closed on any value but mode `0x01`: appending `0a000100` (mode `0x00`), `0a0000` (empty), or `0a000102` (unallocated mode) to `threshold_1of1_key3` each make it malformed:
+Appending `0a000100` (mode `0x00`), `0a0000` (empty) or `0a000102` (unallocated mode) to `threshold_1of1_key3` makes it malformed:
 
 ```json
 {
@@ -232,11 +232,11 @@ An unknown field rejects, and odd type numbers are reserved with none allocated,
 }
 ```
 
-`signatures` is bounded: exactly one entry on the key path, at most the leaf's key count on the script path. Listing Carol's key-path signature twice, or Alice's script-path signature twice (her leaf lists one key), makes each witness above invalid with no other change.
+Listing Carol's key-path signature twice, or Alice's script-path signature twice (her leaf lists one key), makes each witness above invalid.
 
 ## Empty tweak
 
-An aggregated internal key commits to having no script path with the empty tweak: `t = tagged_hash("Cashu_NutrootTweak", K)`, no merkle root bytes. With `K` = public key of `3`:
+The empty tweak, `t = tagged_hash("Cashu_NutrootTweak", K)` with no merkle root, for `K` = public key of `3`:
 
 ```json
 {
@@ -249,7 +249,7 @@ An aggregated internal key commits to having no script path with the empty tweak
 
 ## Transaction transcripts
 
-`transaction_digest = SHA256(transcript)`; each input signs `input_digest = tagged_hash("Cashu_TransactionInput", transaction_digest || input_id)`, where `input_id = SHA256(input container record)`. The single-input transactions below place that container first; the separate multi-input vector identifies both containers explicitly. The `digest` key in each vector is the transaction digest. The keyset is a v3 keyset with id `02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6` (contributing raw bytes); a proof input's `03` is its `Y`, 48 bytes on a v3 keyset and 33 on a pre-v3 one (the mixed-keyset vector has both); quote ids contribute UTF-8 bytes; amounts are minimal big-endian. Single-proof examples use [NUT-13 V3](13-tests.md) counter `0`; the multi-input example also uses counter `1`.
+Keyset `02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6` (v3). Proofs use [NUT-13 V3](13-tests.md) counter `0`, and `1` in the multi-input vector. `digest` is the transaction digest.
 
 **Swap.** A `PostSwapRequest` ([NUT-03](../03.md)) spending one 8-sat proof into two 4-sat outputs:
 
@@ -299,7 +299,7 @@ and the input's key-path witness over its `input_digest` is:
 }
 ```
 
-**Multiple proof inputs.** Appending a second proof to the swap above, and changing the two output amounts to `8` and `4`, gives one shared transaction digest but a distinct signing digest for each proof. The appended input is the [NUT-13 V3](13-tests.md) counter `1` secret with the same `C`:
+**Multiple proof inputs.** The swap above plus a second proof (the [NUT-13 V3](13-tests.md) counter `1` secret, same `C`), with outputs of `8` and `4`:
 
 ```json
 {
@@ -332,7 +332,7 @@ The transaction and per-input digests, with each proof's key-path signature:
 
 Each signature **MUST** verify only against its corresponding `input_digest`; neither signs the shared `digest`.
 
-**Mixed keysets.** A transaction may spend pre-v3 and v3 inputs together (the migration path: old inputs, v3 outputs). Every proof input's `03` is its `Y` under its own keyset's version ([NUT-10](../10.md#nutroot-secrets-v3-keysets), [NUT-00](../00.md)). Here the swap's v3 input is joined by a pre-v3 input on keyset `00456a94ab4e1c46` (a v0 id, contributing its 8 raw bytes), paying two outputs of `8` and `2` on the v3 keyset:
+**Mixed keysets.** The swap's v3 input joined by a pre-v3 input on keyset `00456a94ab4e1c46` (a v0 id), paying two outputs of `8` and `2` on the v3 keyset:
 
 ```json
 {
@@ -365,22 +365,22 @@ Each signature **MUST** verify only against its corresponding `input_digest`; ne
 }
 ```
 
-Each input's `Y` and container record, then the transcript and digests. Only the v3 input derives and signs an input digest; the pre-v3 input carries its own [NUT-11](../11.md) or bare witness as before, and its `input_id` is listed only to check the container bytes:
+Each input's `Y` and container record, then the transcript and digests. Only the v3 input signs an input digest; the pre-v3 input's `input_id` is listed only to check the container bytes:
 
 ```json
 {
   "inputs": [
     {
       "Y": "a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a73",
-      "container": "01008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327",
+      "container": "11008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327",
       "input_id": "900fb575d55eed27f7f52db079a2bf4843e674c461726eca70b90943cb3c7d07",
-      "input_digest": "3f48aab72fb7ec0e29d1fa49e4e194f09110068fe94a95e8553f53755af55837",
-      "signature": "4c4906b9093e30e404f29898d3905e14bc3ff85754cb210dc62f7da6b3e0bb612f3a09f5c33b0b504f389ba998d20f42f7dba80ceb22cd6cb0201b47e5e0dce7"
+      "input_digest": "a01808ebee8586577034824a151a2558910496144b5fa020dbfd431f3b421021",
+      "signature": "e103fff937b80b45cd8d5a3a6fa739e7c26fc20d5067b94cfeaf506b3ecbfd1f5c693c5988fb8e8d7f53ce9e09092611c7ac9e4da26d36db5d120d968857d745"
     },
     {
       "Y": "029ef117210f475254efd911de93a9d22d471e356f5b1e3f00df8c24bbb37bd3ae",
-      "container": "0100570100010202000800456a94ab4e1c46030021029ef117210f475254efd911de93a9d22d471e356f5b1e3f00df8c24bbb37bd3ae04002102a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba2",
-      "input_id": "22df4d688b7337f49aa47dd5d0dc6578506229c36908d79608c50d7814d1bd04"
+      "container": "1100570100010202000800456a94ab4e1c46030021029ef117210f475254efd911de93a9d22d471e356f5b1e3f00df8c24bbb37bd3ae04002102a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba2",
+      "input_id": "efbdd5d14874cb021fc962d93a9848553ca65ae101e9b57f6678aa37ffe1ebd9"
     }
   ],
   "transcript": "11008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d033271100570100010202000800456a94ab4e1c46030021029ef117210f475254efd911de93a9d22d471e356f5b1e3f00df8c24bbb37bd3ae04002102a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba221005b0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd5521005b0100010202002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
@@ -388,7 +388,7 @@ Each input's `Y` and container record, then the transcript and digests. Only the
 }
 ```
 
-**Mint.** Executing mint quote `quote-mint-0001` (amount 8, [NUT-04](../04.md#nutroot-transactions-v3-keysets)) with one 8-sat output. The quote is the transaction's only input; its lock key signs this digest via the mint request's `signature` field:
+**Mint.** Mint quote `quote-mint-0001` (amount 8) with one 8-sat output, locked to the [NUT-13 quote lock key](13-tests.md#version-3-secret-derivation) of counter `0` (`0292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d209812`):
 
 ```json
 {
@@ -404,63 +404,63 @@ Each input's `Y` and container record, then the transcript and digests. Only the
 
 ```json
 {
-  "transcript": "1200160100010802000f71756f74652d6d696e742d3030303121005b0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
-  "digest": "0ddaf2d7b8060777c2a109e2e81c8dd86be9a098e1295f8e934e1a1fd81f8117",
-  "input_id": "e8b067b03a5bf2c7a283220722283657e95df38e4a50d593fbe8f4dd2472c652",
-  "input_digest": "d851748a1b2c45392c2fc780f4a3b5c12525823b24499fa36f6e92a39dd2593e"
+  "transcript": "12003a0100010802000f71756f74652d6d696e742d303030310300210292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d20981221005b0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
+  "digest": "15322931ec8853ee9fee34cebefe0aba1ca04df7b14267d46a2d5d6361476b58",
+  "input_id": "36683e426305851b0c5bee1a8b9d567a5a0a3feba6252c4144aefde0ec852ef1",
+  "input_digest": "76fd9ab46843a003bff3b81e0875b30ddfe413b09d1e1cfad399972f498f106f"
 }
 ```
 
-**Partial mint.** Issuing 4 against 8-sat mint quote `quote-mint-0004`, with one 4-sat output. The quote input commits the 4 issued, not the quote's amount:
+**Partial mint.** Issuing 4 against 8-sat mint quote `quote-mint-0004`, with one 4-sat output:
 
 ```
-12 0016 | 01 0001 04 | 02 000f 71756f...303034
+12 003a | 01 0001 04 | 02 000f 71756f...303034 | 03 0021 029290...209812
 ```
 
 ```json
 {
-  "transcript": "1200160100010402000f71756f74652d6d696e742d3030303421005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
-  "digest": "f8584f27ad5c0c4823899c2f47fba5928a2fcda2cb016d7ca269be3e36dbcd85",
+  "transcript": "12003a0100010402000f71756f74652d6d696e742d303030340300210292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d20981221005b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
+  "digest": "7db5f2b9b50d7a4883b80f96885d21675e3c841945d70994649d147e8744f2a2",
   "lock_pubkey": "0292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d209812",
-  "input_id": "42be43dc79f7a9f1d52c1462ceb32680d4192d268d0fdcbad280e5e6a29f8974",
-  "input_digest": "1176da321d81c97ef5d3f386a9fcff123f03b927446f3f8ce81699ccb73065c6",
-  "signature": "2ef6bcf5de91e77f051eafcd23e2f9eee51339aed41490e1dcaf3ac2b9cbee0c06ca6da1498d75bfea2cdde08e3c74f59e317a0bd09fe7dcc905188249102694"
+  "input_id": "b2b5f1be66f3ac7a12fec7f3f063d0399793a70fbcbee81d39a9a279a908d9bd",
+  "input_digest": "7c8e461d87bdcb275810c2bc00a5b33f87c1d2789ffac120262f7a2b04177564",
+  "signature": "37ce63cb54e3e6cb9fd075abb754c1e098305ccb73fcdedd4981262c4e03957561569b3604bf5932aaec54b911647756222fa1a88f951eed0ed9bdd6a6a05105"
 }
 ```
 
 The signature **MUST NOT** verify over the transcript that commits `8`.
 
-**Batched mint.** A [NUT-29](../29.md) batch of two quotes, `quote-mint-0002` and `quote-mint-0003`, with `quote_amounts` of `[5, 3]` and the mint vector's 8-sat output. Each quote input commits its `quote_amounts` entry, and each lock key signs its own input digest:
+**Batched mint.** A [NUT-29](../29.md) batch of `quote-mint-0002` and `quote-mint-0003` with `quote_amounts` of `[5, 3]` and the mint vector's 8-sat output:
 
 ```
-12 0016 | 01 0001 05 | 02 000f 71756f...303032
-12 0016 | 01 0001 03 | 02 000f 71756f...303033
+12 003a | 01 0001 05 | 02 000f 71756f...303032 | 03 0021 029290...209812
+12 003a | 01 0001 03 | 02 000f 71756f...303033 | 03 0021 02b357...99615d
 ```
 
 ```json
 {
-  "transcript": "1200160100010502000f71756f74652d6d696e742d303030321200160100010302000f71756f74652d6d696e742d3030303321005b0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
-  "digest": "44a5f2217fdbfa927e03537c83eaebd250fae48c9e46bec53134610f71ecb0e2",
+  "transcript": "12003a0100010502000f71756f74652d6d696e742d303030320300210292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d20981212003a0100010302000f71756f74652d6d696e742d3030303303002102b357c1ec7bdd73e4ede25d68619ee607c632409e89bcc518a82370b3f499615d21005b0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
+  "digest": "1fcc843aeb8a087e0c348c9b6b9fb2cef155039deb3bd7d4d2610c5c9447cdaf",
   "inputs": [
     {
       "quote_id": "quote-mint-0002",
       "lock_pubkey": "0292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d209812",
-      "input_id": "165487baab65329514e03e15352ac90f55b32189d4a68c640d25bd79cdc9da99",
-      "input_digest": "f5454c731da1a366e9c80cd9db8ab92dbc50ea6dae42709f91d540f854f7a0fc",
-      "signature": "44ea0145d2087fe83b83854c8e1654c5328c322e2ac9638fee3dcd9ca5fe8bc022fd9d63861b486f76f7442f29b6f6fa50f8e89bdb76484d76922b5aa2a6fc4d"
+      "input_id": "dd1472cce2ae89c5134d54a9fba5f99f26c212cda68cf6d0bba7f8f2e253f425",
+      "input_digest": "344ae975bbecbb734a663e756cc0413bfa50a5bf4f1577fd5e86fac3064fc86c",
+      "signature": "46bf2b2ac046694ef33037ca8d3e1ca5e8119fb837887d41ac631059059436a163a9a5f43594bef92e162e7b16f7d490293591789e69074fe5d4a5fcd5eccafb"
     },
     {
       "quote_id": "quote-mint-0003",
       "lock_pubkey": "02b357c1ec7bdd73e4ede25d68619ee607c632409e89bcc518a82370b3f499615d",
-      "input_id": "48b34f223c300eeb992c9443aeb6e49d4b566ec9eb19fda6ac4de3721996c811",
-      "input_digest": "45be9b7f7f48eef1d6e03a5f9ca6017ac3a2eb728fa85a2c81982626f43a873d",
-      "signature": "b2530aadc2f9c879a5f505aba51217b094a752227be327df421ea13e91585d22360db14c701c3d5b5eeda269b651ef55c05c1e60b9cf29f757dde653161ac76b"
+      "input_id": "78bd15ebfccf1774d313df80acf0ac276aaac32bb581c8555870d1f36a728248",
+      "input_digest": "b6cc535347c07bea1cc167796a6f6febce4daaf60df9c2275229d5f52297ce7e",
+      "signature": "2be4e6dbaaf205e433894c289496236079a537e37552a037437efe19430d3938c6630d71eced65cb60e9a52f730a25200403fdf3c4d738edc99b51004bebd838"
     }
   ]
 }
 ```
 
-**Melt.** Paying melt quote `quote-melt-0001` (quote amount 8 with a fee reserve of 0, so the output's amount is 8; no change outputs) with the swap's 8-sat proof as the only input; the melt quote is the only output, binding its quote id and that amount:
+**Melt.** Paying melt quote `quote-melt-0001` (amount 8, fee reserve 0, no change outputs) with the swap's 8-sat proof:
 
 ```json
 {
@@ -471,9 +471,9 @@ The signature **MUST NOT** verify over the transcript that commits `8`.
 }
 ```
 
-The melt spends the swap's proof, so it shares the swap's `input_id`; the differing transcripts give it a different `input_digest`, so neither witness verifies in the other transaction.
+The melt shares the swap's `input_id` but not its `input_digest`, so neither witness verifies in the other transaction.
 
-**Melt with change.** The same melt carrying two [NUT-08](../08.md) blank change outputs (amount 0, on the same keyset with the swap's `B_`). Containers group in ascending type order, so the blank outputs (type `0x21`) precede the melt quote (type `0x22`) in the transcript regardless of the request's field order; note each blank's zero amount encodes to a zero-length record (`010000`):
+**Melt with change.** The same melt with two [NUT-08](../08.md) blank outputs (amount 0) on the swap's keyset and `B_`. They precede the melt quote in the transcript, and each zero amount encodes as `010000`:
 
 ```json
 {
@@ -486,9 +486,9 @@ The melt spends the swap's proof, so it shares the swap's `input_id`; the differ
 
 ## Transport strings
 
-Both strings are the prefix followed by base64url (no padding) of the JSON shown; the JSON is not canonical, so decoders parse rather than compare.
+Each string is its prefix plus base64url (no padding) of the JSON shown. The JSON is not canonical, so decoders parse rather than compare.
 
-**Signing package.** The [auditable lock](#worked-example-auditable-lock-with-disclosure) spent through its one leaf as the sole input of the [swap](#transaction-transcripts) (8 sat in, two 4-sat outputs). The package carries that transaction's transcript and one spend awaiting signatures on input `0`; there is no `E` or `slots` because the key is not blinded:
+**Signing package.** The [auditable lock](#worked-example-auditable-lock-with-disclosure) as the sole input of the [swap](#transaction-transcripts), with one spend awaiting signatures on input `0`:
 
 ```json
 {
@@ -497,7 +497,12 @@ Both strings are the prefix followed by base64url (no padding) of the JSON shown
   "spends": [
     {
       "input": 0,
+      "secret": "02fc11bf4f939f2bfd47e4cee799c8254fc4acc27a134c729edfc3c6a3c13a053b",
       "leaf": "00010200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f90a000101",
+      "control": {
+        "K": "028edfebd6fdea3e1d89359af20868a2e76315b36cdb1a79de497a1757ca7bd407",
+        "path": []
+      },
       "signatures": []
     }
   ]
@@ -505,16 +510,16 @@ Both strings are the prefix followed by base64url (no padding) of the JSON shown
 ```
 
 ```
-nutspAeyJ2ZXJzaW9uIjoibnV0c3BBIiwidHJhbnNjcmlwdCI6IjExMDA4ZTAxMDAwMTA4MDIwMDIxMDJiN2UwNzdkMDIwZmFiZWQ0NTZhNmJlMTM4YThlMjBlOWVmNDBiNDRkODczZmExMmMwMDViNjU2ZWIwY2Y5OWY2MDMwMDMwYWFiYTQ2YTQ2M2QzZDEwYjU5ZmExNTMyYTMyZDlhNWU4ZmE4ZTk5NjJhOGM2NTcxOTE3OTgxYTZmYTRkNWZhZmIwOGMyMWJiZmY5NDE4OWUyNGU1YzI1NmZjMGE3ZmU3MDQwMDMwODRkMWI3MjkxYWU1NzM3ZjNjODUxYWEzM2NhZmUwZjdhZmViNWNjYjRkYTA4NmM0ODJiYjg1Yjc1MjVlNjE1NDdmMWI1YTZkMWEwMWIxZmVkMWY5NjBkMWE5ZDAzMzI3MjEwMDViMDEwMDAxMDQwMjAwMjEwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYwMzAwMzBiNDJhMGJjYzM5NTk4ZGIxZGNhNjE3YWVlYTZiYzM2N2YyNTY2NjM2ODI2ZGM5NjFhNTRmYWFlMTViM2I4ZDEwYWZjMWNiMDIwNmU3MGFiM2IwZTEyYzJiOTQ3OGNkNTUyMTAwNWIwMTAwMDEwNDAyMDAyMTAyYjdlMDc3ZDAyMGZhYmVkNDU2YTZiZTEzOGE4ZTIwZTllZjQwYjQ0ZDg3M2ZhMTJjMDA1YjY1NmViMGNmOTlmNjAzMDAzMGI0MmEwYmNjMzk1OThkYjFkY2E2MTdhZWVhNmJjMzY3ZjI1NjY2MzY4MjZkYzk2MWE1NGZhYWUxNWIzYjhkMTBhZmMxY2IwMjA2ZTcwYWIzYjBlMTJjMmI5NDc4Y2Q1NSIsInNwZW5kcyI6W3siaW5wdXQiOjAsImxlYWYiOiIwMDAxMDIwMDAxMDEwNDAwMjEwMmY5MzA4YTAxOTI1OGMzMTA0OTM0NGY4NWY4OWQ1MjI5YjUzMWM4NDU4MzZmOTliMDg2MDFmMTEzYmNlMDM2ZjkwYTAwMDEwMSIsInNpZ25hdHVyZXMiOltdfV19
+nutspAeyJ2ZXJzaW9uIjoibnV0c3BBIiwidHJhbnNjcmlwdCI6IjExMDA4ZTAxMDAwMTA4MDIwMDIxMDJiN2UwNzdkMDIwZmFiZWQ0NTZhNmJlMTM4YThlMjBlOWVmNDBiNDRkODczZmExMmMwMDViNjU2ZWIwY2Y5OWY2MDMwMDMwYWFiYTQ2YTQ2M2QzZDEwYjU5ZmExNTMyYTMyZDlhNWU4ZmE4ZTk5NjJhOGM2NTcxOTE3OTgxYTZmYTRkNWZhZmIwOGMyMWJiZmY5NDE4OWUyNGU1YzI1NmZjMGE3ZmU3MDQwMDMwODRkMWI3MjkxYWU1NzM3ZjNjODUxYWEzM2NhZmUwZjdhZmViNWNjYjRkYTA4NmM0ODJiYjg1Yjc1MjVlNjE1NDdmMWI1YTZkMWEwMWIxZmVkMWY5NjBkMWE5ZDAzMzI3MjEwMDViMDEwMDAxMDQwMjAwMjEwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYwMzAwMzBiNDJhMGJjYzM5NTk4ZGIxZGNhNjE3YWVlYTZiYzM2N2YyNTY2NjM2ODI2ZGM5NjFhNTRmYWFlMTViM2I4ZDEwYWZjMWNiMDIwNmU3MGFiM2IwZTEyYzJiOTQ3OGNkNTUyMTAwNWIwMTAwMDEwNDAyMDAyMTAyYjdlMDc3ZDAyMGZhYmVkNDU2YTZiZTEzOGE4ZTIwZTllZjQwYjQ0ZDg3M2ZhMTJjMDA1YjY1NmViMGNmOTlmNjAzMDAzMGI0MmEwYmNjMzk1OThkYjFkY2E2MTdhZWVhNmJjMzY3ZjI1NjY2MzY4MjZkYzk2MWE1NGZhYWUxNWIzYjhkMTBhZmMxY2IwMjA2ZTcwYWIzYjBlMTJjMmI5NDc4Y2Q1NSIsInNwZW5kcyI6W3siaW5wdXQiOjAsInNlY3JldCI6IjAyZmMxMWJmNGY5MzlmMmJmZDQ3ZTRjZWU3OTljODI1NGZjNGFjYzI3YTEzNGM3MjllZGZjM2M2YTNjMTNhMDUzYiIsImxlYWYiOiIwMDAxMDIwMDAxMDEwNDAwMjEwMmY5MzA4YTAxOTI1OGMzMTA0OTM0NGY4NWY4OWQ1MjI5YjUzMWM4NDU4MzZmOTliMDg2MDFmMTEzYmNlMDM2ZjkwYTAwMDEwMSIsImNvbnRyb2wiOnsiSyI6IjAyOGVkZmViZDZmZGVhM2UxZDg5MzU5YWYyMDg2OGEyZTc2MzE1YjM2Y2RiMWE3OWRlNDk3YTE3NTdjYTdiZDQwNyIsInBhdGgiOltdfSwic2lnbmF0dXJlcyI6W119XX0
 ```
 
-Key `3` signs the spend's input digest (`4b7ffce0...`, see the worked example) and returns the package with `signatures` filled. The wallet that built it merges that into the [script-path witness](#worked-example-auditable-lock-with-disclosure) shown there, taking `control` from the proof's spend info:
+Signed by key `3` over input digest `4b7ffce0...`, it merges into the [script-path witness](#worked-example-auditable-lock-with-disclosure) shown there:
 
 ```
-nutspAeyJ2ZXJzaW9uIjoibnV0c3BBIiwidHJhbnNjcmlwdCI6IjExMDA4ZTAxMDAwMTA4MDIwMDIxMDJiN2UwNzdkMDIwZmFiZWQ0NTZhNmJlMTM4YThlMjBlOWVmNDBiNDRkODczZmExMmMwMDViNjU2ZWIwY2Y5OWY2MDMwMDMwYWFiYTQ2YTQ2M2QzZDEwYjU5ZmExNTMyYTMyZDlhNWU4ZmE4ZTk5NjJhOGM2NTcxOTE3OTgxYTZmYTRkNWZhZmIwOGMyMWJiZmY5NDE4OWUyNGU1YzI1NmZjMGE3ZmU3MDQwMDMwODRkMWI3MjkxYWU1NzM3ZjNjODUxYWEzM2NhZmUwZjdhZmViNWNjYjRkYTA4NmM0ODJiYjg1Yjc1MjVlNjE1NDdmMWI1YTZkMWEwMWIxZmVkMWY5NjBkMWE5ZDAzMzI3MjEwMDViMDEwMDAxMDQwMjAwMjEwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYwMzAwMzBiNDJhMGJjYzM5NTk4ZGIxZGNhNjE3YWVlYTZiYzM2N2YyNTY2NjM2ODI2ZGM5NjFhNTRmYWFlMTViM2I4ZDEwYWZjMWNiMDIwNmU3MGFiM2IwZTEyYzJiOTQ3OGNkNTUyMTAwNWIwMTAwMDEwNDAyMDAyMTAyYjdlMDc3ZDAyMGZhYmVkNDU2YTZiZTEzOGE4ZTIwZTllZjQwYjQ0ZDg3M2ZhMTJjMDA1YjY1NmViMGNmOTlmNjAzMDAzMGI0MmEwYmNjMzk1OThkYjFkY2E2MTdhZWVhNmJjMzY3ZjI1NjY2MzY4MjZkYzk2MWE1NGZhYWUxNWIzYjhkMTBhZmMxY2IwMjA2ZTcwYWIzYjBlMTJjMmI5NDc4Y2Q1NSIsInNwZW5kcyI6W3siaW5wdXQiOjAsImxlYWYiOiIwMDAxMDIwMDAxMDEwNDAwMjEwMmY5MzA4YTAxOTI1OGMzMTA0OTM0NGY4NWY4OWQ1MjI5YjUzMWM4NDU4MzZmOTliMDg2MDFmMTEzYmNlMDM2ZjkwYTAwMDEwMSIsInNpZ25hdHVyZXMiOlsiZThkYzM4MzlkNjQ0ODVmNzU1NTVkOWI0NTlhYjBmMGNhYjQ2ZDVhMDQyMGJiODBmNjYxYjI1M2U5NDMxZDBlNDI1MjZmOTc0ZjQxMThjNTJmOTViMTI0MjdmOWNmZDJhZDI0ZmE3ZDNjMmM5MzU2MGEwODA2M2Y4NDkwMjYxMDAiXX1dfQ
+nutspAeyJ2ZXJzaW9uIjoibnV0c3BBIiwidHJhbnNjcmlwdCI6IjExMDA4ZTAxMDAwMTA4MDIwMDIxMDJiN2UwNzdkMDIwZmFiZWQ0NTZhNmJlMTM4YThlMjBlOWVmNDBiNDRkODczZmExMmMwMDViNjU2ZWIwY2Y5OWY2MDMwMDMwYWFiYTQ2YTQ2M2QzZDEwYjU5ZmExNTMyYTMyZDlhNWU4ZmE4ZTk5NjJhOGM2NTcxOTE3OTgxYTZmYTRkNWZhZmIwOGMyMWJiZmY5NDE4OWUyNGU1YzI1NmZjMGE3ZmU3MDQwMDMwODRkMWI3MjkxYWU1NzM3ZjNjODUxYWEzM2NhZmUwZjdhZmViNWNjYjRkYTA4NmM0ODJiYjg1Yjc1MjVlNjE1NDdmMWI1YTZkMWEwMWIxZmVkMWY5NjBkMWE5ZDAzMzI3MjEwMDViMDEwMDAxMDQwMjAwMjEwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYwMzAwMzBiNDJhMGJjYzM5NTk4ZGIxZGNhNjE3YWVlYTZiYzM2N2YyNTY2NjM2ODI2ZGM5NjFhNTRmYWFlMTViM2I4ZDEwYWZjMWNiMDIwNmU3MGFiM2IwZTEyYzJiOTQ3OGNkNTUyMTAwNWIwMTAwMDEwNDAyMDAyMTAyYjdlMDc3ZDAyMGZhYmVkNDU2YTZiZTEzOGE4ZTIwZTllZjQwYjQ0ZDg3M2ZhMTJjMDA1YjY1NmViMGNmOTlmNjAzMDAzMGI0MmEwYmNjMzk1OThkYjFkY2E2MTdhZWVhNmJjMzY3ZjI1NjY2MzY4MjZkYzk2MWE1NGZhYWUxNWIzYjhkMTBhZmMxY2IwMjA2ZTcwYWIzYjBlMTJjMmI5NDc4Y2Q1NSIsInNwZW5kcyI6W3siaW5wdXQiOjAsInNlY3JldCI6IjAyZmMxMWJmNGY5MzlmMmJmZDQ3ZTRjZWU3OTljODI1NGZjNGFjYzI3YTEzNGM3MjllZGZjM2M2YTNjMTNhMDUzYiIsImxlYWYiOiIwMDAxMDIwMDAxMDEwNDAwMjEwMmY5MzA4YTAxOTI1OGMzMTA0OTM0NGY4NWY4OWQ1MjI5YjUzMWM4NDU4MzZmOTliMDg2MDFmMTEzYmNlMDM2ZjkwYTAwMDEwMSIsImNvbnRyb2wiOnsiSyI6IjAyOGVkZmViZDZmZGVhM2UxZDg5MzU5YWYyMDg2OGEyZTc2MzE1YjM2Y2RiMWE3OWRlNDk3YTE3NTdjYTdiZDQwNyIsInBhdGgiOltdfSwic2lnbmF0dXJlcyI6WyJlOGRjMzgzOWQ2NDQ4NWY3NTU1NWQ5YjQ1OWFiMGYwY2FiNDZkNWEwNDIwYmI4MGY2NjFiMjUzZTk0MzFkMGU0MjUyNmY5NzRmNDExOGM1MmY5NWIxMjQyN2Y5Y2ZkMmFkMjRmYTdkM2MyYzkzNTYwYTA4MDYzZjg0OTAyNjEwMCJdfV19
 ```
 
-**Spend receipt.** The payer's receipt for the [swap](#transaction-transcripts)'s bearer input: its [V4 token](#v4-tokens-with-spend-info) (with `spend_info.k`, harmless once spent), and one receipt whose `transcript` is the swap's TLV transcript, so `SHA256(transcript)` is the transaction digest. `Y`, `input_digest`, the witness and the commitment are the [NUT-07 vector](07-tests.md)'s:
+**Spend receipt.** For the [swap](#transaction-transcripts)'s bearer input, with its [V4 token](#v4-tokens-with-spend-info). `Y`, `input_digest`, the witness and the commitment are the [NUT-07 vector](07-tests.md)'s:
 
 ```json
 {
@@ -536,13 +541,11 @@ nutspAeyJ2ZXJzaW9uIjoibnV0c3BBIiwidHJhbnNjcmlwdCI6IjExMDA4ZTAxMDAwMTA4MDIwMDIxMD
 nutrcAeyJ0b2tlbiI6ImNhc2h1Qm8yRnRjV2gwZEhCek9pOHZiV2x1ZEM1MFpYTjBZWFZqYzJGMFlYU0JvbUZwU0FLMzRIZlFJUHEtWVhDQnBHRmhDR0Z6ZUVJd01tVTJaVGRqWm1FM1lqZ3laRFJpTTJJME5EbG1ZVFkwTmpaak9Ea3pORFk1WVRjeU4yUXdNakUwWkRRNFpHSTBPVFUyWVRZd05UUmlPREF5TW1FeU9XSmhZMWd3aE5HM0tScmxjMzg4aFJxalBLX2c5Nl9yWE10Tm9JYkVncnVGdDFKZVlWUl9HMXB0R2dHeF90SDVZTkdwMERNblluTnBvV0ZyV0NCSEdXM0FnUlVNNFRfUTVIaTR0eGd4dUNXLU9KSVJ5Y1ZxZ0dLbUd2Y0RSdyIsInJlY2VpcHRzIjpbeyJZIjoiYTBhY2Y5MzlmMDMzZTNkMGFlOWI1Zjc4NDM0MWZhZGEzODM2N2VlYzE5MGVkZmIzNGUxZjBjY2U5MDUwYzgwNjcyZGJlZTc3YTc1MTJiNzI0MzU0NGM4NWFlMjkwYTczIiwia2V5c2V0SWQiOiIwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYiLCJpbnB1dERpZ2VzdCI6ImNiNDY0NDEzZDA4OGFlNzM4YjlmNzgxNDFhMDJkNDlmNTFjNmFkODUwMjliNmU0M2NiM2FjODZlZjMyNzk5MGUiLCJ3aXRuZXNzIjoie1wic2lnbmF0dXJlc1wiOltcIjQ1ZmE0ODI0MGY3NzkzYjc0OWFhNWE1YjdjNGE5YWJhZjgzNmE4MWRmYWE2OTBkZjIwYTYxZDY5MTZiODEyMTMwZmViZGIwMmUzODA2YmU1OWExZGQwMWEwM2JmOGVlNTEyNTJlNDJjZmY4N2E2ZTA2NWFhMWRhYTJjNWU5YzBhXCJdfSIsImNvbW1pdG1lbnQiOiI5MGQ1ZTBiZGZkOWY4OTNjNjY2Y2I0NWUzOTdhMWU1ODIxNjU5ZTJjYmJhYzdjOWU1MzA2NjcwNDQwZjFlNDE1IiwidHJhbnNjcmlwdCI6IjExMDA4ZTAxMDAwMTA4MDIwMDIxMDJiN2UwNzdkMDIwZmFiZWQ0NTZhNmJlMTM4YThlMjBlOWVmNDBiNDRkODczZmExMmMwMDViNjU2ZWIwY2Y5OWY2MDMwMDMwYTBhY2Y5MzlmMDMzZTNkMGFlOWI1Zjc4NDM0MWZhZGEzODM2N2VlYzE5MGVkZmIzNGUxZjBjY2U5MDUwYzgwNjcyZGJlZTc3YTc1MTJiNzI0MzU0NGM4NWFlMjkwYTczMDQwMDMwODRkMWI3MjkxYWU1NzM3ZjNjODUxYWEzM2NhZmUwZjdhZmViNWNjYjRkYTA4NmM0ODJiYjg1Yjc1MjVlNjE1NDdmMWI1YTZkMWEwMWIxZmVkMWY5NjBkMWE5ZDAzMzI3MjEwMDViMDEwMDAxMDQwMjAwMjEwMmI3ZTA3N2QwMjBmYWJlZDQ1NmE2YmUxMzhhOGUyMGU5ZWY0MGI0NGQ4NzNmYTEyYzAwNWI2NTZlYjBjZjk5ZjYwMzAwMzBiNDJhMGJjYzM5NTk4ZGIxZGNhNjE3YWVlYTZiYzM2N2YyNTY2NjM2ODI2ZGM5NjFhNTRmYWFlMTViM2I4ZDEwYWZjMWNiMDIwNmU3MGFiM2IwZTEyYzJiOTQ3OGNkNTUyMTAwNWIwMTAwMDEwNDAyMDAyMTAyYjdlMDc3ZDAyMGZhYmVkNDU2YTZiZTEzOGE4ZTIwZTllZjQwYjQ0ZDg3M2ZhMTJjMDA1YjY1NmViMGNmOTlmNjAzMDAzMGI0MmEwYmNjMzk1OThkYjFkY2E2MTdhZWVhNmJjMzY3ZjI1NjY2MzY4MjZkYzk2MWE1NGZhYWUxNWIzYjhkMTBhZmMxY2IwMjA2ZTcwYWIzYjBlMTJjMmI5NDc4Y2Q1NSJ9XX0
 ```
 
-A verifier recomputes `input_digest` from `transcript` and the token's proof, the commitment from `Y`, `input_digest` and the witness, and checks the witness signature against the secret over `input_digest`; matching the commitment against the mint's for `Y` ties the receipt to the spend.
-
 ## V4 tokens with spend info
 
 One 8-sat proof per token, mint `https://mint.test`, unit `sat`, keyset id `02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6`, `C` = `84d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327`.
 
-Tokens use the short keyset id form; decoders **MUST** also accept the full-length id ([NUT-00][00]). Each shape decodes to the stated `spend_info` fields and re-encodes to the same string.
+Tokens use the short keyset id form. Each shape decodes to the stated `spend_info` fields and re-encodes to the same string.
 
 Bearer (`si.k`, secret is the bare key of `k`):
 
@@ -598,7 +601,7 @@ A disclosed tree with an explicit internal key (`si.i` + `si.t`; no key handed o
 }
 ```
 
-Script-only (`si.i` + `si.u` + `si.t`): `K = H + u*G`, so the holder checks `K - u*G == H` and knows no key path exists. `u` is fixed here for a stable vector; a real send uses a fresh one per proof.
+Script-only (`si.i` + `si.u` + `si.t`). `u` is fixed for a stable vector; a real send uses a fresh one per proof.
 
 ```json
 {
@@ -613,5 +616,3 @@ Script-only (`si.i` + `si.u` + `si.t`): `K = H + u*G`, so the holder checks `K -
   "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAK34HfQIPq-YXCBpGFhCGFzeEIwMjUxYTRmMzVmYTM4YzVlZGNlODNlMTY1OTZkZTAyYmU0ZTg3ZWM2YTkxYzVmZDgwYWI1NzdjMjI2NjhmYjZkZDVhY1gwhNG3KRrlc388hRqjPK_g96_rXMtNoIbEgruFt1JeYVR_G1ptGgGx_tH5YNGp0DMnYnNpo2FpWCEDCMqe8CG_fsJB2-9_oxrsjmO0G-IA63UwzT1n0qLH0JZhdVggSvaGSfMjDFWJh58M8z_W2fAHzTpUoubthpmldmMPwCVhdIFYMQACAgABAQQAIQLkk9vxwQ2A81geSQSTCxQEzGwTkA7gdYR0-pSr6MTNEwYABGijvoA"
 }
 ```
-
-[00]: ../00.md
