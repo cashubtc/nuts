@@ -495,23 +495,43 @@ The melt shares the swap's `input_id` but not its `input_digest`, so neither wit
 }
 ```
 
-**Proof to change quote.** Parking the swap's 8-sat proof in a change quote locked to key `5` ([NUT-XX](../XX.md)): the change quote output is the only output, and binds the lock key alone.
+**Proof to change quote.** Parking the swap's 8-sat proof in a remainder quote locked to key `5` ([NUT-XX](../XX.md)): the change quote output is the only output, and with no amount it binds the lock key alone.
 
 The change quote container, spelled out:
 
 ```
-06 0024 | 01 0021 022f8b...40efe4
+06 0024 | 02 0021 022f8b...40efe4
 ```
 
 The proof input keeps the swap's `input_id`:
 
 ```json
 {
-  "change_container": "060024010021022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4",
-  "transcript": "01008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327060024010021022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4",
-  "digest": "80e4d96cc790582b2942475875785a8f2d9620e07cff6c2cace25f048d83b106",
+  "change_container": "060024020021022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4",
+  "transcript": "01008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327060024020021022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4",
+  "digest": "61022d00f904ab39d8aec1fade1228bbccbd745aae71541502187ace56633c3c",
   "input_id": "44002fef2fb9ce3168f3a4e88315290a890080c6c333c2fc47d5327f6c3616f3",
-  "input_digest": "bffb1f8bdf9468802ff97ff9be88b2e89185341072ab587bac26952cfb70c72c"
+  "input_digest": "6cff0ad15658cedde385e6a05ecc30d75b16e09147f2ed21bdc4e17f1ce41ade"
+}
+```
+
+**Proof to two change quotes.** Splitting the same proof between a 3-sat change quote locked to key `5` and a remainder quote locked to key `6`, in that request order: the fixed quote's container carries its amount first, the remainder quote's does not, and no keyset appears in the transcript.
+
+```
+06 0028 | 01 0001 03 | 02 0021 022f8b...40efe4
+06 0024 | 02 0021 03fff9...297556
+```
+
+```json
+{
+  "change_containers": [
+    "06002801000103020021022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4",
+    "06002402002103fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556"
+  ],
+  "transcript": "01008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332706002801000103020021022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe406002402002103fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556",
+  "digest": "532e3b1e84811516fc2221013d675620dd2c15291aa3acaf4ee446f1deafbecb",
+  "input_id": "44002fef2fb9ce3168f3a4e88315290a890080c6c333c2fc47d5327f6c3616f3",
+  "input_digest": "620e02bc15198374a211419cb8902ac7604380968d65bc2c5c62e13e10797037"
 }
 ```
 
