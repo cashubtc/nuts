@@ -62,7 +62,7 @@ Any array **MAY** be empty or omitted. A blinded message with `amount` `0` **MUS
 
 ### Rules
 
-- The transaction **MUST** have at least one input and one output, and **MUST NOT** repeat a proof `Y` or a mint quote id ([NUT-10][10]).
+- The transaction **MUST** have at least one input and one output, and **MUST NOT** repeat a proof `Y`, a mint quote id ([NUT-10][10]) or a `B_` ([NUT-00][00]).
 - Every v3 input **MUST** carry a witness over its input digest; pre-v3 proofs keep their own rules, per [NUT-10](10.md#the-signing-rule). A pre-v3 proof with `SIG_ALL` ([NUT-11][11]) **MUST** be rejected: NUT-11 defines no `SIG_ALL` message for this endpoint.
 - Every mint quote **MUST** be locked and in the transaction's unit. Its `amount` **MUST** be positive and **MUST NOT** exceed its mintable amount, `amount_paid - amount_issued` ([NUT-04][04]).
 - All `blinded_outputs` **MUST** share one keyset in the transaction's unit ([NUT-04](04.md#nutroot-transactions-v3-keysets)).
@@ -87,6 +87,8 @@ A melt output without a remainder quote leaves its unspent fee reserve with the 
 ### Settlement
 
 A transaction with a melt quote follows [NUT-05][05]'s pending and settlement handling, including `prefer_async`: the proofs and each quote input's `amount` are pending while the payment is in flight, the blinded messages are signed and the change quotes created only once it succeeds, and a failed payment leaves the proofs unspent and the quotes' mintable amounts untouched.
+
+Before it initiates the payment, the mint **MUST** complete every check that signing the blinded messages and creating the change quotes depend on, so that once the payment succeeds only keyset inactivation can prevent settlement.
 
 If the keyset of `blinded_outputs` has been inactivated by the time the payment settles, the mint cannot sign them ([NUT-02](02.md#active-keysets)). It then settles as if the request had no `blinded_outputs`: `signatures` is empty and their amount goes to the remainder quote. A transaction with no melt quote settles at once.
 
