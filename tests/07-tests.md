@@ -9,10 +9,10 @@ The [NUT-10 swap vector](10-tests.md#transaction-transcripts)'s proof (`Y` from 
 ```json
 {
   "Y": "a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a73",
-  "input_digest": "867091ad6dba3069bcff610e29300b5c1e2d89f0e5165f17d155000e77d18f9c",
-  "witness": "{\"signatures\":[\"a46a08f9cf25bee38abe8e83a57dae316b64e826f3bd1a7261d3230cb97a70d910ffda84536464853b651cafeb3167affc13d1456d0647cdc685422ba56509a2\"]}",
-  "witness_hash": "15b72b9b3158f621dd9c95fecfaa93e9f5292d1df521c4c97a9129722305f7e6",
-  "commitment": "80ef4c3484dd76f89eab82d2a24178f89259507cb6d1c5dfc3cb573fa9597f5b"
+  "input_digest": "cb464413d088ae738b9f78141a02d49f51c6ad85029b6e43cb3ac86ef327990e",
+  "witness": "{\"signatures\":[\"45fa48240f7793b749aa5a5b7c4a9abaf836a81dfaa690df20a61d6916b812130febdb02e3806be59a1dd01a03bf8ee51252e42cff87a6e065aa1daa2c5e9c0a\"]}",
+  "witness_hash": "dae5c969d1eb46151cf3b9d0872802ec3ad7e3c3c6ba9a72edad4426160cd6de",
+  "commitment": "90d5e0bdfd9f893c666cb45e397a1e5821659e2cbbac7c9e5306670440f1e415"
 }
 ```
 
@@ -24,7 +24,7 @@ No leaf carries `disclosure`, so the checkstate entry returns the commitment alo
   "state": "SPENT",
   "witness": null,
   "input_digest": null,
-  "commitment": "80ef4c3484dd76f89eab82d2a24178f89259507cb6d1c5dfc3cb573fa9597f5b"
+  "commitment": "90d5e0bdfd9f893c666cb45e397a1e5821659e2cbbac7c9e5306670440f1e415"
 }
 ```
 
@@ -38,12 +38,12 @@ The [NUT-10 auditable lock vector](10-tests.md#worked-example-auditable-lock-wit
 {
   "Y": "aaba46a463d3d10b59fa1532a32d9a5e8fa8e9962a8c6571917981a6fa4d5fafb08c21bbff94189e24e5c256fc0a7fe7",
   "state": "SPENT",
-  "witness": "{\"leaf\":\"00010200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f90a000101\",\"control\":{\"K\":\"028edfebd6fdea3e1d89359af20868a2e76315b36cdb1a79de497a1757ca7bd407\",\"path\":[]},\"signatures\":[\"4cc8e5af02375b2497f5ad1c0241ea2de2b9ead33a6b5abd809bf27f8563967a13a0b484333e90e1d8622d5e884156ea40e1000587c25afe9904e1dbb85d0660\"]}",
-  "input_digest": "1732e47d4ce0b6510a51c88ccc41cb7b5fe673987e635738d54d8ca9686336d1",
-  "commitment": "c682da9c8601ab9795aaf464ff3ee29f22b4a659ffa8393a00d4ee1e2a361ae4"
+  "witness": "{\"leaf\":\"00010200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f90a000101\",\"control\":{\"K\":\"028edfebd6fdea3e1d89359af20868a2e76315b36cdb1a79de497a1757ca7bd407\",\"path\":[]},\"signatures\":[\"e8dc3839d64485f75555d9b459ab0f0cab46d5a0420bb80f661b253e9431d0e42526f974f4118c52f95b12427f9cfd2ad24fa7d3c2c93560a08063f849026100\"]}",
+  "input_digest": "4b7ffce02cb6ea76d04aaafaa40c0b0522cfcd35f01e3ba697b004b6953cead2",
+  "commitment": "c16eff5d1be84d29edf8653880995dcf159dc593323b3d5171f8568b90c57891"
 }
 ```
 
-with `witness_hash` = `6bed7b71c323ba221b4941a179c55981115459e065f2ec884b6bb2c73d7d2f03`. A verifier recomputes the commitment from the returned fields, then verifies the leaf's signature against key `3` over `input_digest` and the control block against the proof's secret.
+with `witness_hash` = `f3de76772ca0d0f2dff1d0962c6ba8ecf3b836c8fceae72b6173de0b98364cca`. A verifier recomputes the commitment from the returned fields, then verifies the leaf's signature against key `3` over `input_digest` and the control block against the proof's secret.
 
 `UNSPENT` and `PENDING` entries carry `witness`, `input_digest` and `commitment` as `null`.
