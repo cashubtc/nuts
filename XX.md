@@ -66,7 +66,7 @@ Any array **MAY** be empty or omitted. A blinded message with `amount` `0` **MUS
 - Every v3 input **MUST** carry a witness over its input digest; pre-v3 proofs keep their own rules, per [NUT-10](10.md#the-signing-rule). A pre-v3 proof with `SIG_ALL` ([NUT-11][11]) **MUST** be rejected: NUT-11 defines no `SIG_ALL` message for this endpoint.
 - Every mint quote **MUST** be locked and in the transaction's unit. Its `amount` **MUST** be positive and **MUST NOT** exceed its mintable amount, `amount_paid - amount_issued` ([NUT-04][04]).
 - All `blinded_outputs` **MUST** share one keyset in the transaction's unit ([NUT-04](04.md#nutroot-transactions-v3-keysets)).
-- A change quote output with an `amount` **MUST** be positive. At most one change quote output **MAY** omit `amount`: the **remainder quote**, which takes the [balance](#balance) after settlement.
+- A change quote output with an `amount` **MUST** be positive. At most one change quote output **MAY** omit `amount`: the **remainder quote**, which takes the [balance](#balance) after settlement. Lock keys **MUST NOT** repeat within the request or name an existing [change quote](#change-quote).
 - `melt_quote_outputs` **MUST NOT** hold more than one quote; multi-melt is reserved for future specification. The quote **MUST** be in the transaction's unit, and its method is the one it was quoted under. Its `fee_reserve` **MUST** equal the quote's `fee_reserve`, or the `fee_reserve` of the entry its `fee_index` names.
 - A transaction with a melt quote and `blinded_outputs` **MUST** carry a remainder quote: the outputs cannot be signed if their keyset is inactivated before the payment settles ([NUT-02](02.md#active-keysets)), and the remainder quote is where their value goes.
 
@@ -96,9 +96,17 @@ The mint **MUST** keep a record of every transaction it accepts, keyed by its tr
 
 ## Change quote
 
-On settlement, the mint creates for each change quote output a [NUT-04][04] mint quote with method `change`, in the transaction's unit, locked to its `pubkey`, with `amount_paid` and a method-specific `amount` equal to the output's `amount`, or to `change` for the remainder quote, and `request` the transaction digest. Its id is a fresh quote id, as for any mint quote. The method name `change` is reserved for these quotes. A remainder quote with zero change is not created.
+On settlement, the mint creates for each change quote output a [NUT-04][04] mint quote with method `change`, in the transaction's unit, locked to its `pubkey`, with `amount_paid` and a method-specific `amount` equal to the output's `amount`, or to `change` for the remainder quote, and `request` the transaction digest. The method name `change` is reserved for these quotes. A remainder quote with zero change is not created.
 
-A seeded wallet **SHOULD** derive its own change quote lock keys per [NUT-13](13.md#v3-message) with `derivation_type_byte` `0x04`. [NUT-09][09] restore does not recover change quotes, so a wallet **SHOULD** redeem its own promptly.
+Its id is derived from the lock key, not assigned:
+
+```
+quote_id = hex(tagged_hash("Cashu_QuoteId", pubkey))
+```
+
+with `tagged_hash` as in [NUT-10](10.md#nutroot-secrets-v3-keysets) over the 33-byte compressed key. One lock key therefore names one change quote: the mint **MUST** reject a transaction naming a lock key whose change quote exists or is held for a pending transaction. A `template` leaf ([NUT-10](10.md#condition-leaves)) naming change quotes can therefore be exercised only once.
+
+A seeded wallet **SHOULD** derive its own change quote lock keys per [NUT-13](13.md#v3-message) with `derivation_type_byte` `0x04`. A wallet that lost its state can recover them without their ids: derive lock keys by counter, fetch each derived id, and stop after a run of unknown ids, as the [NUT-13](13.md#restore-from-seed-phrase) restore procedure does for proofs over [NUT-09][09].
 
 A change quote is fetched at `GET /v1/mint/quote/change/{quote_id}` and redeemed like any locked quote: at `POST /v1/mint/change`, or as a quote input to another transaction. There is no `POST /v1/mint/quote/change`; only a transaction creates one.
 
