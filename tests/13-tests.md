@@ -94,12 +94,11 @@ The corresponding blinding factors `r` are:
 
 ## Version 3: Secret derivation
 
-Using [NUT-13](../13.md#v3-message) derivation procedure for V3 with the following inputs:
+Using [NUT-13](../13.md#v3-message) derivation procedure for V3 with the following inputs, the seed given as its 64 bytes rather than a mnemonic:
 
 ```json
 {
-  "seed_utf8": "nut13 v3 test seed",
-  "seed_hex": "6e7574313320763320746573742073656564",
+  "seed_hex": "6e757431332076332074657374207365656400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
   "keyset_id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6"
 }
 ```
