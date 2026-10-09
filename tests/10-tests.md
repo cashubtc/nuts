@@ -132,40 +132,40 @@ For contrast, a bearer proof with no conditions: private key `7` travels as spen
 
 ## Worked example: a template covenant
 
-A proof that can only be spent into the two change quote outputs of the [proof to two change quotes](#transaction-transcripts) transaction below (3 sat to key `5`, the remainder to key `6`), by key `3`. The `template` leaf's `hash` is `SHA256` over that transaction's output section, the two change quote containers concatenated; the internal key is the same NUMS offset as the [auditable lock](#worked-example-auditable-lock-with-disclosure) (`u = 7`), so no key path exists. The spend is the swap's 8-sat input (same amount, keyset id and `C`) under this secret.
+A proof that can only be spent into the two change quote outputs of the [proof to two change quotes](#transaction-transcripts) transaction below (3 sat to key `5`, the remainder to key `6`), by key `3` until `1758240000`, then by key `3` freely. The `template` leaf's `hash` is `SHA256` over that transaction's output section, the two change quote containers concatenated; the internal key is the same NUMS offset as the [auditable lock](#worked-example-auditable-lock-with-disclosure) (`u = 7`), so no key path exists. The spend is the swap's 8-sat input (same amount, keyset id and `C`) under this secret.
 
 ```json
 {
   "output_section": "23002801000103020021022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe423002402002103fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556",
   "hash": "1588c70281ee4113a1dc18656ad41d197be43c5b04228dfa3d1653d8a8259815",
-  "leaf": "00050200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f90800201588c70281ee4113a1dc18656ad41d197be43c5b04228dfa3d1653d8a8259815",
+  "leaf": "00050200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f906000468cc9d000800201588c70281ee4113a1dc18656ad41d197be43c5b04228dfa3d1653d8a8259815",
   "K": "028edfebd6fdea3e1d89359af20868a2e76315b36cdb1a79de497a1757ca7bd407",
-  "merkle_root": "01c1bb685570527e12818a1fad9c7559ce86091327a2f1ecfcf698ffd210c7d9",
-  "tweak": "b6fe45ed53027f8fd19aff922c65d243f119435d8b80b60705586e2be8ad4800",
-  "secret": "03a2fbdd81e55c93d58f5133a4481070e46a4df977dcc0999ebef0270df84ce502",
-  "transaction_digest": "e9199005d1830f10b8a83ad61d09d3d24a624d14ba4d2e613f439438334dc1b7",
-  "input_id": "8afd9da5b574659731c6a11d12fa014bbca2d01ab63e9f95446d0adac04317af",
-  "input_digest": "9658787826425a4dce2e90edf4213f7727ba21a2fb5e71a1873c91e085ab01cc"
+  "merkle_root": "47b588a5570157a99045bb9c3d345aff2422693099b607e5f985202675beae49",
+  "tweak": "9c69d71547bb11f186438aa5c4f18a61789c25c990304613d59c4a7d6e51e71f",
+  "secret": "031e656e31f7dbc918d662dd91343f077a9d94aec46f754d9e2332775f08019576",
+  "transaction_digest": "ef4af8ce6554f61e5ed2f2b8f1f6727c3cffeb67120d4e5b98c458752c626dc8",
+  "input_id": "1fcda016464ddd2f58ac013f4d27a7eb87d0e06d44796c4a17fd819d756ba66b",
+  "input_digest": "6a38d7bba2bc18d81abe2ac9b478e25cc46dd5264070412de9bebec18025ccc5"
 }
 ```
 
-The template leaf, spelled out (`n = 1`, `keys = [key 3]`, then `hash`):
+The template leaf, spelled out (`n = 1`, `keys = [key 3]`, `time = 1758240000`, then `hash`):
 
 ```
-00 05 | 02 0001 01 | 04 0021 02f930...e036f9 | 08 0020 1588c7...259815
+00 05 | 02 0001 01 | 04 0021 02f930...e036f9 | 06 0004 68cc9d00 | 08 0020 1588c7...259815
 ```
 
 Key `3`'s script-path witness over that `input_digest`:
 
 ```json
 {
-  "leaf": "00050200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f90800201588c70281ee4113a1dc18656ad41d197be43c5b04228dfa3d1653d8a8259815",
+  "leaf": "00050200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f906000468cc9d000800201588c70281ee4113a1dc18656ad41d197be43c5b04228dfa3d1653d8a8259815",
   "control": {
     "K": "028edfebd6fdea3e1d89359af20868a2e76315b36cdb1a79de497a1757ca7bd407",
     "path": []
   },
   "signatures": [
-    "fff6b7bb62409bfd1f7ad58c411b6c081eadaa47d85b5c41d9cd10b225730a4b9b18155904ef055ad505880d679f472e67695f42dae8bc39a93a81c47c834f96"
+    "ce51e3afd1858bb511223e0a2718dde5e271584c874549aeec41b6313fd10829f320ad88edc9ae80baf9263b8a98fc98c7454d79cf9e4956bde9ce4b8d981ee5"
   ]
 }
 ```
@@ -174,32 +174,32 @@ The same proof spent with the fixed quote at 4 sat instead of 3 (one byte of the
 
 ## Worked example: two leaves and a filled path
 
-The template leaf above beside an `after` leaf (key `3`, time `1758240000`) under internal key `6`, the parent's key path: until the locktime key `3` can only spend into the template's outputs, after it key `3` spends freely, and key `6` can always spend via the key path. Leaf 0 is the template, leaf 1 the `after` leaf.
+The template leaf above beside an `after` leaf (key `3`, time `1758240000`) under internal key `6`, the parent's key path: until the locktime key `3` can only spend into the template's outputs, after it key `3` spends freely through either leaf, and key `6` can always spend via the key path. The `after` leaf would normally name different keys; it is kept here for a filled path. Leaf 0 is the template, leaf 1 the `after` leaf.
 
 ```json
 {
   "internal_key": "03fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556",
-  "leaf_0_template": "00050200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f90800201588c70281ee4113a1dc18656ad41d197be43c5b04228dfa3d1653d8a8259815",
+  "leaf_0_template": "00050200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f906000468cc9d000800201588c70281ee4113a1dc18656ad41d197be43c5b04228dfa3d1653d8a8259815",
   "leaf_1_after": "00020200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f906000468cc9d00",
-  "leaf_hash_0": "01c1bb685570527e12818a1fad9c7559ce86091327a2f1ecfcf698ffd210c7d9",
+  "leaf_hash_0": "47b588a5570157a99045bb9c3d345aff2422693099b607e5f985202675beae49",
   "leaf_hash_1": "80468218b6e329d4d80682883617af0acd1d4a9d5b1658fbc448cc4781b4f254",
-  "merkle_root": "b0fb2ec177a0174b64ef26b81e90a54c9a6e084f8ec4bd072ef100855a6ead90",
-  "tweak": "bc74a8d5cba612135913d023a54001978ba82f3305f85051d4924a910842577e",
-  "secret": "02df187378a0e18c6d3f85cdca1ee23251f9ec10ce9be01407c66716209ad1237a"
+  "merkle_root": "2887131fc650d8315c7d25d9299ca153b7a4ebb11f8f54d8c1bbedfc11904855",
+  "tweak": "85f5dae5f152e58829e0daa508d23a66c530984140bcfb561517764df13bc6dd",
+  "secret": "02ec5b37085b359c928e372e0f29a54ca1e9d4d445444756bf17159782286eb673"
 }
 ```
 
-`merkle_root = tagged_hash("Cashu_NutrootBranch", leaf_hash_0 || leaf_hash_1)`: the pair is sorted, so `leaf_hash_0` comes first. Spending this proof into the template's outputs (the same transaction as above under this secret: `input_digest` `dcb113b68d91cf2254dfbe876fe0cac09efb221c18a440dacc41dd7578fc0ce2`) reveals leaf 0 with `path = [leaf_hash_1]`:
+`merkle_root = tagged_hash("Cashu_NutrootBranch", leaf_hash_0 || leaf_hash_1)`: the pair is sorted, so `leaf_hash_0` comes first. Spending this proof into the template's outputs (the same transaction as above under this secret: `input_digest` `e7d0745e65fb1c2d0218004a15c3992f4ea816a8e9c22ab8be0613820b01c4b8`) reveals leaf 0 with `path = [leaf_hash_1]`:
 
 ```json
 {
-  "leaf": "00050200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f90800201588c70281ee4113a1dc18656ad41d197be43c5b04228dfa3d1653d8a8259815",
+  "leaf": "00050200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f906000468cc9d000800201588c70281ee4113a1dc18656ad41d197be43c5b04228dfa3d1653d8a8259815",
   "control": {
     "K": "03fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556",
     "path": ["80468218b6e329d4d80682883617af0acd1d4a9d5b1658fbc448cc4781b4f254"]
   },
   "signatures": [
-    "9965e9aea05f078981a1a1a0e30ae1b764719562656cd377cc6199d308473e009b4e7a48f9abb30defae15d5381bf1d9c5b4e996808c0e7b6197142a6613a488"
+    "c2fa806522cfdc676b40ec9954192abdd37a40ed8cc36d9479bac50e3522767725783f05dc2bf44d6de59587cb386b50f7590d4c364b05ed7e8504f824f06e2a"
   ]
 }
 ```
