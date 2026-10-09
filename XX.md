@@ -166,5 +166,5 @@ A mint that does not charge advertises `0`.
 [05]: 05.md
 [09]: 09.md
 [10]: 10.md
-[11]: 11.md
+[11]: legacy/11.md
 [30]: 30.md
