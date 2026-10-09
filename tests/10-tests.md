@@ -130,24 +130,81 @@ Alice's script-path witness after the locktime:
 
 For contrast, a bearer proof with no conditions: private key `7` travels as spend info `k`, and the secret is its bare public key `025cbdf0646e5db4eaa398f365f2ea7a0e3d419b7e0330e39ce92bddedcac4f9bc`.
 
+## Worked example: a template covenant
+
+A proof that can only be spent into the two change quote outputs of the [proof to two change quotes](#transaction-transcripts) transaction below (3 sat to key `5`, the remainder to key `6`), by key `3` until `1758240000`, then by key `3` freely. The `template` leaf's `hash` is `SHA256` over that transaction's output section, the two change quote containers concatenated; the internal key is the same NUMS offset as the [auditable lock](#worked-example-auditable-lock-with-disclosure) (`u = 7`), so no key path exists. The spend is the swap's 8-sat input (same amount, keyset id and `C`) under this secret.
+
+```json
+{
+  "output_section": "23002801000103020021022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe423002402002103fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556",
+  "hash": "1588c70281ee4113a1dc18656ad41d197be43c5b04228dfa3d1653d8a8259815",
+  "leaf": "00050200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f906000468cc9d000800201588c70281ee4113a1dc18656ad41d197be43c5b04228dfa3d1653d8a8259815",
+  "K": "028edfebd6fdea3e1d89359af20868a2e76315b36cdb1a79de497a1757ca7bd407",
+  "merkle_root": "47b588a5570157a99045bb9c3d345aff2422693099b607e5f985202675beae49",
+  "tweak": "9c69d71547bb11f186438aa5c4f18a61789c25c990304613d59c4a7d6e51e71f",
+  "secret": "031e656e31f7dbc918d662dd91343f077a9d94aec46f754d9e2332775f08019576",
+  "transaction_digest": "ef4af8ce6554f61e5ed2f2b8f1f6727c3cffeb67120d4e5b98c458752c626dc8",
+  "input_id": "1fcda016464ddd2f58ac013f4d27a7eb87d0e06d44796c4a17fd819d756ba66b",
+  "input_digest": "6a38d7bba2bc18d81abe2ac9b478e25cc46dd5264070412de9bebec18025ccc5"
+}
+```
+
+The template leaf, spelled out (`n = 1`, `keys = [key 3]`, `time = 1758240000`, then `hash`):
+
+```
+00 05 | 02 0001 01 | 04 0021 02f930...e036f9 | 06 0004 68cc9d00 | 08 0020 1588c7...259815
+```
+
+Key `3`'s script-path witness over that `input_digest`:
+
+```json
+{
+  "leaf": "00050200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f906000468cc9d000800201588c70281ee4113a1dc18656ad41d197be43c5b04228dfa3d1653d8a8259815",
+  "control": {
+    "K": "028edfebd6fdea3e1d89359af20868a2e76315b36cdb1a79de497a1757ca7bd407",
+    "path": []
+  },
+  "signatures": [
+    "ce51e3afd1858bb511223e0a2718dde5e271584c874549aeec41b6313fd10829f320ad88edc9ae80baf9263b8a98fc98c7454d79cf9e4956bde9ce4b8d981ee5"
+  ]
+}
+```
+
+The same proof spent with the fixed quote at 4 sat instead of 3 (one byte of the output section, `23002801000104...`) hashes its outputs to `c859f4a83d97c153e11e5b8c59f485a8befcce05870a877467d876c64a2e6a7d`, so the witness **MUST** be rejected whatever it signs.
+
 ## Worked example: two leaves and a filled path
 
-A two-leaf tree under internal key `6`. Leaf 0 has the unallocated type `0x05`; leaf 1 is an `after` leaf (key `3`, time `1758240000`), spendable with `path = [leaf_hash_0]` once its locktime passes.
+The template leaf above beside an `after` leaf (key `3`, time `1758240000`) under internal key `6`, the parent's key path: until the locktime key `3` can only spend into the template's outputs, after it key `3` spends freely through either leaf, and key `6` can always spend via the key path. The `after` leaf would normally name different keys; it is kept here for a filled path. Leaf 0 is the template, leaf 1 the `after` leaf.
 
 ```json
 {
   "internal_key": "03fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556",
-  "leaf_0_unknown_type": "00050200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f90a002103acd484e2f0c7f65309ad178a9f559abde09796974c57e714c35f110dfc27ccbe",
+  "leaf_0_template": "00050200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f906000468cc9d000800201588c70281ee4113a1dc18656ad41d197be43c5b04228dfa3d1653d8a8259815",
   "leaf_1_after": "00020200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f906000468cc9d00",
-  "leaf_hash_0": "8714a51c3019861df9c4d0d6a1f30f0465ea1252e9c3b949802f73eda61cb101",
+  "leaf_hash_0": "47b588a5570157a99045bb9c3d345aff2422693099b607e5f985202675beae49",
   "leaf_hash_1": "80468218b6e329d4d80682883617af0acd1d4a9d5b1658fbc448cc4781b4f254",
-  "merkle_root": "9d8170c0f86d30de108834ff1ee334decac6ae094fb07652801d9c159c7b1bed",
-  "tweak": "153e9c65e6bea3351f4e78145f328e5aae7e7a4722967bf347f057bcaa47bfba",
-  "secret": "02f4ff2c2894698847760b62bce9d0d6c6c745d0d85c83577a00337d75437bccf0"
+  "merkle_root": "2887131fc650d8315c7d25d9299ca153b7a4ebb11f8f54d8c1bbedfc11904855",
+  "tweak": "85f5dae5f152e58829e0daa508d23a66c530984140bcfb561517764df13bc6dd",
+  "secret": "02ec5b37085b359c928e372e0f29a54ca1e9d4d445444756bf17159782286eb673"
 }
 ```
 
-A witness revealing `leaf_0_unknown_type` with `path = [leaf_hash_1]` reconstructs the secret but **MUST** be rejected (unknown leaf type).
+`merkle_root = tagged_hash("Cashu_NutrootBranch", leaf_hash_0 || leaf_hash_1)`: the pair is sorted, so `leaf_hash_0` comes first. Spending this proof into the template's outputs (the same transaction as above under this secret: `input_digest` `e7d0745e65fb1c2d0218004a15c3992f4ea816a8e9c22ab8be0613820b01c4b8`) reveals leaf 0 with `path = [leaf_hash_1]`:
+
+```json
+{
+  "leaf": "00050200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f906000468cc9d000800201588c70281ee4113a1dc18656ad41d197be43c5b04228dfa3d1653d8a8259815",
+  "control": {
+    "K": "03fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556",
+    "path": ["80468218b6e329d4d80682883617af0acd1d4a9d5b1658fbc448cc4781b4f254"]
+  },
+  "signatures": [
+    "c2fa806522cfdc676b40ec9954192abdd37a40ed8cc36d9479bac50e3522767725783f05dc2bf44d6de59587cb386b50f7590d4c364b05ed7e8504f824f06e2a"
+  ]
+}
+```
+
+After the locktime, key `3` reveals leaf 1 instead, with `path = [leaf_hash_0]`.
 
 ## Worked example: a commit leaf
 
@@ -214,11 +271,12 @@ The [NUT-07 vectors](07-tests.md) carry the matching commitment and opening.
 
 ## Rejection vectors
 
-`threshold_1of1_key3` with a four-byte field `0x09` appended is malformed:
+An unknown field rejects, and odd type numbers are reserved with none allocated, so this leaf (`threshold_1of1_key3` with a four-byte field `0x09` appended) is malformed. An unallocated leaf type is unsatisfiable: the same leaf's bytes under type `0xff` parse to nothing, so a tree containing it still commits (its hash is one more sibling) but a witness revealing it **MUST** be rejected regardless of its signature:
 
 ```json
 {
-  "leaf_unknown_field": "00010200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9090004deadbeef"
+  "leaf_unknown_field": "00010200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9090004deadbeef",
+  "leaf_unknown_type": "00ff0200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
 }
 ```
 
