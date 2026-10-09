@@ -271,12 +271,12 @@ The [NUT-07 vectors](07-tests.md) carry the matching commitment and opening.
 
 ## Rejection vectors
 
-An unknown field rejects, and odd type numbers are reserved with none allocated, so this leaf (`threshold_1of1_key3` with a four-byte field `0x09` appended) is malformed. An unallocated leaf type is unsatisfiable: the same leaf's bytes under type `0x06` parse to nothing, so a tree containing it still commits (its hash is one more sibling) but a witness revealing it **MUST** be rejected regardless of its signature:
+An unknown field rejects, and odd type numbers are reserved with none allocated, so this leaf (`threshold_1of1_key3` with a four-byte field `0x09` appended) is malformed. An unallocated leaf type is unsatisfiable: the same leaf's bytes under type `0xff` parse to nothing, so a tree containing it still commits (its hash is one more sibling) but a witness revealing it **MUST** be rejected regardless of its signature:
 
 ```json
 {
   "leaf_unknown_field": "00010200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9090004deadbeef",
-  "leaf_unknown_type": "00060200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
+  "leaf_unknown_type": "00ff0200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
 }
 ```
 
