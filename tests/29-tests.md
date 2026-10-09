@@ -161,3 +161,35 @@ signature[0]: 0c39431338a0202568b9a1d4215c99f179cbb8ee5472ac5ae7133fbb8f99cafbb9
   ]
 }
 ```
+
+## Nutroot batch mint (v3 keysets)
+
+A [v3 batch](../29.md#nutroot-transactions-v3-keysets) is one transaction with every quote as an input, so `signatures[i]` signs quote `i`'s own [NUT-10 input digest](10-tests.md#transaction-transcripts) over the shared transcript. Combining two locked quotes (`quote-mint-0002` for 5 sats, `quote-mint-0003` for 3 sats) into the [NUT-10 mint vector](10-tests.md#transaction-transcripts)'s 8-sat output, with the [NUT-13 quote lock keys](13-tests.md#version-3-secret-derivation) of counters `0` and `1` as the lock keys:
+
+```json
+{
+  "transcript": "12003a0100010502000f71756f74652d6d696e742d303030320300210292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d20981212003a0100010302000f71756f74652d6d696e742d3030303303002102b357c1ec7bdd73e4ede25d68619ee607c632409e89bcc518a82370b3f499615d21005b0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55",
+  "digest": "1fcc843aeb8a087e0c348c9b6b9fb2cef155039deb3bd7d4d2610c5c9447cdaf"
+}
+```
+
+The per-quote digests and signatures; neither signature verifies against the shared `digest` or at the other input:
+
+```json
+[
+  {
+    "quote_id": "quote-mint-0002",
+    "lock_pubkey": "0292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d209812",
+    "input_id": "dd1472cce2ae89c5134d54a9fba5f99f26c212cda68cf6d0bba7f8f2e253f425",
+    "input_digest": "344ae975bbecbb734a663e756cc0413bfa50a5bf4f1577fd5e86fac3064fc86c",
+    "signature": "46bf2b2ac046694ef33037ca8d3e1ca5e8119fb837887d41ac631059059436a163a9a5f43594bef92e162e7b16f7d490293591789e69074fe5d4a5fcd5eccafb"
+  },
+  {
+    "quote_id": "quote-mint-0003",
+    "lock_pubkey": "02b357c1ec7bdd73e4ede25d68619ee607c632409e89bcc518a82370b3f499615d",
+    "input_id": "78bd15ebfccf1774d313df80acf0ac276aaac32bb581c8555870d1f36a728248",
+    "input_digest": "b6cc535347c07bea1cc167796a6f6febce4daaf60df9c2275229d5f52297ce7e",
+    "signature": "2be4e6dbaaf205e433894c289496236079a537e37552a037437efe19430d3938c6630d71eced65cb60e9a52f730a25200403fdf3c4d738edc99b51004bebd838"
+  }
+]
+```
