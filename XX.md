@@ -106,6 +106,8 @@ quote_id = hex(tagged_hash("Cashu_QuoteId", pubkey))
 
 with `tagged_hash` as in [NUT-10](10.md#nutroot-secrets-v3-keysets) over the 33-byte compressed key. One lock key therefore names one change quote: the mint **MUST** reject a transaction naming a lock key whose change quote exists or is held for a pending transaction. A `template` leaf ([NUT-10](10.md#condition-leaves)) naming change quotes can therefore be exercised only once.
 
+A mint **MUST** keep a change quote's id and state until the latest `time` of any `template` leaf exercised in the transaction that created it, even once the quote is fully issued. It **MAY** discard a fully issued change quote that no template named.
+
 A seeded wallet **SHOULD** derive its own change quote lock keys per [NUT-13](13.md#v3-message) with `derivation_type_byte` `0x04`. A wallet that lost its state can recover them without their ids: derive lock keys by counter, fetch each derived id, and stop after a run of unknown ids, as the [NUT-13](13.md#restore-from-seed-phrase) restore procedure does for proofs over [NUT-09][09].
 
 A change quote is fetched at `GET /v1/mint/quote/change/{quote_id}` and redeemed like any locked quote: at `POST /v1/mint/change`, or as a quote input to another transaction. There is no `POST /v1/mint/quote/change`; only a transaction creates one.
