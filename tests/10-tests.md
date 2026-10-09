@@ -484,6 +484,62 @@ The melt shares the swap's `input_id` but not its `input_digest`, so neither wit
 }
 ```
 
+**Mint quote to melt.** Paying melt quote `quote-melt-0001` straight from mint quote `quote-mint-0001` in one transaction ([NUT-XX](../XX.md)): no proofs and no change outputs, so the transcript is the mint vector's quote input container followed by the melt vector's melt quote container. The quote input's bytes are unchanged, so it keeps the mint vector's `input_id`; the new transcript gives it a new `input_digest`, which its lock key signs:
+
+```json
+{
+  "transcript": "12003a0100010802000f71756f74652d6d696e742d303030310300210292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d2098122200160100010802000f71756f74652d6d656c742d30303031",
+  "digest": "39478135ba23dba30de68edd11991b2c4d8edb8faeb680d8a7e3e415e8e9ab56",
+  "input_id": "36683e426305851b0c5bee1a8b9d567a5a0a3feba6252c4144aefde0ec852ef1",
+  "input_digest": "6e78356a9d2ea49dca461114c299256362ee76ed03a173729d0170daa13666a7"
+}
+```
+
+**Proof to change quote.** Parking the swap's 8-sat proof in a remainder quote locked to key `5` ([NUT-XX](../XX.md)): the change quote output is the only output, and with no amount it binds the lock key alone.
+
+The change quote container, spelled out:
+
+```
+23 0024 | 02 0021 022f8b...40efe4
+```
+
+The proof input keeps the swap's `input_id`; `quote_id` is the id the mint gives the change quote, derived from its lock key:
+
+```json
+{
+  "change_container": "230024020021022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4",
+  "quote_id": "a4a5abdbbd7fb43ff3891c5335c461b7be1032e954e9f7ba43785224f6e5c030",
+  "transcript": "11008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327230024020021022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4",
+  "digest": "824bef448b38a40312f98bbb58b8d2dc8afa84e71647a4a1122e0bf62a4924e0",
+  "input_id": "900fb575d55eed27f7f52db079a2bf4843e674c461726eca70b90943cb3c7d07",
+  "input_digest": "30a20a07c0ece5536a13257480fdf2636011f0b89b2f2033c32ca5009b6617aa"
+}
+```
+
+**Proof to two change quotes.** Splitting the same proof between a 3-sat change quote locked to key `5` and a remainder quote locked to key `6`, in that request order: the fixed quote's container carries its amount first, the remainder quote's does not, and no keyset appears in the transcript.
+
+```
+23 0028 | 01 0001 03 | 02 0021 022f8b...40efe4
+23 0024 | 02 0021 03fff9...297556
+```
+
+```json
+{
+  "change_containers": [
+    "23002801000103020021022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4",
+    "23002402002103fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556"
+  ],
+  "quote_ids": [
+    "a4a5abdbbd7fb43ff3891c5335c461b7be1032e954e9f7ba43785224f6e5c030",
+    "cbabdabc03877d03af1dc6882c60af1b79225c1cef9d2bde81749e0bd3ad740d"
+  ],
+  "transcript": "11008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332723002801000103020021022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe423002402002103fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556",
+  "digest": "3a778d64a738526124c1858d7b5def958a2e14736383650e49a9ea46e720ceda",
+  "input_id": "900fb575d55eed27f7f52db079a2bf4843e674c461726eca70b90943cb3c7d07",
+  "input_digest": "c161aeecde16ff65ad29127d23a3c6dd47ac2bc52a0d2d7572c7dddb7dfdfc11"
+}
+```
+
 ## Transport strings
 
 Each string is its prefix plus base64url (no padding) of the JSON shown. The JSON is not canonical, so decoders parse rather than compare.
