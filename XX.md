@@ -87,13 +87,17 @@ A melt output without a remainder quote leaves its unspent fee reserve with the 
 
 ### Settlement
 
+A transaction with no melt quote settles at once, like a swap ([NUT-03][03]), and its response carries the outcome. A wallet that lost the response recovers as after a swap: [NUT-07][07] shows whether its proofs were spent, [NUT-09][09] returns its blind signatures, and each change quote is fetched by its id.
+
 A transaction with a melt quote follows [NUT-05][05]'s pending and settlement handling, including `prefer_async`: the proofs and each quote input's `amount` are pending while the payment is in flight, the blinded messages are signed and the change quotes created only once it succeeds, and a failed payment leaves the proofs unspent and the quotes' mintable amounts untouched.
 
-Before it initiates the payment, the mint **MUST** complete every check that signing the blinded messages and creating the change quotes depend on, so that once the payment succeeds only keyset inactivation can prevent settlement.
+Before it initiates the payment, the mint **MUST** complete every check that signing the blinded messages and creating the change quotes depend on, so that once the payment succeeds only a mid-transaction keyset inactivation can alter the settlement.
 
-If the keyset of `blinded_outputs` has been inactivated by the time the payment settles, the mint cannot sign them ([NUT-02](02.md#active-keysets)). It then settles as if the request had no `blinded_outputs`: `signatures` is empty and their amount goes to the remainder quote. A transaction with no melt quote settles at once.
+If the keyset of `blinded_outputs` has been inactivated by the time the payment settles, the mint cannot sign them ([NUT-02](02.md#active-keysets)). It then settles as if the request had no `blinded_outputs`: `signatures` is empty and their amount goes to the remainder quote.
 
-The mint **MUST** keep a record of every transaction it accepts, keyed by its transaction digest ([NUT-10](10.md#the-transaction-transcript)), holding the state and, once settled, the signatures and change quotes. The digest is the transaction's id: the wallet computes it to sign, and the mint computes it to verify.
+A transaction with a melt quote is recorded by that quote, as in a [NUT-05][05] melt: it reaches `PAID` only once the transaction has settled, and its `change` field ([NUT-08][08]) then carries the blind signatures for `blinded_outputs`, in request order, empty if they were not signed. A wallet waiting on a pending transaction polls the melt quote and then fetches each change quote by its id, or subscribes to both from the start ([NUT-17][17]).
+
+Either way, a mint supporting [NUT-19][19] **MAY** cache this endpoint's responses, so a wallet that lost one can resend the request.
 
 ## Change quote
 
@@ -109,7 +113,6 @@ A change quote is fetched at `GET /v1/mint/quote/change/{quote_id}` and redeemed
 
 ```json
 {
-  "digest": <hex_str>,
   "state": <str_enum[STATE]>,
   "signatures": <Array[BlindSignature]>,
   "melt_quotes": <Array[MeltQuoteResponse]>,
@@ -117,19 +120,10 @@ A change quote is fetched at `GET /v1/mint/quote/change/{quote_id}` and redeemed
 }
 ```
 
-- `digest` is the transaction digest.
 - `state` is `PENDING` while a melt payment is in flight, `PAID` once the transaction has settled, or `FAILED` if the payment failed and the inputs were released.
 - `signatures` has one blind signature per element of `blinded_outputs`, in request order. It is empty unless `state` is `PAID`.
-- `melt_quotes` holds the [NUT-05][05] melt quote response for each entry of the request's `melt_quote_outputs`, in order, and is empty if there were none. Its `change` field is not used.
+- `melt_quotes` holds the [NUT-05][05] melt quote response for each entry of the request's `melt_quote_outputs`, in order, and is empty if there were none. Its `change` field carries the same blind signatures as `signatures`, once `state` is `PAID`.
 - `change_quotes` holds one entry per element of the request's `change_quote_outputs`, in order: the quote's [NUT-04][04] response once `state` is `PAID`, and `null` otherwise, including a remainder quote with zero change.
-
-### Fetching a transaction
-
-```http
-GET https://mint.host:3338/v1/transaction/{digest}
-```
-
-returns the same response for a transaction the mint holds. Wallets poll it, not the melt quote, for a pending transaction. A `POST` whose digest the mint holds as `PENDING` or `PAID` **MUST** return that record rather than treat the inputs as spent again, so a wallet that lost the response can safely resend the request. A `FAILED` transaction **MAY** be resubmitted, and replaces its record.
 
 ## Quote input fee
 
@@ -157,7 +151,11 @@ A mint that does not charge advertises `0`.
 [03]: 03.md
 [04]: 04.md
 [05]: 05.md
+[07]: 07.md
+[08]: 08.md
 [09]: 09.md
 [10]: 10.md
 [11]: 11.md
+[17]: 17.md
+[19]: 19.md
 [30]: 30.md
