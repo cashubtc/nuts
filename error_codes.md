@@ -5,8 +5,8 @@
 | 10001 | Proof verification failed                       | [NUT-03][03], [NUT-05][05]                             |
 | 11001 | Proofs already spent                            | [NUT-03][03], [NUT-05][05]                             |
 | 11002 | Proofs are pending                              | [NUT-03][03], [NUT-05][05]                             |
-| 11003 | Outputs already signed                          | [NUT-03][03], [NUT-04][04], [NUT-05][05]               |
-| 11004 | Outputs are pending                             | [NUT-03][03], [NUT-04][04], [NUT-05][05]               |
+| 11003 | Output `(keyset id, B_)` already signed         | [NUT-00][00], [NUT-03][03], [NUT-04][04], [NUT-05][05] |
+| 11004 | Output `(keyset id, B_)` is pending             | [NUT-00][00], [NUT-03][03], [NUT-04][04], [NUT-05][05] |
 | 11005 | Transaction is not balanced (inputs != outputs) | [NUT-02][02], [NUT-03][03], [NUT-05][05]               |
 | 11006 | Amount outside of limit range                   | [NUT-04][04], [NUT-05][05]                             |
 | 11007 | Duplicate inputs provided                       | [NUT-03][03], [NUT-04][04], [NUT-05][05]               |
