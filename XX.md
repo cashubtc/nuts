@@ -67,7 +67,7 @@ Any array **MAY** be empty or omitted. A blinded message with `amount` `0` **MUS
 - Every v3 input **MUST** carry a witness over its input digest; pre-v3 proofs keep their own rules, per [NUT-10](10.md#the-signing-rule). A pre-v3 proof with `SIG_ALL` ([NUT-11][11]) **MUST** be rejected: NUT-11 defines no `SIG_ALL` message for this endpoint.
 - Every mint quote **MUST** be locked and in the transaction's unit. Its `amount` **MUST** be positive and **MUST NOT** exceed its mintable amount, `amount_paid - amount_issued` ([NUT-04][04]).
 - All `blinded_outputs` **MUST** share one keyset in the transaction's unit ([NUT-04](04.md#nutroot-transactions-v3-keysets)).
-- A change quote output with an `amount` **MUST** be positive. At most one change quote output **MAY** omit `amount`: the **remainder quote**, which takes the [balance](#balance) after settlement. Change quote ids **MUST NOT** repeat within the request or name a taken [change quote](#change-quote) id. Lock keys may repeat.
+- A change quote output with an `amount` **MUST** be positive. At most one change quote output **MAY** omit `amount`: the **remainder quote**, which takes the [balance](#balance) after settlement. Change quote ids **MUST NOT** repeat within the request or name a claimed [change quote](#change-quote) id. Lock keys may repeat.
 - `melt_quote_outputs` **MUST NOT** hold more than one quote; multi-melt is reserved for future specification. The quote **MUST** be in the transaction's unit, and its method is the one it was quoted under. Its `fee_reserve` **MUST** equal the quote's `fee_reserve`, or the `fee_reserve` of the entry its `fee_index` names.
 - A transaction with a melt quote and `blinded_outputs` **MUST** carry a remainder quote: the outputs cannot be signed if their keyset is inactivated before the payment settles ([NUT-02](02.md#active-keysets)), and the remainder quote is where their value goes.
 
@@ -103,7 +103,7 @@ Either way, a mint supporting [NUT-19][19] **MAY** cache this endpoint's respons
 
 On settlement, the mint creates for each change quote output a [NUT-04][04] mint quote with method `change`, in the transaction's unit, locked to its `pubkey`, with `amount_paid` and a method-specific `amount` equal to the output's `amount`, or to `change` for the remainder quote, and `request` the empty string. The method name `change` is reserved for these quotes. A remainder quote with zero change is not created.
 
-Its id is [derived](04.md#derived-quote-ids) from the output's `id_preimage`. An id is taken once a transaction naming it is accepted, whether or not its quote is created, and is released only if that transaction fails. A `template` leaf ([NUT-10](10.md#condition-leaves)) naming change quotes can therefore be exercised only once.
+Its id is [derived](04.md#derived-quote-ids) from the output's `id_preimage`. An id is claimed once a transaction naming it is accepted, whether or not its quote is created, and is released only if its payment fails. A `template` leaf ([NUT-10](10.md#condition-leaves)) naming change quotes can therefore be exercised only once.
 
 A seeded wallet **SHOULD** derive each of its change quotes' lock key and `id_preimage` from one quote counter value per [NUT-13](13.md#v3-message), `derivation_type_byte` `0x04` and `0x05`. A wallet that lost its state can recover them by counter: derive each id, fetch it, and stop after a run of unknown ids, as the [NUT-13](13.md#restore-from-seed-phrase) restore procedure does for proofs over [NUT-09][09].
 
