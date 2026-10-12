@@ -46,4 +46,4 @@ The [NUT-10 auditable lock vector](10-tests.md#worked-example-auditable-lock-wit
 
 with `witness_hash` = `d44f5863d5bd9a984f571e575a2c71b2848b98975e53d98d0ae283b8a1ad2c52`. A verifier recomputes the commitment from the returned fields, then verifies the leaf's signature against key `3` over `input_digest` and the control block against the proof's secret.
 
-`UNSPENT` and `PENDING` entries carry `witness`, `input_digest` and `commitment` as `null`.
+`UNSPENT` entries carry `witness`, `input_digest` and `commitment` as `null`. While this spend is `PENDING`, its entry carries the same `witness` and `input_digest` with `commitment` `null`.
