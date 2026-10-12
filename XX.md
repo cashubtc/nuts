@@ -101,7 +101,7 @@ Either way, a mint supporting [NUT-19][19] **MAY** cache this endpoint's respons
 
 ## Change quote
 
-On settlement, the mint creates for each change quote output a [NUT-04][04] mint quote with method `change`, in the transaction's unit, locked to its `pubkey`, with `amount_paid` and a method-specific `amount` equal to the output's `amount`, or to `change` for the remainder quote, and `request` the empty string. The method name `change` is reserved for these quotes. A remainder quote with zero change is not created.
+On settlement, the mint creates for each change quote output a [NUT-04][04] mint quote with method `change`, in the transaction's unit, locked to its `pubkey`, with `amount_paid` and a method-specific `amount` equal to the output's `amount`, or to `change` for the remainder quote, `request` the empty string and `expiry` `null`. The method name `change` is reserved for these quotes. A remainder quote with zero change is not created.
 
 Its id is [derived](04.md#derived-quote-ids) from the output's `id_preimage`. An id is claimed once a transaction naming it is accepted, whether or not its quote is created, and is released only if its payment fails. A `template` leaf ([NUT-10](10.md#condition-leaves)) naming change quotes can therefore be exercised only once.
 
