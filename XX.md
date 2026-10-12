@@ -135,6 +135,8 @@ fee = (sum(proof input_fee_ppk) + sum(popcount(quote amount) * quote_input_fee_p
 
 A mint that does not charge advertises `0`.
 
+The fee is a live setting. A transaction signed for later submission **SHOULD** carry a remainder quote, which absorbs a change in `quote_input_fee_ppk`.
+
 ## Settings
 
 ```json
