@@ -33,7 +33,7 @@ The signature verifies against the BAT's `secret`; the BAT itself never appears 
 
 ## Request transcript with a query string
 
-A BAT authorizing `GET /v1/mint/quote/bolt11/quote123?b=2&a=1&q=a%20b` with no body. The query parameters are illustrative: no current endpoint takes any, and the vector pins the target encoding, not an API shape. The target is the origin-form request-target exactly as sent: the query string rides along unsorted and percent-encoded as transmitted, and the absent body hashes the empty byte string.
+A BAT authorizing `GET /v1/mint/quote/bolt11/quote123?b=2&a=1&q=a%20b` with no body. The query parameters are illustrative: no current endpoint takes any, and the vector pins the target encoding, not an API shape. The target is the request path from `/v1/` exactly as sent: the query string rides along unsorted and percent-encoded as transmitted, and the absent body hashes the empty byte string.
 
 ```json
 {
