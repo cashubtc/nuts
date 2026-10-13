@@ -113,9 +113,9 @@ where the input section is the transcript's input containers (`0x1n`) as seriali
 
 An id is claimed once a transaction naming it is accepted, whether or not its quote is created, and is released only if its payment fails.
 
-A seeded wallet **SHOULD** derive each of its own change quotes' lock key and `id_preimage` from one quote counter value per [NUT-13](13.md#v3-message), `derivation_type_byte` `0x04` and `0x05`. A wallet that lost its state can recover them by counter: derive each id, fetch it, and stop after a run of unknown ids, as the [NUT-13](13.md#restore-from-seed-phrase) restore procedure does for proofs over [NUT-09][09].
+A wallet **SHOULD** put change it can compute into `blinded_outputs`, keeping change quotes for a balance it cannot compute (a melt's unspent fee reserve) and for outputs paying another party. An output paying another party in a transaction signed for later **SHOULD** take an id bound to the inputs.
 
-An output paying another party in a transaction signed for later **SHOULD** take an id bound to the inputs.
+A seeded wallet **SHOULD** derive each of its own change quotes' lock key and `id_preimage` from one quote counter value per [NUT-13](13.md#v3-message), `derivation_type_byte` `0x04` and `0x05`. A wallet that lost its state can recover them by counter: derive each id, fetch it, and stop after a run of unknown ids, as the [NUT-13](13.md#restore-from-seed-phrase) restore procedure does for proofs over [NUT-09][09].
 
 A change quote is fetched at `GET /v1/mint/quote/change/{quote_id}` and redeemed like any locked quote: at `POST /v1/mint/change`, or as a quote input to another transaction. There is no `POST /v1/mint/quote/change`; only a transaction creates one.
 
