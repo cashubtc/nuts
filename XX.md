@@ -14,7 +14,7 @@ This document describes a single endpoint that carries any [NUT-10][10] transact
 POST https://mint.host:3338/v1/transaction
 ```
 
-The request is the [transaction transcript](10.md#the-transaction-transcript) in JSON, one array per container type:
+The request carries the transaction's elements; its [transcript](10.md#the-transaction-transcript), which every input signs, commits to each as NUT-10 serializes it, a blinded message by `SHA256(B_)` and a change quote by its derived id. The request is JSON, one array per container type:
 
 ```json
 {
