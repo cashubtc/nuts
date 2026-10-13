@@ -49,11 +49,11 @@ A `MeltOutput` is a melt quote ([NUT-05][05]), the fee reserve this transaction 
 }
 ```
 
-A `ChangeOutput` is a [change quote](#change-quote) this transaction creates: the 32-byte preimage of its id, its lock key, a 33-byte compressed secp256k1 public key, and its amount:
+A `ChangeOutput` is a [change quote](#change-quote) this transaction creates: the 32-byte preimage of its id, if it has one, its lock key, a 33-byte compressed secp256k1 public key, and its amount:
 
 ```json
 {
-  "id_preimage": <hex_str>,
+  "id_preimage": <hex_str>, // omitted for an id bound to the inputs
   "pubkey": <hex_str>,
   "amount": <int> // omitted on the remainder quote
 }
@@ -103,9 +103,19 @@ Either way, a mint supporting [NUT-19][19] **MAY** cache this endpoint's respons
 
 On settlement, the mint creates for each change quote output a [NUT-04][04] mint quote with method `change`, in the transaction's unit, locked to its `pubkey`, with `amount_paid` and a method-specific `amount` equal to the output's `amount`, or to `change` for the remainder quote, `request` the empty string and `expiry` `null`. The method name `change` is reserved for these quotes. A remainder quote with zero change is not created.
 
-Its id is [derived](04.md#derived-quote-ids) from the output's `id_preimage`. An id is claimed once a transaction naming it is accepted, whether or not its quote is created, and is released only if its payment fails.
+Its id is [derived](04.md#derived-quote-ids) from the output's `id_preimage`. An output without one takes an id the mint computes from this transaction's inputs:
 
-A seeded wallet **SHOULD** derive each of its change quotes' lock key and `id_preimage` from one quote counter value per [NUT-13](13.md#v3-message), `derivation_type_byte` `0x04` and `0x05`. A wallet that lost its state can recover them by counter: derive each id, fetch it, and stop after a run of unknown ids, as the [NUT-13](13.md#restore-from-seed-phrase) restore procedure does for proofs over [NUT-09][09].
+```
+quote_id = hex(tagged_hash("Cashu_InputQuoteId", SHA256(input section) || u32_BE(k)))
+```
+
+where the input section is the transcript's input containers (`0x1n`) as serialized ([NUT-10](10.md#the-transaction-transcript)) and `k` is the output's position among the request's change quote outputs, from 0.
+
+An id is claimed once a transaction naming it is accepted, whether or not its quote is created, and is released only if its payment fails.
+
+A seeded wallet **SHOULD** derive each of its own change quotes' lock key and `id_preimage` from one quote counter value per [NUT-13](13.md#v3-message), `derivation_type_byte` `0x04` and `0x05`. A wallet that lost its state can recover them by counter: derive each id, fetch it, and stop after a run of unknown ids, as the [NUT-13](13.md#restore-from-seed-phrase) restore procedure does for proofs over [NUT-09][09].
+
+An output paying another party in a transaction signed for later **SHOULD** take an id bound to the inputs.
 
 A change quote is fetched at `GET /v1/mint/quote/change/{quote_id}` and redeemed like any locked quote: at `POST /v1/mint/change`, or as a quote input to another transaction. There is no `POST /v1/mint/quote/change`; only a transaction creates one.
 
