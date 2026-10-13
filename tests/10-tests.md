@@ -132,88 +132,86 @@ For contrast, a bearer proof with no conditions: private key `7` travels as spen
 
 ## Worked example: a template covenant
 
-A proof that key `3` can only spend into the two change quote outputs of the [proof to two change quotes](#transaction-transcripts) transaction below (the 3-sat quote and the remainder quote). The `template` leaf's `hash` is `SHA256` over that transaction's output section, the two change quote containers concatenated; the internal key is the same NUMS offset as the [auditable lock](#worked-example-auditable-lock-with-disclosure) (`u = 7`), so no key path exists. The spend is the swap's 8-sat input (same amount, keyset id and `C`) under this secret.
+A proof that key `3` can only spend into change quotes locked to the two lock keys of the [proof to two change quotes](#transaction-transcripts) transaction below. The `template` leaf lists them in `dests`; the internal key is the same NUMS offset as the [auditable lock](#worked-example-auditable-lock-with-disclosure) (`u = 7`), so no key path exists. The spend is the swap's 8-sat input (same amount, keyset id and `C`) under this secret, into that transaction's two change quotes.
 
 ```json
 {
-  "output_section": "23006b0100010302002103db67a892bc5c2c37c1a7979ba28706732deef4b92d69a5f68ad0ab448126d38b0300403438663532383464643535643362616165346334336135633663663064656230656261306131633765303165373838663435336532346634386631303938313523006702002102ccdef4b1ff9e02ee1c142505aa501f2ae3ef30ad9837234d501c26e974f18ae203004037646232313538366635626664383935383936316364396134616339373233326162333735366165666233396136613365306366613434616462656335326165",
-  "hash": "d6fa4d10a713f7d1c013886788459ff83345ceb638e4b0fdfd992a2ec169d0e3",
-  "leaf": "00050200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9080020d6fa4d10a713f7d1c013886788459ff83345ceb638e4b0fdfd992a2ec169d0e3",
+  "dests": [
+    "03db67a892bc5c2c37c1a7979ba28706732deef4b92d69a5f68ad0ab448126d38b",
+    "02ccdef4b1ff9e02ee1c142505aa501f2ae3ef30ad9837234d501c26e974f18ae2"
+  ],
+  "leaf": "00050200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f90c004203db67a892bc5c2c37c1a7979ba28706732deef4b92d69a5f68ad0ab448126d38b02ccdef4b1ff9e02ee1c142505aa501f2ae3ef30ad9837234d501c26e974f18ae2",
   "K": "028edfebd6fdea3e1d89359af20868a2e76315b36cdb1a79de497a1757ca7bd407",
-  "merkle_root": "e8b3d2da939e517c32a000449190c5eee581f5fb8e4f1e9a685b77b92d99b99e",
-  "tweak": "2750fe9a12d1f4e5d23daf1c7089209c7591af24d5bc7e414c97e2991d0388e7",
-  "secret": "029d37b99583d93ee27f1a014b13dcacafa5ca43388c8f1837cbab2ff65dd88fe0",
-  "transaction_digest": "93a4acb8b6038265bbcdbca8079fc8fed44e7ffecafdd10558a8b3180ffd9f7b",
-  "input_id": "6b7099d18881a2d4999e438ef0c9e62108a2aea0d92ea6e2b566a64331f0aa26",
-  "input_digest": "3d92c2c469274799e7fb2ff622f2413a2d947d39a26f960beff23efbeb37fd9e"
+  "merkle_root": "8d41634c46c8ee248a0b8bf65c2a4cd883ece04925e366205e6385cb3e41413d",
+  "tweak": "41e5456a9808ef698ad6613fe86647c48d9b75ca0f8abe91a3d01debbbff0115",
+  "secret": "03a07a07169b3dbad5ea5e6f7771acb326e788e42e38948d9d2d5f5d3f29b38cf1",
+  "transaction_digest": "bdd8b9b615320d7474ce1e3cfc1a3d71ed95b4fb465c8b2717c6d35d56ada5f5",
+  "input_id": "c7f25fbb091291c9c8e26f68c4b3d9a27a37449ad1923be3b3aa276a25636c29",
+  "input_digest": "cbea276f9631f571c4175cf00f9d4c7299ab10aef104a5220047744e12378a54"
 }
 ```
 
-The template leaf, spelled out (`n = 1`, `keys = [key 3]`, then `hash`):
+The template leaf, spelled out (`n = 1`, `keys = [key 3]`, then `dests`):
 
 ```
-00 05 | 02 0001 01 | 04 0021 02f930...e036f9 | 08 0020 d6fa4d...69d0e3
+00 05 | 02 0001 01 | 04 0021 02f930...e036f9 | 0c 0042 03db67...26d38b 02ccde...f18ae2
 ```
 
 Key `3`'s script-path witness over that `input_digest`:
 
 ```json
 {
-  "leaf": "00050200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9080020d6fa4d10a713f7d1c013886788459ff83345ceb638e4b0fdfd992a2ec169d0e3",
+  "leaf": "00050200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f90c004203db67a892bc5c2c37c1a7979ba28706732deef4b92d69a5f68ad0ab448126d38b02ccdef4b1ff9e02ee1c142505aa501f2ae3ef30ad9837234d501c26e974f18ae2",
   "control": {
     "K": "028edfebd6fdea3e1d89359af20868a2e76315b36cdb1a79de497a1757ca7bd407",
     "path": []
   },
   "signatures": [
-    "08ecbcf36edb872a7e06399b2fd0783679727671cda4f404da15bc00e524bfde5e1d8eb19b0a3d0d271db7ee17b0f01806b2c83564f2eeaf60f7f8d03c32e165"
+    "e4ca7f75dc086e86314cb53020f3a08593b5b86642ee25417abdc8c1265de1680835b675b38802dc775d0b4a39596c3c5641e28e00cb80b23ee6ced7bc13ce53"
   ]
 }
 ```
 
-The same proof spent with the fixed quote at 4 sat instead of 3 (one byte of the output section, `23006b01000104...`) hashes its outputs to `8c4f98f5a5980165f4c4ba037af62292b1d27a0bba17c9009e828e5fe5854aaa`, so the witness **MUST** be rejected whatever it signs.
+The same proof spent with the remainder quote locked to key `4` (`02e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd13`) instead, which `dests` does not list, **MUST** be rejected whatever it signs.
 
 ## Worked example: an arbiter escrow
 
-Three leaves under the NUMS offset `u = 7`, so no key path exists. The arbiter (key `4`) can only release to the seller (key `5`) or refund the buyer (key `3`), each through a `template` leaf over one remainder change quote; buyer and seller together can spend through a 2-of-2 `threshold` leaf. Each party picks its own `id_preimage` and hands over only the derived quote id: the seller's is `55` repeated 32 times, the buyer's `33` repeated 32 times.
+Three leaves under the NUMS offset `u = 7`, so no key path exists. The arbiter (key `4`) can pay only the buyer (key `3`) and the seller (key `5`), in any split, through one `template` leaf; the buyer can take everything back alone from `1755561600` through an `after` leaf; buyer and seller together can spend through a 2-of-2 `threshold` leaf.
 
 ```json
 {
-  "seller_quote_id": "4e38daacd11ae677f32db3b58473cb6e432aaaee1e0e4a170919aeae1343f5ef",
-  "buyer_quote_id": "a6cf70fcbc9dac2a31742624ce1687a573a2d283a28a306186687ca3b4cd4199",
-  "out_seller": "230067020021022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe403004034653338646161636431316165363737663332646233623538343733636236653433326161616565316530653461313730393139616561653133343366356566",
-  "out_buyer": "23006702002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f903004061366366373066636263396461633261333137343236323463653136383761353733613264323833613238613330363138363638376361336234636434313939",
-  "leaf_release": "00050200010104002102e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd130800207147627e56300778e86e5567a3f7c9af7aa7cfe3d6c9be7c950fdc5aa4a305dd",
-  "leaf_refund": "00050200010104002102e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd130800204338fa95d9b5a5dc3e33e229f2f13598bfeed9e205360bf39c6de8d0a75782cd",
+  "leaf_arbiter": "00050200010104002102e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd130c004202f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4",
+  "leaf_refund": "00020200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f906000468a3be80",
   "leaf_coop": "00010200010204004202f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4",
-  "leaf_hash_release": "863d70e4e9c0f0ed257291b49c1121c1ecb95d73505c278518abcdcad5e35269",
-  "leaf_hash_refund": "771d789a68984f231ea2d74436df5c9ec854ced7e35b4bd28e557bdc50e15c10",
+  "leaf_hash_arbiter": "6a250690c3dacdbb0f3262ed8e7b6cf635cae6084f13213715cbb75c0019d9b0",
+  "leaf_hash_refund": "c63d3a44d8775d6fbbe6c92137749831f2e4af57747defbc29ce0933cb77e1d3",
   "leaf_hash_coop": "dfa245f0b825b4ea746ee82f6f41de614a7ceb00e54760327218e5e4487b5c4b",
   "K": "028edfebd6fdea3e1d89359af20868a2e76315b36cdb1a79de497a1757ca7bd407",
-  "merkle_root": "202a8d585a8ec5d6869e857916e0e09b12c6f53850d8ee337bbad7865aeeb17c",
-  "tweak": "ab2a407c87726808a65a06254707753f8f2caf12058ab792d2a1f478d3833256",
-  "secret": "02e063ebbd59ba61103a7c1fa68e8d4a7a5e691a8855a8f5af45d44663a7a397d3"
+  "merkle_root": "5624fbc52d2041cf6bf0b72dc1712a6dc6499a228845718a52848eebb891d14b",
+  "tweak": "1c2eff2c35b24cda8445026bfd459011ea82092fc13fbe9cf0db6b1af9ae5f5a",
+  "secret": "022d32ec64d123475fac4593830f2e26d6ce1dc3768f6211d60f14d1eba6e06292"
 }
 ```
 
-Sorted by leaf hash the order is refund, release, coop: refund and release pair and coop is promoted, so `merkle_root = branch(branch(leaf_hash_refund, leaf_hash_release), leaf_hash_coop)`. Releasing to the seller spends the swap's 8-sat input under this secret into `out_seller` alone, its request carrying the seller's `id_preimage` (`transaction_digest` `40211bd2b534aff2641c2d8135530034da8a8d263cebf31c63f71b3b22ce230f`, `input_id` `c195216b0f895ed4b1454943c70507bc7ed082217cbe80fe127e9badf24e32c8`, `input_digest` `c9a0670fb12f02a603ad2bc22b4f89baab157d7218cc13ca921c2711fd63423d`). The arbiter's witness reveals the release leaf with `path = [leaf_hash_refund, leaf_hash_coop]`:
+The arbiter and refund leaves pair and coop is promoted, so `merkle_root = branch(branch(leaf_hash_arbiter, leaf_hash_refund), leaf_hash_coop)`. The seller builds a split and the arbiter signs it: the swap's 8-sat input under this secret into 5 sat to the seller (`id_preimage` `55` repeated 32 times) and the remainder to the buyer (`33` repeated 32 times) (`transaction_digest` `a8e82a4d885ebc6640ed74ee98556678123005656573ad1d9db3fc1b2cb95537`, `input_id` `e34b281fd3ade8e3c78cfd147011cb8e00899913e12b637d59b9ad53885b2dd7`, `input_digest` `0fe83255342b70adcc693247e6e3f29ceba655bd3b571192efeb8923f487df95`). The arbiter's witness reveals its leaf with `path = [leaf_hash_refund, leaf_hash_coop]`:
 
 ```json
 {
-  "leaf": "00050200010104002102e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd130800207147627e56300778e86e5567a3f7c9af7aa7cfe3d6c9be7c950fdc5aa4a305dd",
+  "leaf": "00050200010104002102e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd130c004202f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4",
   "control": {
     "K": "028edfebd6fdea3e1d89359af20868a2e76315b36cdb1a79de497a1757ca7bd407",
     "path": [
-      "771d789a68984f231ea2d74436df5c9ec854ced7e35b4bd28e557bdc50e15c10",
+      "c63d3a44d8775d6fbbe6c92137749831f2e4af57747defbc29ce0933cb77e1d3",
       "dfa245f0b825b4ea746ee82f6f41de614a7ceb00e54760327218e5e4487b5c4b"
     ]
   },
   "signatures": [
-    "d96a84b591b3a0377f3c7432505355bd053405efffcf65d2f1df53a4d2791af8328378b1ded8d23a35d9d0637ab110de47bc1089d1c5560930cf03538057ae98"
+    "57301fe6dbd4372d4062c1c2ed41c718a73b43e7a236f4982098e8431885697386bb01c2f1a217424702a7341fc84fbfa7c0bd6c9a776a3b6fe17ac9bca8b0ad"
   ]
 }
 ```
 
-A remainder quote to the arbiter's own key (`id_preimage` `44` repeated 32 times) hashes its output section to `938551302fe2f732a34d4d621ab2cf161947566a885b8aafdc207ba06fcbeba8`, which matches neither template.
+A change quote to the arbiter's own key is outside `dests`, so no arbiter signature can satisfy the leaf with it.
 
 ## Worked example: a commit leaf
 
