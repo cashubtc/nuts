@@ -59,7 +59,7 @@ A `ChangeOutput` is a [change quote](#change-quote) this transaction creates: th
 }
 ```
 
-Any array **MAY** be empty or omitted. A blinded message with `amount` `0` **MUST** be rejected: change goes to a change quote.
+Any array **MAY** be empty or omitted, and each is subject to the mint's [NUT-06][06] `max_array_length`. A blinded message with `amount` `0` **MUST** be rejected: change goes to a change quote.
 
 ### Rules
 
@@ -153,6 +153,7 @@ The fee is a live setting. A transaction signed for later submission **SHOULD** 
 [03]: 03.md
 [04]: 04.md
 [05]: 05.md
+[06]: 06.md
 [07]: 07.md
 [08]: 08.md
 [09]: 09.md
