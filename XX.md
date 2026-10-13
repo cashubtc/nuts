@@ -89,7 +89,7 @@ A melt output without a remainder quote leaves its unspent fee reserve with the 
 
 A transaction with no melt quote settles at once, like a swap ([NUT-03][03]), and its response carries the outcome. A wallet that lost the response recovers as after a swap: [NUT-07][07] shows whether its proofs were spent, [NUT-09][09] returns its blind signatures, and each change quote is fetched by its id.
 
-A transaction with a melt quote follows [NUT-05][05]'s pending and settlement handling, including `prefer_async`: the proofs and each quote input's `amount` are pending while the payment is in flight, the blinded messages are signed and the change quotes created only once it succeeds, and a failed payment leaves the proofs unspent and the quotes' mintable amounts untouched.
+A transaction with a melt quote follows [NUT-05][05]'s pending and settlement handling, including `prefer_async`: the proofs and input quotes are pending while the payment is in flight, the blinded messages are signed, the change quotes created and each quote's `amount_issued` raised only once it succeeds, and a failed payment leaves the proofs unspent and the quotes untouched. While an input quote is pending, it reports its settled `amount_issued`, and the mint **MUST** reject any other transaction or mint request ([NUT-04][04]) that draws on it, with error `20005`.
 
 Before it initiates the payment, the mint **MUST** complete every check that signing the blinded messages and creating the change quotes depend on, so that once the payment succeeds only a mid-transaction keyset inactivation can alter the settlement.
 
@@ -103,7 +103,7 @@ Either way, a mint supporting [NUT-19][19] **MAY** cache this endpoint's respons
 
 On settlement, the mint creates for each change quote output a [NUT-04][04] mint quote with method `change`, in the transaction's unit, locked to its `pubkey`, with `amount_paid` and a method-specific `amount` equal to the output's `amount`, or to `change` for the remainder quote, `request` the empty string and `expiry` `null`. The method name `change` is reserved for these quotes. A remainder quote with zero change is not created.
 
-Its id is [derived](04.md#derived-quote-ids) from the output's `id_preimage`. An id is claimed once a transaction naming it is accepted, whether or not its quote is created, and is released only if its payment fails. A `template` leaf ([NUT-10](10.md#condition-leaves)) naming change quotes can therefore be exercised only once.
+Its id is [derived](04.md#derived-quote-ids) from the output's `id_preimage`. An id is claimed once a transaction naming it is accepted, whether or not its quote is created, and is released only if its payment fails.
 
 A seeded wallet **SHOULD** derive each of its change quotes' lock key and `id_preimage` from one quote counter value per [NUT-13](13.md#v3-message), `derivation_type_byte` `0x04` and `0x05`. A wallet that lost its state can recover them by counter: derive each id, fetch it, and stop after a run of unknown ids, as the [NUT-13](13.md#restore-from-seed-phrase) restore procedure does for proofs over [NUT-09][09].
 
