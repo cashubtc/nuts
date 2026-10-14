@@ -59,7 +59,7 @@ A `ChangeOutput` is a [change quote](#change-quote) this transaction creates: th
 }
 ```
 
-Any array **MAY** be empty or omitted, and each is subject to the mint's [NUT-06][06] `max_array_length`. A blinded message with `amount` `0` **MUST** be rejected: change goes to a change quote.
+Any array **MAY** be empty or omitted, and each is subject to the mint's [NUT-06][06] `max_array_length`. A blinded message with `amount` `0` is a [NUT-08][08] blank output, allowed only beside a melt quote; otherwise it **MUST** be rejected.
 
 ### Rules
 
@@ -69,7 +69,7 @@ Any array **MAY** be empty or omitted, and each is subject to the mint's [NUT-06
 - All `blinded_outputs` **MUST** share one keyset in the transaction's unit ([NUT-04](04.md#nutroot-transactions-v3-keysets)).
 - A change quote output with an `amount` **MUST** be positive. At most one change quote output **MAY** omit `amount`: the **remainder quote**, which takes the [balance](#balance) after settlement. Change quote ids **MUST NOT** repeat within the request or name a claimed [change quote](#change-quote) id. Lock keys may repeat.
 - `melt_quote_outputs` **MUST NOT** hold more than one quote; multi-melt is reserved for future specification. The quote **MUST** be in the transaction's unit, and its method is the one it was quoted under. Its `fee_reserve` **MUST** equal the quote's `fee_reserve`, or the `fee_reserve` of the entry its `fee_index` names.
-- A transaction with a melt quote and `blinded_outputs` **MUST** carry a remainder quote: the outputs cannot be signed if their keyset is inactivated before the payment settles ([NUT-02](02.md#active-keysets)), and the remainder quote is where their value goes.
+- A transaction with a melt quote and `blinded_outputs`, blank or not, **MUST** carry a remainder quote: the outputs cannot be signed if their keyset is inactivated before the payment settles ([NUT-02](02.md#active-keysets)), and the remainder quote is where their value goes in that event.
 
 ### Balance
 
@@ -81,7 +81,7 @@ change     = amount_in - amount_out + melt.fee_reserve - melt_fee_paid
 
 Proofs are spent in full. Each quote's `amount_issued` grows by its input `amount`, as in a partial mint ([NUT-04][04]), and the remainder stays mintable. `fee` is the input fee of the proofs ([NUT-02][02]) plus the [quote input fee](#quote-input-fee), and `amount_out` includes it. `melt_fee_paid` is what the payment actually cost, known only at settlement; it never exceeds `melt.fee_reserve`.
 
-Without a remainder quote, `amount_in` **MUST** equal `amount_out`. With one, `amount_in` **MUST NOT** be less than `amount_out`, and after settlement the balance is returned as `change`, the remainder quote's amount.
+Without a remainder quote, `amount_in` **MUST** equal `amount_out`. With one, `amount_in` **MUST NOT** be less than `amount_out`, and after settlement the balance is returned as `change`: imprinted into the blank outputs as in [NUT-08][08], with the remainder quote taking what they do not.
 
 A melt output without a remainder quote leaves its unspent fee reserve with the mint, as in a [NUT-05][05] melt without change outputs.
 
@@ -93,9 +93,9 @@ A transaction with a melt quote follows [NUT-05][05]'s pending and settlement ha
 
 Before it initiates the payment, the mint **MUST** complete every check that signing the blinded messages and creating the change quotes depend on, so that once the payment succeeds only a mid-transaction keyset inactivation can alter the settlement.
 
-If the keyset of `blinded_outputs` has been inactivated by the time the payment settles, the mint cannot sign them ([NUT-02](02.md#active-keysets)). It then settles as if the request had no `blinded_outputs`: `signatures` is empty and their amount goes to the remainder quote.
+If the keyset of `blinded_outputs` has been inactivated by the time the payment settles, the mint cannot sign them ([NUT-02](02.md#active-keysets)). It then settles as if the request had no `blinded_outputs`: `signatures` is empty, and their amount and all of `change` go to the remainder quote.
 
-A transaction with a melt quote is recorded by that quote, as in a [NUT-05][05] melt: it reaches `PAID` only once the transaction has settled, and its `change` field ([NUT-08][08]) then carries the blind signatures for `blinded_outputs`, in request order, empty if they were not signed. A wallet waiting on a pending transaction polls the melt quote and then fetches each change quote by its id, or subscribes to both from the start ([NUT-17][17]).
+A transaction with a melt quote is recorded by that quote, as in a [NUT-05][05] melt: it reaches `PAID` only once the transaction has settled, and its `change` field ([NUT-08][08]) then carries the blind signatures for `blinded_outputs` as `signatures` does, empty if they were not signed. A wallet waiting on a pending transaction polls the melt quote and then fetches each change quote by its id, or subscribes to both from the start ([NUT-17][17]).
 
 Either way, a mint supporting [NUT-19][19] **MAY** cache this endpoint's responses, so a wallet that lost one can resend the request.
 
@@ -113,7 +113,7 @@ where the input section is the transcript's input containers (`0x1n`) as seriali
 
 An id is claimed once a transaction naming it is accepted, whether or not its quote is created, and is released only if its payment fails.
 
-A wallet **SHOULD** put change it can compute into `blinded_outputs`, keeping change quotes for a balance it cannot compute (a melt's unspent fee reserve) and for outputs paying another party. An output paying another party in a transaction signed for later **SHOULD** take an id bound to the inputs.
+A wallet **SHOULD** put its change into `blinded_outputs`: change it can compute as outputs with an amount, and a melt's unspent fee reserve as blank outputs. Change quotes are then the remainder quote and outputs paying another party. An output paying another party in a transaction signed for later **SHOULD** take an id bound to the inputs.
 
 A seeded wallet **SHOULD** derive each of its own change quotes' lock key and `id_preimage` from one quote counter value per [NUT-13](13.md#v3-message), `derivation_type_byte` `0x04` and `0x05`. A wallet that lost its state can recover them by counter: derive each id, fetch it, and stop after a run of unknown ids, as the [NUT-13](13.md#restore-from-seed-phrase) restore procedure does for proofs over [NUT-09][09].
 
@@ -131,7 +131,7 @@ A change quote is fetched at `GET /v1/mint/quote/change/{quote_id}` and redeemed
 ```
 
 - `state` is `PENDING` while a melt payment is in flight, `PAID` once the transaction has settled, or `FAILED` if the payment failed and the inputs were released.
-- `signatures` has one blind signature per element of `blinded_outputs`, in request order. It is empty unless `state` is `PAID`.
+- `signatures` has one blind signature per element of `blinded_outputs`, in request order, omitting a blank output left at zero ([NUT-08][08]). It is empty unless `state` is `PAID`.
 - `melt_quotes` holds the [NUT-05][05] melt quote response for each entry of the request's `melt_quote_outputs`, in order, and is empty if there were none. Its `change` field carries the same blind signatures as `signatures`, once `state` is `PAID`.
 - `change_quotes` holds one entry per element of the request's `change_quote_outputs`, in order: the quote's [NUT-04][04] response once `state` is `PAID`, and `null` otherwise, including a remainder quote with zero change.
 
