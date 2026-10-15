@@ -173,7 +173,7 @@ The fee is a live setting: a transaction built against an earlier value fails th
 }
 ```
 
-A mint with `fixed_txout_quotes` `true` accepts mint quote outputs with an `amount` and spends through a [`template` leaf](10.md#condition-leaves). Without it, `mint_quote_outputs` holds at most the rotation quote.
+A mint with `fixed_txout_quotes` `true` accepts mint quote outputs with an `amount` and spends through a [`template` leaf](10.md#optional-leaves). Without it, `mint_quote_outputs` holds at most the rotation quote.
 
 [00]: 00.md
 [02]: 02.md
