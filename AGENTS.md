@@ -10,15 +10,19 @@ This is a **markdown-only** specs repo. There is no application code, no build s
 
 ```
 .
-├── 00.md – 29.md          # NUT specifications (zero-padded two-digit numbers)
+├── 00.md – 30.md          # NUT specifications (zero-padded two-digit numbers)
 ├── README.md               # Spec index with mandatory/optional tables and implementation support matrix
+├── CONTRIBUTING.md         # Contribution guide, PR naming, review and merge process
 ├── error_codes.md          # Protocol error code registry
 ├── SECURITY.md             # Vulnerability reporting
 ├── LICENSE                 # MIT
+├── .gitignore
 ├── tests/
-│   └── NN-tests.md        # Test vectors for NUTs involving crypto or serialization
+│   ├── NN-tests.md        # Test vectors for NUTs involving crypto or serialization
+│   └── README.md
 ├── suppl/
-│   └── NN.md              # Supplementary material for specific NUTs
+│   ├── NN.md              # Supplementary material for specific NUTs
+│   └── README.md
 └── .github/
     └── workflows/
         ├── prettier.yml    # Formatting CI (runs on every push/PR)
@@ -114,10 +118,14 @@ If successful, `Bob` will respond with a `PostExampleResponse`:
 
 Prettier is enforced via CI on every push and PR (Node.js 20, default Prettier config).
 
-- **Check**: `npx prettier --check .`
-- **Auto-fix**: `npx prettier --write .`
+- **Check**: `npx prettier@3.9.1 --check .`
+- **Auto-fix**: `npx prettier@3.9.1 --write .`
 
 Always run the check before committing. If Prettier reformats your changes, that is the canonical style — do not override it.
+
+## Review and Merge
+
+NUT changes require at least two approving reviews from core maintainers/contributors before merge, and new NUTs are merged only after at least two implementation PRs across different projects are marked "Ready to Merge". Follow the process in [`CONTRIBUTING.md`](CONTRIBUTING.md); do not shortcut it.
 
 ## Test Vectors
 
@@ -151,5 +159,5 @@ The file `error_codes.md` is the central registry of protocol error codes. When 
 - **Do not alter the reference link block format.** Keep one `[NN]: NN.md` per line, sorted numerically.
 - **Do not change existing API endpoint paths** unless the NUT is explicitly being revised with a breaking change.
 - **Preserve the role names.** The protocol uses `Alice` (wallet), `Bob` (mint), and `Carol` (receiver) consistently across all specs.
-- **Keep JSON examples valid** (modulo the `<type>` placeholder convention). Trailing commas are acceptable in illustrative examples per existing convention.
+- **Keep JSON examples valid** (except for `<type>` placeholders and `...` ellipses).
 - **Do not add supplementary material to the NUT file itself.** Extended material (e.g. redirect URL flows) belongs in `suppl/NN.md`.
