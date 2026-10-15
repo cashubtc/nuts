@@ -49,7 +49,7 @@ A `MeltOutput` is a melt quote ([NUT-05][05]), the fee reserve this transaction 
 }
 ```
 
-A `MintQuoteOutput` is the [remainder quote](#txout-quote) a melt may create, named by its lock key, a 33-byte compressed secp256k1 public key:
+A `MintQuoteOutput` is the [remainder quote](#remainder-quote) a melt may create, named by its lock key, a 33-byte compressed secp256k1 public key:
 
 ```json
 {
@@ -98,6 +98,10 @@ Either way, a mint supporting [NUT-19][19] **MAY** cache this endpoint's respons
 
 A txout quote is a [NUT-04][04] mint quote created by a transaction. Its method is `txout`, a name reserved for these quotes.
 
+A txout quote is fetched at `GET /v1/mint/quote/txout/{quote_id}` and redeemed in full: at `POST /v1/mint/txout`, or as a quote input whose `amount` is its whole mintable amount. There is no `POST /v1/mint/quote/txout`; only a transaction creates one. An id that names no quote **MUST** be answered with error `20010`, so a wallet can tell a remainder quote that was never created from a failed lookup.
+
+### Remainder quote
+
 The _remainder quote_ is the txout quote a melt creates on settlement, only when its blinded outputs cannot be signed ([settlement](#settlement)). It is in the transaction's unit and locked to the output's `pubkey`. Its `amount` and `amount_paid` both equal the value it holds, its `request` is the empty string, and its `expiry` is `null`.
 
 The remainder quote's id derives from its melt quote's id, as UTF-8 bytes:
@@ -109,8 +113,6 @@ quote_id = hex(tagged_hash("Cashu_RemainderQuoteId", melt_quote_id))
 The remainder quote is a failsafe for a keyset rotation while a melt is pending: it holds the amount of the blinded outputs the mint could not sign, and the change their blank outputs would have taken. A wallet **SHOULD** take a melt's unspent fee reserve in blank outputs.
 
 A seeded wallet **SHOULD** derive the remainder quote's lock key with the [NUT-13](13.md#v3-message) v3 message: `derivation_type_byte` `0x06`, `scope_bytes` the mint's identity key, `counter_k` `0`, and suffix `SHA256(id)`, where `id` is the melt quote id as UTF-8 bytes, rejection sampled against `SECP256K1_N` as for type `0x04`. It uses no quote counter.
-
-A txout quote is fetched at `GET /v1/mint/quote/txout/{quote_id}` and redeemed in full: at `POST /v1/mint/txout`, or as a quote input whose `amount` is its whole mintable amount. There is no `POST /v1/mint/quote/txout`; only a transaction creates one. An id that names no quote **MUST** be answered with error `20010`, so a wallet can tell a remainder quote that was never created from a failed lookup.
 
 ## Response
 
