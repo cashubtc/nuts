@@ -88,7 +88,7 @@ A transaction with a melt quote follows [NUT-05][05]'s pending and settlement ha
 
 Before it initiates the payment, the mint **MUST** complete every check that signing the blinded messages and creating the remainder quote depend on, so that once the payment succeeds only a mid-transaction keyset inactivation can alter the settlement.
 
-If the keyset of `blinded_outputs` has been inactivated by the time the payment settles, the mint cannot sign them ([NUT-02](02.md#active-keysets)), and `signatures` is empty. The remainder quote then holds their amount and the `change` the blank outputs would have held. If the request carries no `MintQuoteOutput`, both are forfeit to the mint.
+If the keyset of `blinded_outputs` has been inactivated by the time the payment settles, the mint cannot sign them ([NUT-02](02.md#active-keysets)), and `signatures` is empty. The remainder quote then holds their amount and the `change` the blank outputs would have held. If the request carries no remainder quote, both are forfeit to the mint.
 
 A transaction with a melt quote is recorded by that quote, as in a [NUT-05][05] melt: it reaches `PAID` only once the transaction has settled, and its `change` field ([NUT-08][08]) then carries the blind signatures for `blinded_outputs` as `signatures` does, empty if they were not signed. A wallet waiting on a pending transaction polls the melt quote and then fetches the remainder quote by its id, or subscribes to both from the start ([NUT-17][17]).
 
