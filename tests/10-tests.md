@@ -132,7 +132,7 @@ For contrast, a bearer proof with no conditions: private key `7` travels as spen
 
 ## Worked example: a template covenant
 
-A proof that key `3` can only spend into change quotes locked to the two lock keys of the [proof to two change quotes](#transaction-transcripts) transaction below. The `template` leaf lists them in `dests`; the internal key is the same NUMS offset as the [auditable lock](#worked-example-auditable-lock-with-disclosure) (`u = 7`), so no key path exists. The spend is the swap's 8-sat input (same amount, keyset id and `C`) under this secret, into that transaction's two change quotes.
+A proof that key `3` can only spend into fixed txout quotes locked to the two lock keys of the [proof to two fixed txout quotes](#transaction-transcripts) transaction below. The `template` leaf lists them in `dests`; the internal key is the same NUMS offset as the [auditable lock](#worked-example-auditable-lock-with-disclosure) (`u = 7`), so no key path exists. The spend is the swap's 8-sat input (same amount, keyset id and `C`) under this secret, into that transaction's two change quotes.
 
 ```json
 {
@@ -172,7 +172,7 @@ Key `3`'s script-path witness over that `input_digest`:
 }
 ```
 
-The same proof spent with the remainder quote locked to key `4` (`02e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd13`) instead, which `dests` does not list, **MUST** be rejected whatever it signs.
+The same proof spent with the rotation quote locked to key `4` (`02e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd13`) instead, which `dests` does not list, **MUST** be rejected whatever it signs.
 
 ## Worked example: an arbiter escrow
 
@@ -211,7 +211,7 @@ The arbiter and refund leaves pair and coop is promoted, so `merkle_root = branc
 }
 ```
 
-A change quote to the arbiter's own key is outside `dests`, so no arbiter signature can satisfy the leaf with it.
+A txout quote to the arbiter's own key is outside `dests`, so no arbiter signature can satisfy the leaf with it.
 
 ## Worked example: a commit leaf
 
