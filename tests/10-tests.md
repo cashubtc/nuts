@@ -132,7 +132,7 @@ For contrast, a bearer proof with no conditions: private key `7` travels as spen
 
 ## Worked example: a template covenant
 
-A proof that key `3` can only spend into fixed txout quotes locked to the two lock keys of the [proof to two fixed txout quotes](#transaction-transcripts) transaction below. The `template` leaf lists them in `dests`; the internal key is the same NUMS offset as the [auditable lock](#worked-example-auditable-lock-with-disclosure) (`u = 7`), so no key path exists. The spend is the swap's 8-sat input (same amount, keyset id and `C`) under this secret, into that transaction's two change quotes.
+A proof that key `3` can only spend into fixed txout quotes locked to the two lock keys of the [proof to two fixed txout quotes](#transaction-transcripts) transaction below. The `template` leaf lists them in `dests`; the internal key is the same NUMS offset as the [auditable lock](#worked-example-auditable-lock-with-disclosure) (`u = 7`), so no key path exists. The spend is the swap's 8-sat input (same amount, keyset id and `C`) under this secret, into that transaction's two fixed txout quotes.
 
 ```json
 {
@@ -145,9 +145,9 @@ A proof that key `3` can only spend into fixed txout quotes locked to the two lo
   "merkle_root": "8d41634c46c8ee248a0b8bf65c2a4cd883ece04925e366205e6385cb3e41413d",
   "tweak": "41e5456a9808ef698ad6613fe86647c48d9b75ca0f8abe91a3d01debbbff0115",
   "secret": "03a07a07169b3dbad5ea5e6f7771acb326e788e42e38948d9d2d5f5d3f29b38cf1",
-  "transaction_digest": "bdd8b9b615320d7474ce1e3cfc1a3d71ed95b4fb465c8b2717c6d35d56ada5f5",
+  "transaction_digest": "7431ff2a0c9cda33cd86db4473041cb2577c137e4ce122c862829f623774d3de",
   "input_id": "c7f25fbb091291c9c8e26f68c4b3d9a27a37449ad1923be3b3aa276a25636c29",
-  "input_digest": "cbea276f9631f571c4175cf00f9d4c7299ab10aef104a5220047744e12378a54"
+  "input_digest": "7dc8094f0a3ca7dd1df79a8289fcbd43f71e9b4202b8a62fc860df7a50dc9f4e"
 }
 ```
 
@@ -167,12 +167,12 @@ Key `3`'s script-path witness over that `input_digest`:
     "path": []
   },
   "signatures": [
-    "e4ca7f75dc086e86314cb53020f3a08593b5b86642ee25417abdc8c1265de1680835b675b38802dc775d0b4a39596c3c5641e28e00cb80b23ee6ced7bc13ce53"
+    "9eafc4d00d4017c0946531e79c772de23234b7682a1839d46e1f933ba0b97854b1b95e9202f8fd7b1054a33b86690cab6eb352bc8a5a785635c7ddaeb267d8be"
   ]
 }
 ```
 
-The same proof spent with the rotation quote locked to key `4` (`02e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd13`) instead, which `dests` does not list, **MUST** be rejected whatever it signs.
+The same proof spent with its second fixed txout quote locked to key `4` (`02e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd13`) instead, which `dests` does not list, **MUST** be rejected whatever it signs.
 
 ## Worked example: an arbiter escrow
 
@@ -193,7 +193,7 @@ Three leaves under the NUMS offset `u = 7`, so no key path exists. The arbiter (
 }
 ```
 
-The arbiter and refund leaves pair and coop is promoted, so `merkle_root = branch(branch(leaf_hash_arbiter, leaf_hash_refund), leaf_hash_coop)`. The seller builds a split and the arbiter signs it: the swap's 8-sat input under this secret into 5 sat to the seller (`id_preimage` `55` repeated 32 times) and the remainder to the buyer (`33` repeated 32 times) (`transaction_digest` `a8e82a4d885ebc6640ed74ee98556678123005656573ad1d9db3fc1b2cb95537`, `input_id` `e34b281fd3ade8e3c78cfd147011cb8e00899913e12b637d59b9ad53885b2dd7`, `input_digest` `0fe83255342b70adcc693247e6e3f29ceba655bd3b571192efeb8923f487df95`). The arbiter's witness reveals its leaf with `path = [leaf_hash_refund, leaf_hash_coop]`:
+The arbiter and refund leaves pair and coop is promoted, so `merkle_root = branch(branch(leaf_hash_arbiter, leaf_hash_refund), leaf_hash_coop)`. The seller builds a split and the arbiter signs it: the swap's 8-sat input under this secret into 5 sat to the seller (`id_preimage` `55` repeated 32 times) and 3 sat to the buyer (`33` repeated 32 times) (`transaction_digest` `191f1ee87fe691172ee533a18975538fdcf90a4119d997d422e9137b59e2ed73`, `input_id` `e34b281fd3ade8e3c78cfd147011cb8e00899913e12b637d59b9ad53885b2dd7`, `input_digest` `f0f868802d92c310291c5b831d1bfb598f21a47c3dfc7ac72b5f7e03b7ca272b`). The arbiter's witness reveals its leaf with `path = [leaf_hash_refund, leaf_hash_coop]`:
 
 ```json
 {
@@ -206,7 +206,7 @@ The arbiter and refund leaves pair and coop is promoted, so `merkle_root = branc
     ]
   },
   "signatures": [
-    "57301fe6dbd4372d4062c1c2ed41c718a73b43e7a236f4982098e8431885697386bb01c2f1a217424702a7341fc84fbfa7c0bd6c9a776a3b6fe17ac9bca8b0ad"
+    "e6bdbdcea86847c3e974e0f1d327adf3fd85fa07361385e365b372c6e82eec5227d2c022d5b7bd5d21f042b7ae60fe48d6c418d0850d720ff510c4b27f56111e"
   ]
 }
 ```
@@ -574,6 +574,83 @@ The melt shares the swap's `input_id` but not its `input_digest`, so neither wit
   "digest": "bece17daa86a50004c43ee0a54f2081c811b688d351e869e5e666765e9cfb375",
   "input_id": "900fb575d55eed27f7f52db079a2bf4843e674c461726eca70b90943cb3c7d07",
   "input_digest": "c42ad213ea794a86879e1cb2d8a11e6e80aa039d755b1cbe64a7210d643699d7"
+}
+```
+
+**Proof to two fixed txout quotes.** Splitting the swap's 8-sat proof between fixed [txout quotes](../XX.md#fixed-txout-quote) of 3 and 5, with the lock keys and `id_preimage`s a seeded wallet derives at quote counters 2 and 3 of the [NUT-13](13-tests.md) test seed and identity, in that request order:
+
+```json
+{
+  "mint_quote_outputs": [
+    {
+      "id_preimage": "2caf99f5aef46b625beb02484fc76b467cd9c025c68ce8af02b70b65b6d21f1d",
+      "pubkey": "03db67a892bc5c2c37c1a7979ba28706732deef4b92d69a5f68ad0ab448126d38b",
+      "amount": 3
+    },
+    {
+      "id_preimage": "132004e11a17cea14291ed197bef25252fc1d5340fb23b401f4ac9d399d07b8a",
+      "pubkey": "02ccdef4b1ff9e02ee1c142505aa501f2ae3ef30ad9837234d501c26e974f18ae2",
+      "amount": 5
+    }
+  ]
+}
+```
+
+Each container carries its amount first, and each quote id is `hex(tagged_hash("Cashu_QuoteId", id_preimage))` as UTF-8:
+
+```
+23 006b | 01 0001 03 | 02 0021 03db67...26d38b | 03 0040 utf8("48f528...109815")
+23 006b | 01 0001 05 | 02 0021 02ccde...f18ae2 | 03 0040 utf8("7db215...ec52ae")
+```
+
+The proof input keeps the swap's `input_id`:
+
+```json
+{
+  "mint_quote_output_containers": [
+    "23006b0100010302002103db67a892bc5c2c37c1a7979ba28706732deef4b92d69a5f68ad0ab448126d38b03004034386635323834646435356433626161653463343361356336636630646562306562613061316337653031653738386634353365323466343866313039383135",
+    "23006b0100010502002102ccdef4b1ff9e02ee1c142505aa501f2ae3ef30ad9837234d501c26e974f18ae203004037646232313538366635626664383935383936316364396134616339373233326162333735366165666233396136613365306366613434616462656335326165"
+  ],
+  "quote_ids": [
+    "48f5284dd55d3baae4c43a5c6cf0deb0eba0a1c7e01e788f453e24f48f109815",
+    "7db21586f5bfd8958961cd9a4ac97232ab3756aefb39a6a3e0cfa44adbec52ae"
+  ],
+  "transcript": "11008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332723006b0100010302002103db67a892bc5c2c37c1a7979ba28706732deef4b92d69a5f68ad0ab448126d38b0300403438663532383464643535643362616165346334336135633663663064656230656261306131633765303165373838663435336532346634386631303938313523006b0100010502002102ccdef4b1ff9e02ee1c142505aa501f2ae3ef30ad9837234d501c26e974f18ae203004037646232313538366635626664383935383936316364396134616339373233326162333735366165666233396136613365306366613434616462656335326165",
+  "digest": "1e96a6c5f15dffea09102e335b02923c17f5c91fef9410d3d874ca1be04fa85f",
+  "input_id": "900fb575d55eed27f7f52db079a2bf4843e674c461726eca70b90943cb3c7d07",
+  "input_digest": "35e5ebc93588d09d19b7595d732210c3f462d98363f3aaead6a8d6d00d7d412f"
+}
+```
+
+**Input-bound txout quote.** The swap's proof and the mint vector's quote input (16 in), into the 3-sat quote above and a 13-sat quote locked to quote counter 3's key with no `id_preimage`. Its id is bound to the inputs, `hex(tagged_hash("Cashu_InputQuoteId", SHA256(input section) || u32_BE(1)))`, the input section being the two input containers as serialized:
+
+```json
+{
+  "mint_quote_outputs": [
+    {
+      "id_preimage": "2caf99f5aef46b625beb02484fc76b467cd9c025c68ce8af02b70b65b6d21f1d",
+      "pubkey": "03db67a892bc5c2c37c1a7979ba28706732deef4b92d69a5f68ad0ab448126d38b",
+      "amount": 3
+    },
+    {
+      "pubkey": "02ccdef4b1ff9e02ee1c142505aa501f2ae3ef30ad9837234d501c26e974f18ae2",
+      "amount": 13
+    }
+  ]
+}
+```
+
+```json
+{
+  "input_section_hash": "e3e06afdc3dfecf19c58797baebc07b939aa70f4f35f89685a91e699d15e171f",
+  "quote_ids": [
+    "48f5284dd55d3baae4c43a5c6cf0deb0eba0a1c7e01e788f453e24f48f109815",
+    "55b8704228307aacfa9ac19243e9872c8aceee6673f9f7b28b115320369d5e14"
+  ],
+  "transcript": "11008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332712003d0100010802000f71756f74652d6d696e742d303030310300210292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d20981204000023006b0100010302002103db67a892bc5c2c37c1a7979ba28706732deef4b92d69a5f68ad0ab448126d38b0300403438663532383464643535643362616165346334336135633663663064656230656261306131633765303165373838663435336532346634386631303938313523006b0100010d02002102ccdef4b1ff9e02ee1c142505aa501f2ae3ef30ad9837234d501c26e974f18ae203004035356238373034323238333037616163666139616331393234336539383732633861636565653636373366396637623238623131353332303336396435653134",
+  "digest": "49d39125cfa48a8bfc262286981a80e7d4d2366bed606cb86618a2b1479b4a64",
+  "input_id": "900fb575d55eed27f7f52db079a2bf4843e674c461726eca70b90943cb3c7d07",
+  "input_digest": "788bfa90df7349b1db06750fcf53f230a3c85f1d319c4776ac3024f34c1873ae"
 }
 ```
 
