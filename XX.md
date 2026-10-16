@@ -163,7 +163,7 @@ The fee is a live setting: a transaction built against an earlier value fails th
 [08]: 08.md
 [09]: 09.md
 [10]: 10.md
-[11]: 11.md
+[11]: legacy/11.md
 [17]: 17.md
 [19]: 19.md
 [30]: 30.md
