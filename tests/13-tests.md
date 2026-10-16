@@ -197,6 +197,18 @@ Types `0x04` (quote lock key) and `0x05` (quote id preimage) frame the mint's [N
 ]
 ```
 
+Type `0x06` (rotation quote lock key, [NUT-XX](../XX.md#rotation-quote)) has the same scope, counter `0` and suffix `SHA256(melt_quote_id)`. For melt quote `quote-melt-0001`, with `quote_id` its rotation quote id, `hex(tagged_hash("Cashu_RotationQuoteId", melt_quote_id))`:
+
+```json
+{
+  "melt_quote_id": "quote-melt-0001",
+  "suffix": "953fb61ead585098303840cd5ecbc3f030c3f25f2746d5538c95820e4a67d033",
+  "privkey": "b16be68b95ba51c192a5f34a34d0f3bfa673f1956bb0bfdc16b750f804efc7c2",
+  "pubkey": "030d037dacc95764fe0e07ba08031137aba13b659b98cb7c5d3ebec6f552834040",
+  "quote_id": "044f928afebcd549c12a68cf1bed4f925c12d71448131df2a766fb03891c7bcf"
+}
+```
+
 ## P2PK Derivation (pre-v3 keysets)
 
 Using [NUT-13](../13.md) derivation procedure for P2PK, we derive values starting from the following BIP39 mnemonic:

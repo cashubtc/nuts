@@ -484,6 +484,34 @@ The melt shares the swap's `input_id` but not its `input_digest`, so neither wit
 }
 ```
 
+**Mint quote to melt.** Paying melt quote `quote-melt-0001` straight from mint quote `quote-mint-0001` in one transaction ([NUT-XX](../XX.md)): no proofs and no change outputs, so the transcript is the mint vector's quote input container followed by the melt vector's melt quote container. The quote input's bytes are unchanged, so it keeps the mint vector's `input_id`; the new transcript gives it a new `input_digest`, which its lock key signs:
+
+```json
+{
+  "transcript": "12003d0100010802000f71756f74652d6d696e742d303030310300210292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d2098120400002200160100010802000f71756f74652d6d656c742d30303031",
+  "digest": "8c54caecbdd6fdc5ae77bea97ed63dbf94a6919d6bc5d71cd7145765b52e49f3",
+  "input_id": "d294012dd54976b05eb3e36eb218b9a6d66b19d79ec122944a35b99b8ddd8839",
+  "input_digest": "492728212791e2222a327b9c4fe6c17e2da0e9e7d1aebbe0062c3585909edb57"
+}
+```
+
+**Melt with rotation quote.** The melt with change, backed by a [rotation quote](../XX.md#rotation-quote) locked to the [NUT-13](13-tests.md) type `0x06` key for `quote-melt-0001` (`030d037dacc95764fe0e07ba08031137aba13b659b98cb7c5d3ebec6f552834040`). Its mint quote output carries no amount and follows the melt quote, its quote id the rotation quote id as UTF-8:
+
+```
+23 0067 | 02 0021 030d03...834040 | 03 0040 utf8("044f92...1c7bcf")
+```
+
+```json
+{
+  "mint_quote_output_container": "230067020021030d037dacc95764fe0e07ba08031137aba13b659b98cb7c5d3ebec6f55283404003004030343466393238616665626364353439633132613638636631626564346639323563313264373134343831333164663261373636666230333839316337626366",
+  "quote_id": "044f928afebcd549c12a68cf1bed4f925c12d71448131df2a766fb03891c7bcf",
+  "transcript": "11008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332721004a01000002002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee21004a01000002002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee2200160100010802000f71756f74652d6d656c742d30303031230067020021030d037dacc95764fe0e07ba08031137aba13b659b98cb7c5d3ebec6f55283404003004030343466393238616665626364353439633132613638636631626564346639323563313264373134343831333164663261373636666230333839316337626366",
+  "digest": "bece17daa86a50004c43ee0a54f2081c811b688d351e869e5e666765e9cfb375",
+  "input_id": "900fb575d55eed27f7f52db079a2bf4843e674c461726eca70b90943cb3c7d07",
+  "input_digest": "c42ad213ea794a86879e1cb2d8a11e6e80aa039d755b1cbe64a7210d643699d7"
+}
+```
+
 ## Transport strings
 
 Each string is its prefix plus base64url (no padding) of the JSON shown. The JSON is not canonical, so decoders parse rather than compare.
