@@ -6,7 +6,7 @@
 
 ---
 
-This document describes a single endpoint that carries any [NUT-10][10] transaction: proofs and paid mint quotes in, blinded messages and a melt quote out, in one request. The fixed-shape endpoints of [NUT-03][03], [NUT-04][04] and [NUT-05][05] remain for the operations they name; this endpoint carries those and every other combination, for example paying an invoice straight from a paid mint quote, or minting a quote and consolidating proofs in one swap.
+This document describes a single endpoint that carries any [NUT-10][10] transaction: proofs and paid mint quotes in, blinded messages, a melt quote and txout quotes out, in one request. The fixed-shape endpoints of [NUT-03][03], [NUT-04][04] and [NUT-05][05] remain for the operations they name; this endpoint carries those and every other combination, for example paying an invoice straight from a paid mint quote, or minting a quote and consolidating proofs in one swap.
 
 ## Request
 
@@ -49,11 +49,17 @@ A `MeltOutput` is a melt quote ([NUT-05][05]), the fee reserve this transaction 
 }
 ```
 
-A `MintQuoteOutput` is the [rotation quote](#rotation-quote) a melt may create, named by its lock key, a 33-byte compressed secp256k1 public key:
+A `MintQuoteOutput` is a [txout quote](#txout-quote) this transaction creates. Its `pubkey` is the quote's lock key, a 33-byte compressed secp256k1 public key.
+
+With an `amount`, it is a [fixed txout quote](#fixed-txout-quote), and may carry `id_preimage`, the 32-byte preimage of its id.
+
+Without an `amount`, it is the [_rotation quote_](#rotation-quote) a melt may create:
 
 ```json
 {
-  "pubkey": <hex_str>
+  "pubkey": <hex_str>,
+  "amount": <int>, // omitted on the rotation quote
+  "id_preimage": <hex_str> // optional, fixed txout quotes only
 }
 ```
 
@@ -65,14 +71,15 @@ Any array **MAY** be empty or omitted, and each is subject to the mint's [NUT-06
 - Every v3 input **MUST** carry a witness over its input digest; pre-v3 proofs keep their own rules, per [NUT-10](10.md#the-signing-rule). A pre-v3 proof with `SIG_ALL` ([NUT-11][11]) **MUST** be rejected: NUT-11 defines no `SIG_ALL` message for this endpoint.
 - Every mint quote **MUST** be locked and in the transaction's unit. Its `amount` **MUST** be positive and **MUST NOT** exceed its mintable amount, `amount_paid - amount_issued` ([NUT-04][04]).
 - All `blinded_outputs` **MUST** share one keyset in the transaction's unit ([NUT-04](04.md#nutroot-transactions-v3-keysets)). Beside a melt quote, that keyset's `final_expiry` ([NUT-02][02]) **MUST NOT** be earlier than the melt quote's `expiry`.
-- `mint_quote_outputs` **MUST NOT** hold more than one entry, the optional **rotation quote**, and **MUST** be empty unless the transaction has a melt quote and `blinded_outputs`.
+- A mint quote output with an `amount` **MUST** be positive. At most one **MAY** omit `amount`: the optional **rotation quote**, only in a transaction with a melt quote and `blinded_outputs`. An `id_preimage` **MUST NOT** repeat within the request, or derive an id that is already [claimed](04.md#derived-quote-ids). Lock keys may repeat, but for privacy each **SHOULD** be fresh: derived per [NUT-13][13] for the wallet's own quotes, or blinded per [NUT-28][28] for another party's key.
+- A transaction with a txout quote among its `mint_quote_inputs` **MUST NOT** carry a mint quote output with an `amount`.
 - `melt_quote_outputs` **MUST NOT** hold more than one quote; multi-melt is reserved for future specification. The quote **MUST** be in the transaction's unit, and its method is the one it was quoted under. Its `fee_reserve` **MUST** equal the quote's `fee_reserve`, or the `fee_reserve` of the entry its `fee_index` names. A melt quote is payable from proof inputs alone, on this endpoint as on [NUT-05][05].
 
 ### Balance
 
 ```
 amount_in  = sum(proof_inputs) + sum(mint quote input amounts)
-amount_out = sum(blinded_outputs) + melt.amount + melt.fee_reserve + fee
+amount_out = sum(blinded_outputs) + sum(mint quote output amounts) + melt.amount + melt.fee_reserve + fee
 change     = melt.fee_reserve - melt_fee_paid
 ```
 
@@ -84,13 +91,13 @@ Proofs are spent in full. Each quote's `amount_issued` grows by its input `amoun
 
 A transaction with no melt quote settles at once, like a swap ([NUT-03][03]), and its response carries the outcome. A wallet that lost the response recovers as after a swap: [NUT-07][07] shows whether its proofs were spent, and [NUT-09][09] returns its blind signatures.
 
-A transaction with a melt quote follows [NUT-05][05]'s pending and settlement handling, including `prefer_async`: the proofs and input quotes are pending while the payment is in flight, the blinded messages are signed, the rotation quote created and each quote's `amount_issued` raised only once it succeeds and a failed payment leaves the proofs unspent and the quotes untouched. While an input quote is pending, it reports its settled `amount_issued`, and the mint **MUST** reject any other transaction or mint request ([NUT-04][04]) that draws on it, with error `20005`.
+A transaction with a melt quote follows [NUT-05][05]'s pending and settlement handling, including `prefer_async`: the proofs and input quotes are pending while the payment is in flight, the blinded messages are signed, the txout quotes created and each quote's `amount_issued` raised only once it succeeds and a failed payment leaves the proofs unspent and the quotes untouched. While an input quote is pending, it reports its settled `amount_issued`, and the mint **MUST** reject any other transaction or mint request ([NUT-04][04]) that draws on it, with error `20005`.
 
-Before it initiates the payment, the mint **MUST** complete every check that signing the blinded messages and creating the rotation quote depend on, so that once the payment succeeds only a mid-transaction keyset inactivation can alter the settlement.
+Before it initiates the payment, the mint **MUST** complete every check that signing the blinded messages and creating the txout quotes depend on, so that once the payment succeeds only a mid-transaction keyset inactivation can alter the settlement.
 
 If the keyset of `blinded_outputs` has been inactivated by the time the payment settles, the mint cannot sign them ([NUT-02](02.md#active-keysets)), and `signatures` is empty. The rotation quote then holds their amount and the `change` the blank outputs would have held. If the request carries no rotation quote, both are forfeit to the mint.
 
-A transaction with a melt quote is recorded by that quote, as in a [NUT-05][05] melt: it reaches `PAID` only once the transaction has settled, and its `change` field ([NUT-08][08]) then carries the blind signatures for `blinded_outputs` as `signatures` does, empty if they were not signed. A wallet waiting on a pending transaction polls the melt quote and then fetches the rotation quote by its id, or subscribes to both from the start ([NUT-17][17]).
+A transaction with a melt quote is recorded by that quote, as in a [NUT-05][05] melt: it reaches `PAID` only once the transaction has settled, and its `change` field ([NUT-08][08]) then carries the blind signatures for `blinded_outputs` as `signatures` does, empty if they were not signed. A wallet waiting on a pending transaction polls the melt quote and then fetches each txout quote by its id, or subscribes to both from the start ([NUT-17][17]).
 
 Either way, a mint supporting [NUT-19][19] **MAY** cache this endpoint's responses, so a wallet that lost one can resend the request.
 
@@ -113,6 +120,18 @@ quote_id = hex(tagged_hash("Cashu_RotationQuoteId", melt_quote_id))
 The rotation quote is a failsafe for a keyset rotation while a melt is pending: it holds the amount of the blinded outputs the mint could not sign, and the change their blank outputs would have taken. A wallet **SHOULD** take a melt's unspent fee reserve in blank outputs.
 
 A seeded wallet **SHOULD** derive the rotation quote's lock key with the [NUT-13](13.md#v3-message) v3 message: `derivation_type_byte` `0x06`, `scope_bytes` the mint's identity key, `counter_k` `0`, and suffix `SHA256(id)`, where `id` is the melt quote id as UTF-8 bytes, rejection sampled against `SECP256K1_N` as for type `0x04`. It uses no quote counter.
+
+### Fixed txout quote
+
+A mint quote output with an `amount` creates a fixed txout quote on settlement, for that amount, in the transaction's unit and locked to its `pubkey`, with `request` the empty string and `expiry` `null`. Its id is [derived](04.md#derived-quote-ids) from the output's `id_preimage`. Without one, the mint computes it from the transaction's inputs:
+
+```
+quote_id = hex(tagged_hash("Cashu_InputQuoteId", SHA256(input section) || u32_BE(k)))
+```
+
+where the input section is the transcript's input containers (`0x1n`) as serialized ([NUT-10](10.md#the-transaction-transcript)) and `k` is the output's position among the request's mint quote outputs, from 0. An id derived from `id_preimage` is claimed once a transaction naming it is accepted, and is released only if its payment fails.
+
+A seeded wallet **SHOULD** derive each of its own fixed txout quotes' lock key and `id_preimage` from one quote counter value per [NUT-13](13.md#v3-message), types `0x04` and `0x05`, and recover them as the [NUT-13](13.md#restore-from-seed-phrase) restore procedure does for proofs. A fixed txout quote paying another party in a transaction signed for later **SHOULD** take an id bound to the inputs.
 
 ## Response
 
@@ -148,10 +167,13 @@ The fee is a live setting: a transaction built against an earlier value fails th
 {
   "XX": {
     "supported": <bool>,
-    "quote_input_fee_ppk": <int>
+    "quote_input_fee_ppk": <int>,
+    "fixed_txout_quotes": <bool>
   }
 }
 ```
+
+A mint with `fixed_txout_quotes` `true` accepts mint quote outputs with an `amount` and spends through a [`template` leaf](10.md#optional-leaves). Without it, `mint_quote_outputs` holds at most the rotation quote.
 
 [00]: 00.md
 [02]: 02.md
@@ -164,6 +186,8 @@ The fee is a live setting: a transaction built against an earlier value fails th
 [09]: 09.md
 [10]: 10.md
 [11]: 11.md
+[13]: 13.md
 [17]: 17.md
 [19]: 19.md
+[28]: 28.md
 [30]: 30.md
