@@ -64,7 +64,7 @@ Any array **MAY** be empty or omitted, and each is subject to the mint's [NUT-06
 - The transaction **MUST** have at least one input and one output, and **MUST NOT** repeat a proof `Y`, a mint quote id ([NUT-10][10]) or a `B_` ([NUT-00][00]).
 - Every v3 input **MUST** carry a witness over its input digest; pre-v3 proofs keep their own rules, per [NUT-10](10.md#the-signing-rule). A pre-v3 proof with `SIG_ALL` ([NUT-11][11]) **MUST** be rejected: NUT-11 defines no `SIG_ALL` message for this endpoint.
 - Every mint quote **MUST** be locked and in the transaction's unit. Its `amount` **MUST** be positive and **MUST NOT** exceed its mintable amount, `amount_paid - amount_issued` ([NUT-04][04]).
-- All `blinded_outputs` **MUST** share one keyset in the transaction's unit ([NUT-04](04.md#nutroot-transactions-v3-keysets)).
+- All `blinded_outputs` **MUST** share one keyset in the transaction's unit ([NUT-04](04.md#nutroot-transactions-v3-keysets)). Beside a melt quote, that keyset's `final_expiry` ([NUT-02][02]) **MUST NOT** be earlier than the melt quote's `expiry`.
 - `mint_quote_outputs` **MUST NOT** hold more than one entry, the optional **rotation quote**, and **MUST** be empty unless the transaction has a melt quote and `blinded_outputs`.
 - `melt_quote_outputs` **MUST NOT** hold more than one quote; multi-melt is reserved for future specification. The quote **MUST** be in the transaction's unit, and its method is the one it was quoted under. Its `fee_reserve` **MUST** equal the quote's `fee_reserve`, or the `fee_reserve` of the entry its `fee_index` names. A melt quote is payable from proof inputs alone, on this endpoint as on [NUT-05][05].
 
