@@ -94,11 +94,11 @@ d4d6e5d561a3e6430dfea89f9f786312c29aa88db0456f3828663c15d468aa7d71650eaa4718eca7
 Reversing the two **output pairs** (amount and original `B_` together)
 changes the tagged digest to
 `c89da53d5da23ea64167e0dc3ff0d8c7b824fa8d6ad5727dddd35076d47417c2`.
-The signature above cannot authorize that reordered request. Neither this
-digest nor its signature is interchangeable with ordinary NUT-11 `SIG_ALL`
-or the previous raw-point prototype, which under the **same** tag produced
+The signature above cannot authorize that reordered request or an ordinary
+NUT-11 `SIG_ALL` swap. Incorrectly framing the raw compressed point instead
+of hashing it would produce
 `2e96fda9957222af5e1a8e8c581ab12ed8b5180108a554bdb934d661d9bc2c71`
-for the one-output example.
+for the one-output example; that digest is not valid for this mode.
 
 ## Two-input P2PK and HTLC authorization vectors
 
@@ -184,6 +184,6 @@ c6a2b4c82137bac2118b37d0d086c18aa893893aa674b41304039dd2359cb503512d360b963970b4
 Both signatures were produced with 32 zero BIP-340 auxiliary bytes and go
 in the first input's HTLC witness. Reordering the outputs changes the digest
 to `f1392f8a4083843c1875a43593675b97524a462469526d78462f1d8c321f0289`;
-using the previous raw-point encoding would instead yield
+framing the raw compressed points instead of hashing them would yield
 `67003e2d948944565c26d5a31de6874da42bab8c2558dcb980fa97b75c162de5`.
 Neither alternate digest authorizes the original request in the current mode.
