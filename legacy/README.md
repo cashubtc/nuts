@@ -1,7 +1,7 @@
 # Legacy specifications
 
-These documents specify the parts of the Cashu protocol that keysets with version
-byte `00` or `01` still use. Keysets with version byte `02` or later follow the
+These documents specify the parts of the Cashu protocol that
+[pre-v3 keysets](../02.md#keyset-id-v3) still use. v3 keysets follow the
 [current specifications](../README.md) only.
 
 | NUT #       | Description                                 | Current specification |
