@@ -31,6 +31,8 @@ f1 0035 | 01 0004 504f5354 | 02 0008 2f76312f73776170 | 03 0020 bc1423...edce19
 
 The signature verifies against the BAT's `secret`; the BAT itself never appears in the transcript. A request without a body signs `body_hash = SHA256("")` = `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`.
 
+A mint served under a path signs the target relative to its mint URL: with mint URL `https://mint.example/Bitcoin`, this request to `https://mint.example/Bitcoin/v1/swap` has target `/v1/swap`, and the transcript and digests above are unchanged.
+
 ## Request transcript with a query string
 
 A BAT authorizing `GET /v1/mint/quote/bolt11/quote123?b=2&a=1&q=a%20b` with no body. The query parameters are illustrative: no current endpoint takes any, and the vector pins the target encoding, not an API shape. The target is the endpoint path relative to the mint URL, exactly as sent: the query string rides along unsorted and percent-encoded as transmitted, and the absent body hashes the empty byte string.
