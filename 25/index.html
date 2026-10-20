@@ -11,6 +11,10 @@
         <link rel="canonical" href="https://cashubtc.github.io/nuts/25/">
       
       
+        <link rel="prev" href="../24/">
+      
+      
+        <link rel="next" href="../26/">
       
       
         
@@ -21,7 +25,7 @@
     
     
       
-        <title>NUT-25: BOLT12 - Cashu NUTs Specifications</title>
+        <title>NUT-25 - Payment Method: BOLT12 - Cashu NUTs Specifications</title>
       
     
     
@@ -108,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              NUT-25: BOLT12
+              NUT-25 - Payment Method: BOLT12
             
           </span>
         </div>
@@ -295,8 +299,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -307,13 +313,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
@@ -334,7 +338,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -604,6 +608,8 @@
                 
   
   
+    
+  
   
   
     
@@ -613,13 +619,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
         
           
           <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
@@ -640,7 +644,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1086,6 +1090,394 @@
     
   
     NUT-22 - Blind authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-23 - Payment Method: BOLT11
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../24/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-24 - HTTP 402 Payment Required
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-25 - Payment Method: BOLT12
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-25 - Payment Method: BOLT12
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mint-quote" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mint Quote
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Mint Quote">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multiple-issuances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multiple Issuances
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mint-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mint Settings
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Mint Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-mintmethodsetting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example MintMethodSetting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#melt-quote" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Melt Quote
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Melt Quote">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#melting-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Melting Tokens
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-meltmethodsetting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example MeltMethodSetting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../26/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-26 - Payment Request Bech32m Encoding
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../27/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-27 - Nostr Mint Backup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../28/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-28 - Pay to Blinded Key (P2BK)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-29 - Batched Mint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../30/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-30 - Payment Method: Onchain
   
 
     
