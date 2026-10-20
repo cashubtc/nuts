@@ -126,25 +126,6 @@ Alice's script-path witness after the locktime:
 
 For contrast, a bearer proof with no conditions: private key `7` travels as spend info `k`, and the secret is its bare public key `025cbdf0646e5db4eaa398f365f2ea7a0e3d419b7e0330e39ce92bddedcac4f9bc`.
 
-## Worked example: two leaves and a filled path
-
-A two-leaf tree under internal key `6`. Leaf 0 has the unallocated type `0x05`; leaf 1 is an `after` leaf (key `3`, time `1758240000`), spendable with `path = [leaf_hash_0]` once its locktime passes.
-
-```json
-{
-  "internal_key": "03fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556",
-  "leaf_0_unknown_type": "00050200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f90a002103acd484e2f0c7f65309ad178a9f559abde09796974c57e714c35f110dfc27ccbe",
-  "leaf_1_after": "00020200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f906000468cc9d00",
-  "leaf_hash_0": "8714a51c3019861df9c4d0d6a1f30f0465ea1252e9c3b949802f73eda61cb101",
-  "leaf_hash_1": "80468218b6e329d4d80682883617af0acd1d4a9d5b1658fbc448cc4781b4f254",
-  "merkle_root": "9d8170c0f86d30de108834ff1ee334decac6ae094fb07652801d9c159c7b1bed",
-  "tweak": "153e9c65e6bea3351f4e78145f328e5aae7e7a4722967bf347f057bcaa47bfba",
-  "secret": "02f4ff2c2894698847760b62bce9d0d6c6c745d0d85c83577a00337d75437bccf0"
-}
-```
-
-A witness revealing `leaf_0_unknown_type` with `path = [leaf_hash_1]` reconstructs the secret but **MUST** be rejected (unknown leaf type).
-
 ## Worked example: a commit leaf
 
 A NUMS offset `u = 7` (the offset of the [NUT-18 vectors](18-tests.md)) over a `threshold` leaf `n = 1` for key `3` and a `commit` leaf whose `hash` is `SHA256("external data")`. Key `3` spends through the `threshold` leaf with `path = [leaf_hash_commit]`; a witness revealing `leaf_commit` **MUST** be rejected.
@@ -165,11 +146,12 @@ A NUMS offset `u = 7` (the offset of the [NUT-18 vectors](18-tests.md)) over a `
 
 ## Rejection vectors
 
-`threshold_1of1_key3` with a four-byte field `0x09` appended is malformed:
+`threshold_1of1_key3` with a four-byte field `0x09` appended is malformed. The same leaf's bytes under the never-allocated type `0xff` parse to nothing: a tree containing it still commits, but a witness revealing it **MUST** be rejected.
 
 ```json
 {
-  "leaf_unknown_field": "00010200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9090004deadbeef"
+  "leaf_unknown_field": "00010200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9090004deadbeef",
+  "leaf_unknown_type": "00ff0200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
 }
 ```
 
