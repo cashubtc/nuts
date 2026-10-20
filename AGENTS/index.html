@@ -1,0 +1,1586 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://cashubtc.github.io/nuts/AGENTS/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>AGENTS.md - Cashu NUTs Specifications</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#agentsmd" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Cashu NUTs Specifications" class="md-header__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Cashu NUTs Specifications
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              AGENTS.md
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M8 13h8v-2H8zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4a5 5 0 0 0 5-5 5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cashubtc/nuts/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cashubtc/nuts
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Cashu NUTs Specifications" class="md-nav__button md-logo" aria-label="Cashu NUTs Specifications" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m5.45 5.6c-.39-.4-.88-.6-1.45-.6h-7l-2.08-.73.33-.94L13 16h2.8c.35 0 .63-.14.86-.37s.34-.51.34-.82c0-.54-.26-.91-.78-1.12L8.95 11H7v9l7 2 8.03-3c.01-.53-.19-1-.58-1.4M5 11H.984v11H5z"/></svg>
+
+    </a>
+    Cashu NUTs Specifications
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cashubtc/nuts/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cashubtc/nuts
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUTs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    NUTs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mandatory
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Mandatory
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-00 - Cryptography and Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-01 - Mint public keys
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-02 - Keysets and fees
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-03 - Swapping tokens
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-04 - Minting tokens
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-05 - Melting tokens
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-06 - Mint info
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optional
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Optional
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-07 - Token state check
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-08 - Overpaid Lightning fees
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-09 - Signature restore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-10 - Spending conditions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-11 - Pay-To-Pubkey (P2PK)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-12 - DLEQ proofs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-13 - Deterministic secrets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-14 - Hashed Timelock Contracts (HTLCs)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-15 - Partial multi-path payments (MPP)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-16 - Animated QR codes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-17 - WebSocket subscriptions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-18 - Payment requests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-19 - Cached Responses
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-20 - Signature on Mint Quote
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../21/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-21 - Clear authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-22 - Blind authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../23/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-23 - Payment Method: BOLT11
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../24/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-24 - HTTP 402 Payment Required
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../25/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-25 - Payment Method: BOLT12
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../26/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-26 - Payment Request Bech32m Encoding
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../27/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-27 - Nostr Mint Backup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../28/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-28 - Pay to Blinded Key (P2BK)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-29 - Batched Mint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../30/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NUT-30 - Payment Method: Onchain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="agentsmd">AGENTS.md<a class="headerlink" href="#agentsmd" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>This repository contains the <strong>Cashu protocol specifications</strong>, called <strong>NUTs</strong> (Notation, Usage, and Terminology). Cashu is an open-source ecash protocol for Bitcoin. Each NUT specifies a part of the protocol that wallets and mints implement to interoperate.</p>
+<p>This is a <strong>markdown-only</strong> specs repo. There is no application code, no build system, and no test runner. The only CI check is <strong>Prettier</strong> formatting on every push and pull request.</p>
+<h2 id="repository-layout">Repository Layout<a class="headerlink" href="#repository-layout" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="p">.</span>
+<span class="err">├──</span><span class="w"> </span><span class="mi">00</span><span class="p">.</span><span class="nx">md</span><span class="w"> </span><span class="err">–</span><span class="w"> </span><span class="mi">30</span><span class="p">.</span><span class="nx">md</span><span class="w">          </span><span class="err">#</span><span class="w"> </span><span class="nx">NUT</span><span class="w"> </span><span class="nx">specifications</span><span class="w"> </span><span class="p">(</span><span class="nx">zero</span><span class="o">-</span><span class="nx">padded</span><span class="w"> </span><span class="nx">two</span><span class="o">-</span><span class="nx">digit</span><span class="w"> </span><span class="nx">numbers</span><span class="p">)</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">README</span><span class="p">.</span><span class="nx">md</span><span class="w">               </span><span class="err">#</span><span class="w"> </span><span class="nx">Spec</span><span class="w"> </span><span class="nx">index</span><span class="w"> </span><span class="nx">with</span><span class="w"> </span><span class="nx">mandatory</span><span class="o">/</span><span class="nx">optional</span><span class="w"> </span><span class="nx">tables</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="nx">implementation</span><span class="w"> </span><span class="nx">support</span><span class="w"> </span><span class="nx">matrix</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">CONTRIBUTING</span><span class="p">.</span><span class="nx">md</span><span class="w">         </span><span class="err">#</span><span class="w"> </span><span class="nx">Contribution</span><span class="w"> </span><span class="nx">guide</span><span class="p">,</span><span class="w"> </span><span class="nx">PR</span><span class="w"> </span><span class="nx">naming</span><span class="p">,</span><span class="w"> </span><span class="nx">review</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="nx">merge</span><span class="w"> </span><span class="nx">process</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">error_codes</span><span class="p">.</span><span class="nx">md</span><span class="w">          </span><span class="err">#</span><span class="w"> </span><span class="nx">Protocol</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="nx">code</span><span class="w"> </span><span class="nx">registry</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">SECURITY</span><span class="p">.</span><span class="nx">md</span><span class="w">             </span><span class="err">#</span><span class="w"> </span><span class="nx">Vulnerability</span><span class="w"> </span><span class="nx">reporting</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">LICENSE</span><span class="w">                 </span><span class="err">#</span><span class="w"> </span><span class="nx">MIT</span>
+<span class="err">├──</span><span class="w"> </span><span class="p">.</span><span class="nx">gitignore</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">tests</span><span class="o">/</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">NN</span><span class="o">-</span><span class="nx">tests</span><span class="p">.</span><span class="nx">md</span><span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="nx">Test</span><span class="w"> </span><span class="nx">vectors</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">NUTs</span><span class="w"> </span><span class="nx">involving</span><span class="w"> </span><span class="nx">crypto</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="nx">serialization</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">README</span><span class="p">.</span><span class="nx">md</span>
+<span class="err">├──</span><span class="w"> </span><span class="nx">suppl</span><span class="o">/</span>
+<span class="err">│</span><span class="w">   </span><span class="err">├──</span><span class="w"> </span><span class="nx">NN</span><span class="p">.</span><span class="nx">md</span><span class="w">              </span><span class="err">#</span><span class="w"> </span><span class="nx">Supplementary</span><span class="w"> </span><span class="nx">material</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">specific</span><span class="w"> </span><span class="nx">NUTs</span>
+<span class="err">│</span><span class="w">   </span><span class="err">└──</span><span class="w"> </span><span class="nx">README</span><span class="p">.</span><span class="nx">md</span>
+<span class="err">└──</span><span class="w"> </span><span class="p">.</span><span class="nx">github</span><span class="o">/</span>
+<span class="w">    </span><span class="err">└──</span><span class="w"> </span><span class="nx">workflows</span><span class="o">/</span>
+<span class="w">        </span><span class="err">├──</span><span class="w"> </span><span class="nx">prettier</span><span class="p">.</span><span class="nx">yml</span><span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="nx">Formatting</span><span class="w"> </span><span class="nx">CI</span><span class="w"> </span><span class="p">(</span><span class="nx">runs</span><span class="w"> </span><span class="nx">on</span><span class="w"> </span><span class="nx">every</span><span class="w"> </span><span class="nx">push</span><span class="o">/</span><span class="nx">PR</span><span class="p">)</span>
+<span class="w">        </span><span class="err">└──</span><span class="w"> </span><span class="nx">pages</span><span class="p">.</span><span class="nx">yml</span><span class="w">       </span><span class="err">#</span><span class="w"> </span><span class="nx">MkDocs</span><span class="w"> </span><span class="nx">deployment</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">GitHub</span><span class="w"> </span><span class="nx">Pages</span>
+</code></pre></div>
+
+<h2 id="nut-spec-conventions">NUT Spec Conventions<a class="headerlink" href="#nut-spec-conventions" title="Permanent link">&para;</a></h2>
+<p>Every NUT file follows these conventions:</p>
+<ul>
+<li><strong>Filename</strong>: Zero-padded two-digit number matching the NUT number (e.g. <code>30.md</code> for NUT-30).</li>
+<li><strong>Title</strong>: <code># NUT-NN: Title</code> as the first line.</li>
+<li><strong>Status badge</strong>: <code>`mandatory`</code> or <code>`optional`</code> on its own line after the title.</li>
+<li><strong>Dependencies</strong> (if any): <code>`depends on: NUT-NN`</code> and/or <code>`uses: NUT-NN`</code> on separate lines in the header block.</li>
+<li><strong>Used-by</strong> (if any): <code>`used in: NUT-NN`</code> declares the inverse relationship, naming the NUTs that build on this one (e.g. NUT-04, NUT-05, NUT-07, NUT-09, NUT-10, NUT-21).</li>
+<li><strong>Horizontal rule</strong>: <code>---</code> separating the header block from the body.</li>
+<li><strong>RFC 2119 language</strong>: Use <code>MUST</code>, <code>MUST NOT</code>, <code>SHOULD</code>, <code>SHOULD NOT</code>, <code>MAY</code>, and <code>CAN</code> (capitalized) per RFC 2119 when specifying protocol requirements.</li>
+<li><strong>API endpoints</strong>: All REST endpoints use the <code>/v1/</code> prefix. Show the HTTP method and URL in a <code>```http</code> code block, followed by request/response bodies in <code>```json</code> blocks.</li>
+<li><strong>Type annotations in JSON</strong>: Use <code>`&lt;angle-bracket&gt;`</code> placeholders to annotate the type of a field instead of writing a concrete value (e.g. <code>&lt;str&gt;</code>, <code>&lt;int&gt;</code>, <code>&lt;Array[Proof]&gt;</code>). The types used across the existing NUTs are loose and not a fixed enumeration, so pick whatever placeholder is clearest rather than treating these as a closed set.</li>
+<li><strong>Curl examples</strong>: Include a <code>bash</code> code block with a representative <code>curl</code> command when documenting an endpoint.</li>
+<li><strong>Mint info settings</strong>: If the NUT is discoverable via NUT-06, include a <code>## Mint info setting</code> section showing the JSON structure under <code>"nuts"</code>.</li>
+<li><strong>Reference links</strong>: Every NUT file ends with a block of reference-style Markdown links. At minimum include all NUTs referenced in the document. The full block looks like:</li>
+</ul>
+<div class="codehilite"><pre><span></span><code>[00]: 00.md
+[01]: 01.md
+[02]: 02.md
+...
+</code></pre></div>
+
+<h2 id="nut-template">NUT Template<a class="headerlink" href="#nut-template" title="Permanent link">&para;</a></h2>
+<p>When creating a new NUT, use this skeleton:</p>
+<div class="codehilite"><pre><span></span><code><span class="gh"># NUT-NN: Title</span>
+
+<span class="sb">`optional`</span>
+
+<span class="sb">`depends on: NUT-XX`</span>
+
+<span class="sb">`used in: NUT-YY`</span>
+
+---
+
+Description of what this NUT specifies and why it exists.
+
+<span class="gu">## Section</span>
+
+Details, protocol flow, and requirements using RFC 2119 language.
+
+<span class="gu">## Example</span>
+
+<span class="gs">**Request**</span> of <span class="sb">`Alice`</span>:
+
+<span class="sb">```http</span>
+<span class="err">POST https://mint.host:3338/v1/endpoint</span>
+<span class="sb">```</span>
+
+With the data being of the form <span class="sb">`PostExampleRequest`</span>:
+
+<span class="sb">```json</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;</span><span class="kc">t</span><span class="err">ype&gt;</span>
+<span class="p">}</span>
+<span class="sb">```</span>
+
+If successful, <span class="sb">`Bob`</span> will respond with a <span class="sb">`PostExampleResponse`</span>:
+
+<span class="sb">```json</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;</span><span class="kc">t</span><span class="err">ype&gt;</span>
+<span class="p">}</span>
+<span class="sb">```</span>
+
+<span class="gu">## Mint info setting</span>
+
+<span class="sb">```json</span>
+<span class="nt">"nuts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"NN"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="err">...</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="sb">```</span>
+
+[<span class="nl">00</span>]: <span class="na">00.md</span>
+[<span class="nl">01</span>]: <span class="na">01.md</span>
+
+...
+</code></pre></div>
+
+<h2 id="formatting">Formatting<a class="headerlink" href="#formatting" title="Permanent link">&para;</a></h2>
+<p>Prettier is enforced via CI on every push and PR (Node.js 20, default Prettier config).</p>
+<ul>
+<li><strong>Check</strong>: <code>npx prettier@3.9.1 --check .</code></li>
+<li><strong>Auto-fix</strong>: <code>npx prettier@3.9.1 --write .</code></li>
+</ul>
+<p>Always run the check before committing. If Prettier reformats your changes, that is the canonical style — do not override it.</p>
+<h2 id="review-and-merge">Review and Merge<a class="headerlink" href="#review-and-merge" title="Permanent link">&para;</a></h2>
+<p>NUT changes require at least two approving reviews from core maintainers/contributors before merge, and new NUTs are merged only after at least two implementation PRs across different projects are marked "Ready to Merge". Follow the process in <a href="../CONTRIBUTING/"><code>CONTRIBUTING.md</code></a>; do not shortcut it.</p>
+<h2 id="test-vectors">Test Vectors<a class="headerlink" href="#test-vectors" title="Permanent link">&para;</a></h2>
+<p>Test vector files live in <code>tests/</code> and are named <code>NN-tests.md</code> (matching the NUT number); a few older files use the singular <code>NN-test.md</code>. Add or update test vectors when a NUT involves:</p>
+<ul>
+<li>Cryptographic operations (hashing, signing, blinding, DLEQ)</li>
+<li>Serialization or encoding formats (token encoding, bech32m, CBOR)</li>
+<li>Deterministic derivation (secret generation, keyset IDs)</li>
+</ul>
+<p>Test vectors use <code>shell</code> code blocks with labeled hex-encoded values.</p>
+<h2 id="error-codes">Error Codes<a class="headerlink" href="#error-codes" title="Permanent link">&para;</a></h2>
+<p>The file <code>error_codes.md</code> is the central registry of protocol error codes. When a new NUT introduces error conditions:</p>
+<ul>
+<li>Assign codes within the appropriate range (see existing ranges in the file).</li>
+<li>Add rows to the table with the code, description, and relevant NUT references.</li>
+<li>Use the same reference-link style as the NUT files.</li>
+</ul>
+<h2 id="readme-updates">README Updates<a class="headerlink" href="#readme-updates" title="Permanent link">&para;</a></h2>
+<p><code>README.md</code> contains the spec index and an implementation support matrix. When adding a new NUT:</p>
+<ol>
+<li>Add the NUT to the <strong>Optional</strong> (or <strong>Mandatory</strong>) table in the correct numeric position.</li>
+<li>The support matrix columns (Wallets, Mints) should initially be empty (<code>-</code>) until implementations adopt the spec.</li>
+<li>Add the corresponding <code>[NN]: NN.md</code> reference link at the bottom of the file.</li>
+</ol>
+<h2 id="common-pitfalls">Common Pitfalls<a class="headerlink" href="#common-pitfalls" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Do not renumber existing NUTs.</strong> NUT numbers are permanent identifiers referenced by implementations.</li>
+<li><strong>Do not alter the reference link block format.</strong> Keep one <code>[NN]: NN.md</code> per line, sorted numerically.</li>
+<li><strong>Do not change existing API endpoint paths</strong> unless the NUT is explicitly being revised with a breaking change.</li>
+<li><strong>Preserve the role names.</strong> The protocol uses <code>Alice</code> (wallet), <code>Bob</code> (mint), and <code>Carol</code> (receiver) consistently across all specs.</li>
+<li><strong>Keep JSON examples valid</strong> (except for <code>&lt;type&gt;</code> placeholders and <code>...</code> ellipses).</li>
+<li><strong>Do not add supplementary material to the NUT file itself.</strong> Extended material (e.g. redirect URL flows) belongs in <code>suppl/NN.md</code>.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://x.com/cashubtc" target="_blank" rel="noopener" title="x.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M357.2 48h70.6L273.6 224.2 455 464H313L201.7 318.6 74.5 464H3.8l164.9-188.5L-5.2 48h145.6l100.5 132.9zm-24.8 373.8h39.1L119.1 88h-42z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.highlight", "search.share", "toc.integrate", "content.code.copy", "content.tabs.link", "announce.dismiss"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
