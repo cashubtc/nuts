@@ -19,7 +19,7 @@ Slot 0 is the `data` tag. Slots 1-10 can be any combination of `pubkeys` and `re
 
 ### Example P2BK proof
 
-The following P2BK proof shows the receiver's public key (P) blinded in the `data` tag (slot `0`), and the ephemeral public key (E) in the `p2pk_e`metadata field.
+The following P2BK proof shows the receiver's public key (P) blinded in the `data` tag (slot `0`), and the ephemeral public key (E) in the `p2pk_e` metadata field.
 
 ```json
 {
@@ -59,7 +59,7 @@ r6: "c39fa43b707215c163593fb8cadc0eddb4fe2f82c0c79c82a6fc2e3b6b051a7e" # scalar 
 r7: "b17d6a51396eb926f4a901e20ff760a852563f90fd4b85e193888f34fd2ee523" # scalar as hex padded 64
 r8: "4d4af85ea296457155b7ce328cf9accbe232e8ac23a1dfe901a36ab1b72ea04d" # scalar as hex padded 64
 r9: "ce311248ea9f42a73fc874b3ce351d55964652840d695382f0018b36bb089dd1" # scalar as hex padded 64
-r10 "9de35112d62e6343d02301d8f58fef87958e99bb68cfdfa855e04fe18b95b114" # scalar as hex padded 64
+r10: "9de35112d62e6343d02301d8f58fef87958e99bb68cfdfa855e04fe18b95b114" # scalar as hex padded 64
 ```
 
 ### Blinded Public Keys (P')
@@ -85,7 +85,7 @@ The following are valid blinded public keys for receiver pubkey (P), derived by 
 The following are valid derived secret keys for the receiver secret key (p), by locking slot.
 
 ```shell
-# skStd: standard derivation, (p + r0) mod n
+# skStd: standard derivation, (p + rᵢ) mod n
 0: "a174e77b25459f4809a187415af14065b49140c1408860f543444ed59261a605" # hex encoded private key
 1: "f78fcf5891dbd772cd68146ae9d740107f96b43ea7d3f34850ee7d71faa6084f" # hex encoded private key
 2: "81e0a0f6f9f36eebb3d7ffd733630270967150344203a2d2fb66bfd0466fe1a8" # hex encoded private key
@@ -98,7 +98,7 @@ The following are valid derived secret keys for the receiver secret key (p), by 
 9: "7b68faf4c2a000e5c23b25f413bc5c9a2ec9f48b4990deba0dfb8904cac76f2c" # hex encoded private key
 10: "4b1b39beae2f21825295b3193b172ecc2e123bc2a4f76adf73da4daf9b54826f" # hex encoded private key
 
-# skNeg: negated derivation, (-p + r0) mod n
+# skNeg: negated derivation, (-p + rᵢ) mod n
 0: "47051623754422cb04bc24c0cfe2c1ddc8db1fcc18f0aa4b477df4aca2adc20e" # hex encoded private key
 1: "9d1ffe00e1da5af5c882b1ea5ec8c18893e09349803c3c9e552823490af22458" # hex encoded private key
 2: "2770cf9f49f1f26eaef29d56a85483e8aabb2f3f1a6bec28ffa065a756bbfdb1" # hex encoded private key
