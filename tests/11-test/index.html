@@ -1453,7 +1453,7 @@
 </code></pre></div>
 
 <h3 id="sig_all-test-vectors">SIG_ALL Test Vectors<a class="headerlink" href="#sig_all-test-vectors" title="Permanent link">&para;</a></h3>
-<p>Example <code>SwapRequest</code>:</p>
+<p>Example <code>PostSwapRequest</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"inputs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
@@ -1474,12 +1474,12 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p>The following is the <code>msg_to_sign</code> on the above <code>SwapRequest</code>.</p>
+<p>The following is the <code>msg_to_sign</code> on the above <code>PostSwapRequest</code>.</p>
 <div class="codehilite"><pre><span></span><code>["P2PK",{"nonce":"c7f280eb55c1e8564e03db06973e94bc9b666d9e1ca42ad278408fe625950303","data":"030d8acedfe072c9fa449a1efe0817157403fbec460d8e79f957966056e5dd76c1","tags":[["sigflag","SIG_ALL"]]}]02c97ee3d1db41cf0a3ddb601724be8711a032950811bf326f8219c50c4808d3cd2038ec853d65ae1b79b5cdbc2774150b2cb288d6d26e12958a16fb33c32d9a86c39
 </code></pre></div>
 
 <p>The hex representation of sha256sum(msg_to_sign) should look like this: <code>de7f9e3ca0fcc5ed3258fcf83dbf1be7fa78a5ed6da7bf2aa60d61e9dc6eb09a</code></p>
-<p>The following is a <code>SwapRequest</code> with a valid sig_all signature.</p>
+<p>The following is a <code>PostSwapRequest</code> with a valid <code>SIG_ALL</code> signature.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"inputs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
@@ -1500,7 +1500,7 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p>The following is a <code>SwapRequest</code> that is invalid as the spending conditions are not identical across inputs (secret tags are different).</p>
+<p>The following is a <code>PostSwapRequest</code> that is invalid as the spending conditions are not identical across inputs (secret tags are different).</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"inputs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
@@ -1537,7 +1537,7 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p>The following is a <code>SwapRequest</code> where multiple valid signatures are required and provided.</p>
+<p>The following is a <code>PostSwapRequest</code> where multiple valid signatures are required and provided.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"inputs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
@@ -1558,7 +1558,7 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p>The following is a <code>SwapRequest</code> where the locktime has passed and the refund key signatures are valid.</p>
+<p>The following is a <code>PostSwapRequest</code> where the locktime has passed and the refund key signatures are valid.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"inputs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
@@ -1579,7 +1579,7 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p>The following is a valid <code>SwapRequest</code> with an HTLC also locked to a public key</p>
+<p>The following is a valid <code>PostSwapRequest</code> with an HTLC also locked to a public key</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"inputs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
@@ -1600,7 +1600,7 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p>The following is an invalid <code>SwapRequest</code> with an HTLC also locked to a public key, a locktime and a refund key. The locktime has not expired, but the proof is signed with the refund key.</p>
+<p>The following is an invalid <code>PostSwapRequest</code> with an HTLC also locked to a public key, a locktime and a refund key. The locktime has not expired, but the proof is signed with the refund key.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"inputs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
@@ -1626,7 +1626,7 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p>The following is a valid <code>SwapRequest</code> with a multisig HTLC also locked to locktime and refund keys.</p>
+<p>The following is a valid <code>PostSwapRequest</code> with a multisig HTLC also locked to locktime and refund keys.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"inputs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
@@ -1647,7 +1647,7 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p>Example <code>MeltRequest</code>:</p>
+<p>Example <code>PostMeltRequest</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"quote"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cF8911fzT88aEi1d-6boZZkq5lYxbUSVs-HbJxK0"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"inputs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
@@ -1669,12 +1669,12 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p>The following is the valid <code>msg_to_sign</code> on the above <code>MeltRequest</code>.</p>
+<p>The following is the valid <code>msg_to_sign</code> on the above <code>PostMeltRequest</code>.</p>
 <div class="codehilite"><pre><span></span><code>["P2PK",{"nonce":"bbf9edf441d17097e39f5095a3313ba24d3055ab8a32f758ff41c10d45c4f3de","data":"029116d32e7da635c8feeb9f1f4559eb3d9b42d400f9d22a64834d89cde0eb6835","tags":[["sigflag","SIG_ALL"]]}]02a9d461ff36448469dccf828fa143833ae71c689886ac51b62c8d61ddaa10028b0038ec853d65ae1b79b5cdbc2774150b2cb288d6d26e12958a16fb33c32d9a86c39cF8911fzT88aEi1d-6boZZkq5lYxbUSVs-HbJxK0
 </code></pre></div>
 
 <p>The hex representation of sha256sum(msg_to_sign) should look like this: <code>9efa1067cc7dc870f4074f695115829c3cd817a6866c3b84e9814adf3c3cf262</code></p>
-<p>The following is a valid <code>SIG_ALL</code> <code>MeltRequest</code>.</p>
+<p>The following is a valid <code>SIG_ALL</code> <code>PostMeltRequest</code>.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"quote"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cF8911fzT88aEi1d-6boZZkq5lYxbUSVs-HbJxK0"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"inputs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
@@ -1696,7 +1696,7 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p>The following is a valid multi-sig <code>SIG_ALL</code> <code>MeltRequest</code>.</p>
+<p>The following is a valid multi-sig <code>SIG_ALL</code> <code>PostMeltRequest</code>.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"quote"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Db3qEMVwFN2tf_1JxbZp29aL5cVXpSMIwpYfyOVF"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"inputs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>

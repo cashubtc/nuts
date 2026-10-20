@@ -1793,17 +1793,17 @@
 <h5 id="aggregation-for-swap">Aggregation for <code>swap</code><a class="headerlink" href="#aggregation-for-swap" title="Permanent link">&para;</a></h5>
 <p>A swap contains <code>inputs</code> and <code>outputs</code> (see <a href="../03/">NUT-03</a>). To provide a valid signature, the owner (or owners) of the signing public keys must concatenate the <code>secret</code> and <code>C</code> fields of all <code>Proofs</code> (inputs) with the <code>amount</code> and <code>B_</code> fields of all <code>BlindedMessages</code> (outputs, see <a href="../00/">NUT-00</a>) to a single message string in the order they appear in the transaction. This concatenated string is then hashed and signed (see <a href="#signature-scheme">Signature scheme</a>).</p>
 <p>If a swap transaction has <code>n</code> inputs and <code>m</code> outputs, the message to sign becomes:</p>
-<div class="codehilite"><pre><span></span><code>msg = secret_0 || C_0 || ... || secret_n || C_n || amount_0 ||  B_0 || ... || amount_m || B_m
+<div class="codehilite"><pre><span></span><code>msg = secret_0 || C_0 || ... || secret_n || C_n || amount_0 || B_0 || ... || amount_m || B_m
 </code></pre></div>
 
-<p>Here, <code>||</code> denotes string concatenation. The <code>C</code> of each input and <code>B_</code> of each output are <strong>hex strings</strong> and <code>amount</code> is a UTF-encoded string.</p>
+<p>Here, <code>||</code> denotes string concatenation. The <code>C</code> of each input and <code>B_</code> of each output are <strong>hex strings</strong> and <code>amount</code> is a UTF-8-encoded string.</p>
 <h5 id="aggregation-for-melt">Aggregation for <code>melt</code><a class="headerlink" href="#aggregation-for-melt" title="Permanent link">&para;</a></h5>
 <p>For a melt transaction, the message to sign is composed of all the inputs, the quote ID being paid, and the <a href="../08/">NUT-08</a> blank <code>outputs</code>.</p>
 <p>If a melt transaction has <code>n</code> inputs, <code>m</code> blank outputs, and a quote ID <code>quote_id</code>, the message to sign becomes:</p>
 <div class="codehilite"><pre><span></span><code>msg = secret_0 || C_0 || ... || secret_n || C_n || amount_0 || B_0 || ... || amount_m || B_m || quote_id
 </code></pre></div>
 
-<p>Here, <code>||</code> denotes string concatenation. The <code>C</code> of each input and <code>B_</code> of each output are <strong>hex strings</strong> and <code>amount</code> is a UTF-encoded string.</p>
+<p>Here, <code>||</code> denotes string concatenation. The <code>C</code> of each input and <code>B_</code> of each output are <strong>hex strings</strong> and <code>amount</code> is a UTF-8-encoded string.</p>
 <h2 id="locktime-tag">Locktime Tag<a class="headerlink" href="#locktime-tag" title="Permanent link">&para;</a></h2>
 <p>The <code>locktime</code> tag signals which set of locking rules the mint should apply. There are three possible states the <code>locktime</code> tag can represent:</p>
 <h3 id="permanent-lock">Permanent Lock<a class="headerlink" href="#permanent-lock" title="Permanent link">&para;</a></h3>
@@ -1829,7 +1829,7 @@ Each pathway has a self-contained set of conditions which must be satisfied for 
 <p>Locktime Multisig extends the <a href="#basic-case">Basic Case</a> by allowing proofs to be locked to multiple public keys. The additional locking public keys are stored in the <code>pubkeys</code> tag.</p>
 <p>If the <code>pubkeys</code> tag is present, the <code>Proof</code> is spendable only if a valid signature is given by <strong>at least ONE</strong> of the public keys contained in the <code>Secret.data</code> field or the <code>pubkeys</code> tag.</p>
 <p>If the <code>n_sigs</code> tag is a positive integer, the mint will require at least <code>n_sigs</code> of those public keys to provide a valid signature.</p>
-<p>If the number of public keys with valid signatures is greater or equal to the number specified in <code>n_sigs</code> (or <code>1</code> if <code>n_sigs</code> is not present), the transaction is valid. The signatures are provided in an array of strings in the <code>P2PKWitness</code> object.</p>
+<p>If the number of public keys with valid signatures is greater than or equal to the number specified in <code>n_sigs</code> (or <code>1</code> if <code>n_sigs</code> is not present), the transaction is valid. The signatures are provided in an array of strings in the <code>P2PKWitness</code> object.</p>
 <p>Expressed as an "n-of-m" scheme, <code>n = n_sigs</code> is the number of required signatures and <code>m = 1 (data field) + count(pubkeys tag keys)</code> is the total number of public keys that <em>could</em> sign.</p>
 <blockquote>
 <p>[!CAUTION]</p>
@@ -1840,7 +1840,7 @@ Each pathway has a self-contained set of conditions which must be satisfied for 
 <p><a href="#locktime-multisig">Locktime Multisig</a> conditions continue to apply, and the proof can continue to be spent according to Locktime Multisig rules.</p>
 <p><strong>In addition</strong>, the <code>Proof</code> can be spent if a valid signature is given by <strong>at least ONE</strong> of the public keys contained in the <code>refund</code> tag.</p>
 <p>If the <code>n_sigs_refund</code> tag is a positive integer, the mint will require at least <code>n_sigs_refund</code> of those <code>refund</code> public keys to provide a valid signature.</p>
-<p>If the number of <code>refund</code> public keys with valid signatures is greater or equal to the number specified in <code>n_sigs_refund</code> (or <code>1</code> if <code>n_sigs_refund</code> is not present), the transaction is valid. The signatures are provided in an array of strings in the <code>P2PKWitness</code> object.</p>
+<p>If the number of <code>refund</code> public keys with valid signatures is greater than or equal to the number specified in <code>n_sigs_refund</code> (or <code>1</code> if <code>n_sigs_refund</code> is not present), the transaction is valid. The signatures are provided in an array of strings in the <code>P2PKWitness</code> object.</p>
 <p>Expressed as an "n-of-m" scheme, <code>n = n_sigs_refund</code> is the number of required signatures and <code>m = count(refund tag keys)</code> is the total number of <code>refund</code> keys that <em>could</em> sign.</p>
 <blockquote>
 <p>[!CAUTION]</p>
@@ -1876,7 +1876,7 @@ Each pathway has a self-contained set of conditions which must be satisfied for 
 
 <h2 id="public-key-canonicalisation">Public Key Canonicalisation<a class="headerlink" href="#public-key-canonicalisation" title="Permanent link">&para;</a></h2>
 <p>Public keys <strong>MUST</strong> use the <a href="https://learnmeabitcoin.com/technical/public-key#public-key-format">compressed Secp256k1 public key format</a>.</p>
-<p>Each key <strong>MUST</strong> appear at most <strong>ONCE</strong> per <a href="#Multisig">multi-signature</a> pathway. The same key <strong>MAY</strong> appear in both pathways.</p>
+<p>Each key <strong>MUST</strong> appear at most <strong>ONCE</strong> per <a href="#multisig">multi-signature</a> pathway. The same key <strong>MAY</strong> appear in both pathways.</p>
 <p>Keys are compared using their lowercase x-coordinate (<code>02</code> or <code>03</code> y-parity prefix ignored).</p>
 <p>Example: the following keys are considered equivalent because they all have the same lowercase x-coordinate, so can all be Schnorr signed using the same secret key:</p>
 <div class="codehilite"><pre><span></span><code><span class="mi">02698</span><span class="err">c</span><span class="mf">4e2</span><span class="err">b</span><span class="mi">5</span><span class="kc">f</span><span class="mi">9534</span><span class="err">cd</span><span class="mi">0687</span><span class="err">d</span><span class="mi">87513</span><span class="err">c</span><span class="mi">759790</span><span class="err">c</span><span class="kc">f</span><span class="mi">829</span><span class="err">aa</span><span class="mi">5739184</span><span class="err">a</span><span class="mf">3e3735471</span><span class="kc">f</span><span class="err">bda</span><span class="mi">904</span><span class="w"> </span><span class="c1">// 02 lowercase</span>
@@ -1908,7 +1908,7 @@ Each pathway has a self-contained set of conditions which must be satisfied for 
 <li>Atomic swaps when used in combination with the locktime feature</li>
 </ul>
 <h2 id="mint-info-setting">Mint info setting<a class="headerlink" href="#mint-info-setting" title="Permanent link">&para;</a></h2>
-<p>The <a href="../06/">NUT-06</a> <code>MintMethodSetting</code> indicates support for this feature:</p>
+<p>The <a href="../06/">NUT-06</a> <code>nuts</code> object indicates support for this feature:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"11"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">"supported"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>

@@ -1517,7 +1517,7 @@
 
 <h1 id="nut-23-bolt11">NUT-23: BOLT11<a class="headerlink" href="#nut-23-bolt11" title="Permanent link">&para;</a></h1>
 <p><code>optional</code></p>
-<p><code>depends on: NUT-04 NUT-05</code></p>
+<p><code>depends on: NUT-04, NUT-05</code></p>
 <hr />
 <p>This document describes minting and melting ecash with the <code>bolt11</code> payment method, which uses Lightning Network invoices. It is an extension of <a href="../04/">NUT-04</a> and <a href="../05/">NUT-05</a> which cover the protocol steps of minting and melting ecash shared by any supported payment method.</p>
 <h2 id="mint-quote">Mint Quote<a class="headerlink" href="#mint-quote" title="Permanent link">&para;</a></h2>
@@ -1655,9 +1655,9 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p>Where <code>fee_reserve</code> is the additional fee reserve required for the Lightning payment. The mint expects the wallet to include <code>Proofs</code> of <em>at least</em> <code>total_amount = amount + fee_reserve + fee</code> where <code>fee</code> is calculated from the keyset's <code>input_fee_ppk</code> as described in [NUT-02][02].</p>
+<p>Where <code>fee_reserve</code> is the additional fee reserve required for the Lightning payment. The mint expects the wallet to include <code>Proofs</code> of <em>at least</em> <code>total_amount = amount + fee_reserve + fee</code> where <code>fee</code> is calculated from the keyset's <code>input_fee_ppk</code> as described in <a href="../02/">NUT-02</a>.</p>
 <h3 id="melting-tokens">Melting Tokens<a class="headerlink" href="#melting-tokens" title="Permanent link">&para;</a></h3>
-<p>For the <code>bolt11</code> method, the wallet can include an optional <code>outputs</code> field in the melt request to receive change for overpaid Lightning fees (see [NUT-08][08]):</p>
+<p>For the <code>bolt11</code> method, the wallet can include an optional <code>outputs</code> field in the melt request to receive change for overpaid Lightning fees (see <a href="../08/">NUT-08</a>):</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"quote"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"inputs"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;Array</span><span class="p">[</span><span class="err">Proo</span><span class="kc">f</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
@@ -1705,7 +1705,7 @@
 
 <p>Melt request:</p>
 <div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://mint.host:3338/v1/melt/bolt11<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
-<span class="s1">'{"quote": "019e6d5a-2347-7000-813e-a11ea6e419e7", "inputs": [...]}'</span>
+<span class="s1">'{"quote": "019e6d5a-2347-7000-8449-370fefb42fed", "inputs": [...]}'</span>
 </code></pre></div>
 
 <p>Successful melt response:</p>

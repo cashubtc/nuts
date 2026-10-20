@@ -1658,8 +1658,8 @@
 <p><code>optional</code></p>
 <p><code>depends on: NUT-04</code></p>
 <p><code>uses: NUT-20</code></p>
-<p>This spec describes how a wallet can mint multiple quotes in one batched operation by requesting blind signatures for multiple quotes in a single atomic request.</p>
 <hr />
+<p>This spec describes how a wallet can mint multiple quotes in one batched operation by requesting blind signatures for multiple quotes in a single atomic request.</p>
 <h2 id="1-batch-checking-mint-quotes">1. Batch Checking Mint Quotes<a class="headerlink" href="#1-batch-checking-mint-quotes" title="Permanent link">&para;</a></h2>
 <p>Before minting, the wallet SHOULD verify each mint quote's current accounting state. It does this by sending:</p>
 <div class="codehilite"><pre><span></span><code><span class="err">POST https://mint.host:3338/v1/mint/quote/{method}/check</span>
@@ -1754,7 +1754,7 @@
 <h3 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h3>
 <p>Below is an example for minting two NUT-20 locked bolt11 mint quotes.</p>
 <h5 id="request_1">Request<a class="headerlink" href="#request_1" title="Permanent link">&para;</a></h5>
-<div class="codehilite"><pre><span></span><code><span class="err">POST https://mint.host:3338/v1/mint/bolt12/batch</span>
+<div class="codehilite"><pre><span></span><code><span class="err">POST https://mint.host:3338/v1/mint/bolt11/batch</span>
 <span class="err">Content-Type: application/json</span>
 
 <span class="err">{</span>

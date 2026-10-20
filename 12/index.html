@@ -1377,7 +1377,7 @@
 <hr />
 <p>In this document, we present an extension of Cashu's crypto system to allow a user <code>Alice</code> to verify the mint <code>Bob</code>'s signature using only <code>Bob</code>'s public keys. We explain how another user <code>Carol</code> who receives ecash from <code>Alice</code> can execute the DLEQ proof as well. This is achieved using a Discrete Log Equality (DLEQ) proof. Previously, <code>Bob</code>'s signature could only be checked by himself using his own private keys (<a href="../00/">NUT-00</a>).</p>
 <h1 id="the-dleq-proof">The DLEQ proof<a class="headerlink" href="#the-dleq-proof" title="Permanent link">&para;</a></h1>
-<p>The purpose of this DLEQ is to prove that the mint has used the same private key <code>a</code> for creating its public key <code>A</code> (<a href="../01/">NUT-01</a>) and for signing the BlindedMessage <code>B'</code>. <code>Bob</code> returns the DLEQ proof additional to the blind signature <code>C'</code> for a mint or swap operation.</p>
+<p>The purpose of this DLEQ is to prove that the mint has used the same private key <code>a</code> for creating its public key <code>A</code> (<a href="../01/">NUT-01</a>) and for signing the BlindedMessage <code>B'</code>. <code>Bob</code> returns the DLEQ proof in addition to the blind signature <code>C'</code> for a mint or swap operation.</p>
 <p>The complete DLEQ proof reads</p>
 <div class="codehilite"><pre><span></span><code><span class="err">#</span><span class="w"> </span><span class="nt">DLEQ</span><span class="w"> </span><span class="nt">Proof</span>
 
@@ -1411,7 +1411,7 @@
 <p>Reusing a nonce across different challenges leaks the private key immediately (<code>a = (s₁ - s₂) · (e₁ - e₂)⁻¹ mod n</code>). Mints that use random nonces <strong>MUST</strong> source them from a cryptographically secure RNG.</p>
 </blockquote>
 <h3 id="hash-function">Hash function<a class="headerlink" href="#hash-function" title="Permanent link">&para;</a></h3>
-<p>The hash function <code>hash(x: &lt;Array&lt;[PublicKey]&gt;) -&gt; bytes</code> generates a deterministic SHA256 hash for a given input list of <code>PublicKey</code>. The uncompressed (32+32+1)-byte hexadecimal representations (130 characters) of each <code>PublicKey</code> is concatenated before taking the SHA256 hash.</p>
+<p>The hash function <code>hash(x: Array[PublicKey]) -&gt; bytes</code> generates a deterministic SHA256 hash for a given input list of <code>PublicKey</code>. The uncompressed (32+32+1)-byte hexadecimal representations (130 characters) of each <code>PublicKey</code> are concatenated before taking the SHA256 hash.</p>
 <div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">hash_e</span><span class="p">(</span><span class="o">*</span><span class="n">publickeys</span><span class="p">:</span> <span class="n">PublicKey</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
     <span class="n">e_</span> <span class="o">=</span> <span class="s2">""</span>
     <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">publickeys</span><span class="p">:</span>
@@ -1426,7 +1426,7 @@
 For examples of valid DLEQ proofs, see the <a href="../tests/12-tests/">test vectors</a>.</p>
 </blockquote>
 <h3 id="mint-to-user-dleq-in-blindsignature">Mint to user: DLEQ in <code>BlindSignature</code><a class="headerlink" href="#mint-to-user-dleq-in-blindsignature" title="Permanent link">&para;</a></h3>
-<p>The mint produces these DLEQ proofs when returning <code>BlindSignature</code>'s in the responses for minting (<a href="../04/">NUT-04</a>) and swapping (<a href="../03/">NUT-03</a>) tokens. The <code>BlindSignature</code> object is extended in the following way to include the DLEQ proof:</p>
+<p>The mint produces these DLEQ proofs when returning <code>BlindSignature</code>s in the responses for minting (<a href="../04/">NUT-04</a>) and swapping (<a href="../03/">NUT-03</a>) tokens. The <code>BlindSignature</code> object is extended in the following way to include the DLEQ proof:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
@@ -1493,7 +1493,7 @@ R1 = ... (same as Alice)
 
 <p>If a DLEQ proof is included in a received token, wallets <strong>MUST</strong> verify the proof.</p>
 <h2 id="mint-info-setting">Mint info setting<a class="headerlink" href="#mint-info-setting" title="Permanent link">&para;</a></h2>
-<p>The <a href="../06/">NUT-06</a> <code>MintMethodSetting</code> indicates support for this feature:</p>
+<p>The <a href="../06/">NUT-06</a> <code>nuts</code> object indicates support for this feature:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"12"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">"supported"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>

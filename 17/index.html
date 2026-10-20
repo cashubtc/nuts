@@ -1561,7 +1561,7 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p><code>WsRequestMethod</code> is a enum of strings with the supported commands <code>"subscribe"</code> and <code>"unsubscribe"</code>:</p>
+<p><code>WsRequestMethod</code> is an enum of strings with the supported commands <code>"subscribe"</code> and <code>"unsubscribe"</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="kd">enum</span><span class="w"> </span><span class="nx">WsRequestMethod</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">sub</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">unsub</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"unsubscribe"</span><span class="p">,</span>
@@ -1600,7 +1600,7 @@
 <p><strong>Important:</strong> If the subscription is accepted by the mint, the mint MUST first respond with the <em>current</em> state of the subscribed object and continue sending any further updates to it.</p>
 <p>For example, if the wallet subscribes to a <code>Proof.Y</code> of a <code>Proof</code> that has not been spent yet, the mint will first respond with a <code>ProofState</code> with <code>state == "UNSPENT"</code>. If the wallet then spends this <code>Proof</code>, the mint would send a <code>ProofState</code> with <code>state == "PENDING"</code> and then one with <code>state == "SPENT"</code>. In total, the mint would send three notifications to the wallet.</p>
 <h4 id="command-unsubscribe">Command: Unsubscribe<a class="headerlink" href="#command-unsubscribe" title="Permanent link">&para;</a></h4>
-<p>The wallet should always unsubscribe any subscriptions that is isn't interested in anymore. The parameters for the <code>"unsubscribe"</code> command is only the subscription ID:</p>
+<p>The wallet should always unsubscribe any subscriptions that it isn't interested in anymore. The parameters for the <code>"unsubscribe"</code> command are only the subscription ID:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"subId"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g&gt;</span>
 <span class="p">}</span>
@@ -1620,7 +1620,7 @@
 
 <p>Here, the <code>id</code> corresponds to the <code>id</code> in the request (as part of the JSON-RPC spec) and <code>subId</code> corresponds to the subscription ID.</p>
 <h3 id="notifications">Notifications<a class="headerlink" href="#notifications" title="Permanent link">&para;</a></h3>
-<p><code>WsNotification</code>'s are sent from the mint to the wallet and contain subscription data in the following format</p>
+<p><code>WsNotification</code>s are sent from the mint to the wallet and contain subscription data in the following format</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="s2">"jsonrpc"</span><span class="o">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span>
 <span class="w">  </span><span class="s2">"method"</span><span class="o">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span>
@@ -1640,12 +1640,12 @@
 <span class="w">    </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="mi">-32601</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Human readable error message"</span>
 <span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
 <span class="p">}</span>
 </code></pre></div>
 
 <h3 id="example-proofstate-subscription">Example: <code>ProofState</code> subscription<a class="headerlink" href="#example-proofstate-subscription" title="Permanent link">&para;</a></h3>
-<p>To subscribe to the <code>ProofState</code> of a <code>Proof</code>, the wallet establishes a websocket connection to <code>https://mint.com/v1/ws</code> and sends a <code>WsRequest</code> with a <code>filters</code> chosen to be the a <code>Proof.Y</code> value of the <code>Proof</code> (see <a href="../00/">NUT-00</a>). Note that <code>filters</code> is an array meaning multiple subscriptions of the same <code>kind</code> can be made in the same request.</p>
+<p>To subscribe to the <code>ProofState</code> of a <code>Proof</code>, the wallet establishes a websocket connection to <code>https://mint.com/v1/ws</code> and sends a <code>WsRequest</code> with a <code>filters</code> chosen to be the <code>Proof.Y</code> value of the <code>Proof</code> (see <a href="../00/">NUT-00</a>). Note that <code>filters</code> is an array meaning multiple subscriptions of the same <code>kind</code> can be made in the same request.</p>
 <p>Wallet:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span>
@@ -1734,8 +1734,8 @@
 <span class="w">            </span><span class="s2">"bolt11_mint_quote"</span><span class="p">,</span>
 <span class="w">            </span><span class="s2">"bolt11_melt_quote"</span><span class="p">,</span>
 <span class="w">            </span><span class="s2">"proof_state"</span>
-<span class="w">            </span><span class="p">]</span>
-<span class="w">        </span><span class="p">},</span>
+<span class="w">          </span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
 <span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>

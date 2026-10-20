@@ -1554,8 +1554,8 @@
 <span class="p">}</span>
 </code></pre></div>
 
-<p>with the requested <code>amount</code>,<code>unit</code>, and <code>description</code> according to <a href="../04/">NUT-04</a>.</p>
-<p><code>pubkey</code> is the compressed secp256k1 public key (33 bytes, hex-encoded) that will be required for signature verification during the minting operation. The mint will only mint ecash after receiving a valid signature from the corresponding private key in the subsequent <code>PostMintRequest</code>.</p>
+<p>with the requested <code>amount</code>, <code>unit</code>, and <code>description</code> according to <a href="../04/">NUT-04</a>.</p>
+<p><code>pubkey</code> is the compressed secp256k1 public key (33 bytes, hex-encoded) that will be required for signature verification during the minting operation. The mint will only mint ecash after receiving a valid signature from the corresponding private key in the subsequent <code>PostMintBolt11Request</code>.</p>
 <blockquote>
 <p>[!IMPORTANT]</p>
 <p><strong>Privacy:</strong> To prevent the mint from being able to link multiple mint quotes, wallets <strong>SHOULD</strong> generate a unique public key for each mint quote request.</p>
@@ -1578,12 +1578,14 @@
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"quote"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"request"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"unit"</span><span class="p">:</span><span class="w">  </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">UNIT</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bolt11"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"amount_paid"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"amount_issued"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"state"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">_e</span><span class="kc">nu</span><span class="err">m</span><span class="p">[</span><span class="err">STATE</span><span class="p">]</span><span class="err">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Deprecated, optional</span>
-<span class="w">  </span><span class="nt">"expiry"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"expiry"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;i</span><span class="kc">nt</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"pubkey"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">|</span><span class="kc">null</span><span class="err">&gt;</span><span class="w"> </span><span class="c1">// Optional &lt;-- New</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -1598,6 +1600,9 @@
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"quote"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9d745270-1405-46de-b5c5-e2762b4f5e00"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"request"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lnbc100n1pj4apw9..."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bolt11"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"amount_paid"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"amount_issued"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704657</span><span class="p">,</span>
@@ -1661,7 +1666,6 @@
 <span class="s1">    }</span>
 <span class="s1">  ],</span>
 <span class="s1">  "signature": "d9be080b33179387e504bb6991ea41ae0dd715e28b01ce9f63d57198a095bccc776874914288e6989e97ac9d255ac667c205fa8d90a211184b417b4ffdd24092"</span>
-
 <span class="s1">}'</span>
 </code></pre></div>
 
@@ -1683,7 +1687,7 @@
 </code></pre></div>
 
 <h2 id="errors">Errors<a class="headerlink" href="#errors" title="Permanent link">&para;</a></h2>
-<p>If the wallet user <code>Alice</code> does not include a signature on the <code>PostMintBolt11Request</code> but did include a <code>pubkey</code> in the <code>PostMintBolt11QuoteRequest</code> then <code>Bob</code> <strong>MUST</strong> respond with an error. <code>Alice</code> <strong>CAN</strong> repeat the request with a valid signature.</p>
+<p>If the wallet user <code>Alice</code> does not include a signature on the <code>PostMintBolt11Request</code> but did include a <code>pubkey</code> in the <code>PostMintQuoteBolt11Request</code> then <code>Bob</code> <strong>MUST</strong> respond with an error. <code>Alice</code> <strong>CAN</strong> repeat the request with a valid signature.</p>
 <p>See <a href="../error_codes/">Error Codes</a>:</p>
 <ul>
 <li><code>20008</code>: Mint quote with <code>pubkey</code> but no valid <code>signature</code> provided for mint request.</li>
@@ -1693,7 +1697,7 @@
 <p>The settings for this NUT indicate the support for requiring a signature before minting. They are part of the info response of the mint (<a href="../06/">NUT-06</a>) which in this case reads</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"20"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">"supported"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;bool&gt;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"supported"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;bool&gt;</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>

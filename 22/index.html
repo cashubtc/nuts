@@ -1641,7 +1641,7 @@
 <p>Notice that the unit is <code>auth</code> and only a single amount of <code>1</code> is supported.</p>
 <h3 id="keysets">Keysets<a class="headerlink" href="#keysets" title="Permanent link">&para;</a></h3>
 <p>Like in <a href="../02/">NUT-02</a> the mint also offers the endpoints returning the keysets:</p>
-<div class="codehilite"><pre><span></span><code>GET v1/auth/blind/keysets
+<div class="codehilite"><pre><span></span><code>GET /v1/auth/blind/keysets
 </code></pre></div>
 
 <p>The mint returns the same <code>GetKeysetsResponse</code> response types as described in <a href="../02/">NUT-02</a>.</p>
@@ -1690,7 +1690,7 @@
 </code></pre></div>
 
 <p>This string is a BAT.</p>
-<p>Note that <code>base64_url</code> strings may have padding characters (usually <code>=</code>) at the end, which can be omitted. Mints <strong>MUST</strong> accept and decode both padded and unpadded forms.</p>
+<p>Note that <code>base64url</code> strings may have padding characters (usually <code>=</code>) at the end, which can be omitted. Mints <strong>MUST</strong> accept and decode both padded and unpadded forms.</p>
 <blockquote>
 <p>[!CAUTION]</p>
 <p>To protect the privacy of the wallet, the BAT MUST NOT contain the <code>dleq</code> proof when it is sent to the mint in the request header.</p>
@@ -1701,7 +1701,7 @@
 </code></pre></div>
 
 <p>and make the request as we usually would.</p>
-<p><code>AuthProofs</code> are single-use. The wallet MUST delete the <code>AuthProof</code> after a successful request, and SHOULD delete it even if request results in an error. If the wallet runs out of <code>AuthProofs</code>, it can <a href="#minting-blind-authentication-tokens">mint new ones</a> using its clear authentication token (CAT).</p>
+<p><code>AuthProofs</code> are single-use. The wallet MUST delete the <code>AuthProof</code> after a successful request, and SHOULD delete it even if the request results in an error. If the wallet runs out of <code>AuthProofs</code>, it can <a href="#minting-blind-authentication-tokens">mint new ones</a> using its clear authentication token (CAT).</p>
 <h2 id="mint">Mint<a class="headerlink" href="#mint" title="Permanent link">&para;</a></h2>
 <h3 id="dleqs">DLEQs<a class="headerlink" href="#dleqs" title="Permanent link">&para;</a></h3>
 <p>The mint MUST return DLEQ proofs for every blind signature in <code>PostAuthBlindMintResponse</code> as defined in <a href="../12/">NUT-12</a></p>
@@ -1731,9 +1731,9 @@
 <p>The <code>*</code> wildcard, if present, MUST be the final character only.</p>
 <p>For example:</p>
 <ul>
-<li><code>/v1/*</code> matches any path starting <code>/v1/</code> (all endpoints)</li>
+<li><code>/v1/*</code> matches any path starting with <code>/v1/</code> (all endpoints)</li>
 <li><code>/v1/mint/*</code> matches any path that starts with <code>/v1/mint/</code> (all minting endpoints)</li>
-<li><code>/v1/mint/bolt*</code> matches any path starting <code>/v1/mint/bolt</code> (bolt11/12 minting endpoints)</li>
+<li><code>/v1/mint/bolt*</code> matches any path starting with <code>/v1/mint/bolt</code> (bolt11/12 minting endpoints)</li>
 </ul>
 <blockquote>
 <p>[!CAUTION]

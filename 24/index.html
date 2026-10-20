@@ -1448,7 +1448,7 @@
 <p><code>depends on: NUT-18, NUT-26</code></p>
 <hr />
 <p>This NUT describes how Cashu tokens can be used with HTTP 402 Payment Required responses to enable payments for HTTP resources.</p>
-<h3 id="server-response">Server response<a class="headerlink" href="#server-response" title="Permanent link">&para;</a></h3>
+<h2 id="server-response">Server response<a class="headerlink" href="#server-response" title="Permanent link">&para;</a></h2>
 <p>HTTP servers may respond with the HTTP status code 402 and an <code>X-Cashu</code> header containing a payment request, encoded in either <a href="../18/">NUT-18</a> <code>creqA</code> or <a href="../26/">NUT-26</a> <code>creqB</code> formats. Wallets <strong>MUST</strong> support both formats.</p>
 <p>The decoded payment request has the following fields:</p>
 <div class="codehilite"><pre><span></span><code><span class="err">{</span>
@@ -1466,11 +1466,11 @@
 <li><code>nut10</code>: The required <a href="../10/">NUT-10</a> locking condition</li>
 </ul>
 <p>Note: there is no transport field since we expect an in-band payment.</p>
-<h3 id="client-payment">Client payment<a class="headerlink" href="#client-payment" title="Permanent link">&para;</a></h3>
-<p>After receiving a 402 response with a <code>X-Cashu</code> header, the client may retry the request with a <code>cashuB</code> token in the <code>X-Cashu</code> header as payment.</p>
-<p>The token MUST be from one of the mints listed in the <code>mints</code> array, and MUST be of the same <code>unit</code> and greater than or equal to the <code>amount</code>.</p>
+<h2 id="client-payment">Client payment<a class="headerlink" href="#client-payment" title="Permanent link">&para;</a></h2>
+<p>After receiving a 402 response with an <code>X-Cashu</code> header, the client may retry the request with a <code>cashuB</code> token in the <code>X-Cashu</code> header as payment.</p>
+<p>The token MUST be from one of the mints listed in the <code>m</code> array, and MUST be of the same <code>u</code> unit and greater than or equal to the <code>a</code> amount.</p>
 <h2 id="payment-response">Payment response<a class="headerlink" href="#payment-response" title="Permanent link">&para;</a></h2>
-<p>If the server receives tokens from a mint that is not in the <code>mints</code> array, an incorrect <code>unit</code>, an insufficient amount of tokens, or with insufficient locking conditions, it should respond with a HTTP <code>400</code> status code.</p>
+<p>If the server receives tokens from a mint that is not in the <code>m</code> array, an incorrect <code>u</code> unit, an insufficient amount of tokens, or with insufficient locking conditions, it should respond with an HTTP <code>400</code> status code.</p>
 
 
 

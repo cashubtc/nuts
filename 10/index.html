@@ -1477,17 +1477,17 @@
 <p>An ordinary ecash token is a set of <code>Proofs</code> each with a random string <code>secret</code>. To spend such a token in a <a href="../03/">swap</a> or a <a href="../05/">melt</a> operation, wallets include <code>proofs</code> in their request each with a unique <code>secret</code>. To authorize a transaction, the mint requires that the <code>secret</code> has not been seen before. This is the most fundamental spending condition in Cashu, which ensures that a token can't be double-spent.</p>
 <p>In this NUT, we define a well-known format of <code>secret</code> that can be used to express more complex spending conditions. These conditions need to be met before the mint authorizes a transaction. Note that the specific type of spending condition is not part of this document but will be explained in other documents. Here, we describe the structure of <code>secret</code> which is expressed as a JSON <code>Secret</code> with a specific format.</p>
 <p>Spending conditions are enforced by the mint which means that, upon encountering a <code>Proof</code> where <code>Proof.secret</code> can be parsed into the well-known format, the mint can require additional conditions to be met.</p>
-<p>Caution: If the mint does not support spending conditions or a specific <code>kind</code> of spending condition, proofs may be treated as a regular anyone-can-spend tokens. Applications need to make sure to check whether the mint supports a specific <code>kind</code> of spending condition by checking the mint's <a href="../06/">info</a> endpoint.</p>
+<p>Caution: If the mint does not support spending conditions or a specific <code>kind</code> of spending condition, proofs may be treated as regular anyone-can-spend tokens. Applications need to make sure to check whether the mint supports a specific <code>kind</code> of spending condition by checking the mint's <a href="../06/">info</a> endpoint.</p>
 <h2 id="basic-components">Basic components<a class="headerlink" href="#basic-components" title="Permanent link">&para;</a></h2>
 <p>An ecash transaction, i.e., a <a href="../03/">swap</a> or a <a href="../05/">melt</a> operation, with a spending condition consists of the following components:</p>
 <ul>
 <li>Inputs referring to the <code>Proofs</code> being spent</li>
 <li><code>Secret</code> containing the rules for unlocking a <code>Proof</code></li>
 <li>Additional witness data satisfying the unlock conditions such as signatures</li>
-<li>Outputs referring to the <code>BlindMessages</code> with new unlock conditions to which the <code>Proofs</code> are spent to</li>
+<li>Outputs referring to the <code>BlindedMessages</code> with new unlock conditions to which the <code>Proofs</code> are spent</li>
 </ul>
 <p>Spending conditions are defined for each individual <code>Proof</code> and not on a transaction level that can consist of multiple <code>Proofs</code>. Similarly, spending conditions must be satisfied by providing signatures or additional witness data for each <code>Proof</code> separately. For a transaction to be valid, all <code>Proofs</code> in that transaction must be unlocked successfully.</p>
-<p>New <code>Secret</code>s of the outputs to which the inputs are spent to are provided as <code>BlindMessages</code> which means that they are blind-signed and not visible to the mint until they are actually spent.</p>
+<p>New <code>Secret</code>s of the outputs to which the inputs are spent are provided as <code>BlindedMessages</code> which means that they are blind-signed and not visible to the mint until they are actually spent.</p>
 <h2 id="well-known-secret">Well-known Secret<a class="headerlink" href="#well-known-secret" title="Permanent link">&para;</a></h2>
 <p>Spending conditions are expressed in a well-known secret format that is revealed to the mint when spending (unlocking) a token, not when the token is minted (locked). The mint parses each <code>Proof</code>'s <code>secret</code>. If it can deserialize it into the following format it executes additional spending conditions that are further specified in additional NUTs.</p>
 <p>The well-known <code>Secret</code> stored in <code>Proof.secret</code> is a JSON of the format:</p>
@@ -1496,7 +1496,7 @@
 <span class="w">  </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">"nonce"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">"tags"</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="w"> </span><span class="s2">"key"</span><span class="p">,</span><span class="w"> </span><span class="s2">"value1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"value2"</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">],</span><span class="w">  </span><span class="err">...</span><span class="w"> </span><span class="p">],</span><span class="w"> </span><span class="c1">// (optional)</span>
+<span class="w">    </span><span class="nt">"tags"</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="w"> </span><span class="s2">"key"</span><span class="p">,</span><span class="w"> </span><span class="s2">"value1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"value2"</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">],</span><span class="w">  </span><span class="err">...</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="c1">// (optional)</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">]</span>
 </code></pre></div>
@@ -1508,7 +1508,7 @@
 <li><code>tags</code> hold additional data committed to and can be used for feature extensions</li>
 </ul>
 <h3 id="tag-format">Tag format<a class="headerlink" href="#tag-format" title="Permanent link">&para;</a></h3>
-<p>The optional <code>tags</code> field, is an array of arrays of non-empty strings.</p>
+<p>The optional <code>tags</code> field is an array of arrays of non-empty strings.</p>
 <p>Each individual tag is an array of <strong>ONE or more strings</strong>. The first element of the tag array is known as the tag <em>name</em> or <em>key</em> and the subsequent string(s) are the <em>tag value(s)</em>.</p>
 <p><strong>Examples of valid tags:</strong></p>
 <p><code>["pubkeys"]</code> - a tag with the key, <code>"pubkeys"</code> and no tag values.\
@@ -1525,7 +1525,7 @@
 <li><a href="../14/">NUT-14</a>: Hashed Timelock Contracts (HTLCs)</li>
 </ul>
 <h2 id="mint-info-setting">Mint info setting<a class="headerlink" href="#mint-info-setting" title="Permanent link">&para;</a></h2>
-<p>The <a href="../06/">NUT-06</a> <code>MintMethodSetting</code> indicates support for this feature:</p>
+<p>The <a href="../06/">NUT-06</a> <code>nuts</code> object indicates support for this feature:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"10"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">"supported"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>

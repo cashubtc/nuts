@@ -1537,7 +1537,7 @@
 
 <h1 id="nut-30-payment-method-onchain">NUT-30: Payment Method: Onchain<a class="headerlink" href="#nut-30-payment-method-onchain" title="Permanent link">&para;</a></h1>
 <p><code>optional</code></p>
-<p><code>depends on: NUT-04 NUT-05 NUT-20</code></p>
+<p><code>depends on: NUT-04, NUT-05, NUT-20</code></p>
 <hr />
 <p>This document describes minting and melting ecash with the <code>onchain</code> payment method, which uses Bitcoin onchain payments. It is an extension of <a href="../04/">NUT-04</a> and <a href="../05/">NUT-05</a> which cover the protocol steps of minting and melting ecash shared by any supported payment method.</p>
 <h2 id="mint-quote">Mint Quote<a class="headerlink" href="#mint-quote" title="Permanent link">&para;</a></h2>
@@ -1759,19 +1759,23 @@
 <span class="w">  </span><span class="nt">"quote"</span><span class="p">:</span><span class="w"> </span><span class="s2">"019e6d5a-2347-7000-83ad-72a9a83f3105"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">100000</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"onchain"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UNPAID"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"expiry"</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704757</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"request"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bc1q..."</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"fee_options"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"fee_index"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"fee_reserve"</span><span class="p">:</span><span class="w"> </span><span class="mi">5000</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"estimated_blocks"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"fee_index"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"fee_reserve"</span><span class="p">:</span><span class="w"> </span><span class="mi">2000</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"estimated_blocks"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"fee_index"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"fee_reserve"</span><span class="p">:</span><span class="w"> </span><span class="mi">800</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"estimated_blocks"</span><span class="p">:</span><span class="w"> </span><span class="mi">144</span>
 <span class="w">    </span><span class="p">}</span>
@@ -1806,6 +1810,7 @@
 <span class="w">  </span><span class="nt">"quote"</span><span class="p">:</span><span class="w"> </span><span class="s2">"019e6d5a-2347-7000-83ad-72a9a83f3105"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">100000</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"onchain"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PENDING"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"expiry"</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704757</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"request"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bc1q..."</span><span class="p">,</span>
@@ -1837,6 +1842,7 @@
 <span class="w">  </span><span class="nt">"quote"</span><span class="p">:</span><span class="w"> </span><span class="s2">"019e6d5a-2347-7000-83ad-72a9a83f3105"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">100000</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"onchain"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PAID"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"expiry"</span><span class="p">:</span><span class="w"> </span><span class="mi">1701704757</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"request"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bc1q..."</span><span class="p">,</span>

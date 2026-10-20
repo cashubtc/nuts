@@ -1513,7 +1513,7 @@
 <p><code>optional</code></p>
 <p><code>used in: NUT-22</code></p>
 <hr />
-<p>This NUT defines a clear authentication scheme that allows operators to limit the use of their mint to registered users using the OAuth 2.0 and OpenID Connect protocols. The mint operator can protect chosen endpoints from access by requiring user authentication. Only users that provide a clear authentication token (CAT) from the specified OpenID Connect (OIDC) service can use the protected endpoints. The CAT is an Oauth 2.0 Access token (also known as the <code>access_token</code>) commonly in the form of a JWT that contains user information, a signature from the OIDC service, and an expiry time. To access protected endpoints, the wallet includes the CAT in the HTTP request header.</p>
+<p>This NUT defines a clear authentication scheme that allows operators to limit the use of their mint to registered users using the OAuth 2.0 and OpenID Connect protocols. The mint operator can protect chosen endpoints from access by requiring user authentication. Only users that provide a clear authentication token (CAT) from the specified OpenID Connect (OIDC) service can use the protected endpoints. The CAT is an OAuth 2.0 access token (also known as the <code>access_token</code>) commonly in the form of a JWT that contains user information, a signature from the OIDC service, and an expiry time. To access protected endpoints, the wallet includes the CAT in the HTTP request header.</p>
 <p><strong>Note:</strong> The primary purpose of this NUT is to restrict access to a mint by allowing registered users to obtain Blind Authentication Tokens as specified in <a href="../22/">NUT-22</a>.</p>
 <p><strong>Warning:</strong> This authentication scheme breaks the user's privacy as the CAT contains user information. Mint operators SHOULD require clear authentication <strong>only on selected endpoints</strong>, such as those for obtaining blind authentication tokens (BATs, see <a href="../22/">NUT-22</a>).</p>
 <h2 id="openid-connect-service-configuration">OpenID Connect service configuration<a class="headerlink" href="#openid-connect-service-configuration" title="Permanent link">&para;</a></h2>
@@ -1551,10 +1551,10 @@
 <p>The <code>*</code> wildcard, if present, MUST be the final character only.</p>
 <p>For example:</p>
 <ul>
-<li><code>/v1/*</code> matches any path starting <code>/v1/</code> (all endpoints)</li>
+<li><code>/v1/*</code> matches any path starting with <code>/v1/</code> (all endpoints)</li>
 <li><code>/v1/auth/*</code> matches any path that starts with <code>/v1/auth/</code> (all auth endpoints)</li>
 <li><code>/v1/mint/*</code> matches any path that starts with <code>/v1/mint/</code> (all minting endpoints)</li>
-<li><code>/v1/mint/bolt*</code> matches any path starting <code>/v1/mint/bolt</code> (bolt11/12 minting endpoints)</li>
+<li><code>/v1/mint/bolt*</code> matches any path starting with <code>/v1/mint/bolt</code> (bolt11/12 minting endpoints)</li>
 </ul>
 <p>In the example above, the <code>/v1/auth/blind/mint</code> path is the <strong>exact match</strong> <a href="../22/">NUT-22</a> endpoint for obtaining blind authentication tokens (BATs).</p>
 <blockquote>

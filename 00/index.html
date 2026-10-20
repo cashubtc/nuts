@@ -1406,7 +1406,7 @@
 <li><code>Y</code> derived public key</li>
 <li><code>DOMAIN_SEPARATOR</code> constant byte string <code>b"Secp256k1_HashToCurve_Cashu_"</code></li>
 <li><code>x</code> message to hash</li>
-<li><code>counter</code> uint32 counter(byte order little endian) incremented from 0 until a point is found that lies on the curve</li>
+<li><code>counter</code> uint32 counter (byte order little endian) incremented from 0 until a point is found that lies on the curve</li>
 </ul>
 <h2 id="protocol">Protocol<a class="headerlink" href="#protocol" title="Permanent link">&para;</a></h2>
 <ul>
@@ -1421,7 +1421,7 @@
 <h2 id="notation-and-conventions">Notation And Conventions<a class="headerlink" href="#notation-and-conventions" title="Permanent link">&para;</a></h2>
 <p>These specifications use elliptic curve public key cryptography over the field and curve parameters defined by <a href="http://www.secg.org/sec2-v2.pdf">secp256k1</a>.</p>
 <h3 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h3>
-<p>Values in these specification are one of:</p>
+<p>Values in these specifications are one of:</p>
 <ul>
 <li>Scalars: integers modulo the curve order <code>n</code></li>
 <li>Curve points: elements of the elliptic curve group (including the identity point at infinity)</li>
@@ -1430,8 +1430,8 @@
 <h3 id="byte-operations-and-encodings">Byte Operations And Encodings<a class="headerlink" href="#byte-operations-and-encodings" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Concatenation <code>||</code> appends one byte sequence to another.</li>
-<li>All operations such as point addition, scalar multiplication, hashing, are performed on the underlying mathematical values, not on their serialised byte encodings.</li>
-<li>When a curve point is serialised as <code>hex_str</code>, it is the hex encoding of the SEC1 compressed public key bytes, unless a NUT specifies a different encoding.</li>
+<li>All operations such as point addition, scalar multiplication, hashing, are performed on the underlying mathematical values, not on their serialized byte encodings.</li>
+<li>When a curve point is serialized as <code>hex_str</code>, it is the hex encoding of the SEC1 compressed public key bytes, unless a NUT specifies a different encoding.</li>
 <li>Integer byte order and fixed widths are defined by each NUT where relevant, if a NUT is silent, it must not be assumed.</li>
 </ul>
 <h3 id="hashing">Hashing<a class="headerlink" href="#hashing" title="Permanent link">&para;</a></h3>
@@ -1441,7 +1441,7 @@
 </ul>
 <h2 id="01-models">0.1 - Models<a class="headerlink" href="#01-models" title="Permanent link">&para;</a></h2>
 <h3 id="blindedmessage"><code>BlindedMessage</code><a class="headerlink" href="#blindedmessage" title="Permanent link">&para;</a></h3>
-<p>An encrypted ("blinded") secret and an amount is sent from <code>Alice</code> to <code>Bob</code> for <a href="../04/">minting tokens</a> or for <a href="../03/">swapping tokens</a>. A <code>BlindedMessage</code> is also called an <em>output</em>.</p>
+<p>An encrypted ("blinded") secret and an amount are sent from <code>Alice</code> to <code>Bob</code> for <a href="../04/">minting tokens</a> or for <a href="../03/">swapping tokens</a>. A <code>BlindedMessage</code> is also called an <em>output</em>.</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="err">i</span><span class="kc">nt</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="err">hex_s</span><span class="kc">tr</span><span class="p">,</span>
@@ -1466,11 +1466,11 @@
 <span class="w">  </span><span class="nt">"amount"</span><span class="p">:</span><span class="w"> </span><span class="err">i</span><span class="kc">nt</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="err">hex_s</span><span class="kc">tr</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"secret"</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">"C"</span><span class="p">:</span><span class="w"> </span><span class="err">hex_s</span><span class="kc">tr</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"C"</span><span class="p">:</span><span class="w"> </span><span class="err">hex_s</span><span class="kc">tr</span>
 <span class="p">}</span>
 </code></pre></div>
 
-<p><code>amount</code> is the amount of the <code>Proof</code>, <code>secret</code> is the secret message and is a utf-8 encoded string (the use of a 64 character hex string generated from 32 random bytes is recommended to prevent fingerprinting), <code>C</code> is the unblinded signature on <code>secret</code> (hex string), <code>id</code> is the <a href="../02/">keyset id</a> of the mint public keys that signed the token (hex string).</p>
+<p><code>amount</code> is the amount of the <code>Proof</code>, <code>secret</code> is the secret message and is a UTF-8-encoded string (the use of a 64 character hex string generated from 32 random bytes is recommended to prevent fingerprinting), <code>C</code> is the unblinded signature on <code>secret</code> (hex string), <code>id</code> is the <a href="../02/">keyset id</a> of the mint public keys that signed the token (hex string).</p>
 <h2 id="02-protocol">0.2 - Protocol<a class="headerlink" href="#02-protocol" title="Permanent link">&para;</a></h2>
 <h3 id="errors">Errors<a class="headerlink" href="#errors" title="Permanent link">&para;</a></h3>
 <p>In case of an error, mints respond with the HTTP status code <code>400</code> and include the following data in their response:</p>
@@ -1587,7 +1587,7 @@
 <span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="err">...</span>
-<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
 
@@ -1646,9 +1646,9 @@
 </code></pre></div>
 
 <h4 id="binary-token">Binary Token<a class="headerlink" href="#binary-token" title="Permanent link">&para;</a></h4>
-<p>Token can be transmitted in a binary format when applicable (for example when transmitting via NFC).
-For this the serialised token is prepended with a prefix and a version byte.</p>
-<div class="codehilite"><pre><span></span><code>utf8("craw") || utf8(&lt;token_version&gt;) || &lt;serialised_token&gt;
+<p>Tokens can be transmitted in a binary format when applicable (for example when transmitting via NFC).
+For this the serialized token is prepended with a prefix and a version byte.</p>
+<div class="codehilite"><pre><span></span><code>utf8("craw") || utf8(&lt;token_version&gt;) || &lt;serialized_token&gt;
 </code></pre></div>
 
 <ul>
