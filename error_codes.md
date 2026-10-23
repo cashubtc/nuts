@@ -23,6 +23,7 @@
 | 12001 | Keyset is not known                             | [NUT-02][02], [NUT-04][04]                             |
 | 12002 | Keyset is inactive, cannot sign messages        | [NUT-02][02], [NUT-03][03], [NUT-04][04]               |
 | 12003 | Keyset has expired                              | [NUT-02][02], [NUT-03][03], [NUT-04][04], [NUT-05][05] |
+| 12004 | Keyset is rotating soon, no new melts accepted  | [NUT-02][02], [NUT-08][08]                             |
 | 20001 | Quote request is not paid                       | [NUT-04][04]                                           |
 | 20002 | Quote has already been issued                   | [NUT-04][04]                                           |
 | 20003 | Minting is disabled                             | [NUT-04][04]                                           |
