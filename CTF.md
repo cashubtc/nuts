@@ -344,7 +344,8 @@ GET https://mint.host:3338/v1/conditional_keysets
 - `since` (optional): Unix timestamp. Returns keysets with `registered_at >= since`.
 - `limit` (optional): Maximum keysets per response.
 - `active` (optional): Boolean filter on `active` flag.
-- `cursor` (optional): Opaque continuation from `next_cursor`. Keep the same `since` and `active` filters.
+- `condition_id` (optional): Exact condition selector, supported when the mint advertises `condition_keyset_filter: true`. The decoded value MUST contain exactly 64 lowercase hexadecimal characters.
+- `cursor` (optional): Opaque continuation from `next_cursor`. Keep the same `since`, `active`, and `condition_id` filters.
 
 Use the condition-list pagination rules, with `(registered_at, id)` as the
 order and cursor position. Return `next_cursor` with each response. `since`
@@ -378,6 +379,31 @@ curl -X GET https://mint.host:3338/v1/conditional_keysets?active=true
 ```
 
 The standard `GET /v1/keys/{keyset_id}` ([NUT-02][02]) still works for fetching public keys of a specific conditional keyset.
+
+### Condition-scoped discovery
+
+A mint that advertises `condition_keyset_filter: true` MUST apply condition
+equality before ordering and pagination. The selector combines with `since`
+and `active`. Every returned keyset MUST belong to the selected condition.
+An unknown valid condition MUST return an empty `keysets` array and
+`next_cursor: null`. Omitting `active` includes eligible inactive keysets.
+The selector does not change keyset eligibility or proof restoration rules.
+
+The mint MUST reject an empty, malformed, or repeated `condition_id` parameter.
+It MUST NOT treat an invalid selector as an omitted filter. An omitted selector
+retains the existing unfiltered behavior.
+
+The mint MUST reject a cursor reused across conditions or between scoped and
+unscoped requests. Existing valid unscoped cursors MUST remain valid for
+unscoped requests. This extension preserves the existing page-size limits,
+ordering, response fields, and non-snapshot pagination semantics.
+
+A client that requires condition-scoped discovery MUST check that
+`condition_keyset_filter` is `true` before sending a scoped request. It MUST NOT
+fall back to the global listing when this capability is absent or false.
+The client MUST check that each returned keyset belongs to the requested
+condition before deriving recovery candidates. Capability metadata does not
+replace keyset validation or cryptographic verification.
 
 ## Redemption Witness
 
@@ -565,6 +591,7 @@ The [NUT-06][06] setting indicates support for this feature:
 {
   "CTF": {
     "supported": true,
+    "condition_keyset_filter": true,
     "dlc_version": <str>,
     "vesting_period": <int>,
     "default_keyset_creation": <str>,
@@ -580,6 +607,7 @@ The [NUT-06][06] setting indicates support for this feature:
 ```
 
 - `supported`: Boolean indicating NUT-CTF support
+- `condition_keyset_filter` (optional): Boolean indicating support for condition-scoped discovery on `GET /v1/conditional_keysets`. The mint MUST advertise `true` only when it implements the condition-scoped discovery rules above. An absent or false value does not declare support. General CTF support alone does not declare support for this filter.
 - `vesting_period` (optional): Seconds after `event_maturity_epoch` for redemption. Default: 30 days (2592000). `0` = no expiry.
 - `dlc_version`: DLC protocol version (currently `"0"`)
 - `default_keyset_creation`: `"none"` (default), `"one-vs-rest"`, or `"all"`.
