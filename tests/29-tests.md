@@ -161,3 +161,35 @@ signature[0]: 0c39431338a0202568b9a1d4215c99f179cbb8ee5472ac5ae7133fbb8f99cafbb9
   ]
 }
 ```
+
+## Nutroot batch mint (v3 keysets)
+
+A [v3 batch](../29.md#nutroot-transactions-v3-keysets) is one transaction with every quote as an input, so `signatures[i]` signs quote `i`'s own [NUT-10 input digest](00-tests.md#transaction-transcripts) over the shared transcript. Combining two locked quotes (`quote-mint-0002` for 5 sats, `quote-mint-0003` for 3 sats) into the [NUT-10 mint vector](00-tests.md#transaction-transcripts)'s 8-sat output, with the [NUT-13 quote lock keys](13-tests.md#version-3-secret-derivation) of counters `0` and `1` as the lock keys:
+
+```json
+{
+  "transcript": "12003d0100010502000f71756f74652d6d696e742d303030320300210292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d20981204000012003d0100010302000f71756f74652d6d696e742d3030303303002102b357c1ec7bdd73e4ede25d68619ee607c632409e89bcc518a82370b3f499615d04000021004b0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee",
+  "digest": "bf866b675bf6730b94f556095a22f4ac094fb3fe5d65d777dd05a41ebfb6f4ed"
+}
+```
+
+The per-quote digests and signatures; neither signature verifies against the shared `digest` or at the other input:
+
+```json
+[
+  {
+    "quote_id": "quote-mint-0002",
+    "lock_pubkey": "0292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d209812",
+    "input_id": "8c7f916779dfba1b7ea2e0d3e69d1ee7eed1895af2891406fe8bdb7fbe0f39aa",
+    "input_digest": "dbc45733112ba2e7fad938d62de00c13c085309c9330d082cadee0c6dfeca85f",
+    "signature": "e0520f39e881481c7f6f12f987d09483c14b4bb3fbeea8f35d238f53bf0448be53db93f3a61ab882e50c8a96d26a87f48ded963ff5a585e404834f8c13b00e20"
+  },
+  {
+    "quote_id": "quote-mint-0003",
+    "lock_pubkey": "02b357c1ec7bdd73e4ede25d68619ee607c632409e89bcc518a82370b3f499615d",
+    "input_id": "f7a60306c44e910fd5dea355541c4a4bb251220690688279bf08e7d19b3e9e45",
+    "input_digest": "f14225ec0ff74cae090865a5d852b9cd8b06827d3f459ad2d6a5ce4cc1e91dac",
+    "signature": "e726ee0cef6b2431850f4f5f7b5745d8810ead54888db3aae12c30d151049810c72dbe9f3d07812719fd1e2c8d55df91cec1e9a81e8cfe557485cefcb4e6447f"
+  }
+]
+```
