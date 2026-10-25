@@ -54,7 +54,7 @@ Any array **MAY** be empty or omitted, and each is subject to the mint's [NUT-06
 
 - The transaction follows NUT-00's [transaction](00.md#the-transaction-transcript) and [signing](00.md#the-signing-rule) rules. A pre-v3 proof with `SIG_ALL` ([NUT-11][11]) **MUST** be rejected.
 - Every mint quote **MUST** be locked and in the transaction's unit, and its `amount` **MUST** be positive.
-- All `blinded_outputs` **MUST** share one keyset in the transaction's unit ([NUT-04](04.md#nutroot-transactions-v3-keysets)). Beside a melt quote, that keyset's `final_expiry` ([NUT-02][02]) **MUST NOT** be earlier than the melt quote's `expiry`.
+- Every `blinded_outputs` keyset **MUST** be in the transaction's unit. Beside a melt quote, each one's `final_expiry` ([NUT-02][02]) **MUST NOT** be earlier than the melt quote's `expiry`.
 - `melt_quote_outputs` **MUST NOT** hold more than one quote. The quote **MUST** be in the transaction's unit, and its `fee_reserve` **MUST** equal the quote's `fee_reserve`, or the `fee_reserve` of the entry its `fee_index` names.
 
 ### Balance
@@ -67,7 +67,7 @@ change     = melt.fee_reserve - melt_fee_paid
 
 Each quote's `amount_issued` grows by its input `amount`, as in a partial mint ([NUT-04][04]). `fee` is the input fee of the proofs ([NUT-02][02]) plus the [quote input fee](#quote-input-fee). `melt_fee_paid` is what the payment actually cost, known only at settlement; it never exceeds `melt.fee_reserve`.
 
-`amount_in` **MUST** equal `amount_out`. After settlement, `change` is returned in blank outputs ([NUT-08][08]): each, in request order, takes the largest amount of the blinded outputs' keyset that does not exceed what is left of it.
+`amount_in` **MUST** equal `amount_out`. After settlement, `change` is returned in blank outputs ([NUT-08][08]): each, in request order, takes the largest amount of its keyset that does not exceed what is left of it.
 
 ### Settlement
 
