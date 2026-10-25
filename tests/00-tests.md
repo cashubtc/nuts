@@ -582,3 +582,14 @@ The melt shares the swap's `input_id` but not its `input_digest`, so neither wit
   "input_digest": "c5692db35c58c47c70aa4dab49d2ede41adec95f00a231bf40cc8af5ddee030f"
 }
 ```
+
+**Mint quote to melt.** Paying melt quote `quote-melt-0001` straight from mint quote `quote-mint-0001` in one transaction ([NUT-XX](../XX.md)): no proofs and no change outputs, so the transcript is the mint vector's quote input container followed by the melt vector's melt quote container. The quote input's bytes are unchanged, so it keeps the mint vector's `input_id`; the new transcript gives it a new `input_digest`, which its lock key signs:
+
+```json
+{
+  "transcript": "12003d0100010802000f71756f74652d6d696e742d303030310300210292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d2098120400002200160100010802000f71756f74652d6d656c742d30303031",
+  "digest": "8c54caecbdd6fdc5ae77bea97ed63dbf94a6919d6bc5d71cd7145765b52e49f3",
+  "input_id": "d294012dd54976b05eb3e36eb218b9a6d66b19d79ec122944a35b99b8ddd8839",
+  "input_digest": "492728212791e2222a327b9c4fe6c17e2da0e9e7d1aebbe0062c3585909edb57"
+}
+```
