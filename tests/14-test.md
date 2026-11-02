@@ -56,7 +56,7 @@ A hashlock with no `pubkeys` tag requires no signature: the following `Proof` is
 
 ### SIG_ALL Test Vector
 
-HTLC shares the [NUT-11][11] SIG_ALL message aggregation. The following `SwapRequest` has a valid preimage and a valid signature over the aggregated message.
+HTLC shares the [NUT-11][11] SIG_ALL message aggregation. The following `PostSwapRequest` has a valid preimage and a valid signature over the aggregated message.
 
 ```json
 {

@@ -135,7 +135,7 @@ The proofs are signed by keyset `01b8afe98cfccddc07e53fe5f081657f729c322266a1fda
 
 The message hash is `tagged_hash("Cashu_SigAllSig_v1", message)`, where `message` is the typed, length-framed byte string defined in NUT-11. The UTF-8 tag hashes to `c83c413c874b6f3da4c6310558d0d174c56f1a0a034023ae225ab3648e9626b3`. Decode this hex value into the raw 32-byte `tag_hash`; the message hash is `SHA256(tag_hash || tag_hash || message)`.
 
-The following `SwapRequest` is signed over the v1 message. The witness carries one signature per accepted message format (v1, then the string format it supersedes); a mint counts ONE unique public key with a valid signature and ignores signatures it cannot verify.
+The following `PostSwapRequest` is signed over the v1 message. The witness carries one signature per accepted message format (v1, then the string format it supersedes); a mint counts ONE unique public key with a valid signature and ignores signatures it cannot verify.
 
 ```json
 {
