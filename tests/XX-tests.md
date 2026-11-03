@@ -118,22 +118,40 @@ funding_token_amount = 100
 keyset_id = 01fd5a9250eb619ce33b33bf6e752634a5a8ca4bb629c6b48a99db9c94d09d310d
 input_fee_ppk = 0
 maximum_amount = 64
-setup_timestamp = 1700000000
 sender_pubkey = 0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
 receiver_pubkey = 02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5
+setup_timestamp = 1700000000
 expiry_timestamp = 1800000000
 channel_secret = acfc96a584e645524b017b75cfe0770c3b8dc2ba4f9cef6d99f2cb7bcee691cf
 ```
 
-The exact UTF-8 SHA-256 preimage is:
+The exact canonical TLV records are:
 
 ```text
-https://vector-mint.example|sat|100|100|01fd5a9250eb619ce33b33bf6e752634a5a8ca4bb629c6b48a99db9c94d09d310d|0|64|1700000000|0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798|02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5|1800000000|acfc96a584e645524b017b75cfe0770c3b8dc2ba4f9cef6d99f2cb7bcee691cf
+type 0,  length 1:  01
+type 2,  length 27: 68747470733a2f2f766563746f722d6d696e742e6578616d706c65
+type 4,  length 3:  736174
+type 6,  length 1:  64
+type 8,  length 1:  64
+type 10, length 33: 01fd5a9250eb619ce33b33bf6e752634a5a8ca4bb629c6b48a99db9c94d09d310d
+type 12, length 0:  <empty>
+type 14, length 1:  40
+type 16, length 33: 0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+type 18, length 33: 02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5
+type 20, length 4:  6553f100
+type 22, length 4:  6b49d200
+type 24, length 32: acfc96a584e645524b017b75cfe0770c3b8dc2ba4f9cef6d99f2cb7bcee691cf
+```
+
+The exact TLV stream, including each `bigsize(type)` and `bigsize(length)`, is:
+
+```text
+000101021b68747470733a2f2f766563746f722d6d696e742e6578616d706c6504037361740601640801640a2101fd5a9250eb619ce33b33bf6e752634a5a8ca4bb629c6b48a99db9c94d09d310d0c000e014010210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798122102c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee514046553f10016046b49d2001820acfc96a584e645524b017b75cfe0770c3b8dc2ba4f9cef6d99f2cb7bcee691cf
 ```
 
 ```text
-channel_id = SHA256(preimage) =
-  7af675f4f1b9843200d23060ebeb5bf5abea67fa511af79aefa4ba6a19b88c2e
+channel_id = tagged_SHA256("Cashu_Spilman_channel_id", tlv_stream) =
+  22d8063ac8592223c0cb20d9da883787382db861569c0aa84f664ae75c641781
 ```
 
 ## spilman-test-vector-channel-id-keysetv2-mint-trailing-slash
@@ -147,7 +165,7 @@ mint_input = https://vector-mint.example/
 normalized_mint = https://vector-mint.example
 ```
 
-The exact UTF-8 SHA-256 preimage and the expected channel ID are therefore the
+The exact TLV stream and the expected channel ID are therefore the
 same as `spilman-test-vector-channel-id-keysetv2`.
 
 ## spilman-test-vector-output-nonce-and-blinding-keysetv2
@@ -159,23 +177,23 @@ not define the funding output's stage-1 P2PK keys; it only defines its
 per-proof NUT-10 nonce and Cashu blind-signature blinding factor.
 
 ```text
-channel_id = 7af675f4f1b9843200d23060ebeb5bf5abea67fa511af79aefa4ba6a19b88c2e
+channel_id = 22d8063ac8592223c0cb20d9da883787382db861569c0aa84f664ae75c641781
 channel_secret = acfc96a584e645524b017b75cfe0770c3b8dc2ba4f9cef6d99f2cb7bcee691cf
 output_context = funding
 amount = 64
 index = 0
 
 nonce_message =
-  7af675f4f1b9843200d23060ebeb5bf5abea67fa511af79aefa4ba6a19b88c2e|funding|64|nonce|0
+  22d8063ac8592223c0cb20d9da883787382db861569c0aa84f664ae75c641781|funding|64|nonce|0
 nonce_bytes = HMAC-SHA256(channel_secret, nonce_message) =
-  f934dd4311715f9e9af3d338c2b7235581a779f748839ffbfe584b0c1e21e37a
+  872b3ae7294249e7bb7a5351623b3a8a400820f5af294cf7f74888eb55a22273
 nonce_bytes is a valid nonzero secp256k1 scalar, so no retry is used.
-Secret.nonce = f934dd4311715f9e9af3d338c2b7235581a779f748839ffbfe584b0c1e21e37a
+Secret.nonce = 872b3ae7294249e7bb7a5351623b3a8a400820f5af294cf7f74888eb55a22273
 
 blinding_message =
-  7af675f4f1b9843200d23060ebeb5bf5abea67fa511af79aefa4ba6a19b88c2e|funding|64|blinding|0
+  22d8063ac8592223c0cb20d9da883787382db861569c0aa84f664ae75c641781|funding|64|blinding|0
 blinding_factor = HMAC-SHA256(channel_secret, blinding_message) =
-  95066df465e8e73f5d56df3bcf010ed7c8cc473b0e68ada8bb51589f31009618
+  9f395ca331cf075dd3a651037a088b99a76c60a3e49ecda22905e5eff7f92f18
 ```
 
 The `blinding_factor` is a valid secp256k1 scalar, so no retry is needed for
@@ -208,27 +226,27 @@ This vector derives the three shared P2PK keys used by every funding proof.
 Each `message` is the exact HMAC-SHA256 input.
 
 ```text
-channel_id = 7af675f4f1b9843200d23060ebeb5bf5abea67fa511af79aefa4ba6a19b88c2e
+channel_id = 22d8063ac8592223c0cb20d9da883787382db861569c0aa84f664ae75c641781
 channel_secret = acfc96a584e645524b017b75cfe0770c3b8dc2ba4f9cef6d99f2cb7bcee691cf
 prefix = Cashu_Spilman_stage1_key_tweak_v1
 
 sender_stage1:
   original_pubkey = 0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
-  message = Cashu_Spilman_stage1_key_tweak_v17af675f4f1b9843200d23060ebeb5bf5abea67fa511af79aefa4ba6a19b88c2e|sender_stage1
-  scalar = 08bcce7d4847ab4ed33c737431cfe6f6aeba419edd418cae80e12178221296e9
-  blinded_pubkey = 02516479c6dee216722f477dcc5ecddb6a793fa7aaf7d8d2b887f45dc6ff96faee
+  message = Cashu_Spilman_stage1_key_tweak_v122d8063ac8592223c0cb20d9da883787382db861569c0aa84f664ae75c641781|sender_stage1
+  scalar = c91d056874abe1711778d9674158b43b42ac6754e58072431627ef8dce944218
+  blinded_pubkey = 025032d5e99037ddabf57564ebd03e79994bd86d77f47302ca81eca7e8555dd80b
 
 receiver_stage1:
   original_pubkey = 02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5
-  message = Cashu_Spilman_stage1_key_tweak_v17af675f4f1b9843200d23060ebeb5bf5abea67fa511af79aefa4ba6a19b88c2e|receiver_stage1
-  scalar = 0f1bf68bab1e80af962b49eec1f2dc479c3bff3d093e8d2ad9c4c475713cada9
-  blinded_pubkey = 02b37243d00583b225e1f5dc23a48a7568b09eec889bfa45c20fc865de7309b2a9
+  message = Cashu_Spilman_stage1_key_tweak_v122d8063ac8592223c0cb20d9da883787382db861569c0aa84f664ae75c641781|receiver_stage1
+  scalar = 983b646d09e66356f4a1fd6d5f8189c0a59a4412db772e5a13dca08804d01ff6
+  blinded_pubkey = 035ab3f5c8bfd229dfddf3d6bd0f4c6a7470c43f3c864f8e4121d6ac86a16e43e4
 
 sender_stage1_refund:
   original_pubkey = 0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
-  message = Cashu_Spilman_stage1_key_tweak_v17af675f4f1b9843200d23060ebeb5bf5abea67fa511af79aefa4ba6a19b88c2e|sender_stage1_refund
-  scalar = 956ac1d4ed35bf4abf97b2177053c50ca66e9e1d614dd3934b2374fa1bda5f2e
-  blinded_pubkey = 022055ae1c0cba2f9cb756b4779276c8e061fe9ccd286c43a91b4164d265fcfbe8
+  message = Cashu_Spilman_stage1_key_tweak_v122d8063ac8592223c0cb20d9da883787382db861569c0aa84f664ae75c641781|sender_stage1_refund
+  scalar = 67def3cde1286293b89db06d5797741c4cbb89a7dd5deb43aca30dfb2c1f6f11
+  blinded_pubkey = 0262059f95d1ac59f34a29f9e9d5c26b414e1921b0b76d5f162b54d67d0540a72d
 ```
 
 ## spilman-test-vector-funding-outputs-keysetv2
@@ -244,24 +262,24 @@ keyset_id = 01fd5a9250eb619ce33b33bf6e752634a5a8ca4bb629c6b48a99db9c94d09d310d
 
 amount = 4
 index = 0
-secret = ["P2PK",{"data":"02516479c6dee216722f477dcc5ecddb6a793fa7aaf7d8d2b887f45dc6ff96faee","nonce":"e9aad80a4e747e570bb68cff4f8a33f8c2d904f424e695f9e2febf92bbd4fb30","tags":[["pubkeys","02b37243d00583b225e1f5dc23a48a7568b09eec889bfa45c20fc865de7309b2a9"],["locktime","1800000000"],["n_sigs","2"],["refund","022055ae1c0cba2f9cb756b4779276c8e061fe9ccd286c43a91b4164d265fcfbe8"],["n_sigs_refund","1"],["sigflag","SIG_ALL"]]}]
-nonce = e9aad80a4e747e570bb68cff4f8a33f8c2d904f424e695f9e2febf92bbd4fb30
-blinding_factor = d8d6d77cfe64154981bc10bfbb96987c27353f1854e3b977543e5c92ff91ffef
-blinded_message = 036a453cdf46b2abdb52d72c591152199bd386f79dd00c322f2e2d776b0c9ec16a
+secret = ["P2PK",{"data":"025032d5e99037ddabf57564ebd03e79994bd86d77f47302ca81eca7e8555dd80b","nonce":"cd4bfbda7d1d630ba93d4027eb37fcde4cdcf886809b4a1d38af6b26dc5fdf67","tags":[["pubkeys","035ab3f5c8bfd229dfddf3d6bd0f4c6a7470c43f3c864f8e4121d6ac86a16e43e4"],["locktime","1800000000"],["n_sigs","2"],["refund","0262059f95d1ac59f34a29f9e9d5c26b414e1921b0b76d5f162b54d67d0540a72d"],["n_sigs_refund","1"],["sigflag","SIG_ALL"]]}]
+nonce = cd4bfbda7d1d630ba93d4027eb37fcde4cdcf886809b4a1d38af6b26dc5fdf67
+blinding_factor = 08333c12d6cacac3bb9b53ac724d9cc53ee2bead9b8380353335916a7094f9a0
+blinded_message = 03d3c8c76a78f1cdb3cdb4a392f77afe1d9a4f19e1681afcffe7cc013ac20d8873
 
 amount = 32
 index = 0
-secret = ["P2PK",{"data":"02516479c6dee216722f477dcc5ecddb6a793fa7aaf7d8d2b887f45dc6ff96faee","nonce":"879abe0662d57e86ec39d715103c1c95814780b29752c01aadb0888b92d3c081","tags":[["pubkeys","02b37243d00583b225e1f5dc23a48a7568b09eec889bfa45c20fc865de7309b2a9"],["locktime","1800000000"],["n_sigs","2"],["refund","022055ae1c0cba2f9cb756b4779276c8e061fe9ccd286c43a91b4164d265fcfbe8"],["n_sigs_refund","1"],["sigflag","SIG_ALL"]]}]
-nonce = 879abe0662d57e86ec39d715103c1c95814780b29752c01aadb0888b92d3c081
-blinding_factor = 8952cedabe7d95af9d8388373e1bc2d8cb8897a4e59a5b3c0d3c7e93d2059b0f
-blinded_message = 02be9df107c01a2e33640bc229b673b71dccdee427c4e417c83c39f585abfb5dc6
+secret = ["P2PK",{"data":"025032d5e99037ddabf57564ebd03e79994bd86d77f47302ca81eca7e8555dd80b","nonce":"7f3dd5bc167eb0a52c0a8fc3a02aacd79520ae5d825974dfb25cc913d21a0955","tags":[["pubkeys","035ab3f5c8bfd229dfddf3d6bd0f4c6a7470c43f3c864f8e4121d6ac86a16e43e4"],["locktime","1800000000"],["n_sigs","2"],["refund","0262059f95d1ac59f34a29f9e9d5c26b414e1921b0b76d5f162b54d67d0540a72d"],["n_sigs_refund","1"],["sigflag","SIG_ALL"]]}]
+nonce = 7f3dd5bc167eb0a52c0a8fc3a02aacd79520ae5d825974dfb25cc913d21a0955
+blinding_factor = 47f8a37dba6dd9962f324aa46071f75ee290bae336ef341fc9e10ab7b7ac4a2d
+blinded_message = 02b852b64fd1fcdd6c8e8aa0bd4609ab2925d9dc588b2a883123c7ab27d1a54503
 
 amount = 64
 index = 0
-secret = ["P2PK",{"data":"02516479c6dee216722f477dcc5ecddb6a793fa7aaf7d8d2b887f45dc6ff96faee","nonce":"f934dd4311715f9e9af3d338c2b7235581a779f748839ffbfe584b0c1e21e37a","tags":[["pubkeys","02b37243d00583b225e1f5dc23a48a7568b09eec889bfa45c20fc865de7309b2a9"],["locktime","1800000000"],["n_sigs","2"],["refund","022055ae1c0cba2f9cb756b4779276c8e061fe9ccd286c43a91b4164d265fcfbe8"],["n_sigs_refund","1"],["sigflag","SIG_ALL"]]}]
-nonce = f934dd4311715f9e9af3d338c2b7235581a779f748839ffbfe584b0c1e21e37a
-blinding_factor = 95066df465e8e73f5d56df3bcf010ed7c8cc473b0e68ada8bb51589f31009618
-blinded_message = 02529111ff074c0e7503ab7f299c6221702a77c40354ad5f3e38c7cb61a9dc2c83
+secret = ["P2PK",{"data":"025032d5e99037ddabf57564ebd03e79994bd86d77f47302ca81eca7e8555dd80b","nonce":"872b3ae7294249e7bb7a5351623b3a8a400820f5af294cf7f74888eb55a22273","tags":[["pubkeys","035ab3f5c8bfd229dfddf3d6bd0f4c6a7470c43f3c864f8e4121d6ac86a16e43e4"],["locktime","1800000000"],["n_sigs","2"],["refund","0262059f95d1ac59f34a29f9e9d5c26b414e1921b0b76d5f162b54d67d0540a72d"],["n_sigs_refund","1"],["sigflag","SIG_ALL"]]}]
+nonce = 872b3ae7294249e7bb7a5351623b3a8a400820f5af294cf7f74888eb55a22273
+blinding_factor = 9f395ca331cf075dd3a651037a088b99a76c60a3e49ecda22905e5eff7f92f18
+blinded_message = 02ecc9ac363e78600d4b4dc84908d899e7c7eba9f5b93aa5c5d3bf5d7548319b50
 ```
 
 ## spilman-test-vector-stage2-p2bk-keysetv2
@@ -276,19 +294,19 @@ index = 0
 
 context = receiver_stage2
 recipient_pubkey = 02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5
-ephemeral_secret = 6736788d5e1325a6ad0aec521c673c80db323ae9cb6e756252d190f658a49da4
-p2pk_e = 03b95460565471b30d35b7b96cb632391c680806dad65379a3bf93e5a66dcc936f
-shared_secret_x = 0b205af6f661eb73197e71666e46f8d7acb03dbe79734d5eb6056b3efa9c5c95
-p2bk_scalar = 40f12c7792828472b303dec3ffd759c374b7646fa73182f737eb4c45a3c9cd61
-blinded_pubkey = 02270ea899810d2f4064d4df8bfc356b5706ba8e236c93c1963f620c14794ad601
+ephemeral_secret = d79f3c31c57af70666f5027c50a9937b62f0473fdb7ca9af9ae9f5a37d61d44c
+p2pk_e = 0340c8ee89ad2f338ea2d6500527e1c9ffd97557567d3a4748ffa6961ec2d77e20
+shared_secret_x = eb9412b52bcc6054eb9390f8ddb674bd8e9a1cc77c596f7b99c16a6e8c796d37
+p2bk_scalar = 951b4a015a54c64120953f11d2084b3bbd505db9b7e3c0f1e07516ab7115cc77
+blinded_pubkey = 027d9a5bc962b7c0dbb6032556d6575707e02e5133e9fc6cb8c4c79a9163e02219
 
 context = sender_stage2
 recipient_pubkey = 0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
-ephemeral_secret = 17809cf637c793619c16f1a26a641ec05cc35237205da5c2c705fe0942e51df5
-p2pk_e = 03600d205df80cea1ea916c7a3ea98009a001483aa4a35cfb96ca20ce707f58a74
-shared_secret_x = 600d205df80cea1ea916c7a3ea98009a001483aa4a35cfb96ca20ce707f58a74
-p2bk_scalar = b0706b1fa1e4c0865243c94e7a114ff6b0f5a16664240d90308b1d04023c9704
-blinded_pubkey = 03b5b9b73e75d63ff6a43093ed2604fb056aa932620a80940e25a1d1de4455264f
+ephemeral_secret = bce31ccf7f2e3ccd4f3d56101dccf0b9f66bb8802f0d9771a6eeeec9ccad6903
+p2pk_e = 0227f12894d245777fbc258e8a1fc36a8af80d1bca020b3effdd3ed9b4edf9175f
+shared_secret_x = 27f12894d245777fbc258e8a1fc36a8af80d1bca020b3effdd3ed9b4edf9175f
+p2bk_scalar = 612685c011c734555acc7632212d783178aadb09f5a169ffb4df1dd6ec2f2910
+blinded_pubkey = 02f04dbe714c4e574b656448843c816516674ed63ff4bda3970e8df7a203892abf
 ```
 
 ## spilman-test-vector-commitment-outputs-keysetv2
@@ -305,50 +323,50 @@ receiver_balance = 50
 context = receiver
 amount = 2
 index = 0
-secret = ["P2PK",{"data":"03976217324d65dd310860c16ed0ab60b9bb2a7e6bf9354d1d204899f17d6b1e12","nonce":"008b267f22e9da9672d141c6ca72f069c464e1863909d82e4ccdd0fbca0fe658","tags":[]}]
-p2pk_e = 035ccec34674ef9771472cdb1140a30d288a76040b9a402be53638866d3369ab2b
-blinding_factor = 42a8442f1f234b0fd8727e653fc69ff73e66ea3c84b7689a76339d9ab3ff07bf
-blinded_message = 0225d53d34dfeec3151295621c0094165dd3d94bf4d0f7cf9f4bcd946a94eaaab5
+secret = ["P2PK",{"data":"0395499a0b6977b755bd762b394dfea023e6829449989209b852e2baef3d5acc04","nonce":"e7cd816bb2de9369901c3d058915cb08e64141df5fed1e7f816591463680ca29","tags":[]}]
+p2pk_e = 03f83f09c1b594b8c959865ac9187bc84794867cf1f1f6d5f23e9fe39b5cc62823
+blinding_factor = 997f96b9970fbbdfb5ad707a0678aca7f852234019a4ebfce78b03a5d5534005
+blinded_message = 02edb30c85ffdf26a839211cb8fdb6e66a2683b63d3a219c18cda91a06ec6a8bf2
 
 context = receiver
 amount = 16
 index = 0
-secret = ["P2PK",{"data":"0355c22359dc1ab7f5c2f3bc90149f949aaffea848f38d3bba967a48d3776ad537","nonce":"fe4ac5c03c0dca0ef9af528fddb8975558d03ae7a7f73a93e3718d6f52f4c2f0","tags":[]}]
-p2pk_e = 02010f9d212bcdece828a68524d97ebe6c4506df314efb7ce0070d04f5084dc2bf
-blinding_factor = 3a793efb2d8332e71a04a4f126ebdf7622546583a25f555dbd028a871858c55e
-blinded_message = 02686997630f52fd739d62b94cd14358f1d4ba5daf3a6d6c3b10ee4479938ccdea
+secret = ["P2PK",{"data":"03968acd8b22c3da2f7dfd82418ae566dd4f832d96992f9ccbd9f698c1bf07c0ba","nonce":"82a7afe482d3bacc1f8cc2c6d05445ee2ecec26499698c2934b3685beb363080","tags":[]}]
+p2pk_e = 033fcbf07fdeeafc79176cfa5b3084775c55d7a4244413b13519b53b7ebcc87983
+blinding_factor = 8db1bc3dbd5b32a51d99d6ba0e91aaf9df2449aa27b70e12b3a8b065db409c44
+blinded_message = 03a19de7bde70cd3da6da9c0249c8a4cd4240a20717e7144852c861b8290e9e4c7
 
 context = receiver
 amount = 32
 index = 0
-secret = ["P2PK",{"data":"02270ea899810d2f4064d4df8bfc356b5706ba8e236c93c1963f620c14794ad601","nonce":"0c640e9c0e7b5c13d519e6a5dbae6d84fc8b71a2da736689fd950606aa3abd07","tags":[]}]
-p2pk_e = 03b95460565471b30d35b7b96cb632391c680806dad65379a3bf93e5a66dcc936f
-blinding_factor = acdd0fcfceef385b839d58b70d27dae12d708729e4efefe31f63420c101fae3f
-blinded_message = 02160974d3b2928f741ce5833309d8c572faf4ce64aeb620e7163f34fcd82dff55
+secret = ["P2PK",{"data":"027d9a5bc962b7c0dbb6032556d6575707e02e5133e9fc6cb8c4c79a9163e02219","nonce":"3de4b352b152e9f42a0bf1a80a2074c808022b85423839ceb962fc163ab5ccb1","tags":[]}]
+p2pk_e = 0340c8ee89ad2f338ea2d6500527e1c9ffd97557567d3a4748ffa6961ec2d77e20
+blinding_factor = 645c826ab04b1d7270f10d7c403c3ba8eea43252484ce9f0342720de35d75674
+blinded_message = 03f0aad58d35ce66a5079fe9d24ff8862a04d7ffdcd6683773e80a67f6f2e461e0
 
 context = sender
 amount = 2
 index = 0
-secret = ["P2PK",{"data":"02493df89ad25a74a098b302fdd225344189cb2865c6d1edc2fcd730384888d246","nonce":"a5a204390c60cca38988fcedc3f77bef1f32272cef922082f3a8cb8de6fbc73d","tags":[]}]
-p2pk_e = 0378728c7baf110d9336a9ed523cf49c94473c30f0909cf5d8edfb5ab42a823add
-blinding_factor = 8c525518a63808137e793b3fdd1491b745e737b0cabb42047337825c717cd40a
-blinded_message = 032bf5de6d21526305149bc2e08424ed024f74a644409f637902154b28dd2b7278
+secret = ["P2PK",{"data":"030b30774438c74441f23c2ac465d417bcd8ea843540e4e2966347b314d6a426dc","nonce":"1c2ea5c4c211ca037ccd134f0fa4feeb52751c73f4cfcbe25fd04a9a12881436","tags":[]}]
+p2pk_e = 03060bb9b3f46ec85a8c3e2c6b9eb4aa4d342fb77f12a4bbf5f20d601630faf9eb
+blinding_factor = 4cce8c264871220521a6ca7fa0e61e4af38348629d205e984228d378ae5fdc6a
+blinded_message = 02432306a375dabf1d699278ad5ed5e7a0659c6b1ec7dd2fb924c86534a6cb534b
 
 context = sender
 amount = 16
 index = 0
-secret = ["P2PK",{"data":"02b49021bc36f31cc22f4ee2b70dab41e5900b8d7681e6d415fdf0db2231c55ada","nonce":"fa5eac4d875dbb343a5840d62a9b6fd0b90d1ee08f1a0b627ba7767c0c622881","tags":[]}]
-p2pk_e = 030642bc7f978e74851befc286198a5121b909baf11f90c7b2db0b318062b0e5a9
-blinding_factor = 5c8fbc6e15ed4b6ecf8ba42485db5cf8b4cd44840c60a12c2de289041163536f
-blinded_message = 02a30cde253b234c36193de2b5b91254255ef42250b51628ca856bcebba76f4ecb
+secret = ["P2PK",{"data":"03f9c0f1e4a8c06d8210786dcbcb2f476953d523406eed124bb6c64d2654e81c4e","nonce":"20790520e7ff1e36a0150443664111fee2496cc07632464387ae3ff6735ea80c","tags":[]}]
+p2pk_e = 026b9a9bfd5f6f1720eb96a808d7937bf49ada33fc067cb751ab8bbe400ea37e3b
+blinding_factor = 749bf464cf293c7d9fc181894e946498587251d6a39c6e4242bac03c715ec237
+blinded_message = 02f8b5fc29575571508b6d0e503da0c4f298dc71098fb8d28c0f27fe82ae8e8a5a
 
 context = sender
 amount = 32
 index = 0
-secret = ["P2PK",{"data":"03b5b9b73e75d63ff6a43093ed2604fb056aa932620a80940e25a1d1de4455264f","nonce":"d19c3e67ae5c9aa3d737ccd349cb83c8f384ec5940d166238da8eef54fcd0cfe","tags":[]}]
-p2pk_e = 03600d205df80cea1ea916c7a3ea98009a001483aa4a35cfb96ca20ce707f58a74
-blinding_factor = 51a394d16ba49c82f05813628ec414ab082198c9c7136b352df13b828244f00c
-blinded_message = 03c652d5f40b395d33be28c1547761101cf9f0c65c995b2f701644cb43966d42e0
+secret = ["P2PK",{"data":"02f04dbe714c4e574b656448843c816516674ed63ff4bda3970e8df7a203892abf","nonce":"097a16413a89691abc4c196437b6d174a5b737d9e59d9e53d19e35e1e934e7d3","tags":[]}]
+p2pk_e = 0227f12894d245777fbc258e8a1fc36a8af80d1bca020b3effdd3ed9b4edf9175f
+blinding_factor = c68c1540afdd821f401c6163965ce3e45f7275c1485f6351529466b2bec19179
+blinded_message = 0259f0b01c35e6331d95d25c0e45845fb03189964dc20a35bc6a90023a8c8aa71b
 
 stable_swap_output_order =
   receiver:2, sender:2, receiver:16, sender:16, receiver:32, sender:32
@@ -367,21 +385,21 @@ their generation and verification are defined by NUT-12.
 
 ```text
 funding_input_0_amount = 4
-funding_input_0_C = 03324f2f0c4961e71397999bb072623d53e05276faf6e377aff1e04c8fc89757f0
+funding_input_0_C = 0320e3aaf985b86ecee63a5e758c09fdea742467794e76a546e5115b08671e678e
 funding_input_1_amount = 32
-funding_input_1_C = 0396b23d7ddc18f2f2f0a47c464d0316bd65011d1e96605c2d653272cd5955f04b
+funding_input_1_C = 03e89934e5d9246f259e4acea8deb61ac9788849857d1c92cba5f5c68b4599209e
 funding_input_2_amount = 64
-funding_input_2_C = 03ce7ca88ba5cdc6999008b6395feaf372a628587203a974ca1a284f3d019e6484
+funding_input_2_C = 0389162c83564dde12f6296de5cc586eb31cf2ce57b77f57e5a278330158508833
 
 commitment_outputs_in_order =
-  2|0225d53d34dfeec3151295621c0094165dd3d94bf4d0f7cf9f4bcd946a94eaaab5,
-  2|032bf5de6d21526305149bc2e08424ed024f74a644409f637902154b28dd2b7278,
-  16|02686997630f52fd739d62b94cd14358f1d4ba5daf3a6d6c3b10ee4479938ccdea,
-  16|02a30cde253b234c36193de2b5b91254255ef42250b51628ca856bcebba76f4ecb,
-  32|02160974d3b2928f741ce5833309d8c572faf4ce64aeb620e7163f34fcd82dff55,
-  32|03c652d5f40b395d33be28c1547761101cf9f0c65c995b2f701644cb43966d42e0
+  2|02edb30c85ffdf26a839211cb8fdb6e66a2683b63d3a219c18cda91a06ec6a8bf2,
+  2|02432306a375dabf1d699278ad5ed5e7a0659c6b1ec7dd2fb924c86534a6cb534b,
+  16|03a19de7bde70cd3da6da9c0249c8a4cd4240a20717e7144852c861b8290e9e4c7,
+  16|02f8b5fc29575571508b6d0e503da0c4f298dc71098fb8d28c0f27fe82ae8e8a5a,
+  32|03f0aad58d35ce66a5079fe9d24ff8862a04d7ffdcd6683773e80a67f6f2e461e0,
+  32|0259f0b01c35e6331d95d25c0e45845fb03189964dc20a35bc6a90023a8c8aa71b
 
-sig_all_message_sha256 = 917319d409c84dccb0d21fe31a6129bbd34c5db72c9757d3a2522eadca030189
+sig_all_message_sha256 = 92cc83021c6a89d461afce624895f38023f99dd82162c0e92acd28407175064d
 ```
 
 The concatenated message is signed by Alice's stage-1 blinded key for each

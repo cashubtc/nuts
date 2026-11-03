@@ -319,27 +319,61 @@ The HKDF invocation is as specified by RFC 5869. This derives a
 protocol-specific secret without using the raw Diffie-Hellman value
 directly.
 
-The `channel_id` is the SHA256 hash of the UTF-8 encoding of the following
-pipe-delimited string. Each `|` below is the single byte `0x7c`; the
-preimage contains no spaces, line breaks, or trailing separator:
+The `channel_id` commits to the channel parameters and `channel_secret` using
+a canonical type-length-value stream. Each record is:
 
 ```
-mint|unit|capacity|funding_token_amount|
-keyset_id|input_fee_ppk|maximum_amount_for_one_output|
-setup_timestamp|sender_pubkey|receiver_pubkey|
-expiry_timestamp|hex(channel_secret)
+bigsize(type) || bigsize(length(value)) || value
 ```
 
-Text fields use their UTF-8 bytes. The `mint` URL MUST have trailing `/`
-characters removed, as specified by NUT-00. The `mint` and `unit` fields
-MUST NOT contain `|`. `capacity`, `funding_token_amount`, `input_fee_ppk`,
-`maximum_amount_for_one_output`, `setup_timestamp`, and `expiry_timestamp`
-are unsigned integers encoded as base-10 ASCII without a sign or leading
-zeros, except that zero is encoded as `0`. `keyset_id`, `sender_pubkey`,
-`receiver_pubkey`, and `channel_secret` are lowercase hexadecimal encodings.
-The public keys are their 33-byte compressed SEC1 forms, and
-`channel_secret` is its raw 32-byte value. The resulting 32-byte
-`channel_id` is represented externally as lowercase hexadecimal.
+`bigsize` is the canonical variable-length unsigned integer encoding defined
+for the [Lightning TLV format](https://github.com/lightning/bolts/blob/master/01-messaging.md#type-length-value-format).
+Non-minimal `bigsize` encodings are invalid. Records MUST be ordered by
+strictly increasing type, and a type MUST NOT occur more than once. An unknown
+even type is required and MUST cause the stream to be rejected. An unknown odd
+type is optional and MAY be ignored.
+
+The channel-parameter registry is:
+
+| Type | Name | Value encoding |
+|---:|---|---|
+| 0 | `encoding_version` | `tu64`; MUST equal 1 |
+| 2 | `mint` | normalized UTF-8 bytes |
+| 4 | `unit` | canonical UTF-8 bytes |
+| 6 | `capacity` | `tu64` |
+| 8 | `funding_token_amount` | `tu64` |
+| 10 | `keyset_id` | raw keyset ID bytes, including its version byte |
+| 12 | `input_fee_ppk` | `tu64` |
+| 14 | `maximum_amount_for_one_output` | `tu64` |
+| 16 | `sender_pubkey` | 33-byte compressed SEC1 public key |
+| 18 | `receiver_pubkey` | 33-byte compressed SEC1 public key |
+| 20 | `setup_timestamp` | `tu64` |
+| 22 | `expiry_timestamp` | `tu64` |
+| 24 | `channel_secret` | raw 32-byte value |
+
+Every record in this registry is required and MUST occur exactly once. All are
+even because every current parameter must be understood to construct and
+validate the channel. Future optional parameters use odd types.
+
+A `tu64` is an unsigned 64-bit integer encoded in big-endian byte order after
+removing every leading zero byte. The TLV length therefore ranges from zero to
+eight. Zero is the empty value. A non-empty `tu64` beginning with `0x00`, or a
+value longer than eight bytes, is invalid.
+
+The `mint` URL MUST have trailing `/` characters removed, as specified by
+NUT-00, before its UTF-8 bytes are encoded. `keyset_id` uses the same raw bytes
+that its lowercase hexadecimal representation encodes. Public keys and the
+channel secret are raw bytes inside their TLV values, not hexadecimal text.
+
+Define the tagged hash:
+
+```
+tag_hash = SHA256(UTF8("Cashu_Spilman_channel_id"))
+channel_id = SHA256(tag_hash || tag_hash || channel_parameter_tlv)
+```
+
+The resulting 32-byte `channel_id` is represented externally as lowercase
+hexadecimal.
 
 The channel secret is to add a little extra privacy here, by making it more difficult
 for a third party, especially the mint, to predict what the `channel_id` might be.
