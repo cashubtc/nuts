@@ -39,7 +39,7 @@
 | 31003 | Maximum BAT mint amount exceeded                | [NUT-22][22]                                           |
 | 31004 | BAT mint rate limit exceeded                    | [NUT-22][22]                                           |
 | 33001 | Proof from unknown or unmirrored keyset         | [NUT-XX][XX]                                           |
-| 33002 | Delegation window not yet open                  | [NUT-XX][XX]                                           |
+| 33002 | Delegation not active                           | [NUT-XX][XX]                                           |
 | 33003 | Recovered reserve exhausted                     | [NUT-XX][XX]                                           |
 | 33004 | Proof DLEQ verification failed                  | [NUT-XX][XX]                                           |
 | 33005 | Firehose sequence out of range                  | [NUT-XX][XX]                                           |
