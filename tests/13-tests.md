@@ -7,7 +7,7 @@ The integer representation of a keyset with an ID `009a1f293253e41e` and its cor
 ```json
 {
   "keyset_id": "009a1f293253e41e",
-  "keyest_id_int": 864559728,
+  "keyset_id_int": 864559728,
   "derivation_path": "m/129372'/0'/864559728'/{counter}'"
 }
 ```
