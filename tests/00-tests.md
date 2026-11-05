@@ -21,7 +21,7 @@ Point:   026cdbe15362df59cd1dd3c9c11de8aedac2106eca69236ecd9fbe117af897be4f
 
 ### Blinded messages
 
-These are test vectors for the the blinded secret (public key) `B_` Alice sends to the mint Bob given a secret `x` and a random blinding factor `r`.
+These are test vectors for the blinded secret (public key) `B_` Alice sends to the mint Bob given a secret `x` and a random blinding factor `r`.
 
 ```shell
 # Test 1
@@ -98,7 +98,7 @@ This vector intentionally exercises both code paths. `weight_1` accepts at `ctr 
 
 ## Serialization of TokenV3
 
-The following are JSON-formatted v3 tokens and their serialized counterparts.
+The following is a JSON-formatted v3 token and its serialized counterpart.
 
 ```json
 {
@@ -186,7 +186,7 @@ Token from a single keyset and including a memo.
 }
 ```
 
-Encoded:
+Serialized:
 
 ```
 cashuBpGF0gaJhaUgArSaMTR9YJmFwgaNhYQFhc3hAOWE2ZGJiODQ3YmQyMzJiYTc2ZGIwZGYxOTcyMTZiMjlkM2I4Y2MxNDU1M2NkMjc4MjdmYzFjYzk0MmZlZGI0ZWFjWCEDhhhUP_trhpXfStS6vN6So0qWvc2X3O4NfM-Y1HISZ5JhZGlUaGFuayB5b3VhbXVodHRwOi8vbG9jYWxob3N0OjMzMzhhdWNzYXQ=

@@ -19,7 +19,7 @@ Slot 0 is the `data` tag. Slots 1-10 can be any combination of `pubkeys` and `re
 
 ### Example P2BK proof
 
-The following P2BK proof shows the receiver's public key (P) blinded in the `data` tag (slot `0`), and the ephemeral public key (E) in the `p2pk_e`metadata field.
+The following P2BK proof shows the receiver's public key (P) blinded in the `data` tag (slot `0`), and the ephemeral public key (E) in the `p2pk_e` metadata field.
 
 ```json
 {
@@ -34,6 +34,35 @@ The following P2BK proof shows the receiver's public key (P) blinded in the `dat
   },
   "p2pk_e": "02a8cda4cf448bfce9a9e46e588c06ea1780fcb94e3bbdf3277f42995d403a8b0c"
 }
+```
+
+### Example P2BK HTLC proof
+
+The following HTLC proof shows the receiver's public key (P) blinded at slot `1` in the `pubkeys` tag, and blinded again at slot `2` in the `refund` tag (for illustration). The `data` tag holds the hash lock, so it occupies slot `0`, but it is **not** blinded, as it is not a key.
+
+The hash lock is the matching pair from the NUT-14 examples (preimage: `0000000000000000000000000000000000000000000000000000000000000001`).
+
+```json
+{
+  "amount": 64,
+  "C": "0270aba098c920adafa1ce75acefb06d8cc541ef80270f70cc7b66375b789ed9be",
+  "id": "009a1f293253e41e",
+  "secret": "[\"HTLC\",{\"nonce\":\"8b1f18aa85a2787903cfdc776fde0b8555bdb126eea02b05cd84de06a4f4b551\",\"data\":\"ec4916dd28fc4c10d78e287ca5d9cc51ee1ae73cbfde08c6b37324cbfaac8bc5\",\"tags\":[[\"pubkeys\",\"0352fb6d93360b7c2538eedf3c861f32ea5883fceec9f3e573d9d84377420da838\"],[\"locktime\",\"1689418329\"],[\"refund\",\"03667361ca925065dcafea0a705ba49e75bdd7975751fcc933e05953463c79fff1\"]]}]",
+  "dleq": {
+    "s": "bd6ed079b954151898cadac38c3b8d3371c20d67e8c5f06af3cee4152ac317b4",
+    "e": "9ec5b6f2095a8dc7d052a00e0bb050ac95e633e702575630cfd43cb58592d2a1",
+    "r": "e8349cf88e5a9f025f0072bf8a2db48d394bad9f7be3d8023f9ee90de1c1924d"
+  },
+  "p2pk_e": "02a8cda4cf448bfce9a9e46e588c06ea1780fcb94e3bbdf3277f42995d403a8b0c"
+}
+```
+
+### Example V4 token
+
+The two example proofs above, encoded as a V4 token. Note the `pe` field carrying the ephemeral public key (E) as a 33-byte CBOR bstr.
+
+```
+cashuBo2FtdWh0dHA6Ly9sb2NhbGhvc3Q6MzMzOGF1Y3NhdGF0gaJhaUgAmh8pMlPkHmFwgqVhYRhAYXN4q1siUDJQSyIseyJub25jZSI6ImQ0YTE3YTg4ZjVkMGMwOTAwMWY3YjQ1M2M0MmMxZjlkNWE4NzM2M2IxZjY2MzdhNWE4M2ZjMzFhNmEzYjcyNjYiLCJkYXRhIjoiMDNiN2MwM2ViMDVhMGE1MzljZmM0MzhlODFiY2YzOGI2NWI3YmI4Njg1ZTg3OTBmOWI4NTNiZmUzZDc3YWQ1MzE1IiwidGFncyI6W119XWFjWCEDgYVd3MQ0qakLNWTynveOcnH4VE0AVnY7QYsA6IUlwP9hZKNhZVggI_IZCxi_0EPTpSYQPhX0qTjWRqa_k7AX4rt8heFUCzJhc1ggYXiXhFbELu6O77UIMPwxRr4nsFYZ8E40kNxZYAXwzHhhclgg0mpVqjnKUJV_2vVANrAQU7DeQgSLlqb7KhZ-A_ANCg9icGVYIQKozaTPRIv86ankbliMBuoXgPy5Tju98yd_QpldQDqLDKVhYRhAYXN5AWNbIkhUTEMiLHsibm9uY2UiOiI4YjFmMThhYTg1YTI3ODc5MDNjZmRjNzc2ZmRlMGI4NTU1YmRiMTI2ZWVhMDJiMDVjZDg0ZGUwNmE0ZjRiNTUxIiwiZGF0YSI6ImVjNDkxNmRkMjhmYzRjMTBkNzhlMjg3Y2E1ZDljYzUxZWUxYWU3M2NiZmRlMDhjNmIzNzMyNGNiZmFhYzhiYzUiLCJ0YWdzIjpbWyJwdWJrZXlzIiwiMDM1MmZiNmQ5MzM2MGI3YzI1MzhlZWRmM2M4NjFmMzJlYTU4ODNmY2VlYzlmM2U1NzNkOWQ4NDM3NzQyMGRhODM4Il0sWyJsb2NrdGltZSIsIjE2ODk0MTgzMjkiXSxbInJlZnVuZCIsIjAzNjY3MzYxY2E5MjUwNjVkY2FmZWEwYTcwNWJhNDllNzViZGQ3OTc1NzUxZmNjOTMzZTA1OTUzNDYzYzc5ZmZmMSJdXX1dYWNYIQJwq6CYySCtr6HOdazvsG2MxUHvgCcPcMx7ZjdbeJ7ZvmFko2FlWCCexbbyCVqNx9BSoA4LsFCsleYz5wJXVjDP1Dy1hZLSoWFzWCC9btB5uVQVGJjK2sOMO40zccINZ-jF8GrzzuQVKsMXtGFyWCDoNJz4jlqfAl8Acr-KLbSNOUutn3vj2AI_nukN4cGSTWJwZVghAqjNpM9Ei_zpqeRuWIwG6heA_LlOO73zJ39CmV1AOosM
 ```
 
 ### Shared Secret (Zx)
@@ -59,7 +88,7 @@ r6: "c39fa43b707215c163593fb8cadc0eddb4fe2f82c0c79c82a6fc2e3b6b051a7e" # scalar 
 r7: "b17d6a51396eb926f4a901e20ff760a852563f90fd4b85e193888f34fd2ee523" # scalar as hex padded 64
 r8: "4d4af85ea296457155b7ce328cf9accbe232e8ac23a1dfe901a36ab1b72ea04d" # scalar as hex padded 64
 r9: "ce311248ea9f42a73fc874b3ce351d55964652840d695382f0018b36bb089dd1" # scalar as hex padded 64
-r10 "9de35112d62e6343d02301d8f58fef87958e99bb68cfdfa855e04fe18b95b114" # scalar as hex padded 64
+r10: "9de35112d62e6343d02301d8f58fef87958e99bb68cfdfa855e04fe18b95b114" # scalar as hex padded 64
 ```
 
 ### Blinded Public Keys (P')
@@ -85,7 +114,7 @@ The following are valid blinded public keys for receiver pubkey (P), derived by 
 The following are valid derived secret keys for the receiver secret key (p), by locking slot.
 
 ```shell
-# skStd: standard derivation, (p + r0) mod n
+# skStd: standard derivation, (p + rᵢ) mod n
 0: "a174e77b25459f4809a187415af14065b49140c1408860f543444ed59261a605" # hex encoded private key
 1: "f78fcf5891dbd772cd68146ae9d740107f96b43ea7d3f34850ee7d71faa6084f" # hex encoded private key
 2: "81e0a0f6f9f36eebb3d7ffd733630270967150344203a2d2fb66bfd0466fe1a8" # hex encoded private key
@@ -98,7 +127,7 @@ The following are valid derived secret keys for the receiver secret key (p), by 
 9: "7b68faf4c2a000e5c23b25f413bc5c9a2ec9f48b4990deba0dfb8904cac76f2c" # hex encoded private key
 10: "4b1b39beae2f21825295b3193b172ecc2e123bc2a4f76adf73da4daf9b54826f" # hex encoded private key
 
-# skNeg: negated derivation, (-p + r0) mod n
+# skNeg: negated derivation, (-p + rᵢ) mod n
 0: "47051623754422cb04bc24c0cfe2c1ddc8db1fcc18f0aa4b477df4aca2adc20e" # hex encoded private key
 1: "9d1ffe00e1da5af5c882b1ea5ec8c18893e09349803c3c9e552823490af22458" # hex encoded private key
 2: "2770cf9f49f1f26eaef29d56a85483e8aabb2f3f1a6bec28ffa065a756bbfdb1" # hex encoded private key
