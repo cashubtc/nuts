@@ -529,6 +529,27 @@ Each input's `Y` and container record, then the transcript and digests. Only the
 
 The signature **MUST NOT** verify over a transcript that commits amount `8` or `issued` `0`.
 
+**Serialized quote witnesses.** A mint request's `signature` also accepts a serialized [witness](../00.md#witnesses). The partial mint's signature as a key-path witness:
+
+```json
+{
+  "signature": "{\"signatures\":[\"5055a075e7534502457e914c81768d29bae3d0be046d106a8a6529507c3bdc851cbecd9654454d22efe88658803d4a96d8c2ba53716b9846da08411fbabf71de\"]}"
+}
+```
+
+The mint vector with its quote locked to a script-only key, spent by a script-path witness:
+
+```json
+{
+  "lock_pubkey": "034b15129a9c665f37fbe9f6c80a7fe6ec0c809f34edde98d298aff94a1e8af276",
+  "transcript": "12003d0100010802000f71756f74652d6d696e742d30303031030021034b15129a9c665f37fbe9f6c80a7fe6ec0c809f34edde98d298aff94a1e8af27604000021004b0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee",
+  "digest": "1b6a4f3f56d3808cb81d176a5f9959ebe5dc9251de66056794000ad758a9eb84",
+  "input_id": "a639745001afaad8964370e8ddc1406bbf14d478c6d56819f188c9b10392fe45",
+  "input_digest": "1e0acf51dc92e81c87ad238eea380c8238373aee3e2a30167547ce20c9212a50",
+  "signature": "{\"leaf\":\"00010200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9\",\"control\":{\"K\":\"028edfebd6fdea3e1d89359af20868a2e76315b36cdb1a79de497a1757ca7bd407\",\"path\":[]},\"signatures\":[\"11edaf3608a6b1fbec19f1826e58ace09ca51aafbb7ad112a0b0b8f8787967d98eea2936bb55053dd463dbe47c2f23f37e5475ae4ebe92b328df54e80c7d9206\"]}"
+}
+```
+
 **Batched mint.** A [NUT-29](../29.md) batch of `quote-mint-0002` and `quote-mint-0003` with `quote_amounts` of `[5, 3]` and the mint vector's 8-sat output:
 
 ```
