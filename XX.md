@@ -1104,10 +1104,6 @@ for amount in amounts_in_this_keyset:
 This ensures she will get all the outputs and BlindedSignatures which Charlie
 created when he did the swap, even if she doesn't know which balance he exited with.
 
-Transport failures and malformed, partial, or cryptographically invalid restores
-are errors, not absence. Do not finalize a partially recovered payout after an
-error; retain the recovery state for retry.
-
 _(Question: Does NUT-09 specify what should happen if the outputs are a mixture of unspent outputs and outputs that were never spent? i.e. Does Alice have to call restore once for each possible output, or can she do a batch call where some will fail and some will succeed?)_
 
 # Charlie's verification
