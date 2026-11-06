@@ -16,7 +16,7 @@ The `template` leaf is a [NUT-10](10.md#optional-leaves) condition leaf that is 
 
 ## Evaluation
 
-Every output container of the spending transaction **MUST** be a mint quote output (`0x23`, [NUT-XX](XX.md#fixed-txout-quote)) whose lock key is listed in `dests`. Amounts, ids and the number of outputs are the spender's.
+Every output container of the spending transaction **MUST** be a mint quote output (`0x23`, [NUT-XX](XX.md#fixed-txout-quote)) whose lock key is listed in `dests`. Amounts and the number of outputs are the spender's.
 
 On receive, a `template` leaf counts toward [NUT-00](00.md#receive-time-verification)'s check 2 only when the wallet also holds the key of a listed destination.
 
