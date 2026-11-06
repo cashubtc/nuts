@@ -49,13 +49,12 @@ A `MeltOutput` is a melt quote ([NUT-05][05]), the fee reserve this transaction 
 }
 ```
 
-A `MintQuoteOutput` is a [fixed txout quote](#fixed-txout-quote) this transaction creates. Its `pubkey` is the quote's lock key, a 33-byte compressed secp256k1 public key, and `id_preimage` the optional 32-byte preimage of its id:
+A `MintQuoteOutput` is a [fixed txout quote](#fixed-txout-quote) this transaction creates. Its `pubkey` is the quote's lock key, a 33-byte compressed secp256k1 public key:
 
 ```json
 {
   "pubkey": <hex_str>,
-  "amount": <int>,
-  "id_preimage": <hex_str> // optional
+  "amount": <int>
 }
 ```
 
@@ -66,7 +65,7 @@ Any array **MAY** be empty or omitted, and each is subject to the mint's [NUT-06
 - The transaction follows NUT-00's [transaction](00.md#the-transaction-transcript) and [signing](00.md#the-signing-rule) rules. A pre-v3 proof with `SIG_ALL` ([NUT-11][11]) **MUST** be rejected.
 - Every mint quote **MUST** be locked and in the transaction's unit, and its `amount` **MUST** be positive.
 - Every `blinded_outputs` keyset **MUST** be in the transaction's unit. Beside a melt quote, each one's `final_expiry` ([NUT-02][02]) **MUST NOT** be earlier than the melt quote's `expiry`.
-- A mint quote output's `amount` **MUST** be positive. An `id_preimage` **MUST NOT** repeat within the request, or derive an id that is already [claimed](04.md#derived-quote-ids); the mint rejects either with error `11008`. Lock keys may repeat, but for privacy each **SHOULD** be fresh.
+- A mint quote output's `amount` **MUST** be positive. Lock keys may repeat, but for privacy each **SHOULD** be fresh.
 - A transaction with a txout quote among its `mint_quote_inputs` **MUST NOT** carry a mint quote output.
 - `melt_quote_outputs` **MUST NOT** hold more than one quote. The quote **MUST** be in the transaction's unit, and its `fee_reserve` **MUST** equal the quote's `fee_reserve`, or the `fee_reserve` of the entry its `fee_index` names.
 
@@ -100,15 +99,15 @@ A txout quote is fetched at `GET /v1/mint/quote/txout/{quote_id}` and redeemed i
 
 ### Fixed txout quote
 
-A mint quote output creates a fixed txout quote on settlement, for its `amount`, in the transaction's unit and locked to its `pubkey`, with `request` the empty string and `expiry` `null`. Its id is [derived](04.md#derived-quote-ids) from the output's `id_preimage`. Without one, the mint computes it from the transaction's inputs:
+A mint quote output creates a fixed txout quote on settlement, for its `amount`, in the transaction's unit and locked to its `pubkey`, with `request` the empty string and `expiry` `null`. Its id is bound to the transaction's inputs:
 
 ```
 quote_id = hex(tagged_hash("Cashu_InputQuoteId", SHA256(input section) || u32_BE(k)))
 ```
 
-where the input section is the transcript's input containers (`0x1n`) as serialized ([NUT-00](00.md#the-transaction-transcript)) and `k` is the output's position among the request's mint quote outputs, from 0. An id derived from `id_preimage` is claimed once a transaction naming it is accepted, and is released only if its payment fails.
+where the input section is the transcript's input containers (`0x1n`) as serialized ([NUT-00](00.md#the-transaction-transcript)) and `k` is the output's position among the request's mint quote outputs, from 0.
 
-A seeded wallet **SHOULD** derive each of its own fixed txout quotes' lock key and `id_preimage` from one quote counter value per [NUT-13](13.md#v3-message). A fixed txout quote paying another party in a transaction signed for later **SHOULD** take an id bound to the inputs.
+A seeded wallet **SHOULD** derive each of its own fixed txout quotes' lock key per [NUT-13](13.md#v3-message).
 
 ## Response
 

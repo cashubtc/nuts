@@ -10,7 +10,7 @@
 | 11005 | Transaction is not balanced (inputs != outputs) | [NUT-02][02], [NUT-03][03], [NUT-05][05]               |
 | 11006 | Amount outside of limit range                   | [NUT-04][04], [NUT-05][05]                             |
 | 11007 | Duplicate inputs provided                       | [NUT-03][03], [NUT-04][04], [NUT-05][05]               |
-| 11008 | Duplicate outputs provided                      | [NUT-03][03], [NUT-04][04], [NUT-05][05], [NUT-XX][XX] |
+| 11008 | Duplicate outputs provided                      | [NUT-03][03], [NUT-04][04], [NUT-05][05]               |
 | 11009 | Inputs/Outputs of multiple units                | [NUT-03][03], [NUT-04][04], [NUT-05][05]               |
 | 11010 | Inputs and outputs not of same unit             | [NUT-03][03], [NUT-04][04], [NUT-05][05]               |
 | 11011 | Amountless invoice is not supported             | [NUT-05][05]                                           |
