@@ -17,9 +17,9 @@ A proof that key `3` can only spend into fixed txout quotes locked to the two lo
   "merkle_root": "8d41634c46c8ee248a0b8bf65c2a4cd883ece04925e366205e6385cb3e41413d",
   "tweak": "41e5456a9808ef698ad6613fe86647c48d9b75ca0f8abe91a3d01debbbff0115",
   "secret": "03a07a07169b3dbad5ea5e6f7771acb326e788e42e38948d9d2d5f5d3f29b38cf1",
-  "transaction_digest": "7431ff2a0c9cda33cd86db4473041cb2577c137e4ce122c862829f623774d3de",
-  "input_id": "c7f25fbb091291c9c8e26f68c4b3d9a27a37449ad1923be3b3aa276a25636c29",
-  "input_digest": "7dc8094f0a3ca7dd1df79a8289fcbd43f71e9b4202b8a62fc860df7a50dc9f4e"
+  "transaction_digest": "5eea592fbc0f3505589c7ce3f1ba30a3061b9c8dc37470302896da679345488c",
+  "input_id": "b19a85ad10680b7391fef09ac08e6b49efe9a6207386e95c91ecc8aea5c352a9",
+  "input_digest": "fb9b55ec1743839f617697ffe728f0540c434569ee86b092a0bc2d94a5dc0d8d"
 }
 ```
 
@@ -39,7 +39,7 @@ Key `3`'s script-path witness over that `input_digest`:
     "path": []
   },
   "signatures": [
-    "9eafc4d00d4017c0946531e79c772de23234b7682a1839d46e1f933ba0b97854b1b95e9202f8fd7b1054a33b86690cab6eb352bc8a5a785635c7ddaeb267d8be"
+    "7224156d3b38b88dfb8887b9412b78744371b5659e20e4849f5e6dabcc67dc35908fed2ecb1142dd80ae5d266a3c08d1bc59a8bf19104bd3525e0c401a350a2a"
   ]
 }
 ```
@@ -65,7 +65,7 @@ Three leaves under the NUMS offset `u = 7`, so no key path exists. The arbiter (
 }
 ```
 
-The arbiter and refund leaves pair and coop is promoted, so `merkle_root = branch(branch(leaf_hash_arbiter, leaf_hash_refund), leaf_hash_coop)`. The seller builds a split and the arbiter signs it: the swap's 8-sat input under this secret into 5 sat to the seller (`id_preimage` `55` repeated 32 times) and 3 sat to the buyer (`33` repeated 32 times) (`transaction_digest` `191f1ee87fe691172ee533a18975538fdcf90a4119d997d422e9137b59e2ed73`, `input_id` `e34b281fd3ade8e3c78cfd147011cb8e00899913e12b637d59b9ad53885b2dd7`, `input_digest` `f0f868802d92c310291c5b831d1bfb598f21a47c3dfc7ac72b5f7e03b7ca272b`). The arbiter's witness reveals its leaf with `path = [leaf_hash_refund, leaf_hash_coop]`:
+The arbiter and refund leaves pair and coop is promoted, so `merkle_root = branch(branch(leaf_hash_arbiter, leaf_hash_refund), leaf_hash_coop)`. The seller builds a split and the arbiter signs it: the swap's 8-sat input under this secret into 5 sat to the seller and 3 sat to the buyer (`transaction_digest` `2f7871b27aeccb2f74965d3a49d1aba5346054f2c316544595a82b29f45051d3`, `input_id` `5fab28b6e901544d3e2881d1f0077b710922ed79d7a47e75f2f7791d6b0af502`, `input_digest` `f0f5737497bda769547aff5e60a0ea48222aa2139e4c25bd339afc8208069858`). The arbiter's witness reveals its leaf with `path = [leaf_hash_refund, leaf_hash_coop]`:
 
 ```json
 {
@@ -78,7 +78,7 @@ The arbiter and refund leaves pair and coop is promoted, so `merkle_root = branc
     ]
   },
   "signatures": [
-    "e6bdbdcea86847c3e974e0f1d327adf3fd85fa07361385e365b372c6e82eec5227d2c022d5b7bd5d21f042b7ae60fe48d6c418d0850d720ff510c4b27f56111e"
+    "5bacc9e6f8c2831c4f1d455d417e36ad8016e10df6febbbb73158ac8aab8f8d540505c8cbbb2dc2e7ed2021d8d1bf0ed6d343b2de5594b398cf13c052e6d5feb"
   ]
 }
 ```
