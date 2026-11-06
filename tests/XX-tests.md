@@ -406,3 +406,98 @@ The concatenated message is signed by Alice's stage-1 blinded key for each
 balance update. Charlie signs the identical message with his stage-1 blinded
 key when submitting the close swap. Schnorr signature bytes are not fixed by
 this vector because NUT-11 signatures are nondeterministic.
+
+## spilman-test-vector-rerandomized-keysetv2
+
+This family uses **all the inputs of `spilman-test-vector-channel-id-keysetv2`**,
+including its real deterministic mint keyset, with `commitment_mode` set to
+`"rerandomized"`. Append `1a0101` (type 26, length 1, value 1) to that vector's
+canonical TLV before hashing. Ordinary vectors above remain unchanged. The close
+balance is 50: each party receives denominations 2, 16, 32 with index 0.
+Funding denominations are 4, 32, 64, also index 0. Commitment ordering is stable
+ascending amount with receiver before sender at equal amounts.
+
+The [independent reference](https://github.com/SatsAndSports/cashu_spilman_channels/blob/056fb2b/crates/spilman-test-vectors/src/rerandomized.rs) derives the complete family, including secrets,
+stage-1/stage-2 keys, original/issued points, effective blindings, authorization,
+signatures and fixed-nonce DLEQs. Reproduce its JSON with:
+
+```sh
+cargo run -p spilman-test-vectors --example rerandomized
+```
+
+It uses RustCrypto point arithmetic and independent transcript/tweak construction,
+not the production channel or Cashu rerandomization helpers. The production
+compatibility test checks all six issued outputs and resulting proofs against
+that reference. SHA-256 of its compact, lexicographically key-sorted JSON (no
+trailing newline) is `c6b952995ca393daf7a892ce01de31cfd878bc68395d46022cc539ad2f8ce2d6`.
+
+### Channel identity, authorization and mint randomness
+
+```text
+channel_id = 4ac29fbee4af2638f606eb268ee68fcef5c012f23b85ce1d7bd0f0572cef4e55
+R          = 4242424242424242424242424242424242424242424242424242424242424242
+t(R)       = ea8bfdd0711f5a0cdd1377930ed729ca779722a8a5f97156242fcef09965eeb5
+digest     = 550e48d7ca225a71e32f840ded0d56cebb714614d794f45ecd9900851bc77fcf
+
+Alice signature (BIP-340, zero auxiliary randomness):
+3154dd8c95d31950c86cb268593898b4002e8787a833e03145780424853117a2d421a3c4c1de509d014fb1ba571a05ebf85f778ae3ad569a4926a889a6179431
+Charlie signature (same digest, BIP-340, zero auxiliary randomness):
+bc54e6d7e6070bd54d4ce60eb19b3daf5749691ce120ed5d547486314e99b1b4e9a9c46a803be695835789573fcbadb7984ff20f643f09f4a3d4bfc50f6893eb
+```
+
+The digest is the final tagged digest from NUT-03 PR #463, not an ordinary NUT-11
+message hash or a second hash of the tagged digest. Neither signature uses `R`.
+
+| Stage-1 context | Tweak scalar | Blinded public key |
+|---|---|---|
+| sender_stage1 | `fc64205dadd8ccc8b24551fe2a20b65b9186c22a06b5cbf5b2e7bc8e6b4f8f79` | `02121baf8f199359d161388f5467632ddfcce3a4b3617aba0f6929c6f284a4c39d` |
+| receiver_stage1 | `49c7cf5c12f9be81cf2bd34ab4c61ff31e45857e2de79e5e75af4fe448127264` | `03a9567bfea0e9a6087b858f7d8d68e12a14ee7908598760b4a3df18e03deadcb6` |
+| sender_stage1_refund | `87f092d96075bca28091d7c84bb1b944e3ddd1fe832ffedee34087fb734582d0` | `0284e9c49231d714feb9ce82cc49bcaf7b2f7328fe7bb4e8973264b7c7ca8b99d2` |
+
+### Ordinary funding for the rerandomized channel
+
+Construct the canonical funding secrets with the stage-1 keys above and the
+unchanged tags/expiry from the ordinary fixture. These outputs are issued by an
+ordinary funding swap, not a rerandomized one.
+
+| Amount | Nonce | Blinding factor |
+|---:|---|---|
+| 4 | `c4e320613b8eb478a057a1deb9b83722c08e308d3a5c5761f252ca9405294612` | `c05d9d6ee21fdb92ead9b20631622f39ea36713906e8e52d844afcbcc2111e19` |
+| 32 | `a20d5d81b36f9b67989ddfeae093c24021a89ae0f155a75fc35ba78947d4c02d` | `29ef34cd9423e339d96debd8229c577fc91aafb8190476505ad1bfd43059be51` |
+| 64 | `71b2769aa9c87b5b17cb0a3049c8020183e403875a02b720bbb3c0eed827925b` | `e51ce23a76df1aea4a7a11d8d8fb2f49e033d544222f550fe0d2f9ac2d7fe739` |
+
+| Amount | Funding `B` | Funding proof `C` |
+|---:|---|---|
+| 4 | `03db36aad87a3d63318d1bdffde5612f0977eb6e7b00a5da049496c29571fc3896` | `0328b7bc887cf2f2573ff3b0d494cec64f657b6f5fae6ba3a73033c74b01c546b1` |
+| 32 | `035ce3de6a88792c1dbbf21638edf33632f21bb4ea408e30841d6a7a52c9e1dc2f` | `021bd8b6cffd743f4bfd7273bfbcec2a72508a9097ae965a50b186d5dcef45db0b` |
+| 64 | `03da806f7ad57842db03508b2b4d4490ff4b77fa2fc854668f512e3d71a8e95b92` | `0230bdb11b5cde516737a3a958f224bd0f5d50b220a0f99723544590a9ea45e2a3` |
+
+### Commitment outputs and NUT-09 query points
+
+| Owner / amount | Original `B` | Issued/restore `B + t(R)G` |
+|---|---|---|
+| receiver / 2 | `034fc32375077464da875f4f3d2170c88524ea8a21c4a618788b60d15dc0fed350` | `02bceca6afa1aad6e4779428cfb77b41a1b21f2dd06e99ed34d02bed65e99d18a7` |
+| sender / 2 | `032b2372376b633c6cbed38f92b1a58e794798ce5c424c2c2fc98fbb1f3524224e` | `0345fb6df8631bd8c9d4a07e4af4190bb231a79be0793b7c7e22c4c054b3c6174e` |
+| receiver / 16 | `031280e44c1fa64affea6bfbfb91e91a3893cb95136ebc13ff2641291e23420a6f` | `0253bcc986ea2edfc0e471d602cfd66561262932efc864a82d113233aca2a66e3e` |
+| sender / 16 | `022133466acdcd19f4bc3a16b898a5345d8a6b945ad98977815a5595a24690f729` | `0332c7e42a11fbf425b3de0964112dd1758264ff1b0bba3e3b0a33687f4a79314f` |
+| receiver / 32 | `0253b8c12bfbb4338b19bb1dbd39bfeeb6e137fba0d71321c368cb09417d1e5fbe` | `032ddea275af1290f25e513a100869a0a5f25a44f8de57a9bd8c82c959110204eb` |
+| sender / 32 | `02f2d58fbfc9c432cd25ac303d3fa8ec5231892c7e68db7517d6c5a99afb6a2f73` | `02fa7b261f4c714e0403f04d5f0e38733fa1a1d0d3a519bb211d82d92120630044` |
+
+### Complete first receiver output (amount 2, index 0)
+
+```text
+secret = ["P2PK",{"data":"027c97f6c16fd40704f48bc8e367f2d6e97ea8c4d100efb5407d2d0b3b18397653","nonce":"41b6feffbd95b74d52a095f2a71b24718c17eaf9f72c9807de8584d2446583f4","tags":[]}]
+p2pk_e = 033a22797829425698ed72a87a7e064705d0dab5271465b2e9a18426a214d1ddc1
+r_original  = f6235787d812fbd01f0fe000a9d3ef3eacb9c3fdb6f1c07065b3bb43f20f31d2
+r_effective = e0af5558493255dcfc235793b8ab190a69a209bfada2918aca112ba7bb3edf46
+C_blind = 02bfc9bb27f79b56a73abadea90ec36a2603532d8118fafca41ecd47b3e1a75a65
+C       = 02e9a1898dd5dc3d2ba36247f5388a0757ad4b82b59794a7e84a456ef8c70ddd67
+DLEQ e  = 26bb80907a6f099a36f330a836c2859b9909fa640dd8d79aab129da95bd4c1b6
+DLEQ s  = 6f76ea6ea22f511175d3b3fe95483f783d169d6005b1ad0d9662137f5b747069
+```
+
+The DLEQ uses a fixed nonce scalar 7 solely to make the vector reproducible.
+Never reuse this test nonce in production. `C` is the same point as ordinary
+issuance of this exact secret under this exact mint key, but the proof's DLEQ
+metadata uses `r_effective`, not `r_original`. Missing/wrong `R`, ordinary-mode
+authorization, or completion with the unadjusted blinding MUST fail verification.

@@ -50,8 +50,13 @@ and closure require communication only between Alice and Charlie. The mint
 receives no request for each payment and does not observe the number or timing
 of those off-chain updates through the protocol.
 
-No change or extension to the mint's behaviour is needed.
-The mint simply sees and executes standard P2PK swaps.
+For ordinary channels, no change or extension to the mint's behaviour is needed:
+the mint simply sees and executes standard P2PK swaps. This draft also supports
+an explicitly selected **rerandomized commitment mode**, using the opt-in mint
+extension specified in [NUT-03 PR #463](https://github.com/cashubtc/nuts/pull/463).
+That mode requires a supporting mint and keysets satisfying that proposal's
+constraints. The ordinary construction below remains the baseline; differences
+are stated explicitly. Both modes retain the same offline-payment flow.
 The mint receives no explicit channel identifier or off-chain payment history.
 Settlement can nevertheless reveal a recognizable channel-like spending structure.
 Blind signatures and pay-to-blinded-pubkey (NUT-28) limit direct linkage, but
@@ -290,6 +295,11 @@ and a minimum channel lifetime that Charlie requires, Alice defines the channel 
 
  - `expiry_timestamp`  unix timestamp: If Charlie doesn't close before this time, Alice can re-claim all the funds after this has expired
  - `setup_timestamp` unix timestamp: the time when Alice is setting up this channel
+ - `commitment_mode`: omitted for ordinary commitments; `"rerandomized"` for
+   mint-rerandomized commitments. Select it before deriving the channel ID or any
+   funding output. JSON encoders MUST omit the field for ordinary mode; decoders
+   MAY accept explicit `"ordinary"`, but MUST reject unknown values, null, and
+   non-string values. A channel's mode cannot be changed at close time.
 
 There is also a _channel secret_, derived from an ECDH shared secret
 between the two parties. Let `P = alice_secret * charlie_pubkey`.
@@ -350,10 +360,15 @@ The channel-parameter registry is:
 | 20 | `setup_timestamp` | `tu64` |
 | 22 | `expiry_timestamp` | `tu64` |
 | 24 | `channel_secret` | raw 32-byte value |
+| 26 | `commitment_mode` | exactly one byte `0x01` for rerandomized commitments; absent for ordinary |
 
-Every record in this registry is required and MUST occur exactly once. All are
-even because every current parameter must be understood to construct and
-validate the channel. Future optional parameters use odd types.
+Registered records of types 0 through 24 are required and MUST occur exactly once. Record 26 MUST
+be present exactly once for rerandomized mode and MUST be absent for ordinary
+mode. No other value or length is valid for record 26. These records are even
+because they are mandatory to understand **when present**; this is distinct from
+being mandatory to include. Implementations unaware of type 26 MUST reject it.
+Omitting it preserves all existing ordinary channel IDs. Changing the mode
+changes the channel ID and consequently every channel-ID-dependent derivation.
 
 A `tu64` is an unsigned 64-bit integer encoded in big-endian byte order after
 removing every leading zero byte. The TLV length therefore ranges from zero to
@@ -917,7 +932,7 @@ context    | amount | index
 For the V1/V2 construction specified here, Alice then signs this (`SIG_ALL`).
 Alice can then send three pieces of data to Charlie: the `channel_id`, the balance for Charlie, and her signature.
 
-The `SIG_ALL` message is the NUT-11 swap aggregation in this exact transaction
+In ordinary mode, the `SIG_ALL` message is the NUT-11 swap aggregation in this exact transaction
 order:
 
 ```
@@ -929,6 +944,21 @@ where each `secret` is its exact canonical NUT-XX serialization, each `C` and
 `B_` is its lowercase compressed SEC1 hex encoding, and each `amount` is its
 base-10 ASCII encoding. Alice and Charlie MUST reconstruct the identical
 message before signing or verifying a balance update.
+
+In rerandomized mode, the commitment swap MUST set `rerandomize: true`. **Both
+Alice's payment authorization and Charlie's closing signature sign the same
+tagged rerandomized authorization digest**, using the transcript and hashing
+rules in NUT-03 PR #463. Sign this final digest directly with BIP-340; do not
+hash it a second time. The transcript uses the original deterministic outputs
+in the ordering above. Those outputs are known to Alice at payment time; neither
+signer needs the mint's later randomness `R`. Both signatures MUST be verified
+in the channel's selected mode; silently downgrading a rerandomized channel to
+ordinary authorization is invalid.
+
+Neither ordinary nor the current rerandomized commitment digest includes output
+keyset IDs. A keyset-only successor therefore preserves both signatures, input
+witnesses, output amounts, secrets and original blinded points. Historical
+issuance MUST still be verified under its actual signing keyset.
 
 The planned V3 extension will instead sign a transaction transcript that also
 commits to the output keyset IDs. Its construction is outside the scope of this
@@ -979,6 +1009,15 @@ When Charlie exits, he adds his signature to Alice's on the most recent transact
 sends the complete swap to the mint.
 This swap spends the _funding token_ and returns
 blind signatures (the deterministic outputs, signed by the mint) for both parties.
+For rerandomized commitments these signatures cover the mint-derived points
+`B_issued = B_original + t(R)G`, using the tweak algorithm from NUT-03 PR #463.
+The original deterministic secrets and blinding factors are unchanged. Completion
+MUST verify the complete blind-signature/DLEQ set against the issued points and
+unblind with `r_effective = r_original + t(R)` modulo the curve order, then verify
+the resulting proof DLEQs. Missing or invalid randomness, invalid derived points,
+or a zero effective scalar MUST reject. For the same secret and mint signing key,
+the final unblinded `C` is unchanged; the complete proof serialization is not,
+because its DLEQ/effective blinding metadata differs.
 Under the planned V3 extension, this stage-1 commitment swap uses the funding
 keyset for all commitment outputs (see [Keyset versions](#keyset-versions)).
 
@@ -1010,11 +1049,28 @@ When spending the commitment outputs in stage 2:
 - **Charlie** signs each of his proofs with the per-proof blinded secret key for that `(amount, index)`, as described above.
 - **Alice** signs each of her proofs with the per-proof blinded secret key for that `(amount, index)`, as described above.
 
+Mode selection applies only to the commitment close. Funding-opening swaps,
+Alice's expiry-refund swaps, and both parties' stage-2 payout swaps use ordinary
+issuance in both channel modes. A malicious sender could nevertheless choose a
+rerandomized refund request: the presence of `R` is issuance metadata, **not
+proof that a two-party close occurred**.
+
 As the swap spends the entire funding token, Alice can detect Charlie's spend
 via NUT-07 (token state check). NUT-17, if supported by the mint, helps here too.
 
 Charlie should return Alice's blind signatures to her, but if he doesn't then Alice
 can use NUT-09 to restore the signatures.
+Recovery first checks all funding identities with NUT-07 (or equivalent complete
+committed evidence). Missing/duplicate identities, pending or mixed input states,
+and inconsistent randomness leave recovery unresolved. For a rerandomized close,
+every funding input must be spent and report the same committed `R`; derive the
+NUT-09 query points from that `R` using NUT-03 PR #463. Ordinary closes query the
+original points. Alice tries her retained refund preparations before discovering
+a close payout. Returned issuance must match the expected secrets, points, amounts
+and actual historical signing keys, with valid DLEQs, before durable import or
+finalization. Charlie checks the complete retained commitment payout; Alice
+discovers and verifies her deterministic outputs as described below. Do not infer
+a refund, zero payout, or successful settlement from absent close signatures.
 For V1 and V2, if Charlie chooses a different keyset (not
 `params.keyset_id`), Alice can use NUT-09 to learn the keyset that he selected.
 Under the planned V3 extension, the stage-1 commitment-output keyset is fixed by
@@ -1027,7 +1083,7 @@ There may be a cooperative closing mechanism to agree on any other balance.
 To restore the signatures, where she isn't sure which particular balance
 Charlie exited with, Alice can iterate over the amounts available, and - for each amount - loop over the indices - restarting the index at `0` for each amount -
 in order to reconstruct the deterministic output and restore the signature.
-When a given restoration fails, she can stop increasing the _index_ and
+When a valid restoration reports no signature for that output, she can stop increasing the _index_ and
 move on to the next amount instead.
 
 ```
@@ -1038,15 +1094,19 @@ for amount in amounts_in_this_keyset:
     index = 0
     while True:
         ... attempt to restore with (amount, index) with NUT-09
-        if (restore fails for this 'amount' and 'index'):
+        if (valid restore reports absence for this 'amount' and 'index'):
             break # stop incrementing the index and skip to the next 'amount'
         else:
-            .. unblind the signature and add the proof to Alice's wallet
+            .. verify the signature/DLEQ, unblind in the selected mode, and retain the proof
             index += 1
 ```
 
 This ensures she will get all the outputs and BlindedSignatures which Charlie
 created when he did the swap, even if she doesn't know which balance he exited with.
+
+Transport failures and malformed, partial, or cryptographically invalid restores
+are errors, not absence. Do not finalize a partially recovered payout after an
+error; retain the recovery state for retry.
 
 _(Question: Does NUT-09 specify what should happen if the outputs are a mixture of unspent outputs and outputs that were never spent? i.e. Does Alice have to call restore once for each possible output, or can she do a batch call where some will fail and some will succeed?)_
 
