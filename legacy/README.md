@@ -6,7 +6,7 @@ These documents specify the parts of the Cashu protocol that
 
 | NUT #       | Description                                 | Current specification |
 | ----------- | ------------------------------------------- | --------------------- |
-| [00](00.md) | secp256k1 BDHKE, V3 tokens                  | [NUT-00](../00.md)    |
+| [00](00.md) | secp256k1 BDHKE, V3 tokens, V4 `d` and `w`  | [NUT-00](../00.md)    |
 | [02](02.md) | Keyset IDs V2 and V1                        | [NUT-02](../02.md)    |
 | [10](10.md) | JSON spending conditions                    | [NUT-10](../10.md)    |
 | [11](11.md) | Pay-To-Pubkey (P2PK)                        | [NUT-10](../10.md)    |
