@@ -17,5 +17,6 @@ These documents specify the parts of the Cashu protocol that
 | [20](20.md) | Signature on mint quote                     | [NUT-04](../04.md)    |
 | [18](18.md) | The `nut10` payment request locking option  | [NUT-18](../18.md)    |
 | [26](26.md) | The `nut10` sub-TLV, tag `0x08`             | [NUT-26](../26.md)    |
+| [22](22.md) | DLEQ proofs on blind authentication tokens  | [NUT-22](../22.md)    |
 
 Test vectors are in [`tests/`](tests).
