@@ -1,6 +1,6 @@
 # NUT-22 Test Vectors
 
-These vectors cover [nutroot blind authentication](../22.md#nutroot-blind-authentication-v3-keysets) (v3 auth keysets). The signature is BIP-340 with the auxiliary randomness fixed to 32 zero bytes, which makes it reproducible; verifiers **MUST** accept any valid signature. The BAT secret key is the well-known test key `3` ([NUT-10 vectors](10-tests.md)).
+These vectors cover [nutroot blind authentication](../22.md#nutroot-blind-authentication-v3-keysets). The signature is BIP-340 with the auxiliary randomness fixed to 32 zero bytes, which makes it reproducible; verifiers **MUST** accept any valid signature. The BAT secret key is the well-known test key `3` ([NUT-10 vectors](10-tests.md)).
 
 ## Request transcript
 
