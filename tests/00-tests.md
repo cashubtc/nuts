@@ -1,6 +1,8 @@
 # NUT-00 Test Vectors
 
-### BLS12-381 (v3) round-trip
+Each vector is an independent exchange against fresh mint state.
+
+### BLS12-381 round-trip
 
 Test vectors for `hash_to_curve_G1`, multiplicative blinding `B_ = r·Y`, blind signing `C_ = a·B_`, and unblinding `C = r⁻¹·C_` (see [Pairing-based BLS blind signatures](../00.md#pairing-based-bls-blind-signatures)).
 
@@ -18,7 +20,7 @@ C: b7a4881059133fd91a8753600d9a5e524c65d6224f6fe2d5aef9e59f1507fdad90b3b4d48ee46
 
 `hash_to_curve_G1` uses the DST `CASHU_BLS12_381_G1_XMD:SHA-256_SSWU_RO_` (ASCII bytes, no trailing null). `Y = hash_to_curve_G1(secret)`, `K = a·g2`, and the pairing equality `e(C, g2) == e(Y, K)` holds.
 
-### BLS12-381 (v3) batch verification
+### BLS12-381 batch verification
 
 Test vector for the multi-pairing batch check with deterministic weight derivation (see [Batch Verification](../00.md#optional-batch-verification)). Two proofs signed under the same mint key `K = 2·g2`.
 
