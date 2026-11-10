@@ -1,0 +1,48 @@
+# NUT-24: HTTP 402 Payment Required
+
+`optional`
+
+`uses: NUT-12`
+
+`depends on: NUT-18, NUT-26`
+
+---
+
+This NUT describes how Cashu tokens can be used with HTTP 402 Payment Required responses to enable payments for HTTP resources.
+
+## Server response
+
+HTTP servers may respond with the HTTP status code 402 and an `X-Cashu` header containing a payment request, encoded in either [NUT-18][18] `creqA` or [NUT-26][26] `creqB` formats. Wallets **MUST** support both formats.
+
+The decoded payment request has the following fields:
+
+```
+{
+    "a": int,
+    "u": str,
+    "m": Array[str],
+    "nut10": NUT10Option <optional>
+}
+```
+
+- `a`: The amount required in the specified unit
+- `u`: The currency unit (e.g., "sat", "usd", "api")
+- `m`: Array of mint URLs that the server accepts tokens from
+- `nut10`: The required [NUT-10][10] locking condition
+
+Note: there is no transport field since we expect an in-band payment.
+
+## Client payment
+
+After receiving a 402 response with an `X-Cashu` header, the client may retry the request with a `cashuB` token in the `X-Cashu` header as payment.
+
+The token MUST be from one of the mints listed in the `m` array, and MUST be of the same `u` unit and greater than or equal to the `a` amount.
+
+## Payment response
+
+If the server receives tokens from a mint that is not in the `m` array, an incorrect `u` unit, an insufficient amount of tokens, or with insufficient locking conditions, it should respond with an HTTP `400` status code.
+
+[10]: 10.md
+[12]: 12.md
+[18]: 18.md
+[26]: 26.md
