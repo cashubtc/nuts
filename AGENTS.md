@@ -10,7 +10,7 @@ This is a **markdown-only** specs repo. There is no application code, no build s
 
 ```
 .
-├── 00.md – 30.md          # NUT specifications (zero-padded two-digit numbers)
+├── 00.md – 30.md          # NUT specifications (zero-padded two-digit numbers; 11, 12 and 14 live in legacy/)
 ├── README.md               # Spec index with mandatory/optional tables and implementation support matrix
 ├── CONTRIBUTING.md         # Contribution guide, PR naming, review and merge process
 ├── error_codes.md          # Protocol error code registry
@@ -19,6 +19,10 @@ This is a **markdown-only** specs repo. There is no application code, no build s
 ├── .gitignore
 ├── tests/
 │   ├── NN-tests.md        # Test vectors for NUTs involving crypto or serialization
+│   └── README.md
+├── legacy/
+│   ├── NN.md              # main's pre-v3 NUTs, unchanged apart from a header and link targets
+│   ├── tests/NN-tests.md  # Their test vectors, likewise
 │   └── README.md
 ├── suppl/
 │   ├── NN.md              # Supplementary material for specific NUTs
@@ -44,7 +48,7 @@ Every NUT file follows these conventions:
 - **Type annotations in JSON**: Use `` `<angle-bracket>` `` placeholders to annotate the type of a field instead of writing a concrete value (e.g. `<str>`, `<int>`, `<Array[Proof]>`). The types used across the existing NUTs are loose and not a fixed enumeration, so pick whatever placeholder is clearest rather than treating these as a closed set.
 - **Curl examples**: Include a `bash` code block with a representative `curl` command when documenting an endpoint.
 - **Mint info settings**: If the NUT is discoverable via NUT-06, include a `## Mint info setting` section showing the JSON structure under `"nuts"`.
-- **Reference links**: Every NUT file ends with a block of reference-style Markdown links. At minimum include all NUTs referenced in the document. The full block looks like:
+- **Reference links**: Every NUT file ends with a block of reference-style Markdown links. At minimum include all NUTs referenced in the document. A definition may point into `legacy/` (e.g. `[11]: legacy/11.md`) when the NUT it names lives there. The full block looks like:
 
 ```
 [00]: 00.md
