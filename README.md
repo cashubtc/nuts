@@ -18,6 +18,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [05][05] | Melting tokens          |
 | [06][06] | Mint info               |
 | [10][10] | Spending conditions     |
+| [20][20] | Signature on Mint Quote |
 
 ### Optional
 
@@ -43,10 +44,6 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [29][29] | Batched Mint                      | [cdk], [cashu-ts][ts]                                                                                 | [Nutshell][py], [cdk-mintd]           |
 | [30][30] | Payment Method: Onchain           | [cdk], [cashu-ts][ts], [Cashu.me][cashume]                                                            | [cdk-mintd]                           |
 
-### Legacy
-
-[Pre-v3 keysets](02.md#keyset-id-v3) are specified in [`legacy/`](legacy/README.md): NUT-00 (secp256k1 BDHKE, V3 tokens), NUT-02 (keyset IDs V1 and V2), NUT-07 (state check example), NUT-10 (JSON spending conditions), NUT-11 (P2PK), NUT-12 (DLEQ proofs), NUT-13 (V1 and V2 secret derivation), NUT-14 (HTLCs), NUT-20 (signature on mint quote) and NUT-22 (DLEQ proofs on blind authentication tokens).
-
 #### Wallets
 
 - [Nutshell][py]
@@ -62,6 +59,10 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 - [Nutshell][py]
 - [cdk-mintd][cdk-mintd]
 - [Nutmix][nutmix]
+
+### Legacy
+
+[Pre-v3 keysets](02.md#keyset-id-v3) are specified in [`legacy/`](legacy/README.md).
 
 [py]: https://github.com/cashubtc/nutshell
 [cashume]: https://cashu.me
@@ -89,6 +90,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [17]: 17.md
 [18]: 18.md
 [19]: 19.md
+[20]: 20.md
 [21]: 21.md
 [22]: 22.md
 [23]: 23.md

@@ -20,6 +20,10 @@ This is a **markdown-only** specs repo. There is no application code, no build s
 ├── tests/
 │   ├── NN-tests.md        # Test vectors for NUTs involving crypto or serialization
 │   └── README.md
+├── legacy/
+│   ├── NN.md              # Pre-v3 keyset rules that left the root NUT of the same number
+│   ├── tests/NN-tests.md  # Their test vectors
+│   └── README.md
 ├── suppl/
 │   ├── NN.md              # Supplementary material for specific NUTs
 │   └── README.md
@@ -35,7 +39,7 @@ Every NUT file follows these conventions:
 
 - **Filename**: Zero-padded two-digit number matching the NUT number (e.g. `30.md` for NUT-30).
 - **Title**: `# NUT-NN: Title` as the first line.
-- **Status badge**: `` `mandatory` `` or `` `optional` `` on its own line after the title.
+- **Status badge**: `` `mandatory` `` or `` `optional` `` on its own line after the title; `` `legacy` `` in `legacy/`.
 - **Dependencies** (if any): `` `depends on: NUT-NN` `` and/or `` `uses: NUT-NN` `` on separate lines in the header block.
 - **Used-by** (if any): `` `used in: NUT-NN` `` declares the inverse relationship, naming the NUTs that build on this one (e.g. NUT-04, NUT-05, NUT-07, NUT-09, NUT-10, NUT-21).
 - **Horizontal rule**: `---` separating the header block from the body.
@@ -44,7 +48,7 @@ Every NUT file follows these conventions:
 - **Type annotations in JSON**: Use `` `<angle-bracket>` `` placeholders to annotate the type of a field instead of writing a concrete value (e.g. `<str>`, `<int>`, `<Array[Proof]>`). The types used across the existing NUTs are loose and not a fixed enumeration, so pick whatever placeholder is clearest rather than treating these as a closed set.
 - **Curl examples**: Include a `bash` code block with a representative `curl` command when documenting an endpoint.
 - **Mint info settings**: If the NUT is discoverable via NUT-06, include a `## Mint info setting` section showing the JSON structure under `"nuts"`.
-- **Reference links**: Every NUT file ends with a block of reference-style Markdown links. At minimum include all NUTs referenced in the document. The full block looks like:
+- **Reference links**: Every NUT file ends with a block of reference-style Markdown links. At minimum include all NUTs referenced in the document. A definition may point into `legacy/` (e.g. `[11]: legacy/11.md`) when the NUT it names lives there. The full block looks like:
 
 ```
 [00]: 00.md
