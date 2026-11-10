@@ -17,6 +17,8 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [04][04] | Minting tokens          |
 | [05][05] | Melting tokens          |
 | [06][06] | Mint info               |
+| [10][10] | Spending conditions     |
+| [20][20] | Signature on Mint Quote |
 
 ### Optional
 
@@ -25,17 +27,12 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [07][07] | Token state check                 | [Nutshell][py], [cashu-ts][ts], [cdk], [Minibits], [macadamia], [Sovran][sovran]                      | [Nutshell][py], [cdk-mintd], [nutmix] |
 | [08][08] | Overpaid Lightning fees           | [Nutshell][py], [cashu-ts][ts], [cdk], [Minibits], [macadamia]                                        | [Nutshell][py], [cdk-mintd], [nutmix] |
 | [09][09] | Signature restore                 | [Nutshell][py], [cashu-ts][ts], [cdk], [Cashu.me][cashume], [Minibits], [macadamia], [Sovran][sovran] | [Nutshell][py], [cdk-mintd], [nutmix] |
-| [10][10] | Spending conditions               | [Nutshell][py], [cdk], [cashu-ts][ts], [Minibits], [Sovran][sovran]                                   | [Nutshell][py], [cdk-mintd], [nutmix] |
-| [11][11] | Pay-To-Pubkey (P2PK)              | [Nutshell][py], [cashu-ts][ts], [cdk], [Cashu.me][cashume], [Minibits], [Sovran][sovran]              | [Nutshell][py], [cdk-mintd], [nutmix] |
-| [12][12] | DLEQ proofs                       | [Nutshell][py], [cashu-ts][ts], [cdk], [Minibits]                                                     | [Nutshell][py], [cdk-mintd], [nutmix] |
 | [13][13] | Deterministic secrets             | [Nutshell][py], [cashu-ts][ts], [cdk], [macadamia], [Minibits], [Sovran][sovran]                      | -                                     |
-| [14][14] | Hashed Timelock Contracts (HTLCs) | [Nutshell][py], [cashu-ts][ts], [cdk]                                                                 | [Nutshell][py], [cdk-mintd], [nutmix] |
 | [15][15] | Partial multi-path payments (MPP) | [Nutshell][py], [cdk]                                                                                 | [Nutshell][py], [cdk-mintd], [nutmix] |
 | [16][16] | Animated QR codes                 | [Cashu.me][cashume], [macadamia], [Minibits]                                                          | -                                     |
 | [17][17] | WebSocket subscriptions           | [Nutshell][py], [cashu-ts][ts], [cdk], [Cashu.me][cashume], [Minibits], [Sovran][sovran]              | [Nutshell][py], [cdk-mintd], [nutmix] |
 | [18][18] | Payment requests                  | [cashu-ts][ts], [Cashu.me][cashume], [cdk], [Minibits], [Sovran][sovran]                              | -                                     |
 | [19][19] | Cached Responses                  | [cashu-ts][ts]                                                                                        | [Nutshell][py], [cdk-mintd], [nutmix] |
-| [20][20] | Signature on Mint Quote           | [cashu-ts][ts], [cdk], [Nutshell][py]                                                                 | [cdk-mintd], [Nutshell][py], [nutmix] |
 | [21][21] | Clear authentication              | [Nutshell][py], [cashu-ts][ts], [cdk]                                                                 | [Nutshell][py], [cdk-mintd], [nutmix] |
 | [22][22] | Blind authentication              | [Nutshell][py], [cashu-ts][ts], [cdk]                                                                 | [Nutshell][py], [cdk-mintd], [nutmix] |
 | [23][23] | Payment Method: BOLT11            | [Nutshell][py], [cashu-ts][ts], [cdk], [Cashu.me][cashume], [Minibits], [Sovran][sovran]              | [Nutshell][py], [cdk-mintd], [nutmix] |
@@ -63,6 +60,10 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 - [cdk-mintd][cdk-mintd]
 - [Nutmix][nutmix]
 
+### Legacy
+
+[Pre-v3 keysets](02.md#keyset-id-v3) are specified in [`legacy/`](legacy/README.md).
+
 [py]: https://github.com/cashubtc/nutshell
 [cashume]: https://cashu.me
 [ts]: https://github.com/cashubtc/cashu-ts
@@ -83,10 +84,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [08]: 08.md
 [09]: 09.md
 [10]: 10.md
-[11]: 11.md
-[12]: 12.md
 [13]: 13.md
-[14]: 14.md
 [15]: 15.md
 [16]: 16.md
 [17]: 17.md

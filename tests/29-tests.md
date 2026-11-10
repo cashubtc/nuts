@@ -1,25 +1,5 @@
 # NUT-29 Test Vectors
 
-## Successful batch mint
-
-The following is a valid batch mint request combining two bolt11 quotes (`quote_id_a` for 5 sats and `quote_id_b` for 3 sats) into a single 8 sat output.
-
-```json
-{
-  "quotes": ["quote_id_a", "quote_id_b"],
-  "quote_amounts": [5, 3],
-  "outputs": [{ "amount": 8, "id": "keyset_1", "B_": "<blinded_message>" }]
-}
-```
-
-The following is the corresponding response with a blind signature.
-
-```json
-{
-  "signatures": [{ "amount": 8, "id": "keyset_1", "C_": "<blind_signature>" }]
-}
-```
-
 ## Check endpoint with unknown quotes
 
 The following is an invalid check request containing an unknown quote ID.
@@ -129,35 +109,34 @@ Expected behavior:
 - The mint rejects the request because `signatures[i]` must exist for each `quotes[i]` when signatures are required.
 - No outputs are signed.
 
-## Batch mint with valid signature
+## Nutroot batch mint (v3 keysets)
 
-The following is a valid NUT-29 batch mint request where the signature correctly covers all outputs in order. The quote has pubkey `0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798` (sk = 1).
-
-```shell
-quote: "019e6d5a-2347-7000-8c81-a1e0dbf3299f"
-pubkey: 0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
-msg_to_sign_bytes: 43617368755f4d696e7451756f74655369675f76310000002430313965366435612d323334372d373030302d386338312d613165306462663332393966000000010100000021036d6caac248af96f6afa7f904f550253a0f3ef3f5aa2fe6838a95b216691468e2000000010100000021021f8a566c205633d029094747d2e18f44e05993dda7a5f88f496078205f656e59
-msg_hash: dad25acc587637206d73398894d337f983a0ca644746e8673727eaa0b29fa9b4
-signature[0]: 0c39431338a0202568b9a1d4215c99f179cbb8ee5472ac5ae7133fbb8f99cafbb9e425ad33c60224c96b8f9f984f004379a18e9558468d129b6b03f0da6de162
-```
+A [v3 batch](../29.md#nutroot-transactions-v3-keysets) is one transaction with every quote as an input, so `signatures[i]` signs quote `i`'s own [NUT-00 input digest](00-tests.md#transaction-transcripts) over the shared transcript. Combining two locked quotes (`quote-mint-0002` for 5 sats, `quote-mint-0003` for 3 sats) into the [NUT-00 mint vector](00-tests.md#transaction-transcripts)'s 8-sat output, with the [NUT-13 quote lock keys](13-tests.md#version-3-secret-derivation) of counters `0` and `1` as the lock keys:
 
 ```json
 {
-  "quotes": ["019e6d5a-2347-7000-8c81-a1e0dbf3299f"],
-  "outputs": [
-    {
-      "amount": 1,
-      "id": "010000000000000000000000000000000000000000000000000000000000000000",
-      "B_": "036d6caac248af96f6afa7f904f550253a0f3ef3f5aa2fe6838a95b216691468e2"
-    },
-    {
-      "amount": 1,
-      "id": "010000000000000000000000000000000000000000000000000000000000000000",
-      "B_": "021f8a566c205633d029094747d2e18f44e05993dda7a5f88f496078205f656e59"
-    }
-  ],
-  "signatures": [
-    "0c39431338a0202568b9a1d4215c99f179cbb8ee5472ac5ae7133fbb8f99cafbb9e425ad33c60224c96b8f9f984f004379a18e9558468d129b6b03f0da6de162"
-  ]
+  "transcript": "12003d0100010502000f71756f74652d6d696e742d303030320300210292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d20981204000012003d0100010302000f71756f74652d6d696e742d3030303303002102b357c1ec7bdd73e4ede25d68619ee607c632409e89bcc518a82370b3f499615d04000021004b01000108020021022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee",
+  "digest": "8203006b339dd16a3f6293c0f300bebb3c9ad620755477b1372c0fa479540c72"
 }
+```
+
+The per-quote digests and signatures; neither signature verifies against the shared `digest` or at the other input:
+
+```json
+[
+  {
+    "quote_id": "quote-mint-0002",
+    "lock_pubkey": "0292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d209812",
+    "input_id": "8c7f916779dfba1b7ea2e0d3e69d1ee7eed1895af2891406fe8bdb7fbe0f39aa",
+    "input_digest": "5b87defd8dadbd2b0faf359f53b00a74b0642e5b91dd4046e0183738a812ed13",
+    "signature": "badda23b373f0d1da963af4d424dbbbccce933ba0c81bc3e2c8ade13decdad8df57ca75efcb4eaa2e02eee9bd43066fce76fee22599f4a513354c138efa6bfb6"
+  },
+  {
+    "quote_id": "quote-mint-0003",
+    "lock_pubkey": "02b357c1ec7bdd73e4ede25d68619ee607c632409e89bcc518a82370b3f499615d",
+    "input_id": "f7a60306c44e910fd5dea355541c4a4bb251220690688279bf08e7d19b3e9e45",
+    "input_digest": "ac0d58749a343394a0fe5605771be16466ece1ecb331fa1aae0c92ac00136c13",
+    "signature": "f272dca3c46470511b4ac1ab47a2135d1c7a6af4b6b49ec7c1d120f7704888cce5af8f2026c548a2d5201aebe384f2b798a2c1e439c89d9decc915bc890a4474"
+  }
+]
 ```

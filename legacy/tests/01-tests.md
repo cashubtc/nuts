@@ -1,5 +1,7 @@
 # NUT-01 Test Vectors
 
+> Vectors for pre-v3 keysets. The current vectors are in [`tests/`](../../tests).
+
 The following are incorrect keysets that should be rejected by wallets implementing the NUT-01 specification.
 
 Key 1 is missing a byte

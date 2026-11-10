@@ -1,5 +1,7 @@
 # NUT-20 Test Vectors
 
+> Vectors for pre-v3 keysets. The current vectors are in [`tests/`](../../tests).
+
 ## Deterministic quote locking key derivation
 
 Using [NUT-20](../20.md) quote locking key derivation, we derive values starting from the following BIP39 mnemonic:
