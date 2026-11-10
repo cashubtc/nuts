@@ -51,22 +51,19 @@ nav:
           - NUT-04 - Minting tokens: 04.md
           - NUT-05 - Melting tokens: 05.md
           - NUT-06 - Mint info: 06.md
+          - NUT-10 - Spending conditions: 10.md
+          - NUT-20 - Signature on Mint Quote: 20.md
           # Add more mandatory NUTs here
       - Optional:
           - NUT-07 - Token state check: 07.md
           - NUT-08 - Overpaid Lightning fees: 08.md
           - NUT-09 - Signature restore: 09.md
-          - NUT-10 - Spending conditions: 10.md
-          - NUT-11 - Pay-To-Pubkey (P2PK): 11.md
-          - NUT-12 - DLEQ proofs: 12.md
           - NUT-13 - Deterministic secrets: 13.md
-          - NUT-14 - Hashed Timelock Contracts (HTLCs): 14.md
           - NUT-15 - Partial multi-path payments (MPP): 15.md
           - NUT-16 - Animated QR codes: 16.md
           - NUT-17 - WebSocket subscriptions: 17.md
           - NUT-18 - Payment requests: 18.md
           - NUT-19 - Cached Responses: 19.md
-          - NUT-20 - Signature on Mint Quote: 20.md
           - NUT-21 - Clear authentication: 21.md
           - NUT-22 - Blind authentication: 22.md
           - "NUT-23 - Payment Method: BOLT11": 23.md
@@ -78,6 +75,35 @@ nav:
           - NUT-29 - Batched Mint: 29.md
           - "NUT-30 - Payment Method: Onchain": 30.md
           # Add more optional NUTs here
+      - Legacy (pre-v3 keysets):
+          - Overview: legacy/README.md
+          - NUT-00 - Cryptography and Models: legacy/00.md
+          - NUT-01 - Mint public keys: legacy/01.md
+          - NUT-02 - Keysets and fees: legacy/02.md
+          - NUT-03 - Swapping tokens: legacy/03.md
+          - NUT-04 - Minting tokens: legacy/04.md
+          - NUT-05 - Melting tokens: legacy/05.md
+          - NUT-06 - Mint info: legacy/06.md
+          - NUT-07 - Token state check: legacy/07.md
+          - NUT-08 - Overpaid Lightning fees: legacy/08.md
+          - NUT-09 - Signature restore: legacy/09.md
+          - NUT-10 - Spending conditions: legacy/10.md
+          - NUT-11 - Pay-To-Pubkey (P2PK): legacy/11.md
+          - NUT-12 - DLEQ proofs: legacy/12.md
+          - NUT-13 - Deterministic secrets: legacy/13.md
+          - NUT-14 - Hashed Timelock Contracts (HTLCs): legacy/14.md
+          - NUT-17 - WebSocket subscriptions: legacy/17.md
+          - NUT-18 - Payment requests: legacy/18.md
+          - NUT-20 - Signature on Mint Quote: legacy/20.md
+          - NUT-22 - Blind authentication: legacy/22.md
+          - "NUT-23 - Payment Method: BOLT11": legacy/23.md
+          - NUT-24 - HTTP 402 Payment Required: legacy/24.md
+          - "NUT-25 - Payment Method: BOLT12": legacy/25.md
+          - NUT-26 - Payment Request Bech32m Encoding: legacy/26.md
+          - NUT-27 - Nostr Mint Backup: legacy/27.md
+          - NUT-28 - Pay to Blinded Key (P2BK): legacy/28.md
+          - NUT-29 - Batched Mint: legacy/29.md
+          - "NUT-30 - Payment Method: Onchain": legacy/30.md
 plugins:
   - search
   - macros
