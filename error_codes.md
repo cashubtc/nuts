@@ -30,7 +30,7 @@
 | 20005 | Quote is pending                                | [NUT-04][04], [NUT-05][05], [NUT-29][29]               |
 | 20006 | Invoice already paid                            | [NUT-05][05]                                           |
 | 20007 | Quote is expired                                | [NUT-04][04], [NUT-05][05]                             |
-| 20008 | Signature for mint request invalid              | [NUT-20][20]                                           |
+| 20008 | Signature for mint request invalid              | [NUT-04][04], [NUT-20][20]                             |
 | 20009 | Pubkey required for mint quote                  | [NUT-20][20]                                           |
 | 30001 | Endpoint requires clear auth                    | [NUT-21][21]                                           |
 | 30002 | Clear authentication failed                     | [NUT-21][21]                                           |

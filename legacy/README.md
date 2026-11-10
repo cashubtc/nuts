@@ -1,6 +1,6 @@
 # Legacy specifications
 
-These documents specify the parts of the Cashu protocol that [pre-v3 keysets](../02.md#keyset-id-v3) still use, unchanged apart from this header and link targets. A NUT with no copy here is unchanged. The [current specifications](../README.md) govern anything that touches a v3 keyset.
+These documents specify the parts of the Cashu protocol that [pre-v3 keysets](../02.md#keyset-id-v3) still use, unchanged apart from this header and link targets. A NUT with no copy here is unchanged. The [current specifications](../README.md) govern anything that touches a v3 keyset, and an implementation that serves v3 keysets follows them wherever they address a pre-v3 object.
 
 | NUT #       | Description                       | Current specification |
 | ----------- | --------------------------------- | --------------------- |
