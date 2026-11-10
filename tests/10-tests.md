@@ -1,6 +1,6 @@
 # NUT-10 Test Vectors
 
-These vectors cover [nutroot secrets](../10.md#nutroot-secrets-v3-keysets) (v3 keysets). All signatures are BIP-340 with the auxiliary randomness fixed to 32 zero bytes, which makes them reproducible; verifiers **MUST** accept any valid signature.
+These vectors cover [nutroot secrets](../10.md#nutroot-secrets-v3-keysets). All signatures are BIP-340 with the auxiliary randomness fixed to 32 zero bytes, which makes them reproducible; verifiers **MUST** accept any valid signature.
 
 ## Conventions
 
