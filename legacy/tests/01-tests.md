@@ -1,4 +1,4 @@
-# NUT-01 Test Vectors
+# NUT-01 (legacy) Test Vectors
 
 The following are incorrect keysets that should be rejected by wallets implementing the NUT-01 specification.
 
