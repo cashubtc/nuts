@@ -1,5 +1,7 @@
 # NUT-00 Test Vectors
 
+> Vectors for pre-v3 keysets. The current vectors are in [`tests/`](../../tests).
+
 ### Hash-to-curve function
 
 The hash to curve function takes a message of any length and outputs a valid point on the secp256k1 curve. Note that unless you are using complex spend conditions ([NUT-10]), standardized secrets (random 32-bytes-long byte arrays) should be used in order to prevent wallet fingerprinting.

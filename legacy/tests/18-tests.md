@@ -1,5 +1,7 @@
 # NUT-18 Test Vectors
 
+> Vectors for pre-v3 keysets. The current vectors are in [`tests/`](../../tests).
+
 ## Payment Request Encoding/Decoding
 
 The following are JSON-formatted payment requests and their encoded counterparts.

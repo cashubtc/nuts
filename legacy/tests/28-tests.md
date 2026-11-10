@@ -1,5 +1,7 @@
 # NUT-28 Test Vectors
 
+> Vectors for pre-v3 keysets. The current vectors are in [`tests/`](../../tests).
+
 The test vectors in this section use the following inputs.
 
 ```shell

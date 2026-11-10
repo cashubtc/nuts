@@ -1,5 +1,7 @@
 # NUT-26 Test Vectors
 
+> Vectors for pre-v3 keysets. The current vectors are in [`tests/`](../../tests).
+
 ## Payment Request Bech32m Encoding/Decoding
 
 The following are JSON-formatted payment requests and their Bech32m-encoded counterparts using TLV serialization.

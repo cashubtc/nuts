@@ -1,5 +1,7 @@
 # NUT-13 Test vectors
 
+> Vectors for pre-v3 keysets. The current vectors are in [`tests/`](../../tests).
+
 ## Version 1: keyset ID integer representation
 
 The integer representation of a keyset with an ID `009a1f293253e41e` and its corresponding derivation path for a counter of value `{counter}` are:

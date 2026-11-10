@@ -1,5 +1,7 @@
 # NUT-02 Test Vectors
 
+> Vectors for pre-v3 keysets. The current vectors are in [`tests/`](../../tests).
+
 ## Version 1
 
 The following keysets and corresponding keyset IDs are correct:

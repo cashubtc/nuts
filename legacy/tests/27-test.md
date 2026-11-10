@@ -1,5 +1,7 @@
 # NUT-27 Test Vectors
 
+> Vectors for pre-v3 keysets. The current vectors are in [`tests/`](../../tests).
+
 ## Key Derivation
 
 We derive Nostr backup keys from the following BIP39 mnemonic.
