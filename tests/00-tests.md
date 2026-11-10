@@ -272,7 +272,7 @@ Serialized to raw binary:
 
 ## V4 tokens with spend info
 
-One 8-sat proof per token, mint `https://mint.test`, unit `sat`, keyset id `022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701`, `C` = `a33dd4de26ea950060ae5c45bdc408d72aaf51ba9f4ccdeee4a040df067ca87c799a406fec88c2a328b75b290e27f7b6`, the bearer proof's signature, reused by every shape.
+One 8-sat proof per token, mint `https://mint.test`, unit `sat`, keyset id `022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701`. Each shape's `C` is its own proof's signature.
 
 Tokens use the short keyset id form. Each shape decodes to the stated `spend_info` fields and re-encodes to the same string.
 
@@ -281,6 +281,7 @@ Bearer (`si.k`, secret is the bare key of `k`):
 ```json
 {
   "secret": "0240c186f3e19f6f8cd00db81c5266d5c74ddca48ff848efd0e3e125b2846f30d9",
+  "C": "a33dd4de26ea950060ae5c45bdc408d72aaf51ba9f4ccdeee4a040df067ca87c799a406fec88c2a328b75b290e27f7b6",
   "spend_info": {
     "k": "930c88ad9dc8531c147862d4ef9c0981200ff1f510c0a9e1c024db725a1d56c6"
   },
@@ -293,10 +294,11 @@ Receiver-keyed, no conditions (`si.e` only):
 ```json
 {
   "secret": "03a3e12cc077e5605f36441046f50c114fcc883b079a34028bed66732e3a419e51",
+  "C": "8ebb4624404a3ea52ae2eed274c2997ad6c698505cacf2011e521c915c59690981c36c1a2cb8453e37de7d4ce58b2336",
   "spend_info": {
     "E": "022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4"
   },
-  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAIlRqsKLe6fYXCBpGFhCGFzeEIwM2EzZTEyY2MwNzdlNTYwNWYzNjQ0MTA0NmY1MGMxMTRmY2M4ODNiMDc5YTM0MDI4YmVkNjY3MzJlM2E0MTllNTFhY1gwoz3U3ibqlQBgrlxFvcQI1yqvUbqfTM3u5KBA3wZ8qHx5mkBv7IjCoyi3WykOJ_e2YnNpoWFlWCECL4veTRoHIJNVtKclClxRKOiLhL3cYZq3y6jVabJA7-Q"
+  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAIlRqsKLe6fYXCBpGFhCGFzeEIwM2EzZTEyY2MwNzdlNTYwNWYzNjQ0MTA0NmY1MGMxMTRmY2M4ODNiMDc5YTM0MDI4YmVkNjY3MzJlM2E0MTllNTFhY1gwjrtGJEBKPqUq4u7SdMKZetbGmFBcrPIBHlIckVxZaQmBw2waLLhFPjfefUzliyM2YnNpoWFlWCECL4veTRoHIJNVtKclClxRKOiLhL3cYZq3y6jVabJA7-Q"
 }
 ```
 
@@ -305,13 +307,14 @@ Receiver-keyed with a disclosed tree (`si.e` + `si.t`; the receiver derives `K` 
 ```json
 {
   "secret": "02d310a4d661e3158e7d360617e739d6bacbf015431b24a43168db0ab99ef8f828",
+  "C": "84da102b0f13957bbea4a92665c31bff64a8c7a5c00867c3f54dae1579ad7c641ba87c35de54db0868934a0b966e3d4c",
   "spend_info": {
     "E": "022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4",
     "tree": [
       "00020200010104002102e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd1306000468a3be80"
     ]
   },
-  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAIlRqsKLe6fYXCBpGFhCGFzeEIwMmQzMTBhNGQ2NjFlMzE1OGU3ZDM2MDYxN2U3MzlkNmJhY2JmMDE1NDMxYjI0YTQzMTY4ZGIwYWI5OWVmOGY4MjhhY1gwoz3U3ibqlQBgrlxFvcQI1yqvUbqfTM3u5KBA3wZ8qHx5mkBv7IjCoyi3WykOJ_e2YnNpomFlWCECL4veTRoHIJNVtKclClxRKOiLhL3cYZq3y6jVabJA7-RhdIFYMQACAgABAQQAIQLkk9vxwQ2A81geSQSTCxQEzGwTkA7gdYR0-pSr6MTNEwYABGijvoA"
+  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAIlRqsKLe6fYXCBpGFhCGFzeEIwMmQzMTBhNGQ2NjFlMzE1OGU3ZDM2MDYxN2U3MzlkNmJhY2JmMDE1NDMxYjI0YTQzMTY4ZGIwYWI5OWVmOGY4MjhhY1gwhNoQKw8TlXu-pKkmZcMb_2Sox6XACGfD9U2uFXmtfGQbqHw13lTbCGiTSguWbj1MYnNpomFlWCECL4veTRoHIJNVtKclClxRKOiLhL3cYZq3y6jVabJA7-RhdIFYMQACAgABAQQAIQLkk9vxwQ2A81geSQSTCxQEzGwTkA7gdYR0-pSr6MTNEwYABGijvoA"
 }
 ```
 
@@ -320,13 +323,14 @@ A disclosed tree with an explicit internal key (`si.i` + `si.t`; no key handed o
 ```json
 {
   "secret": "02d310a4d661e3158e7d360617e739d6bacbf015431b24a43168db0ab99ef8f828",
+  "C": "84da102b0f13957bbea4a92665c31bff64a8c7a5c00867c3f54dae1579ad7c641ba87c35de54db0868934a0b966e3d4c",
   "spend_info": {
     "K": "03a3e12cc077e5605f36441046f50c114fcc883b079a34028bed66732e3a419e51",
     "tree": [
       "00020200010104002102e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd1306000468a3be80"
     ]
   },
-  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAIlRqsKLe6fYXCBpGFhCGFzeEIwMmQzMTBhNGQ2NjFlMzE1OGU3ZDM2MDYxN2U3MzlkNmJhY2JmMDE1NDMxYjI0YTQzMTY4ZGIwYWI5OWVmOGY4MjhhY1gwoz3U3ibqlQBgrlxFvcQI1yqvUbqfTM3u5KBA3wZ8qHx5mkBv7IjCoyi3WykOJ_e2YnNpomFpWCEDo-EswHflYF82RBBG9QwRT8yIOweaNAKL7WZzLjpBnlFhdIFYMQACAgABAQQAIQLkk9vxwQ2A81geSQSTCxQEzGwTkA7gdYR0-pSr6MTNEwYABGijvoA"
+  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAIlRqsKLe6fYXCBpGFhCGFzeEIwMmQzMTBhNGQ2NjFlMzE1OGU3ZDM2MDYxN2U3MzlkNmJhY2JmMDE1NDMxYjI0YTQzMTY4ZGIwYWI5OWVmOGY4MjhhY1gwhNoQKw8TlXu-pKkmZcMb_2Sox6XACGfD9U2uFXmtfGQbqHw13lTbCGiTSguWbj1MYnNpomFpWCEDo-EswHflYF82RBBG9QwRT8yIOweaNAKL7WZzLjpBnlFhdIFYMQACAgABAQQAIQLkk9vxwQ2A81geSQSTCxQEzGwTkA7gdYR0-pSr6MTNEwYABGijvoA"
 }
 ```
 
@@ -335,6 +339,7 @@ Script-only (`si.i` + `si.u` + `si.t`). `u` is fixed for a stable vector; a real
 ```json
 {
   "secret": "035f02db4e3b429de04669e8fba1e786719de8336cedeff3048e944ebcfaf08e23",
+  "C": "96a00e75fb006e1ebbeae860e0a0953c9da1aef46ba4616611c99191a31a96edf2a809cf365de4a4febc26413cb914cf",
   "spend_info": {
     "K": "031ed5e2846820073c39cca136f69aa3509b88b8f7f0e9f30159dea1178fa725f5",
     "u": "c4b697b346799e55a80ba7a0b6f7670a7f62a985c97de685dc693e87dc6d137a",
@@ -342,7 +347,7 @@ Script-only (`si.i` + `si.u` + `si.t`). `u` is fixed for a stable vector; a real
       "00020200010104002102e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd1306000468a3be80"
     ]
   },
-  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAIlRqsKLe6fYXCBpGFhCGFzeEIwMzVmMDJkYjRlM2I0MjlkZTA0NjY5ZThmYmExZTc4NjcxOWRlODMzNmNlZGVmZjMwNDhlOTQ0ZWJjZmFmMDhlMjNhY1gwoz3U3ibqlQBgrlxFvcQI1yqvUbqfTM3u5KBA3wZ8qHx5mkBv7IjCoyi3WykOJ_e2YnNpo2FpWCEDHtXihGggBzw5zKE29pqjUJuIuPfw6fMBWd6hF4-nJfVhdVggxLaXs0Z5nlWoC6egtvdnCn9iqYXJfeaF3Gk-h9xtE3phdIFYMQACAgABAQQAIQLkk9vxwQ2A81geSQSTCxQEzGwTkA7gdYR0-pSr6MTNEwYABGijvoA"
+  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAIlRqsKLe6fYXCBpGFhCGFzeEIwMzVmMDJkYjRlM2I0MjlkZTA0NjY5ZThmYmExZTc4NjcxOWRlODMzNmNlZGVmZjMwNDhlOTQ0ZWJjZmFmMDhlMjNhY1gwlqAOdfsAbh676uhg4KCVPJ2hrvRrpGFmEcmRkaMalu3yqAnPNl3kpP68JkE8uRTPYnNpo2FpWCEDHtXihGggBzw5zKE29pqjUJuIuPfw6fMBWd6hF4-nJfVhdVggxLaXs0Z5nlWoC6egtvdnCn9iqYXJfeaF3Gk-h9xtE3phdIFYMQACAgABAQQAIQLkk9vxwQ2A81geSQSTCxQEzGwTkA7gdYR0-pSr6MTNEwYABGijvoA"
 }
 ```
 
