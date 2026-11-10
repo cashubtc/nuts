@@ -99,7 +99,7 @@ Using [NUT-13](../13.md#v3-message) derivation procedure for V3 with the followi
 ```json
 {
   "seed_hex": "6e757431332076332074657374207365656400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-  "keyset_id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6"
+  "keyset_id": "022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701"
 }
 ```
 
@@ -109,37 +109,37 @@ The values derived for counters `0` to `3` are:
 [
   {
     "counter": 0,
-    "secret_key": "47196dc081150ce13fd0e478b8b71831b825be389211c9c56a8062a61af70347",
-    "secret": "02e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b",
-    "blinding_factor": "156857a0bce1b2788895f1885a21c56cf000df0de1e855608c7ccb6d9e2d7728",
-    "nums_offset": "4af68649f3230c5589879f0cf33fd6d9f007cd3a54a2e6ed8699a576630fc025",
-    "Y": "a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a73"
+    "secret_key": "930c88ad9dc8531c147862d4ef9c0981200ff1f510c0a9e1c024db725a1d56c6",
+    "secret": "0240c186f3e19f6f8cd00db81c5266d5c74ddca48ff848efd0e3e125b2846f30d9",
+    "blinding_factor": "4381a54d5fb006bf9cd63a30e857f0ef4b58a5a123c7cd8909099abe77d5736e",
+    "nums_offset": "c4b697b346799e55a80ba7a0b6f7670a7f62a985c97de685dc693e87dc6d137a",
+    "Y": "90f53b3088936b80ecfcc065a0746c5c1843ffd4527dbe3b9aba5a6109aed338ddc0f109511e9dfd37342aa99dd816d8"
   },
   {
     "counter": 1,
-    "secret_key": "659a545656334a47e08de62377e2f3128c72cd27e576908842e1ab359d395247",
-    "secret": "03a882e17eb79f4f87313b299e208f9109734d0211a8df307b1570dbad2cdf74bf",
-    "blinding_factor": "6de008e7a6c418b76a94e48c4b71a11078173de70abb3eaeb7cc1273a6dccede",
-    "nums_offset": "d78b39a2ba263f92ea3ea2f721705c545d949349767e55bbdc41884cbb9a8b18"
+    "secret_key": "a2ac179175fc3bb7c8cf05542193017a0d33b3316ea5d8a97777c7660d2a55b6",
+    "secret": "0385fe6eb0608c6b5241e0fd86ebbd5dd30a6a97a0014a110c0c6297001147e5be",
+    "blinding_factor": "2349fa461401f98e1ffa80d34baf1c11bbe62014bbd076985229f0706cda83f1",
+    "nums_offset": "1b864ba8bba906c1bd1b56e58c1b0fe4ee8d3bea42849309102c81a8854f312d"
   },
   {
     "counter": 2,
-    "secret_key": "cee0df42cdaee25b228300b460edcbfab94be650ce2676abd77ef0697311e5e2",
-    "secret": "02da107b7bfa3afedc0b49c62de58cb5429e1ad42b45c14a3e6da20156222ea41b",
-    "blinding_factor": "35f56bb2016802a96a2846de8635712281d68182788410735b9826a211499fd4",
-    "nums_offset": "d01054af49de60a8a62c592c4bea44f02782f7c6371136d985dfd9d690de5a15"
+    "secret_key": "fec1f9c77a85ea144b6ea2ecd90a61a226855b4ed692a7e8c7db7afb600f7205",
+    "secret": "0390617487ad222beef9f247dbfbd5993313a2d5235add388bd868969c594794a2",
+    "blinding_factor": "7121cd4ce638011afaea356eefe1834b03a86080064c7c28f1eab45c32d7b06e",
+    "nums_offset": "b19ab48593e7ad6fc3c68c23697b6b2544920a1949ca234a6d10a2cdb6455922"
   },
   {
     "counter": 3,
-    "secret_key": "46c2c20d79496e1ebe19805ba4df33535474800eefefc252140e1f20d0284ffe",
-    "secret": "03189b6c67a0046084bbd2d810b5c6086c117082fe569cb56107d70f4acf8ddb5c",
-    "blinding_factor": "65724fcdbc4ccfbb2a610b1bddd14238492b81d3761584b6492fcbadfeb9355f",
-    "nums_offset": "54d0371fad402c83b0f3854fd9b7c876da857e7f276614d7e19dfb6680356f09"
+    "secret_key": "1aa7018e67ac4655d3d6dd120a2c715adb6bcd6b54dbf90a685ae452916edb61",
+    "secret": "039e49f114e0ab5f616b996e93f04ae265e29282df093c08996c093f1fcbb4385f",
+    "blinding_factor": "46186ec0f98f00aaf51a7cb59472c65e35a33f94e2785b6b384d1666b9c1759c",
+    "nums_offset": "3ee8a5612ad8ff4a6f5b7bcf5b6bef7c7a2379fc789401e8e03afbf32da6dfad"
   }
 ]
 ```
 
-For counters `0` to `3` the `0x00` branch accepts at attempts `0, 0, 0, 0` and the `0x01` branch at attempts `7, 1, 2, 2` (earlier attempts produce `x >= BLS_FR_ORDER`). An implementation that omits the loop, skips the length framing, or reuses the V2 message computes different values and fails these vectors.
+For counters `0` to `3` the `0x00` branch accepts at attempts `0, 0, 0, 0` and the `0x01` branch at attempts `0, 3, 0, 1` (earlier attempts produce `x >= BLS_FR_ORDER`). An implementation that omits the loop, skips the length framing, or reuses the V2 message computes different values and fails these vectors.
 
 Counter `0` also carries `Y = hash_to_curve_G1(secret_bytes)` over the **decoded 33 bytes** of the secret, pinning the binary-secret hashing rule ([NUT-00](../00.md#secret-bytes)).
 
@@ -150,20 +150,20 @@ The **leaf keys** (type `0x03`) at counter `0`, with the index suffix `u32_BE(i)
   {
     "counter": 0,
     "index": 0,
-    "privkey": "8aac8b31fe4babb8097f416ef8f8508fdba63589087f4d10bf6f96bddba23788",
-    "pubkey": "033c1828d880aebfd316781d3dffe1c45953087917e6f734032666c1ed80f0653c"
+    "privkey": "e6573de10fb740e60350346f7a90e15dfff01efb476c745018f59b6ab5132644",
+    "pubkey": "036ed2c40140c79e5080a15e88cb55f7c08c0107b465cfef8ddcfe66a2ba3532f9"
   },
   {
     "counter": 0,
     "index": 1,
-    "privkey": "c77d6d9440bde035b140fe622e96dea2ffb2227179c3241df6e2994811984656",
-    "pubkey": "0210b63f8016248a6f4c372366eb521784002ab182acbeba94e00ec4898f629d81"
+    "privkey": "2ab582bed4c0a4c0d746b8bfbe906cf7d7becf88f4dfe66cd194851c64d44bb1",
+    "pubkey": "0369e4632867bd810a4a7065494b48c7fda2dd6ec4eba4fd93ce545bd32d5c45df"
   },
   {
     "counter": 0,
     "index": 2,
-    "privkey": "ba7a8fc52b8c77b7412e5edaae211d92f2c79980788e3e3a480eb0dccac0b33e",
-    "pubkey": "020e35e2edc190c2c34e46e586233a4f357e35fa428ae6f53636bb93f201792096"
+    "privkey": "520f39607492fad03cf0b2c44929680ef3b0955adf20a9b2d9b64b18bffaeaa4",
+    "pubkey": "037864253663cfeadc8bd3d5d573ca1858378951bbd7fe971712940f38c4c47c86"
   }
 ]
 ```

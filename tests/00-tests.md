@@ -272,7 +272,7 @@ Serialized to raw binary:
 
 ## V4 tokens with spend info
 
-One 8-sat proof per token, mint `https://mint.test`, unit `sat`, keyset id `02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6`, `C` = `84d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327`.
+One 8-sat proof per token, mint `https://mint.test`, unit `sat`, keyset id `022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701`, `C` = `a33dd4de26ea950060ae5c45bdc408d72aaf51ba9f4ccdeee4a040df067ca87c799a406fec88c2a328b75b290e27f7b6`, the bearer proof's signature, reused by every shape.
 
 Tokens use the short keyset id form. Each shape decodes to the stated `spend_info` fields and re-encodes to the same string.
 
@@ -280,11 +280,11 @@ Bearer (`si.k`, secret is the bare key of `k`):
 
 ```json
 {
-  "secret": "02e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b",
+  "secret": "0240c186f3e19f6f8cd00db81c5266d5c74ddca48ff848efd0e3e125b2846f30d9",
   "spend_info": {
-    "k": "47196dc081150ce13fd0e478b8b71831b825be389211c9c56a8062a61af70347"
+    "k": "930c88ad9dc8531c147862d4ef9c0981200ff1f510c0a9e1c024db725a1d56c6"
   },
-  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAK34HfQIPq-YXCBpGFhCGFzeEIwMmU2ZTdjZmE3YjgyZDRiM2I0NDlmYTY0NjZjODkzNDY5YTcyN2QwMjE0ZDQ4ZGI0OTU2YTYwNTRiODAyMmEyOWJhY1gwhNG3KRrlc388hRqjPK_g96_rXMtNoIbEgruFt1JeYVR_G1ptGgGx_tH5YNGp0DMnYnNpoWFrWCBHGW3AgRUM4T_Q5Hi4txgxuCW-OJIRycVqgGKmGvcDRw"
+  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAIlRqsKLe6fYXCBpGFhCGFzeEIwMjQwYzE4NmYzZTE5ZjZmOGNkMDBkYjgxYzUyNjZkNWM3NGRkY2E0OGZmODQ4ZWZkMGUzZTEyNWIyODQ2ZjMwZDlhY1gwoz3U3ibqlQBgrlxFvcQI1yqvUbqfTM3u5KBA3wZ8qHx5mkBv7IjCoyi3WykOJ_e2YnNpoWFrWCCTDIitnchTHBR4YtTvnAmBIA_x9RDAqeHAJNtyWh1Wxg"
 }
 ```
 
@@ -296,7 +296,7 @@ Receiver-keyed, no conditions (`si.e` only):
   "spend_info": {
     "E": "022f8bde4d1a07209355b4a7250a5c5128e88b84bddc619ab7cba8d569b240efe4"
   },
-  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAK34HfQIPq-YXCBpGFhCGFzeEIwM2EzZTEyY2MwNzdlNTYwNWYzNjQ0MTA0NmY1MGMxMTRmY2M4ODNiMDc5YTM0MDI4YmVkNjY3MzJlM2E0MTllNTFhY1gwhNG3KRrlc388hRqjPK_g96_rXMtNoIbEgruFt1JeYVR_G1ptGgGx_tH5YNGp0DMnYnNpoWFlWCECL4veTRoHIJNVtKclClxRKOiLhL3cYZq3y6jVabJA7-Q"
+  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAIlRqsKLe6fYXCBpGFhCGFzeEIwM2EzZTEyY2MwNzdlNTYwNWYzNjQ0MTA0NmY1MGMxMTRmY2M4ODNiMDc5YTM0MDI4YmVkNjY3MzJlM2E0MTllNTFhY1gwoz3U3ibqlQBgrlxFvcQI1yqvUbqfTM3u5KBA3wZ8qHx5mkBv7IjCoyi3WykOJ_e2YnNpoWFlWCECL4veTRoHIJNVtKclClxRKOiLhL3cYZq3y6jVabJA7-Q"
 }
 ```
 
@@ -311,7 +311,7 @@ Receiver-keyed with a disclosed tree (`si.e` + `si.t`; the receiver derives `K` 
       "00020200010104002102e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd1306000468a3be80"
     ]
   },
-  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAK34HfQIPq-YXCBpGFhCGFzeEIwMmQzMTBhNGQ2NjFlMzE1OGU3ZDM2MDYxN2U3MzlkNmJhY2JmMDE1NDMxYjI0YTQzMTY4ZGIwYWI5OWVmOGY4MjhhY1gwhNG3KRrlc388hRqjPK_g96_rXMtNoIbEgruFt1JeYVR_G1ptGgGx_tH5YNGp0DMnYnNpomFlWCECL4veTRoHIJNVtKclClxRKOiLhL3cYZq3y6jVabJA7-RhdIFYMQACAgABAQQAIQLkk9vxwQ2A81geSQSTCxQEzGwTkA7gdYR0-pSr6MTNEwYABGijvoA"
+  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAIlRqsKLe6fYXCBpGFhCGFzeEIwMmQzMTBhNGQ2NjFlMzE1OGU3ZDM2MDYxN2U3MzlkNmJhY2JmMDE1NDMxYjI0YTQzMTY4ZGIwYWI5OWVmOGY4MjhhY1gwoz3U3ibqlQBgrlxFvcQI1yqvUbqfTM3u5KBA3wZ8qHx5mkBv7IjCoyi3WykOJ_e2YnNpomFlWCECL4veTRoHIJNVtKclClxRKOiLhL3cYZq3y6jVabJA7-RhdIFYMQACAgABAQQAIQLkk9vxwQ2A81geSQSTCxQEzGwTkA7gdYR0-pSr6MTNEwYABGijvoA"
 }
 ```
 
@@ -326,7 +326,7 @@ A disclosed tree with an explicit internal key (`si.i` + `si.t`; no key handed o
       "00020200010104002102e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd1306000468a3be80"
     ]
   },
-  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAK34HfQIPq-YXCBpGFhCGFzeEIwMmQzMTBhNGQ2NjFlMzE1OGU3ZDM2MDYxN2U3MzlkNmJhY2JmMDE1NDMxYjI0YTQzMTY4ZGIwYWI5OWVmOGY4MjhhY1gwhNG3KRrlc388hRqjPK_g96_rXMtNoIbEgruFt1JeYVR_G1ptGgGx_tH5YNGp0DMnYnNpomFpWCEDo-EswHflYF82RBBG9QwRT8yIOweaNAKL7WZzLjpBnlFhdIFYMQACAgABAQQAIQLkk9vxwQ2A81geSQSTCxQEzGwTkA7gdYR0-pSr6MTNEwYABGijvoA"
+  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAIlRqsKLe6fYXCBpGFhCGFzeEIwMmQzMTBhNGQ2NjFlMzE1OGU3ZDM2MDYxN2U3MzlkNmJhY2JmMDE1NDMxYjI0YTQzMTY4ZGIwYWI5OWVmOGY4MjhhY1gwoz3U3ibqlQBgrlxFvcQI1yqvUbqfTM3u5KBA3wZ8qHx5mkBv7IjCoyi3WykOJ_e2YnNpomFpWCEDo-EswHflYF82RBBG9QwRT8yIOweaNAKL7WZzLjpBnlFhdIFYMQACAgABAQQAIQLkk9vxwQ2A81geSQSTCxQEzGwTkA7gdYR0-pSr6MTNEwYABGijvoA"
 }
 ```
 
@@ -334,21 +334,21 @@ Script-only (`si.i` + `si.u` + `si.t`). `u` is fixed for a stable vector; a real
 
 ```json
 {
-  "secret": "0251a4f35fa38c5edce83e16596de02be4e87ec6a91c5fd80ab577c22668fb6dd5",
+  "secret": "035f02db4e3b429de04669e8fba1e786719de8336cedeff3048e944ebcfaf08e23",
   "spend_info": {
-    "K": "0308ca9ef021bf7ec241dbef7fa31aec8e63b41be200eb7530cd3d67d2a2c7d096",
-    "u": "4af68649f3230c5589879f0cf33fd6d9f007cd3a54a2e6ed8699a576630fc025",
+    "K": "031ed5e2846820073c39cca136f69aa3509b88b8f7f0e9f30159dea1178fa725f5",
+    "u": "c4b697b346799e55a80ba7a0b6f7670a7f62a985c97de685dc693e87dc6d137a",
     "tree": [
       "00020200010104002102e493dbf1c10d80f3581e4904930b1404cc6c13900ee0758474fa94abe8c4cd1306000468a3be80"
     ]
   },
-  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAK34HfQIPq-YXCBpGFhCGFzeEIwMjUxYTRmMzVmYTM4YzVlZGNlODNlMTY1OTZkZTAyYmU0ZTg3ZWM2YTkxYzVmZDgwYWI1NzdjMjI2NjhmYjZkZDVhY1gwhNG3KRrlc388hRqjPK_g96_rXMtNoIbEgruFt1JeYVR_G1ptGgGx_tH5YNGp0DMnYnNpo2FpWCEDCMqe8CG_fsJB2-9_oxrsjmO0G-IA63UwzT1n0qLH0JZhdVggSvaGSfMjDFWJh58M8z_W2fAHzTpUoubthpmldmMPwCVhdIFYMQACAgABAQQAIQLkk9vxwQ2A81geSQSTCxQEzGwTkA7gdYR0-pSr6MTNEwYABGijvoA"
+  "token": "cashuBo2FtcWh0dHBzOi8vbWludC50ZXN0YXVjc2F0YXSBomFpSAIlRqsKLe6fYXCBpGFhCGFzeEIwMzVmMDJkYjRlM2I0MjlkZTA0NjY5ZThmYmExZTc4NjcxOWRlODMzNmNlZGVmZjMwNDhlOTQ0ZWJjZmFmMDhlMjNhY1gwoz3U3ibqlQBgrlxFvcQI1yqvUbqfTM3u5KBA3wZ8qHx5mkBv7IjCoyi3WykOJ_e2YnNpo2FpWCEDHtXihGggBzw5zKE29pqjUJuIuPfw6fMBWd6hF4-nJfVhdVggxLaXs0Z5nlWoC6egtvdnCn9iqYXJfeaF3Gk-h9xtE3phdIFYMQACAgABAQQAIQLkk9vxwQ2A81geSQSTCxQEzGwTkA7gdYR0-pSr6MTNEwYABGijvoA"
 }
 ```
 
 ## Transaction transcripts
 
-`input_digest` is [`tagged_hash`](../00.md#tagged-hashes) under `Cashu_TransactionInput`, with `SHA256("Cashu_TransactionInput")` = `4996fee585f625e6a33865ce975efc32c42d2b1b95328385ce45f5209a16e9ec`. Signatures use BIP-340 with auxiliary randomness fixed to 32 zero bytes; verifiers **MUST** accept any valid signature. Keyset `02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6` (v3). Proofs use [NUT-13 V3](13-tests.md) counter `0`, and `1` in the multi-input vector. `digest` is the transaction digest. A blinded output's container carries `SHA256(B_)`, so a request shows `B_` where its transcript shows the hash.
+`input_digest` is [`tagged_hash`](../00.md#tagged-hashes) under `Cashu_TransactionInput`, with `SHA256("Cashu_TransactionInput")` = `4996fee585f625e6a33865ce975efc32c42d2b1b95328385ce45f5209a16e9ec`. Signatures use BIP-340 with auxiliary randomness fixed to 32 zero bytes; verifiers **MUST** accept any valid signature. Keyset `022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701`, [NUT-02](02-tests.md#version-3) V3 vector 1, whose mint scalars are `7`, `13`, `29` and `71` for amounts `1`, `2`, `4` and `8`. Proofs use [NUT-13 V3](13-tests.md) counter `0`, and `1` in the multi-input vector. `digest` is the transaction digest. A blinded output's container carries `SHA256(B_)`, so a request shows `B_` where its transcript shows the hash.
 
 **Swap.** A `PostSwapRequest` ([NUT-03](../03.md)) spending one 8-sat proof into two 4-sat outputs:
 
@@ -357,21 +357,21 @@ Script-only (`si.i` + `si.u` + `si.t`). `u` is fixed for a stable vector; a real
   "inputs": [
     {
       "amount": 8,
-      "id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
-      "secret": "02e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b",
-      "C": "84d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327"
+      "id": "022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701",
+      "secret": "0240c186f3e19f6f8cd00db81c5266d5c74ddca48ff848efd0e3e125b2846f30d9",
+      "C": "a33dd4de26ea950060ae5c45bdc408d72aaf51ba9f4ccdeee4a040df067ca87c799a406fec88c2a328b75b290e27f7b6"
     }
   ],
   "outputs": [
     {
       "amount": 4,
-      "id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
+      "id": "022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701",
       "B_": "b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55"
     },
     {
       "amount": 4,
-      "id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
-      "B_": "b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55"
+      "id": "022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701",
+      "B_": "a14669f181e074cc466e2a165c47ab7db5b3939e42b349f1201874033943ef279f36476e627ab1c937e8ea6a76448fc2"
     }
   ]
 }
@@ -381,10 +381,10 @@ serializes to the following transcript and digest:
 
 ```json
 {
-  "transcript": "11008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332721004b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee21004b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee",
-  "digest": "b5a50082d44bdb0d9f9e91896fbe0f8f9052baf0ca7c8930c8987790164f277c",
-  "input_id": "900fb575d55eed27f7f52db079a2bf4843e674c461726eca70b90943cb3c7d07",
-  "input_digest": "eca67b680015d42ffb9339b8c0475a90d162d189bd36a15d8b6910de48927edd"
+  "transcript": "11008e01000108020021022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d70103003090f53b3088936b80ecfcc065a0746c5c1843ffd4527dbe3b9aba5a6109aed338ddc0f109511e9dfd37342aa99dd816d8040030a33dd4de26ea950060ae5c45bdc408d72aaf51ba9f4ccdeee4a040df067ca87c799a406fec88c2a328b75b290e27f7b621004b01000104020021022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee21004b01000104020021022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d7010300200081a8744c8f3309419a09b08f3ae7e8cdaaaaad64309b78f6fd91f61dfaf502",
+  "digest": "e88d16feadb0abc0cf4a08a7f5929a3a7c5e595f8d4e659d9ba66086aead402e",
+  "input_id": "194bd20817e5806bbe198206e63938c8f0ad38a0d89af2179bb517e24caf1db2",
+  "input_digest": "88a664e4f25fbd76baf5846221aa8f9d95beb0341f67d5458332e4f6809abcde"
 }
 ```
 
@@ -393,19 +393,19 @@ and the input's key-path witness over its `input_digest` is:
 ```json
 {
   "signatures": [
-    "5b4b2cbdb5ea75dd2a6451bf2f348e8b837438375dd5e78ba5cb2f3c549258df8ff274e8de9987e7dab88c221f0de820546e42907cec816e2b290af814030a94"
+    "3c2ce5dc36aea01a9b9f44287ef12e67a7fb0e0113720c3a000b5942835426e6635b09c087dbd30bde77ddf03b43b87858b3d2bf29d4b3ca7895f73e4839d3c2"
   ]
 }
 ```
 
-**Multiple proof inputs.** The swap above plus a second proof (the [NUT-13 V3](13-tests.md) counter `1` secret, same `C`), with outputs of `8` and `4`:
+**Multiple proof inputs.** The swap above plus a second proof (the [NUT-13 V3](13-tests.md) counter `1` secret), with outputs of `8` and `4`:
 
 ```json
 {
   "amount": 4,
-  "id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
-  "secret": "03a882e17eb79f4f87313b299e208f9109734d0211a8df307b1570dbad2cdf74bf",
-  "C": "84d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327"
+  "id": "022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701",
+  "secret": "0385fe6eb0608c6b5241e0fd86ebbd5dd30a6a97a0014a110c0c6297001147e5be",
+  "C": "84c2b06e690cf434f38bca886cfe2ca2d8739231f14b350d907bd4dd62ef901c0c99453d30651d43727cdbb2f07fd1b3"
 }
 ```
 
@@ -413,17 +413,17 @@ The transaction and per-input digests, with each proof's key-path signature:
 
 ```json
 {
-  "digest": "638facdb740dcd6909c5934208a421dafa1b3756aa5fc4a0e5d1bd341f28fbc6",
+  "digest": "9430a89c2db9df2a8c645369ea6f8ca1100f21b3c365ac0bb153422d2fd7e483",
   "inputs": [
     {
-      "input_id": "900fb575d55eed27f7f52db079a2bf4843e674c461726eca70b90943cb3c7d07",
-      "input_digest": "d8fcb88ff0252fc13519cf28a23e7b65278db09a4d8c1e82b27f692ea53bb5a7",
-      "signature": "11f5af9cf93204f816b4328f47de2b6368eaa26d584c4a5f0eca9268ed94aa39093faad5e6d4fce3674851e3c506cd0af35c0a58f913d7853e51b80e39976499"
+      "input_id": "194bd20817e5806bbe198206e63938c8f0ad38a0d89af2179bb517e24caf1db2",
+      "input_digest": "56a8a7ea8c0e785f2c4b77b99648daca04f7e110dac4c86b2d6372a34ce9393e",
+      "signature": "d390c4ad38c949c3dceb1d6a75de4bbb68291e2a72a4abef26ea3a0d373a24840572aef6d4359f8baea1ae2ed62336c8d833e91aaf3e78f32c7cf9c0581c3552"
     },
     {
-      "input_id": "0182252f564bf76e42e45514955b50c6bd6381b6c4971c8027cd5a6a90817c4b",
-      "input_digest": "28e4afd844e0fb8a3c3e71fdb82abdecf263d25b4de1cfd96d0d5c620c69c1d1",
-      "signature": "35482c41545a8a1dd1343678952085390c2ac0a056f28bb36c1623ceadece35181d0526386bc8feb5ab15ba71a608a1a51f4f302ca1e11c903d1255e9d039d0a"
+      "input_id": "810d7cc016b5e6af4dff55b4c96ee7ed397c5e845058abf04ecd479edc50b69a",
+      "input_digest": "681a5a9f1881a685e5e8fb0d33dabd7c8987bf78a1e9424bb4535d124dfe6877",
+      "signature": "f608bb156579e85c5788de9e7d89e10a0aeb39ba6983bc352583406cd8eab1743cdb1eb0b7fb31f2679a2f0c4138b72cfbc92888d409af26c4109016a378a74a"
     }
   ]
 }
@@ -438,9 +438,9 @@ Each signature **MUST** verify only against its corresponding `input_digest`; ne
   "inputs": [
     {
       "amount": 8,
-      "id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
-      "secret": "02e6e7cfa7b82d4b3b449fa6466c893469a727d0214d48db4956a6054b8022a29b",
-      "C": "84d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327"
+      "id": "022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701",
+      "secret": "0240c186f3e19f6f8cd00db81c5266d5c74ddca48ff848efd0e3e125b2846f30d9",
+      "C": "a33dd4de26ea950060ae5c45bdc408d72aaf51ba9f4ccdeee4a040df067ca87c799a406fec88c2a328b75b290e27f7b6"
     },
     {
       "amount": 2,
@@ -452,13 +452,13 @@ Each signature **MUST** verify only against its corresponding `input_digest`; ne
   "outputs": [
     {
       "amount": 8,
-      "id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
+      "id": "022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701",
       "B_": "b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55"
     },
     {
       "amount": 2,
-      "id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
-      "B_": "b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55"
+      "id": "022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701",
+      "B_": "a14669f181e074cc466e2a165c47ab7db5b3939e42b349f1201874033943ef279f36476e627ab1c937e8ea6a76448fc2"
     }
   ]
 }
@@ -470,11 +470,11 @@ Each input's `Y` and container record, then the transcript and digests. Only the
 {
   "inputs": [
     {
-      "Y": "a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a73",
-      "container": "11008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d03327",
-      "input_id": "900fb575d55eed27f7f52db079a2bf4843e674c461726eca70b90943cb3c7d07",
-      "input_digest": "764a2f46843cdefb389d2cf45807b569d646e51780265e1c28e0ac42cdb067e6",
-      "signature": "affda39eba371dc7fe506e50ea9e97bea55d24bca91039f399dcbbcc00528c648fb4ba1dcb257851c4bb28e3bb869f2da13232ba539cfc67336276113adad289"
+      "Y": "90f53b3088936b80ecfcc065a0746c5c1843ffd4527dbe3b9aba5a6109aed338ddc0f109511e9dfd37342aa99dd816d8",
+      "container": "11008e01000108020021022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d70103003090f53b3088936b80ecfcc065a0746c5c1843ffd4527dbe3b9aba5a6109aed338ddc0f109511e9dfd37342aa99dd816d8040030a33dd4de26ea950060ae5c45bdc408d72aaf51ba9f4ccdeee4a040df067ca87c799a406fec88c2a328b75b290e27f7b6",
+      "input_id": "194bd20817e5806bbe198206e63938c8f0ad38a0d89af2179bb517e24caf1db2",
+      "input_digest": "94a0d329d7c66c55e0c968bbb680fbb4c7f4d01f6a29f93d6a5975dd15812776",
+      "signature": "d5e861c7ee7635fa2b8dc58aabe2ceb0997651a6e1e85cc3aed31aad42871f4d2444707ad20337a21da5f35e561ca83ec36880ecb2fd8c25eccf33856b99ca93"
     },
     {
       "Y": "029ef117210f475254efd911de93a9d22d471e356f5b1e3f00df8c24bbb37bd3ae",
@@ -482,8 +482,8 @@ Each input's `Y` and container record, then the transcript and digests. Only the
       "input_id": "efbdd5d14874cb021fc962d93a9848553ca65ae101e9b57f6678aa37ffe1ebd9"
     }
   ],
-  "transcript": "11008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d033271100570100010202000800456a94ab4e1c46030021029ef117210f475254efd911de93a9d22d471e356f5b1e3f00df8c24bbb37bd3ae04002102a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba221004b0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee21004b0100010202002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee",
-  "digest": "74e13e494841037a8578176a18a25e412ef5b86e35e2de6f0bff5f30f79405b4"
+  "transcript": "11008e01000108020021022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d70103003090f53b3088936b80ecfcc065a0746c5c1843ffd4527dbe3b9aba5a6109aed338ddc0f109511e9dfd37342aa99dd816d8040030a33dd4de26ea950060ae5c45bdc408d72aaf51ba9f4ccdeee4a040df067ca87c799a406fec88c2a328b75b290e27f7b61100570100010202000800456a94ab4e1c46030021029ef117210f475254efd911de93a9d22d471e356f5b1e3f00df8c24bbb37bd3ae04002102a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba221004b01000108020021022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee21004b01000102020021022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d7010300200081a8744c8f3309419a09b08f3ae7e8cdaaaaad64309b78f6fd91f61dfaf502",
+  "digest": "c08be9ca9632ce753c31227e470ecb38ff19df071fd828d1818eb14ea4da489f"
 }
 ```
 
@@ -494,7 +494,7 @@ Each input's `Y` and container record, then the transcript and digests. Only the
   "outputs": [
     {
       "amount": 8,
-      "id": "02b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6",
+      "id": "022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701",
       "B_": "b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55"
     }
   ]
@@ -503,10 +503,10 @@ Each input's `Y` and container record, then the transcript and digests. Only the
 
 ```json
 {
-  "transcript": "12003d0100010802000f71756f74652d6d696e742d303030310300210292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d20981204000021004b0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee",
-  "digest": "3f2ed71b538ba1cdb59b7d176dae4709c5db6b30d2c364fc231bfd2985d9f845",
+  "transcript": "12003d0100010802000f71756f74652d6d696e742d303030310300210292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d20981204000021004b01000108020021022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee",
+  "digest": "37e64e944b7580653f44cfa06b416fac9a548d5bbf372e6545c9c982e5a3a70f",
   "input_id": "d294012dd54976b05eb3e36eb218b9a6d66b19d79ec122944a35b99b8ddd8839",
-  "input_digest": "cd149490f31c836c3f4bab5e401242100a1522e7e5e0af2db4da4020bb894af1"
+  "input_digest": "b8218d99fe1d3138c16230ed0b119a8ea8a17975131fedd9b7459f2af9aa483a"
 }
 ```
 
@@ -518,22 +518,34 @@ Each input's `Y` and container record, then the transcript and digests. Only the
 
 ```json
 {
-  "transcript": "12003e0100010402000f71756f74652d6d696e742d303030340300210292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d2098120400010321004b0100010402002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee",
-  "digest": "93379041ba7dd1166d7dc1b028305a22470c461f62907982565a2343148cb64b",
+  "transcript": "12003e0100010402000f71756f74652d6d696e742d303030340300210292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d2098120400010321004b01000104020021022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee",
+  "digest": "90d943e1f02938e5d50a7ead9f04ec1a633bc207bf7976f54569632db62d8d4d",
   "lock_pubkey": "0292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d209812",
   "input_id": "c2e4168d079d7ccc6c9fc80c480e75a255282ec41e660afad42cf743c95f14e3",
-  "input_digest": "3e22290842db64b0c8417b72e16bf0965d5ee304815978d3b8c2d53574a60ebb",
-  "signature": "5055a075e7534502457e914c81768d29bae3d0be046d106a8a6529507c3bdc851cbecd9654454d22efe88658803d4a96d8c2ba53716b9846da08411fbabf71de"
+  "input_digest": "7754960e452ae522213f1112c6eb5946b0bac278b0a307e38927d59531ed558e",
+  "signature": "c6709751b0d3c14fef333326f4cd9d45c7af327ea4659a7b4637e92d9a82b0f6c25a4bce9e99385f40f39ea6fe26af9ba07bfaf2c378f2f47a1eb2d474a0a7a6"
 }
 ```
 
-The signature **MUST NOT** verify over a transcript that commits amount `8` or `issued` `0`.
+The signature **MUST NOT** verify over a transcript that commits amount `8` or `issued` `0`. The mint's blind signature on the output:
+
+```json
+{
+  "signatures": [
+    {
+      "amount": 4,
+      "id": "022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701",
+      "C_": "98a471f36a34323f96a1b5783bd98829f9fc69687a9c4f6774c23d89b8f0f2c93e8510992c7942e1980746138c90ae26"
+    }
+  ]
+}
+```
 
 **Serialized quote witnesses.** A mint request's `signature` also accepts a serialized [witness](../00.md#witnesses). The partial mint's signature as a key-path witness:
 
 ```json
 {
-  "signature": "{\"signatures\":[\"5055a075e7534502457e914c81768d29bae3d0be046d106a8a6529507c3bdc851cbecd9654454d22efe88658803d4a96d8c2ba53716b9846da08411fbabf71de\"]}"
+  "signature": "{\"signatures\":[\"c6709751b0d3c14fef333326f4cd9d45c7af327ea4659a7b4637e92d9a82b0f6c25a4bce9e99385f40f39ea6fe26af9ba07bfaf2c378f2f47a1eb2d474a0a7a6\"]}"
 }
 ```
 
@@ -542,11 +554,11 @@ The mint vector with its quote locked to a script-only key, spent by a script-pa
 ```json
 {
   "lock_pubkey": "034b15129a9c665f37fbe9f6c80a7fe6ec0c809f34edde98d298aff94a1e8af276",
-  "transcript": "12003d0100010802000f71756f74652d6d696e742d30303031030021034b15129a9c665f37fbe9f6c80a7fe6ec0c809f34edde98d298aff94a1e8af27604000021004b0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee",
-  "digest": "1b6a4f3f56d3808cb81d176a5f9959ebe5dc9251de66056794000ad758a9eb84",
+  "transcript": "12003d0100010802000f71756f74652d6d696e742d30303031030021034b15129a9c665f37fbe9f6c80a7fe6ec0c809f34edde98d298aff94a1e8af27604000021004b01000108020021022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee",
+  "digest": "33d8def7c0f5235c150863773e105568d44d079aa2f1d59149bb72254dc6df05",
   "input_id": "a639745001afaad8964370e8ddc1406bbf14d478c6d56819f188c9b10392fe45",
-  "input_digest": "1e0acf51dc92e81c87ad238eea380c8238373aee3e2a30167547ce20c9212a50",
-  "signature": "{\"leaf\":\"00010200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9\",\"control\":{\"K\":\"028edfebd6fdea3e1d89359af20868a2e76315b36cdb1a79de497a1757ca7bd407\",\"path\":[]},\"signatures\":[\"11edaf3608a6b1fbec19f1826e58ace09ca51aafbb7ad112a0b0b8f8787967d98eea2936bb55053dd463dbe47c2f23f37e5475ae4ebe92b328df54e80c7d9206\"]}"
+  "input_digest": "7c0b3967b3b7ba4e5daa7e8ea11607cff36062d6ff24863c8bdf31ee8346f8e4",
+  "signature": "{\"leaf\":\"00010200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9\",\"control\":{\"K\":\"028edfebd6fdea3e1d89359af20868a2e76315b36cdb1a79de497a1757ca7bd407\",\"path\":[]},\"signatures\":[\"b0656dbde143bd6825e141551cae68f1428a62ee1d74c0f8df8f735d5841471d6f20f3946658bdad225b6b30dc90cea956a0aede132edf6eb1415f95afb30ca2\"]}"
 }
 ```
 
@@ -559,22 +571,22 @@ The mint vector with its quote locked to a script-only key, spent by a script-pa
 
 ```json
 {
-  "transcript": "12003d0100010502000f71756f74652d6d696e742d303030320300210292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d20981204000012003d0100010302000f71756f74652d6d696e742d3030303303002102b357c1ec7bdd73e4ede25d68619ee607c632409e89bcc518a82370b3f499615d04000021004b0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee",
-  "digest": "bf866b675bf6730b94f556095a22f4ac094fb3fe5d65d777dd05a41ebfb6f4ed",
+  "transcript": "12003d0100010502000f71756f74652d6d696e742d303030320300210292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d20981204000012003d0100010302000f71756f74652d6d696e742d3030303303002102b357c1ec7bdd73e4ede25d68619ee607c632409e89bcc518a82370b3f499615d04000021004b01000108020021022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee",
+  "digest": "8203006b339dd16a3f6293c0f300bebb3c9ad620755477b1372c0fa479540c72",
   "inputs": [
     {
       "quote_id": "quote-mint-0002",
       "lock_pubkey": "0292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d209812",
       "input_id": "8c7f916779dfba1b7ea2e0d3e69d1ee7eed1895af2891406fe8bdb7fbe0f39aa",
-      "input_digest": "dbc45733112ba2e7fad938d62de00c13c085309c9330d082cadee0c6dfeca85f",
-      "signature": "e0520f39e881481c7f6f12f987d09483c14b4bb3fbeea8f35d238f53bf0448be53db93f3a61ab882e50c8a96d26a87f48ded963ff5a585e404834f8c13b00e20"
+      "input_digest": "5b87defd8dadbd2b0faf359f53b00a74b0642e5b91dd4046e0183738a812ed13",
+      "signature": "badda23b373f0d1da963af4d424dbbbccce933ba0c81bc3e2c8ade13decdad8df57ca75efcb4eaa2e02eee9bd43066fce76fee22599f4a513354c138efa6bfb6"
     },
     {
       "quote_id": "quote-mint-0003",
       "lock_pubkey": "02b357c1ec7bdd73e4ede25d68619ee607c632409e89bcc518a82370b3f499615d",
       "input_id": "f7a60306c44e910fd5dea355541c4a4bb251220690688279bf08e7d19b3e9e45",
-      "input_digest": "f14225ec0ff74cae090865a5d852b9cd8b06827d3f459ad2d6a5ce4cc1e91dac",
-      "signature": "e726ee0cef6b2431850f4f5f7b5745d8810ead54888db3aae12c30d151049810c72dbe9f3d07812719fd1e2c8d55df91cec1e9a81e8cfe557485cefcb4e6447f"
+      "input_digest": "ac0d58749a343394a0fe5605771be16466ece1ecb331fa1aae0c92ac00136c13",
+      "signature": "f272dca3c46470511b4ac1ab47a2135d1c7a6af4b6b49ec7c1d120f7704888cce5af8f2026c548a2d5201aebe384f2b798a2c1e439c89d9decc915bc890a4474"
     }
   ]
 }
@@ -584,22 +596,51 @@ The mint vector with its quote locked to a script-only key, spent by a script-pa
 
 ```json
 {
-  "transcript": "11008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d033272200160100010802000f71756f74652d6d656c742d30303031",
-  "digest": "1b9e4e88ad05d873bee5b00a3d621e9a6565bb611a27174dfc17d268dffd38c2",
-  "input_id": "900fb575d55eed27f7f52db079a2bf4843e674c461726eca70b90943cb3c7d07",
-  "input_digest": "5319b114091bd127f42fd209b4b363d13a145da174c534fb8fa4c584a8405c0f"
+  "transcript": "11008e01000108020021022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d70103003090f53b3088936b80ecfcc065a0746c5c1843ffd4527dbe3b9aba5a6109aed338ddc0f109511e9dfd37342aa99dd816d8040030a33dd4de26ea950060ae5c45bdc408d72aaf51ba9f4ccdeee4a040df067ca87c799a406fec88c2a328b75b290e27f7b62200160100010802000f71756f74652d6d656c742d30303031",
+  "digest": "f2fd9eaf27d572e47d776bd09856f760b3bb18338a9b497bee18b5ebec804048",
+  "input_id": "194bd20817e5806bbe198206e63938c8f0ad38a0d89af2179bb517e24caf1db2",
+  "input_digest": "e5bde063cdeb9187aafc8e521a63c3463188836ff8e1c6575e60c5a045f620b6"
 }
 ```
 
 The melt shares the swap's `input_id` but not its `input_digest`, so neither witness verifies in the other transaction.
 
-**Melt with change.** The same melt with two [NUT-08](../08.md) blank outputs (amount 0) on the swap's keyset and `B_`. They precede the melt quote in the transcript, and each zero amount encodes as `010000`:
+**Melt with change.** Paying melt quote `quote-melt-0002` (amount 5, fee reserve 3) with the swap's 8-sat proof and two [NUT-08](../08.md) blank outputs (amount 0) carrying the swap's two `B_`. The melt quote output commits `8`, the amount plus the fee reserve. The blank outputs precede the melt quote in the transcript, and each zero amount encodes as `010000`:
 
 ```json
 {
-  "transcript": "11008e0100010802002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030030a0acf939f033e3d0ae9b5f784341fada38367eec190edfb34e1f0cce9050c80672dbee77a7512b7243544c85ae290a7304003084d1b7291ae5737f3c851aa33cafe0f7afeb5ccb4da086c482bb85b7525e61547f1b5a6d1a01b1fed1f960d1a9d0332721004a01000002002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee21004a01000002002102b7e077d020fabed456a6be138a8e20e9ef40b44d873fa12c005b656eb0cf99f6030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee2200160100010802000f71756f74652d6d656c742d30303031",
-  "digest": "adac16b768b73d5137096faf62a1b3b035cb8fd27e2a22c3159d99d1f2415c60",
-  "input_id": "900fb575d55eed27f7f52db079a2bf4843e674c461726eca70b90943cb3c7d07",
-  "input_digest": "c5692db35c58c47c70aa4dab49d2ede41adec95f00a231bf40cc8af5ddee030f"
+  "transcript": "11008e01000108020021022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d70103003090f53b3088936b80ecfcc065a0746c5c1843ffd4527dbe3b9aba5a6109aed338ddc0f109511e9dfd37342aa99dd816d8040030a33dd4de26ea950060ae5c45bdc408d72aaf51ba9f4ccdeee4a040df067ca87c799a406fec88c2a328b75b290e27f7b621004a010000020021022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701030020567b4ba980dd0c51c80919633b384c0764b30e5250c4a8b8e3957c9f4208cdee21004a010000020021022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d7010300200081a8744c8f3309419a09b08f3ae7e8cdaaaaad64309b78f6fd91f61dfaf5022200160100010802000f71756f74652d6d656c742d30303032",
+  "digest": "6649c7b016115b0d7f94fecef9af59ed616a32bb3e9f0313222427d29d087b80",
+  "input_id": "194bd20817e5806bbe198206e63938c8f0ad38a0d89af2179bb517e24caf1db2",
+  "input_digest": "b30a18aa22aabb380329dbf7e2c7915662b26a6f4b901f8799b068fb4ec2fc2f"
+}
+```
+
+and the input's key-path witness over its `input_digest` is:
+
+```json
+{
+  "signatures": [
+    "8129d244fa8d370a70c511f934788f2327f35739b8a60dac4545f190882a72774a947323ef6399d3e5e16e8687810549c19dcaab054f700caf05cbcd2e9c457b"
+  ]
+}
+```
+
+The payment costs no fee, so the mint returns the 3-sat reserve as change on the blank outputs, in order:
+
+```json
+{
+  "change": [
+    {
+      "amount": 1,
+      "id": "022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701",
+      "C_": "b8323ba04c279ce45cfd572020ceedd2925f5112769fdc97f8669f9b0e9080d78cc28c1846d59157f8fa6e329c90ad3d"
+    },
+    {
+      "amount": 2,
+      "id": "022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701",
+      "C_": "a5845c6eff7c6eb2a1b17e7579ed880c1b335e137f1527c143b82c7e606f366bee79d7f9937799fb9941f1e9a060c752"
+    }
+  ]
 }
 ```
