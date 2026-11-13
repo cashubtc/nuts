@@ -104,7 +104,7 @@ coordinator_digest = tagged_hash("Cashu/ctf/convert/coordinator", req_canonical)
 
 A mint advertises this feature with `output_conflict_detail: true` in the [NUT-06][06] setting of this endpoint. A mint that advertises it MUST also support `request_digest`.
 
-When the mint refuses a request with error 11003 (outputs already signed) or 11004 (outputs are pending) because an output of the request is signed, or is pending in another operation, the error response MUST include the field `outputs`:
+When the mint refuses a request that has at least one `PAY_TO_UNLOCK` input with error 11003 (outputs already signed) or 11004 (outputs are pending) because an output of the request is signed, or is pending in another operation, the error response MUST include the field `outputs`:
 
 ```json
 {
