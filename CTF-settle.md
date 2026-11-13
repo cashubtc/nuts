@@ -100,6 +100,32 @@ coordinator_digest = tagged_hash("Cashu/ctf/convert/coordinator", req_canonical)
 
 **Coordinator authentication** is inherited from [NUT-Exchange][exchange]: if any canonical `PAY_TO_UNLOCK` input carries `coordinator_pubkey`, the request must carry `coordinator_sig` — a BIP-340 signature valid under the bound key over `coordinator_digest`. Version 1 permits one key per request; `coordinator_sig` must be absent otherwise and is verified before any idempotency-cache hit (error 15015 on failure). `coordinator_pubkey` is permitted in standard and pool mode.
 
+## Output conflict detail (optional)
+
+A mint advertises this feature with `output_conflict_detail: true` in the [NUT-06][06] setting of this endpoint. A mint that advertises it MUST also support `request_digest`.
+
+When the mint refuses a request with error 11003 (outputs already signed) or 11004 (outputs are pending) because an output of the request is signed, or is pending in another operation, the error response MUST include the field `outputs`:
+
+```json
+{
+  "detail": "outputs are pending",
+  "code": 11004,
+  "outputs": [
+    { "B_": "<hex>", "state": "PENDING" },
+    { "B_": "<hex>", "state": "SIGNED" }
+  ]
+}
+```
+
+- The list holds every conflicting output of the request, once each, in request order. The mint checks all outputs before it answers.
+- `state` is `SIGNED` or `PENDING`.
+- An output that is pending only because of this same request (an identical retry) is not a conflict. It MUST NOT be in the list.
+- The list gives the submitter no new data: the submitter sent every `B_`. The mint MUST NOT add data about the other operation (its type, quote, amount or time).
+
+**No-commit guarantee.** When the mint returns `outputs`, it MUST record, in the same database transaction as the refusal, that a request with this `request_digest` can never commit. A later identical request gets the same refusal, also after the other operation ends or is removed. The mint MUST write this record only after the inputs and their spending conditions pass verification, so that a request without valid inputs cannot add records. The mint MAY delete the record after the earliest `PAY_TO_UNLOCK` `expiry` of the request, because the request cannot commit after that time.
+
+A client MUST NOT expect `outputs` from a mint that does not advertise the feature. A client MUST ignore an unknown field in an error response ([NUT-00][00]).
+
 ## Range orders (partial fill)
 
 CTF convert supports the pool-based **range orders** in [NUT-Exchange-partial-fill][partial-fill]. A participant supplies input proofs and authorizes a range of output bundles at a limit rate. The coordinator selects outputs; the mint signs only those entries. `H_manifest` commits the candidate outputs, not a complete input-set identity. A wallet or coordinator can retain a fixed preparation input set, but the mint cannot infer omitted proofs from the manifest. The exact submitted request commits its actual inputs.
@@ -143,7 +169,7 @@ A single convert may mix `MINT` (buy + buy on complementary outcomes), `MERGE` (
 
 ## Mint info
 
-Same [NUT-06][06] setting as [NUT-CTF-split-merge][CTF-split-merge], extended with `max_participants` (≥ 2), `max_expiry_seconds` (wallet preparation lifetime and mint admission ceiling defined above), and the pool-mode fields from [NUT-Exchange-partial-fill][partial-fill]: `partial_fill` and `max_pool_entries`. `max_request_bytes` bounds the complete serialized request, including every manifest and selection.
+Same [NUT-06][06] setting as [NUT-CTF-split-merge][CTF-split-merge], extended with `max_participants` (≥ 2), `max_expiry_seconds` (wallet preparation lifetime and mint admission ceiling defined above), and the pool-mode fields from [NUT-Exchange-partial-fill][partial-fill]: `partial_fill` and `max_pool_entries`. `max_request_bytes` bounds the complete serialized request, including every manifest and selection. A mint that supports [output conflict detail](#output-conflict-detail-optional) adds `output_conflict_detail: true`. Such a mint also advertises `idempotent_retries: true`, because the feature requires `request_digest`.
 
 ## FAQ
 
@@ -158,9 +184,11 @@ The mint enforces each participant's own limit price (the rule 9p rate covenant 
 - [NUT-CTF][CTF] · [NUT-CTF-split-merge][CTF-split-merge] · [NUT-Exchange][exchange] · [NUT-Exchange-partial-fill][partial-fill]
 - [Polymarket CTF Exchange](https://github.com/Polymarket/ctf-exchange-v2)
 
+[00]: 00.md
 [02]: 02.md
 [03]: 03.md
 [06]: 06.md
+[09]: 09.md
 [CTF]: CTF.md
 [CTF-split-merge]: CTF-split-merge.md
 [exchange]: https://github.com/cashubtc/nuts/pull/410

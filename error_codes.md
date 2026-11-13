@@ -51,7 +51,9 @@
 | 15013 | Pool role/keyset or two-class consistency violated | [NUT-Exchange-partial-fill][partial-fill]              |
 | 15014 | Pool policy violation (rate/min/max/overflow)      | [NUT-Exchange-partial-fill][partial-fill]              |
 | 15015 | Coordinator authentication failed                  | [NUT-Exchange][exchange]                               |
-| 13049 | Conflicting valid oracle attestations | [NUT-CTF][CTF], [NUT-CTF-numeric][CTF-numeric] |
+| 13049 | Conflicting valid oracle attestations              | [NUT-CTF][CTF], [NUT-CTF-numeric][CTF-numeric]         |
+
+Note for 11003 and 11004: a [NUT-CTF-settle][CTF-settle] mint that advertises `output_conflict_detail` adds the field `outputs` to the error response. The field lists each conflicting output and its state. See [Output conflict detail](CTF-settle.md#output-conflict-detail-optional).
 
 [00]: 00.md
 [01]: 01.md
@@ -72,6 +74,6 @@
 [29]: 29.md
 [exchange]: https://github.com/cashubtc/nuts/pull/410
 [partial-fill]: https://github.com/cashubtc/nuts/pull/410
-
 [CTF]: CTF.md
 [CTF-numeric]: CTF-numeric.md
+[CTF-settle]: CTF-settle.md
