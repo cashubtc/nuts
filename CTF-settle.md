@@ -122,6 +122,8 @@ When the mint refuses a request with error 11003 (outputs already signed) or 110
 - An output that is pending only because of this same request (an identical retry) is not a conflict. It MUST NOT be in the list.
 - The list gives the submitter no new data: the submitter sent every `B_`. The mint MUST NOT add data about the other operation (its type, quote, amount or time).
 
+A mint includes `outputs`, and writes the no-commit record, only for a request that has at least one `PAY_TO_UNLOCK` input. For any other request it answers without `outputs`.
+
 **No-commit guarantee.** When the mint returns `outputs`, it MUST record, in the same database transaction as the refusal, that a request with this `request_digest` can never commit. A later identical request gets the same refusal, also after the other operation ends or is removed. The mint MUST write this record only after the inputs and their spending conditions pass verification, so that a request without valid inputs cannot add records. The mint MAY delete the record after the earliest `PAY_TO_UNLOCK` `expiry` of the request, because the request cannot commit after that time.
 
 A client MUST NOT expect `outputs` from a mint that does not advertise the feature. A client MUST ignore an unknown field in an error response ([NUT-00][00]).
