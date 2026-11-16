@@ -4,7 +4,7 @@ These documents each specify parts of the Cashu protocol. Read the specification
 
 ## Specifications
 
-Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optional specs.
+Wallets and mints that support [v3 keysets](02.md#keyset-id-v3) `MUST` implement all mandatory specs and `CAN` implement optional specs.
 
 ### Mandatory
 
@@ -62,7 +62,13 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 
 ### Legacy
 
-[Pre-v3 keysets](02.md#keyset-id-v3) are specified in [`legacy/`](legacy/README.md).
+[Pre-v3 keysets](02.md#keyset-id-v3) are specified in [`legacy/`](legacy/README.md), and an implementation that serves only those follows the specifications there.
+
+| #                  | Description                       | Wallets                                                                                  | Mints                                 |
+| ------------------ | --------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------- |
+| [11](legacy/11.md) | Pay-To-Pubkey (P2PK)              | [Nutshell][py], [cashu-ts][ts], [cdk], [Cashu.me][cashume], [Minibits], [Sovran][sovran] | [Nutshell][py], [cdk-mintd], [nutmix] |
+| [12](legacy/12.md) | DLEQ proofs                       | [Nutshell][py], [cashu-ts][ts], [cdk], [Minibits]                                        | [Nutshell][py], [cdk-mintd], [nutmix] |
+| [14](legacy/14.md) | Hashed Timelock Contracts (HTLCs) | [Nutshell][py], [cashu-ts][ts], [cdk]                                                    | [Nutshell][py], [cdk-mintd], [nutmix] |
 
 [py]: https://github.com/cashubtc/nutshell
 [cashume]: https://cashu.me
