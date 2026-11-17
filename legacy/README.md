@@ -34,4 +34,4 @@ These documents specify the parts of the Cashu protocol that [pre-v3 keysets](..
 
 Test vectors are in [`tests/`](tests).
 
-Maintainers: this folder is a snapshot of `1363de4`, regenerated rather than edited.
+Maintainers: this folder is a snapshot of `a5559d9`, regenerated rather than edited.
