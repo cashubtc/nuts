@@ -1514,7 +1514,7 @@
 <p>Caution: if the mint does not support this type of spending condition, proofs may be treated as regular anyone-can-spend proofs. Applications must ensure that the mint supports a specific kind of spending condition by checking the mint’s <a href="../06/">info</a> endpoint.</p>
 <h2 id="htlc-locked-proof">HTLC Locked Proof<a class="headerlink" href="#htlc-locked-proof" title="Permanent link">&para;</a></h2>
 <p><a href="../10/">NUT-10</a> Secret <code>kind: HTLC</code></p>
-<p>If for a <code>Proof</code>, <code>Proof.secret</code> is a <code>Secret</code> of kind <code>HTLC</code>, the hash of the lock is in <code>Proof.secret.data</code>. The preimage for unlocking the HTLC is in the witness <code>Proof.witness.preimage</code>. All additional tags from P2PK locks can also be used here, allowing a locktime, signature flag, and multisig (see <a href="../11/">NUT-11</a>).</p>
+<p>If for a <code>Proof</code>, <code>Proof.secret</code> is a <code>Secret</code> of kind <code>HTLC</code>, the hash of the lock is in <code>Proof.secret.data</code>. The preimage for unlocking the HTLC is in the witness <code>Proof.witness.preimage</code>. All additional tags from P2PK locks can also be used here, allowing a locktime, signature flag, and multisig (see <a href="../11/">NUT-11</a>). The <a href="../11/">NUT-11</a> rules for malformed tags apply to <code>HTLC</code> secrets too.</p>
 <p>Here is a concrete example of a <code>Secret</code> of kind <code>HTLC</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">[</span>
 <span class="w">  </span><span class="s2">"HTLC"</span><span class="p">,</span>

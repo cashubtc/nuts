@@ -1742,8 +1742,8 @@
 
 <p>The <code>signatures</code> are an array of signatures in hex and correspond to the signatures by one or more signing public keys.</p>
 <h2 id="tags">Tags<a class="headerlink" href="#tags" title="Permanent link">&para;</a></h2>
-<p>More complex spending conditions can be defined in the tags in <code>Secret.tags</code>. All tags are optional. Tags are arrays with two or more strings being <code>["key", "value1", "value2", ...]</code>. We denote a specific tag in a proof by its <code>key</code>.</p>
-<p>Supported tags are:</p>
+<p>More complex spending conditions can be defined using tags (<a href="../10/">NUT-10</a>) in <code>Secret.tags</code>. All tags are optional. We denote a specific tag in a proof by its <code>key</code>.</p>
+<p>Spending condition tags are:</p>
 <ul>
 <li><code>sigflag: &lt;str_enum[SIG_FLAG]&gt;</code> sets the <a href="#signature-flag">signature flag</a></li>
 <li><code>pubkeys: &lt;hex_str&gt;</code> are additional public keys (together with the one in the <code>data</code> field of the secret) that can provide signatures (<em>allows multiple entries</em>)</li>
@@ -1752,7 +1752,8 @@
 <li><code>refund: &lt;hex_str&gt;</code> are additional public keys that can provide signatures after <code>locktime</code> (<em>allows multiple entries</em>)</li>
 <li><code>n_sigs_refund: &lt;int&gt;</code> specifies the minimum number of <a href="#refund-multisig">Refund Multisig</a> public keys providing valid signatures after <code>locktime</code> expires</li>
 </ul>
-<p>Each of the above tags may appear exactly <strong>ONCE</strong> in a P2PK secret. If a tag appears more than once, the P2PK secret is malformed and the Proof <strong>MUST</strong> be rejected as unspendable.</p>
+<p>If a spending condition tag appears more than once, or has no value ("key only"), the P2PK secret is malformed and the Proof <strong>MUST</strong> be rejected as unspendable.</p>
+<p>A secret <strong>MAY</strong> contain other <a href="../10/">NUT-10</a> tags. A mint <strong>MUST</strong> ignore them when evaluating the P2PK lock.</p>
 <p>If <code>n_sigs</code> or <code>n_sigs_refund</code> is not a positive integer, or exceeds the total number of keys in its pathway, the P2PK secret is malformed and the Proof <strong>MUST</strong> be rejected as unspendable.</p>
 <blockquote>
 <p>[!NOTE]</p>
