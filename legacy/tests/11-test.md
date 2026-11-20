@@ -1,5 +1,7 @@
 # NUT-11 Test Vectors
 
+> Vectors for pre-v3 keysets. The current vectors are in [`tests/`](../../tests).
+
 ### Multisig Test Vectors
 
 The following `Proof`, with locktime in the past, is spendable via either **Locktime Multisig** or **Refund Multisig**.
