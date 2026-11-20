@@ -79,6 +79,51 @@ Two copies of `threshold_1of1_key3` under internal key `6`: the root is `tagged_
 }
 ```
 
+Five `commit` leaves whose `hash` is `uint256_be(i)` for `i` in `0..4`. Sorted by leaf hash the order is `h0, h1, h4, h3, h2`; the levels above keep that order, so `h2` is promoted twice and its path is one sibling.
+
+```json
+{
+  "leaves": [
+    "00040800200000000000000000000000000000000000000000000000000000000000000000",
+    "00040800200000000000000000000000000000000000000000000000000000000000000001",
+    "00040800200000000000000000000000000000000000000000000000000000000000000002",
+    "00040800200000000000000000000000000000000000000000000000000000000000000003",
+    "00040800200000000000000000000000000000000000000000000000000000000000000004"
+  ],
+  "leaf_hashes": [
+    "05b902a6c6e5377ac3a3b93e3462fce75f814c3e408f89145f3cf322a003eb0f",
+    "286e16e868323f95501543ee9aae0da89e34c1dfa167ebcb8e746e9babcaf886",
+    "562fc5b49cf68d9f3d8d9d7ddc3e1f52b4df5cae5258def2bdecc1155b01b4b8",
+    "4c780cd9c644de1942c0704a1b5cff776243a6f088c6f688511e2d94004e86ce",
+    "4a1354e62955e17a4b4bda00ee145acb2088b81f4253acf4d8d274b2282cfa86"
+  ],
+  "merkle_root": "08ded689dfa100f1ef1ad68c4e5696e99670bb5a7d0225f34f2f85f3053cde53",
+  "paths": [
+    [
+      "286e16e868323f95501543ee9aae0da89e34c1dfa167ebcb8e746e9babcaf886",
+      "3b9477ce1bb3e0588966ad6d26ac290bf9838abb32915928f9b1d7317fa7d59a",
+      "562fc5b49cf68d9f3d8d9d7ddc3e1f52b4df5cae5258def2bdecc1155b01b4b8"
+    ],
+    [
+      "05b902a6c6e5377ac3a3b93e3462fce75f814c3e408f89145f3cf322a003eb0f",
+      "3b9477ce1bb3e0588966ad6d26ac290bf9838abb32915928f9b1d7317fa7d59a",
+      "562fc5b49cf68d9f3d8d9d7ddc3e1f52b4df5cae5258def2bdecc1155b01b4b8"
+    ],
+    ["9226021183059036a870b19486aa04579b406f4eddf11f8ba432cf92b7d13aa8"],
+    [
+      "4a1354e62955e17a4b4bda00ee145acb2088b81f4253acf4d8d274b2282cfa86",
+      "99cac68e791a8c74dcd723f39db7cda19170be30ecfa065d803436c1426349f0",
+      "562fc5b49cf68d9f3d8d9d7ddc3e1f52b4df5cae5258def2bdecc1155b01b4b8"
+    ],
+    [
+      "4c780cd9c644de1942c0704a1b5cff776243a6f088c6f688511e2d94004e86ce",
+      "99cac68e791a8c74dcd723f39db7cda19170be30ecfa065d803436c1426349f0",
+      "562fc5b49cf68d9f3d8d9d7ddc3e1f52b4df5cae5258def2bdecc1155b01b4b8"
+    ]
+  ]
+}
+```
+
 ## Worked example: receiver-keyed proof with a refund leaf
 
 Alice pays Carol, refundable to Alice after `time`. Carol's static key is key `3`, Alice's refund key is key `4`, Alice's ephemeral is key `5`. The internal key is Carol's static key blinded at slot 0 ([NUT-28](../28.md#nutroot-secrets-v3-keysets)); the tree is the single `after` leaf.
