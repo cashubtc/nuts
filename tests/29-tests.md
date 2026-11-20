@@ -52,12 +52,23 @@ Expected behavior:
 
 ## Batch mint rejects duplicate quote IDs
 
-The following is an invalid batch mint request with duplicate quote IDs.
+The [nutroot batch vector](#nutroot-batch-mint-v3-keysets)'s request with its first quote listed twice. Every field decodes and each signature is a real signature over its input's digest, so the duplicate id is the only defect.
 
 ```json
 {
-  "quotes": ["quote_id_dup", "quote_id_dup"],
-  "outputs": [{ "amount": 2, "id": "keyset_1", "B_": "<blinded_message>" }]
+  "quotes": ["quote-mint-0002", "quote-mint-0002"],
+  "quote_amounts": [5, 3],
+  "outputs": [
+    {
+      "amount": 8,
+      "id": "022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701",
+      "B_": "b42a0bcc39598db1dca617aeea6bc367f2566636826dc961a54faae15b3b8d10afc1cb0206e70ab3b0e12c2b9478cd55"
+    }
+  ],
+  "signatures": [
+    "6313ffe3264db058cb7c16046a71c6ee8b7bcaee5bbf86085b432eb6e6450e3f8fd055d8a5926cd268230eb258773e709d2ea3606d075ac3ea2f49886909502a",
+    "406b11f00bd0b82b8967b76220a631f42d1a4869f6f4f5e77c5b106a598a3f0a4b3b4ccd3f45fa6bb9724cff8833d215f328327be247cd6401fd6e5cb6813591"
+  ]
 }
 ```
 
