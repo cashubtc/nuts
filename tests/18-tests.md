@@ -197,3 +197,18 @@ The same request without its `b` entry blinds nothing, so no ephemeral is picked
 ```
 
 A second payment picks a fresh `u` (and, where the request blinds, a fresh ephemeral) and lands on a different secret.
+
+A NUMS request whose leaves are all `commit` (here the [NUT-10 commit leaf](10-tests.md#worked-example-a-commit-leaf)) has no spend path, and a payer **MUST** refuse it:
+
+```json
+{
+  "a": 8,
+  "u": "sat",
+  "nutroot": {
+    "k": "0250929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0",
+    "l": [
+      "000408002064451ff981aa92887b070762e97302df00a0ab97a853c323394b0a9cfaf46fae"
+    ]
+  }
+}
+```
