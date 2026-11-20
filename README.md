@@ -46,6 +46,7 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [28][28] | Pay to Blinded Key (P2BK)         | [Nutshell][py], [cdk], [cashu-ts][ts]                                                                 | -                                     |
 | [29][29] | Batched Mint                      | [cdk], [cashu-ts][ts]                                                                                 | [Nutshell][py], [cdk-mintd]           |
 | [30][30] | Payment Method: Onchain           | [cdk], [cashu-ts][ts], [Cashu.me][cashume]                                                            | [cdk-mintd]                           |
+| [XX][XX] | Compact state filters             | -                                                                                                     | -                                     |
 
 #### Wallets
 
@@ -103,3 +104,4 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [28]: 28.md
 [29]: 29.md
 [30]: 30.md
+[XX]: XX.md
