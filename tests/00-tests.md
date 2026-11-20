@@ -45,6 +45,27 @@ verify: true
 
 This vector intentionally exercises both code paths. `weight_1` accepts at `ctr = 4` and `weight_2` accepts at `ctr = 0`.
 
+The same check over two v3 secrets, the [token vectors](#v4-tokens-with-spend-info)' bearer and receiver-keyed secrets, blinded with `r = 5` and `r = 7` under the same `K`. Each `secret_i` in the transcript is the [decoded 33 bytes](../00.md#secret-bytes), not the hex string.
+
+```shell
+# Proof 1
+secret_1: 0240c186f3e19f6f8cd00db81c5266d5c74ddca48ff848efd0e3e125b2846f30d9 # 33 bytes
+C_1: a34dbfad742c0f97cd4b6ca0249b3353a8a0eb4cbdb4d8cf83fe8b22d39b1a6205623ca819b4985238968ad0328caeba # unblinded signature, G1 compressed
+
+# Proof 2
+secret_2: 03a3e12cc077e5605f36441046f50c114fcc883b079a34028bed66732e3a419e51 # 33 bytes
+C_2: a2bf34cf329d2cffca9442224279c261c6d47f1236d4b6aafd4ddcade73c25f719a55d747b0935c9fc182343067514b7 # unblinded signature, G1 compressed
+
+# Derived
+challenge: c8eac68470172516ac2290ccf3b345fca136e2e5d74adaf16b05d6389e3867c9
+weight_1:  5b3c830c6690f9494e1b8a3b9e4a75aa21af4d55eb158444aa5e0a4118187851
+weight_2:  26cf70a127f195374a3d0b0086e809592c2624cee02312bdf095a2fed775fa13
+
+verify: true
+```
+
+`weight_1` accepts at `ctr = 0` and `weight_2` at `ctr = 2`.
+
 ## V4 tokens with spend info
 
 One 8-sat proof per token, mint `https://mint.test`, unit `sat`, keyset id `022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d701`. Each shape's `C` is its own proof's signature.
