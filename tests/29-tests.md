@@ -28,14 +28,7 @@ The following is an invalid check request containing an unknown quote ID.
 { "quotes": ["known-1", "bogus", "unknown-2"] }
 ```
 
-Per NUT-29, quote check uses all-or-nothing error handling. If any quote is unknown, the entire request must be rejected.
-
-```json
-{
-  "code": "UNKNOWN_QUOTE",
-  "error": "one or more quote IDs are unknown"
-}
-```
+Per NUT-29, quote check uses all-or-nothing error handling. If any quote is unknown, the mint rejects the entire request with a [NUT-00 error](../00.md#errors) and returns no quote states.
 
 ## Batch mint atomic failure
 
