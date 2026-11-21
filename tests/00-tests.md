@@ -447,3 +447,50 @@ The payment costs no fee, so the mint returns the 3-sat reserve as change on the
   ]
 }
 ```
+
+**Melt with fee options.** Paying melt quote `quote-melt-0003` (amount 5) with the swap's 8-sat proof and no change outputs. The quote offers two [NUT-30](../30.md) fee options with the same reserve:
+
+```json
+[
+  {
+    "fee_index": 0,
+    "fee_reserve": 3,
+    "estimated_blocks": 1
+  },
+  {
+    "fee_index": 1,
+    "fee_reserve": 3,
+    "estimated_blocks": 6
+  }
+]
+```
+
+Both selections commit amount `8`, so only the fee index field tells them apart. Selecting `fee_index` `0`, which encodes as `030000`:
+
+```
+22 0019 | 01 0001 08 | 02 000f 71756f...303033 | 03 0000
+```
+
+```json
+{
+  "transcript": "11008e01000108020021022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d70103003090f53b3088936b80ecfcc065a0746c5c1843ffd4527dbe3b9aba5a6109aed338ddc0f109511e9dfd37342aa99dd816d8040030a33dd4de26ea950060ae5c45bdc408d72aaf51ba9f4ccdeee4a040df067ca87c799a406fec88c2a328b75b290e27f7b62200190100010802000f71756f74652d6d656c742d30303033030000",
+  "digest": "ce3fff2131053b7a062c0edd1c3f8b0f63d32b272802b4926e148aa1c811c938",
+  "input_id": "194bd20817e5806bbe198206e63938c8f0ad38a0d89af2179bb517e24caf1db2",
+  "input_digest": "ff335ab70d725a2c0120bcb5ac0cf123bae1782d33945c4e9f2740fc9f1caa98"
+}
+```
+
+Selecting `fee_index` `1`:
+
+```
+22 001a | 01 0001 08 | 02 000f 71756f...303033 | 03 0001 01
+```
+
+```json
+{
+  "transcript": "11008e01000108020021022546ab0a2dee9f79510f4e20a4e3d9e894a97361047c594902573a7e64f9d70103003090f53b3088936b80ecfcc065a0746c5c1843ffd4527dbe3b9aba5a6109aed338ddc0f109511e9dfd37342aa99dd816d8040030a33dd4de26ea950060ae5c45bdc408d72aaf51ba9f4ccdeee4a040df067ca87c799a406fec88c2a328b75b290e27f7b622001a0100010802000f71756f74652d6d656c742d3030303303000101",
+  "digest": "333e212a256868bca7624df989a90a55e812b173269dd5e42ab9845b11179f9f",
+  "input_id": "194bd20817e5806bbe198206e63938c8f0ad38a0d89af2179bb517e24caf1db2",
+  "input_digest": "645620b705612d2164dec1a1f4d36777acd247288f63e19dc07de30846855575"
+}
+```
