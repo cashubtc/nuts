@@ -78,6 +78,8 @@ The **leaf keys** (type `0x03`) at counter `0`, with the index suffix `u32_BE(i)
 
 **NOTE**:`i` is not a leaf's position: recover by deriving candidates and matching the tree's keys by value.
 
+The keyset's short ID `022546ab0a2dee9f` is not a 33-byte scope, so derivation of any type **MUST** be refused for it.
+
 Type `0x04` (quote lock key) frames the mint's [NUT-06](../06.md) identity `pubkey` as `scope_bytes` instead of a keyset id, and has a quote counter of its own. With the same seed and the NUT-06 example identity:
 
 ```json
