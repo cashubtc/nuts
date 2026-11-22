@@ -45,10 +45,10 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 | [27][27]                           | Nostr Mint Backup                                   | [Cashu.me][cashume], [cdk]                                                     | -                                                |
 | [28][28]                           | Pay to Blinded Key (P2BK)                           | [cdk], [cashu-ts][ts]                                                          | -                                                |
 | [29][29]                           | Batched Mint                                        | -                                                                              | -                                                |
-| [CTF][CTF]                         | Conditional Token Framework                         | -                                                                              | -                                                |
-| [CTF-split-merge][CTF-split-merge] | Conditional Token Convert (Split, Merge, Recombine) | -                                                                              | -                                                |
-| [CTF-settle][CTF-settle]           | Multi-Party Atomic Settlement                       | -                                                                              | -                                                |
-| [CTF-numeric][CTF-numeric]         | Numeric Outcome Conditions                          | -                                                                              | -                                                |
+| [CTF][CTF]                         | Conditional Token Framework                         | [cdk (fork)][cdk-ctf-exchange]                                                 | [cdk-mintd (fork)][cdk-ctf-exchange]             |
+| [CTF-split-merge][CTF-split-merge] | Conditional Token Convert (Split, Merge, Recombine) | [cdk (fork)][cdk-ctf-exchange]                                                 | [cdk-mintd (fork)][cdk-ctf-exchange]             |
+| [CTF-settle][CTF-settle]           | Multi-Party Atomic Settlement                       | [cdk (fork)][cdk-ctf-exchange]                                                 | [cdk-mintd (fork)][cdk-ctf-exchange]             |
+| [CTF-numeric][CTF-numeric]         | Numeric Outcome Conditions                          | [cdk (fork)][cdk-ctf-exchange]                                                 | [cdk-mintd (fork)][cdk-ctf-exchange]             |
 
 #### Wallets
 
@@ -111,3 +111,4 @@ Wallets and mints `MUST` implement all mandatory specs and `CAN` implement optio
 [CTF-split-merge]: CTF-split-merge.md
 [CTF-settle]: CTF-settle.md
 [CTF-numeric]: CTF-numeric.md
+[cdk-ctf-exchange]: https://github.com/joemphilips/cdk/tree/ctf-and-atomic-exchange

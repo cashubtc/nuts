@@ -6,6 +6,8 @@
 
 depends on: NUT-CTF, NUT-CTF-split-merge, NUT-Exchange, NUT-Exchange-partial-fill, NUT-02, NUT-03, NUT-06, NUT-07, NUT-09, NUT-10, NUT-11, NUT-12
 
+Reference implementation: the `ctf-and-atomic-exchange` branch of a [cdk fork](https://github.com/joemphilips/cdk/tree/ctf-and-atomic-exchange). That branch implements several proposals together: NUT-CTF, NUT-CTF-split-merge, NUT-CTF-numeric, NUT-Exchange, NUT-Exchange-partial-fill, and NUT-CTF-settle. Read only the parts that this NUT names.
+
 ---
 
 This NUT is an extension of both [NUT-Exchange][exchange] and [NUT-CTF-split-merge][CTF-split-merge]. The key observation: [NUT-Exchange][exchange] becomes more efficient when the mint is aware of CTF-specific characteristics (per-outcome conservation, conditional keysets, attestation cutoff), and [NUT-CTF-split-merge][CTF-split-merge] gains multi-party support by reusing [NUT-Exchange][exchange]'s `PAY_TO_UNLOCK` authorisation model. This NUT combines the two on a single endpoint. It also inherits [NUT-Exchange-partial-fill][partial-fill]'s pool-based **range orders**, so a participant may lock a fixed input and authorise a range of output bundles at a limit rate (see [Range orders](#range-orders-partial-fill)).

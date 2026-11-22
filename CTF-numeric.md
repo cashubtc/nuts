@@ -4,6 +4,8 @@
 
 `depends on: NUT-CTF, NUT-CTF-split-merge`
 
+Reference implementation: the `ctf-and-atomic-exchange` branch of a [cdk fork](https://github.com/joemphilips/cdk/tree/ctf-and-atomic-exchange). That branch implements several proposals together: NUT-CTF, NUT-CTF-split-merge, NUT-CTF-numeric, NUT-Exchange, NUT-Exchange-partial-fill, and NUT-CTF-settle. Read only the parts that this NUT names.
+
 ---
 
 This NUT defines numeric outcome conditions where the oracle attests to a numeric value (e.g., BTC/USD price) rather than an enumerated outcome. The condition has two outcome collections — **HI** and **LO** — representing the high and low ends of a range. Both HI and LO token holders receive **proportional** redemption based on the attested value's position within the range.
