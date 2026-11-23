@@ -91,19 +91,19 @@ curl -X POST https://mint.host:3338/v1/ctf/convert \
 
 ### Special Cases
 
-| Operation | `inputs` | `outputs` |
-| --------- | -------- | --------- |
-| Split | `{"*": [...]}` | per-outcome-collection map covering every outcome |
-| Merge | per-outcome-collection map covering every outcome | `{"*": [...]}` |
-| Recombine | conditional collections only (no `"*"`) | conditional collections only (no `"*"`) |
-| Conversion | conditional ± `"*"` | conditional ± `"*"` |
+| Operation  | `inputs`                                          | `outputs`                                         |
+| ---------- | ------------------------------------------------- | ------------------------------------------------- |
+| Split      | `{"*": [...]}`                                    | per-outcome-collection map covering every outcome |
+| Merge      | per-outcome-collection map covering every outcome | `{"*": [...]}`                                    |
+| Recombine  | conditional collections only (no `"*"`)           | conditional collections only (no `"*"`)           |
+| Conversion | conditional ± `"*"`                               | conditional ± `"*"`                               |
 
 ## Conservation Rule
 
 Let:
 
 - For each entry, let its **cover** be `Ω` if its keyset is the collateral keyset (the `"*"` entry), otherwise the outcome set of the canonical collection recorded in that keyset's **metadata** (see [Coverage From Keyset Metadata](#coverage-from-keyset-metadata)). The map key is validated to equal that canonical collection but is never itself used to compute coverage.
-- `in(o)`  = the sum of input amounts whose entry covers `o`, for each `o ∈ Ω`.
+- `in(o)` = the sum of input amounts whose entry covers `o`, for each `o ∈ Ω`.
 - `out(o)` = the sum of output amounts whose entry covers `o`, for each `o ∈ Ω`.
 - `F` = `ceil( Σ input_fee_ppk / 1000 )` over **all** input proofs (both `"*"` and conditional), per [NUT-02][02]. This flat fee is denominated in the collateral unit.
 
@@ -192,15 +192,15 @@ To keep `"*"` unambiguous, the following [NUT-CTF][CTF] outcome collection rules
 
 ## Error Codes
 
-| Code  | Description                                  |
-| ----- | -------------------------------------------- |
-| 11007 | Duplicate inputs provided                    |
-| 12001 | Keyset is not known                          |
-| 12002 | Keyset is inactive                           |
-| 13021 | Condition not found                          |
-| 13041 | Convert payoff/fee violation                 |
-| 13042 | Convert not permitted for this condition     |
-| 13043 | Full-set outcome collection                  |
+| Code  | Description                              |
+| ----- | ---------------------------------------- |
+| 11007 | Duplicate inputs provided                |
+| 12001 | Keyset is not known                      |
+| 12002 | Keyset is inactive                       |
+| 13021 | Condition not found                      |
+| 13041 | Convert payoff/fee violation             |
+| 13042 | Convert not permitted for this condition |
+| 13043 | Full-set outcome collection              |
 
 ## Mint Info Setting
 
