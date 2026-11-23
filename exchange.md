@@ -351,16 +351,16 @@ Before any mutation, the mint MUST verify:
    Conditions that require a transaction preimage over this endpoint's
    request (for example [NUT-11][11] `SIG_ALL`) MUST be rejected: this NUT
    defines no such preimage. Within one record, let `L` be its
-   `PAY_TO_UNLOCK` inputs. If `L` is non-empty the record is a *locked
-   record*: every input in `L` MUST share the same `data` and tags per the
+   `PAY_TO_UNLOCK` inputs. If `L` is non-empty the record is a _locked
+   record_: every input in `L` MUST share the same `data` and tags per the
    participant rule. A locked record whose inputs in `L` carry the pool
-   tags is a *pool record*: all of its inputs MUST be pool-authorized
+   tags is a _pool record_: all of its inputs MUST be pool-authorized
    `PAY_TO_UNLOCK` inputs, `pool_manifest` and `pool_selection` are
    accepted only on it, and it is validated by the pool rule set
    ([NUT-Exchange-partial-fill][partial-fill] 6p-9p) — base rules 6, 7,
-   and 12 do NOT apply to it. Any other locked record is a *standard
-   locked record*: rules 6, 7, and 12 apply to its complete `outputs`
-   list. If `L` is empty the record is a *bare record*: every
+   and 12 do NOT apply to it. Any other locked record is a _standard
+   locked record_: rules 6, 7, and 12 apply to its complete `outputs`
+   list. If `L` is empty the record is a _bare record_: every
    `PAY_TO_UNLOCK`-derived rule is skipped for it, and its outputs remain
    subject to rules 8, 9, and 10.
 4. No input proof is reused across records; every input is unique.
