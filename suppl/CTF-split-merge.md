@@ -131,12 +131,14 @@ POST https://mint.host:3338/v1/ctf/convert
 {
   "condition_id": "a1b2c3d4e5f67890...",
   "inputs": {
-    "A|B|C": [ { "amount": 100, "id": "00abc...", "secret": "s1", "C": "02..." } ],
-    "B|C|D": [ { "amount": 100, "id": "00bcd...", "secret": "s2", "C": "02..." } ]
+    "A|B|C": [
+      { "amount": 100, "id": "00abc...", "secret": "s1", "C": "02..." }
+    ],
+    "B|C|D": [{ "amount": 100, "id": "00bcd...", "secret": "s2", "C": "02..." }]
   },
   "outputs": {
-    "*":   [ { "amount": 99,  "id": "009a1f293253e41e", "B_": "03..." } ],
-    "B|C": [ { "amount": 100, "id": "00bc0...",          "B_": "03..." } ]
+    "*": [{ "amount": 99, "id": "009a1f293253e41e", "B_": "03..." }],
+    "B|C": [{ "amount": 100, "id": "00bc0...", "B_": "03..." }]
   }
 }
 ```
