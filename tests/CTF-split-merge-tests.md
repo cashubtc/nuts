@@ -189,7 +189,7 @@ swap_json:          {
 }
 
 # Standard NUT-03 swap within same keyset
-# No oracle witness required
+# No oracle attestation required
 # Mint verifies proofs and signs outputs with YES conditional keyset keys
 result:             PASS
 ```
@@ -230,7 +230,7 @@ request_json:       {
 }
 
 # Input proofs use conditional keysets, output BlindedMessages are collateral ("*")
-# No oracle witness required (complete set cancels out)
+# No oracle attestation required (complete set cancels out)
 output_total:       100
 ```
 
@@ -267,8 +267,7 @@ redeem_json:        {
       "amount": 64,
       "id": "00abc123def456",
       "secret": "random_secret_yes_1",
-      "C": "02...",
-      "witness": "{\"oracle_sigs\":[{\"oracle_pubkey\":\"9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0\",\"oracle_sig\":\"a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890\"}]}"
+      "C": "02..."
     }
   ],
   "outputs": [
@@ -276,9 +275,9 @@ redeem_json:        {
   ]
 }
 
-# Input: YES conditional keyset (00abc123def456) with oracle witness
+# Input: YES conditional keyset (00abc123def456); the mint has recorded YES
 # Output: regular keyset (009a1f293253e41e)
-# Mint verifies oracle signature per NUT-CTF
+# Mint pays from its recorded result per NUT-CTF
 result:             PASS
 ```
 
@@ -296,8 +295,7 @@ redeem_json:        {
       "amount": 64,
       "id": "00def789abc012",
       "secret": "random_secret_no_1",
-      "C": "02...",
-      "witness": "{\"oracle_sigs\":[{\"oracle_pubkey\":\"9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0\",\"oracle_sig\":\"a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890\"}]}"
+      "C": "02..."
     }
   ],
   "outputs": [
@@ -305,7 +303,7 @@ redeem_json:        {
   ]
 }
 
-# Verification fails: oracle signed "YES" but input keyset is for "NO"
+# Verification fails: the recorded outcome is "YES" but the input keyset is for "NO"
 error_code:         13015
 error_message:      "Oracle has not attested to this outcome collection"
 ```
@@ -476,7 +474,7 @@ outcome_collection_outcomes: ["ALICE", "BOB"]
 oracle_attested:    "ALICE"
 attested_in_set:    true
 
-# Redemption succeeds (swap to regular keyset with witness)
+# Redemption succeeds after the mint records the result
 can_redeem:         true
 ```
 
@@ -690,16 +688,17 @@ alice_receives:     100 sats YES tokens (keyset 00abc123def456) + 100 sats NO to
 oracle_pubkey:      9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0
 attested_outcome:   "YES"
 oracle_sig:         <valid_signature_on_YES>
+# Any party submits the oracle signature to POST /v1/conditions/{condition_id}/attestation; the mint records YES
 
 # Step 5: Alice redeems YES tokens
-# Redeem via POST /v1/redeem_outcome: input YES keyset (00abc123def456) + witness -> output regular keyset (009a1f293253e41e)
+# Redeem via POST /v1/redeem_outcome: input YES keyset (00abc123def456) -> output regular keyset (009a1f293253e41e)
 alice_redeems:      100 sats YES tokens
 alice_receives:     100 sats regular ecash
 
 # Step 6: Bob cannot redeem NO tokens
-# Redeem via POST /v1/redeem_outcome: input NO keyset (00def789abc012) + witness -> FAILS
+# Redeem via POST /v1/redeem_outcome: input NO keyset (00def789abc012) -> FAILS (13015)
 bob_attempts:       100 sats NO tokens
-bob_result:         FAIL (oracle signed YES, not NO)
+bob_result:         FAIL (the recorded outcome is YES, not NO)
 
 # Net result:
 # - Alice: started with 100 sats, now has 100 sats + 40 sats from sale = 140 sats
@@ -749,7 +748,7 @@ request_json:       {
 }
 
 # Per-outcome: in = (A:100, B:200, C:200, D:100), out = (A:99, B:199, C:199, D:99)
-# out(o) == in(o) - 1 for every o. 99 sats withdrawn as spendable collateral, no witness.
+# out(o) == in(o) - 1 for every o. 99 sats withdrawn as spendable collateral, no oracle attestation.
 result:             PASS
 ```
 

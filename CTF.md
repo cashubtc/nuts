@@ -10,7 +10,7 @@ Reference implementation: the `ctf-and-atomic-exchange` branch of a [cdk fork](h
 
 This NUT defines conditional tokens and conditional keysets for oracle-attested events.
 
-A **conditional token** is a regular Cashu token ([NUT-00][00]) signed under a conditional keyset. It can be transferred and swapped like any other Cashu token, with one additional ability: it can be redeemed for regular ecash via `POST /v1/redeem_outcome` by providing a DLC oracle's attestation signature as a witness.
+A **conditional token** is a regular Cashu token ([NUT-00][00]) signed under a conditional keyset. It can be transferred and swapped like any other Cashu token, with one additional ability: after the mint records a DLC oracle's attestation for its condition, it can be redeemed for regular ecash via `POST /v1/redeem_outcome`.
 
 A **conditional keyset** is a per-outcome-collection signing keyset ([NUT-02][02]) that the mint creates during condition registration. Each outcome collection gets a unique keyset with different signing keys.
 
@@ -83,13 +83,15 @@ Where `condition_id` and `outcome_collection_id` are 64-character hex strings. T
 
 ```
 Issuance:   Mint issues conditional tokens (via condition registration + keyset-specific minting)
-Trading:    Conditional keyset -> same/rotated conditional keyset (NUT-03 swap, same outcome_collection_id, no witness)
-Redemption: Conditional keyset -> regular keyset  (POST /v1/redeem_outcome + oracle witness)
+Trading:    Conditional keyset -> same/rotated conditional keyset (NUT-03 swap, same outcome_collection_id)
+Resolution: Oracle signatures -> recorded result  (POST /v1/conditions/{condition_id}/attestation)
+Redemption: Conditional keyset -> regular keyset  (POST /v1/redeem_outcome, after resolution)
 ```
 
 - **Issuance**: The mint creates conditional keysets during [condition registration](#register-condition). Users obtain conditional tokens through [NUT-CTF-split-merge][CTF-split-merge] convert (split) operations or other minting mechanisms. Every conditional token, by any issuance path, MUST be backed by locked collateral at least equal to its face amount; sub-face or market-priced issuance into a conditional keyset is forbidden (see [NUT-CTF-split-merge][CTF-split-merge] Issuance Invariant).
-- **Trading**: Standard [NUT-03][03] swap. All conditional keysets in a swap MUST share the same `outcome_collection_id`. No oracle witness required.
-- **Redemption**: After oracle attestation, winners submit tokens to `POST /v1/redeem_outcome` with oracle signatures in `Proof.witness`.
+- **Trading**: Standard [NUT-03][03] swap. All conditional keysets in a swap MUST share the same `outcome_collection_id`.
+- **Resolution**: Any party submits the oracle signatures to `POST /v1/conditions/{condition_id}/attestation`. The mint records the first valid result once. See [Attestation Submission](#attestation-submission).
+- **Redemption**: After the mint records the result, winners submit tokens to `POST /v1/redeem_outcome`. The mint pays from its recorded result.
 
 ## Condition ID
 
@@ -162,7 +164,7 @@ Conditions are registered via `POST /v1/conditions` before any operations on con
   - `status`: `"pending"` | `"attested"` | `"expired"` | `"violation"`
   - `winning_outcome`: Attested outcome string (`null` if pending)
   - `attested_at`: Unix timestamp (`null` if pending)
-  - `oracle_sigs` (optional): Accepted public evidence in the [redemption witness](#redemption-witness) format. Numeric conditions use the digit signatures defined in [NUT-CTF-numeric][CTF-numeric].
+  - `oracle_sigs` (optional): Accepted public evidence in the [attestation evidence](#attestation-evidence) format. Numeric conditions use the digit signatures defined in [NUT-CTF-numeric][CTF-numeric].
 
 For an oracle-attested result, the mint MUST make the accepted evidence
 available on request while it retains the condition record. It need not repeat
@@ -407,9 +409,9 @@ The client MUST check that each returned keyset belongs to the requested
 condition before deriving recovery candidates. Capability metadata does not
 replace keyset validation or cryptographic verification.
 
-## Redemption Witness
+## Attestation Evidence
 
-When redeeming via `POST /v1/redeem_outcome`, each input `Proof` MUST include a `witness` with oracle attestation:
+Oracle evidence for a condition uses this format:
 
 ```json
 {
@@ -424,13 +426,54 @@ When redeeming via `POST /v1/redeem_outcome`, each input `Proof` MUST include a 
 ```
 
 - `oracle_sigs`: Array with at least `threshold` entries from distinct oracles
-  - `oracle_pubkey`: 32-byte x-only key (64-char hex)
-  - `oracle_sig`: 64-byte Schnorr signature (128-char hex) on the winning outcome
+  - `oracle_pubkey`: 32-byte x-only key (64-char lowercase hex)
+  - `oracle_sig`: 64-byte Schnorr signature (128-char lowercase hex) on the winning outcome
   - `outcome`: The signed enum outcome, normalized to UTF-8 NFC. It MUST be a member of the registered outcome list.
 
 Always use the array format, even for single-oracle markets (threshold=1).
 
-See [supplementary material](suppl/CTF.md#redemption-witness-comparison) for comparison with existing Cashu witness types.
+## Attestation Submission
+
+```http
+POST https://mint.host:3338/v1/conditions/{condition_id}/attestation
+```
+
+Submits oracle evidence for a registered condition. The mint records the first valid result. Redemption uses that record.
+
+**Request** of `Alice`:
+
+```json
+{
+  "oracle_sigs": <Array[OracleSig]>
+}
+```
+
+- `oracle_sigs`: Evidence in the [attestation evidence](#attestation-evidence) format. Numeric conditions use the digit signatures defined in [NUT-CTF-numeric][CTF-numeric].
+
+**Response** of `Bob`:
+
+The response body is the `ConditionInfo` object of the condition, with `oracle_sigs`. It is the same body as `GET /v1/conditions/{condition_id}?include_oracle_sigs=true`.
+
+```bash
+curl -X POST https://mint.host:3338/v1/conditions/<condition_id>/attestation \
+  -H "Content-Type: application/json" \
+  -d '{"oracle_sigs":[{"oracle_pubkey":"9be6fa25...","oracle_sig":"a1b2c3...","outcome":"YES"}]}'
+```
+
+A valid oracle signature is the only authorization. Any party can submit published evidence. Event maturity is not a precondition. Mints MAY rate-limit this endpoint.
+
+### Submission Verification
+
+When `Bob` receives a `POST /v1/conditions/{condition_id}/attestation` request:
+
+1. Validate `condition_id` (error 13020) and look up the condition (error 13021).
+2. Before any signature check, reject a body above the mint's size limit. Reject more entries than registered oracles, a repeated oracle key, or a hex string that is not lowercase (error 13010).
+3. Verify each signature with the [DLC signing algorithm](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Oracle.md#signing-algorithm). Each signature MUST use the announced nonce of a registered oracle and the tagged hash `"DLC/oracle/attestation/v0"`. For an enum condition, the `outcome` MUST be a member of the registered outcome list. Reject an unregistered oracle key, an unregistered outcome, or a signature that does not verify (error 13010). A numeric condition verifies `digit_sigs` as [NUT-CTF-numeric][CTF-numeric] defines (error 13031).
+4. Reject valid signatures for more than one outcome, and a valid outcome that differs from the recorded outcome (error 13049).
+5. Require valid signatures from at least `threshold` distinct registered oracles (error 13027).
+6. Apply [Attestation Handling](#attestation-handling). Respond only after the record is durable.
+
+A submission of the recorded outcome changes nothing. `Bob` returns the condition info. A condition whose status is not `pending` and that has no recorded result does not accept a submission (error 13050).
 
 ## Redemption Endpoint
 
@@ -447,10 +490,10 @@ POST https://mint.host:3338/v1/redeem_outcome
 }
 ```
 
-- `inputs`: `Proof` objects from a **single conditional keyset**, each with `witness` containing oracle attestation
+- `inputs`: `Proof` objects from a **single conditional keyset**
 - `outputs`: `BlindedMessage` objects (same unit). Outputs use a **regular keyset**.
 
-`Alice` MAY omit `oracle_sigs` if `Bob` has already recorded a valid attestation for this outcome collection (check via `GET /v1/conditions/{condition_id}`).
+`Bob` redeems only after it records a result for the condition. `Alice` can check the record via `GET /v1/conditions/{condition_id}`. This endpoint defines no witness.
 
 **Response** of `Bob`:
 
@@ -500,25 +543,25 @@ When `Bob` receives a `POST /v1/redeem_outcome` request:
 
 1. All inputs MUST use the same conditional keyset
 2. All outputs MUST use a regular keyset with the same unit
-3. If a valid attestation is already recorded, omitted oracle evidence uses that record. Supplied evidence MUST still be validated.
-4. Without a recorded attestation, each input MUST include valid `witness` with `oracle_sigs`.
-5. Verify at least `threshold` signatures from distinct registered oracles for one outcome using the [DLC signing algorithm](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Oracle.md#signing-algorithm). Each signature MUST use its oracle's announced nonce and the tagged hash `"DLC/oracle/attestation/v0"`. Reject conflicting valid outcomes, including a conflict with the recorded result (error 13049).
-6. Verify this outcome collection contains the attested atomic outcome
+3. The condition MUST have a recorded result (error 13014)
+4. Verify this outcome collection contains the recorded atomic outcome (error 13015)
 
 ### Attestation Handling
 
-The mint MUST persist the first valid outcome, timestamp, and accepted
-`oracle_sigs` atomically for each condition. This record MUST survive restarts.
-A concurrent or repeated attestation for the same result MUST NOT replace the
-first record. A conflicting result MUST NOT change it. The mint MAY record
-valid public oracle evidence even when a later redemption step fails.
+The mint records a result only through
+[Attestation Submission](#attestation-submission). It MUST persist the first
+valid outcome, timestamp, and accepted `oracle_sigs` atomically for each
+condition. This record MUST survive restarts. The mint records a result only
+while the condition status is `pending`. A concurrent or repeated attestation
+for the same result MUST NOT replace the first record. A conflicting result
+MUST NOT change it.
 
 For ordinary oracle-based redemption, the mint MUST NOT process redemptions
-for non-winning keysets. If a valid
-signature for a different outcome is received, the mint MUST reject it with
-13049 and log the conflict. Mints SHOULD expose violations via condition info
-without replacing the accepted result or its evidence. Error 13015 is not
-evidence that a holding has lost.
+for non-winning keysets. If a submission holds a valid signature for a
+different outcome, the mint MUST reject it with 13049 and log the conflict.
+Mints SHOULD expose violations via condition info without replacing the
+accepted result or its evidence. Error 13015 means that this outcome
+collection does not contain the recorded outcome.
 
 ### Client Verification
 
@@ -567,7 +610,7 @@ unlocking of proofs whose spending conditions have been met.
 | ----- | ----------------------------------------------------------- |
 | 13010 | Invalid oracle signature                                    |
 | 13011 | Oracle announcement verification failed                     |
-| 13014 | Conditional keyset requires oracle witness                  |
+| 13014 | No attestation recorded for this condition                  |
 | 13015 | Oracle has not attested to this outcome collection          |
 | 13016 | Conditional keyset swap spans different outcome collections |
 | 13017 | Invalid keyset for collateral/output side                   |
@@ -584,6 +627,7 @@ unlocking of proofs whose spending conditions have been met.
 | 13047 | Insufficient or invalid change outputs                      |
 | 13048 | Unsupported CTF collateral unit                             |
 | 13049 | Conflicting valid oracle attestations                       |
+| 13050 | Condition does not accept an attestation                    |
 
 ## Mint Info Setting
 

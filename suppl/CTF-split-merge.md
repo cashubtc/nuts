@@ -109,7 +109,7 @@ POST https://mint.host:3338/v1/ctf/convert
 
 ### Step 3: Trading
 
-`Alice` believes YES will win, so she sells her NO tokens to `Carol` for 40 sats via a normal Cashu token transfer. `Carol` swaps at the mint using a standard [NUT-03][03] swap — all inputs and outputs use the NO conditional keyset. No oracle witness is needed.
+`Alice` believes YES will win, so she sells her NO tokens to `Carol` for 40 sats via a normal Cashu token transfer. `Carol` swaps at the mint using a standard [NUT-03][03] swap — all inputs and outputs use the NO conditional keyset. No oracle attestation is needed.
 
 ### Step 4: Oracle Attestation
 
@@ -117,7 +117,7 @@ The oracle attests that YES won by publishing a DLC attestation signature on `"Y
 
 ### Step 5: Winner Redemption
 
-`Alice` redeems her YES tokens via `POST /v1/redeem_outcome` ([NUT-CTF][CTF]) with `oracle_sigs` witness. Inputs use the YES conditional keyset, outputs use a regular keyset. The mint verifies the oracle signatures and returns regular proofs.
+Any party submits the oracle signatures to `POST /v1/conditions/{condition_id}/attestation` ([NUT-CTF][CTF]), and the mint records YES. `Alice` then redeems her YES tokens via `POST /v1/redeem_outcome`. Inputs use the YES conditional keyset, outputs use a regular keyset. The mint pays from its recorded result and returns regular proofs.
 
 ## Conversion Example (negative-risk style)
 
@@ -141,7 +141,7 @@ POST https://mint.host:3338/v1/ctf/convert
 }
 ```
 
-Per-outcome: `in = (A:100, B:200, C:200, D:100)`, `out = (A:99, B:199, C:199, D:99)`, so `out(o) == in(o) − 1` for every outcome. `Alice` withdraws 99 sats of spendable collateral (the bundle's guaranteed floor, minus the fee) without any oracle witness, and keeps a `B|C` position. The mint retains 1 sat on every outcome.
+Per-outcome: `in = (A:100, B:200, C:200, D:100)`, `out = (A:99, B:199, C:199, D:99)`, so `out(o) == in(o) − 1` for every outcome. `Alice` withdraws 99 sats of spendable collateral (the bundle's guaranteed floor, minus the fee) without any oracle attestation, and keeps a `B|C` position. The mint retains 1 sat on every outcome.
 
 [00]: ../00.md
 [02]: ../02.md

@@ -142,7 +142,7 @@ This rule:
 
 - `inputs`: `{"A|B|C": 100, "B|C|D": 100}` → `in = (A:100, B:200, C:200, D:100)`
 - `outputs`: `{"*": 99, "B|C": 100}` → `out = (A:99, B:199, C:199, D:99)`
-- `out(o) == in(o) − 1` for every `o`. ✓ The holder withdraws 99 sats of spendable collateral (the bundle's guaranteed floor minus the fee) plus a `B|C` position, with no oracle witness.
+- `out(o) == in(o) − 1` for every `o`. ✓ The holder withdraws 99 sats of spendable collateral (the bundle's guaranteed floor minus the fee) plus a `B|C` position, with no oracle attestation.
 
 ## Coverage From Keyset Metadata
 
@@ -174,7 +174,7 @@ Outcome collections have a single canonical string form, used both as map keys h
 ## Security Considerations
 
 - **Atomicity**: Convert MUST be atomic — all signatures or none. Duplicate-detection, spent-marking, and signature persistence occur in one transaction.
-- **Solvency**: Let `R` be the real collateral the mint holds and `L(o)` the outstanding conditional liability at outcome `o`. The conservation rule forces the per-outcome change `ΔL(o)` to equal the real collateral change `ΔR` minus the retained fee, for every `o`. Since `R ≥ L(o)` holds at inception (every conditional token is backed at face — see [Issuance Invariant](#issuance-invariant)), convert preserves `R ≥ L(o)` for all `o`. No oracle witness is required: a payoff-preserving conversion cancels all outcome risk.
+- **Solvency**: Let `R` be the real collateral the mint holds and `L(o)` the outstanding conditional liability at outcome `o`. The conservation rule forces the per-outcome change `ΔL(o)` to equal the real collateral change `ΔR` minus the retained fee, for every `o`. Since `R ≥ L(o)` holds at inception (every conditional token is backed at face — see [Issuance Invariant](#issuance-invariant)), convert preserves `R ≥ L(o)` for all `o`. No oracle attestation is required: a payoff-preserving conversion cancels all outcome risk.
 - **Non-contingent fee / DoS**: Because `F` is retained on every outcome, each convert costs the requester real collateral regardless of the eventual outcome, bounding free operations. Keysets with `input_fee_ppk == 0` make convert free and MUST be rejected for convert (error 13041) unless separate admission control is in force. Mints MAY additionally require [NUT-21][21]/[NUT-22][22] authentication, rate limits, or per-request caps on output count / distinct collections / total amount as defense-in-depth.
 - **Privacy**: As with any multi-input operation, the mint observes that all inputs and outputs of one convert are co-owned; a consolidating convert can link previously unlinked tokens.
 - **Root-only scope**: This version does not define nested/combinatorial condition construction. Mints MUST reject non-zero `parent_collection_id` values.

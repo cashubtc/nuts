@@ -177,9 +177,9 @@ total:              100    # 33 + 67 = 100 (conservation guaranteed)
 # This ensures total HI + LO = amount exactly
 ```
 
-## Digit-Decomposition Witness
+## Digit-Decomposition Evidence
 
-### Test 9: Valid digit-decomposition witness
+### Test 9: Valid digit-decomposition evidence
 
 ```shell
 # Oracle attests to value 20000 using digit decomposition
@@ -200,8 +200,8 @@ digit_4_sig:        <64_byte_schnorr_sig_on_"0"_with_R4>
 
 # Reconstructed value: 2*10000 + 0*1000 + 0*100 + 0*10 + 0*1 = 20000
 
-# Witness JSON (digit_sigs format)
-witness_json:       {
+# Request body of POST /v1/conditions/{condition_id}/attestation (digit_sigs format)
+attestation_json:   {
   "oracle_sigs": [
     {
       "oracle_pubkey": "9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0",
@@ -245,7 +245,7 @@ attested_value:     20000
 output_amount:      20
 output_keyset:      "009a1f293253e41e"  # regular keyset
 
-# POST /v1/redeem_outcome with digit_sigs witness
+# POST /v1/redeem_outcome after the mint records the value
 result:             PASS
 ```
 
@@ -262,7 +262,7 @@ attested_value:     20000
 output_amount:      80
 output_keyset:      "009a1f293253e41e"  # regular keyset
 
-# POST /v1/redeem_outcome with digit_sigs witness
+# POST /v1/redeem_outcome after the mint records the value
 result:             PASS
 ```
 
@@ -335,7 +335,7 @@ request_json:       {
   }
 }
 
-# NUT-CTF-split-merge convert (merge) - collateral under "*", no oracle witness needed
+# NUT-CTF-split-merge convert (merge) - collateral under "*", no oracle attestation needed
 result:             PASS
 ```
 

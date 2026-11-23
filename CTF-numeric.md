@@ -131,9 +131,9 @@ Where:
 
 `outcome_count` = 2 (always). The outcome collection keysets are always `["HI", "LO"]`.
 
-## Oracle Witness for Digit Decomposition
+## Attestation Evidence for Digit Decomposition
 
-The oracle signs individual digits per the [DLC specification](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Oracle.md). The witness format extends [NUT-CTF][CTF]:
+The oracle signs individual digits per the [DLC specification](https://github.com/discreetlogcontracts/dlcspecs/blob/master/Oracle.md). The evidence format extends the [NUT-CTF][CTF] attestation evidence:
 
 ```json
 {
@@ -146,10 +146,10 @@ The oracle signs individual digits per the [DLC specification](https://github.co
 }
 ```
 
-- `digit_sigs`: Array of 64-byte Schnorr signatures (128-char hex strings), one per digit, in left-to-right order (most significant digit first). Each signature is on the digit's UTF-8 string representation (e.g., `"2"` for digit value 2) using the corresponding R-value (nonce point) from the oracle announcement.
+- `digit_sigs`: Array of 64-byte Schnorr signatures (128-char lowercase hex strings), one per digit, in left-to-right order (most significant digit first). Each signature is on the digit's UTF-8 string representation (e.g., `"2"` for digit value 2) using the corresponding R-value (nonce point) from the oracle announcement.
 - For signed numbers: the first element is a signature on `"+"` or `"-"`
 
-The witness uses `digit_sigs` (array of per-digit signatures) instead of `oracle_sig` (single signature) used in [NUT-CTF][CTF] enum conditions. The mint identifies which format to expect based on the `condition_type` of the condition referenced by the input keyset.
+The evidence uses `digit_sigs` (array of per-digit signatures) instead of `oracle_sig` (single signature) used in [NUT-CTF][CTF] enum conditions. The mint identifies which format to expect from the `condition_type` of the condition.
 
 Numeric entries do not require the enum `outcome` field. Condition info returns
 the accepted `digit_sigs` in `attestation.oracle_sigs`. The recorded
@@ -160,22 +160,25 @@ the signatures before labeling the numeric result oracle-authenticated.
 
 ### Verification
 
-The mint:
+At [attestation submission](CTF.md#attestation-submission), the mint:
 
 1. Extracts the digit values from `digit_sigs` by verifying each signature against the corresponding R-value from the oracle announcement
-2. Reconstructs the numeric value from the digit values (accounting for sign and `precision`)
-3. Clamps the value to `[lo_bound, hi_bound]`
+2. Reconstructs the numeric value from the digit values (accounting for sign and `precision`) and records it
+
+At redemption, the mint:
+
+3. Clamps the recorded value to `[lo_bound, hi_bound]`
 4. Computes the payout ratio
 
 ## Redemption
 
-Both HI and LO holders can redeem at `POST /v1/redeem_outcome` ([NUT-CTF][CTF]). Unlike enum conditions where only the winning outcome collection can redeem, in numeric conditions **both outcomes can redeem** with proportional amounts.
+After the mint records the result, both HI and LO holders can redeem at `POST /v1/redeem_outcome` ([NUT-CTF][CTF]). Unlike enum conditions where only the winning outcome collection can redeem, in numeric conditions **both outcomes can redeem** with proportional amounts.
 
 ### HI Holder Redemption
 
 Given attested value `V = 20000`, range `[0, 100000]`:
 
-- Input: 100 sats of HI tokens + digit witness
+- Input: 100 sats of HI tokens
 - Payout ratio: `(20000 - 0) / (100000 - 0)` = 0.2
 - Output: `floor(100 * 0.2)` = 20 sats regular ecash
 - Remaining 80 sats are not issued (HI holder's loss)
@@ -184,7 +187,7 @@ Given attested value `V = 20000`, range `[0, 100000]`:
 
 Same attestation, same range:
 
-- Input: 100 sats of LO tokens + digit witness
+- Input: 100 sats of LO tokens
 - Payout ratio: `1 - 0.2` = 0.8
 - Output: `floor(100 * 0.8)` = 80 sats regular ecash
 

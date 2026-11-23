@@ -27,18 +27,6 @@ Waiting for resolution is simpler when:
 
 Without condition-specific data in the keyset ID, a wallet cannot verify from the keyset ID alone that a keyset is bound to a particular condition and outcome collection. By including `condition_id` and `outcome_collection_id` in the preimage, the wallet can recompute the keyset ID and confirm the mint's claim about which condition and outcome collection a keyset serves.
 
-## Redemption Witness Comparison
-
-The Redemption Witness extends the established Cashu pattern where `Proof.witness` carries condition-specific unlock data:
-
-| NUT                       | Witness Type       | Format                                     | Trigger                             |
-| ------------------------- | ------------------ | ------------------------------------------ | ----------------------------------- |
-| [NUT-11][11] (P2PK)       | Signature          | `{"signatures": [...]}`                    | Secret is P2PK kind ([NUT-10][10])  |
-| [NUT-14][14] (HTLC)       | Preimage + sig     | `{"preimage": "...", "signatures": [...]}` | Secret is HTLC kind ([NUT-10][10])  |
-| **NUT-CTF** (Conditional) | Oracle attestation | `{"oracle_sigs": [...]}`                   | Dedicated `redeem_outcome` endpoint |
-
-Key difference: [NUT-11][11] and [NUT-14][14] witnesses are triggered by the **secret structure** ([NUT-10][10] well-known format). NUT-CTF witnesses are triggered by the **endpoint** — the dedicated `POST /v1/redeem_outcome` endpoint requires oracle attestation. Proof secrets remain plain random strings.
-
 ## Oracle Communication Notes
 
 ### Note on adaptor signatures
@@ -58,9 +46,6 @@ is true or guarantee payment by the mint.
 [02]: ../02.md
 [03]: ../03.md
 [06]: ../06.md
-[10]: ../10.md
-[11]: ../11.md
 [12]: ../12.md
-[14]: ../14.md
 [CTF]: ../CTF.md
 [CTF-split-merge]: ../CTF-split-merge.md

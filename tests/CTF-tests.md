@@ -96,40 +96,36 @@ msg:                7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b
 # Different condition_ids produce different outcome_collection_ids
 ```
 
-## Witness Validation
+## Attestation Submission
 
-### Test 5: Valid oracle redemption witness (enum)
+### Test 5: Valid attestation submission (enum)
 
 ```shell
 # Oracle signature on "YES"
 oracle_pubkey:      9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0
 oracle_sig:         a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890
 
-# Witness JSON (oracle_sigs array format)
-witness_json:       {"oracle_sigs":[{"oracle_pubkey":"9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0","oracle_sig":"a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890"}]}
-
-# Redemption via POST /v1/redeem_outcome: conditional keyset -> regular keyset
-input_keyset_id:    00abc123def456    # YES conditional keyset
-output_keyset_id:   009a1f293253e41e  # regular keyset
+# Request body of POST /v1/conditions/{condition_id}/attestation
+attestation_json:   {"oracle_sigs":[{"oracle_pubkey":"9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0","oracle_sig":"a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890","outcome":"YES"}]}
 
 # Oracle signature verification
 outcome:            "YES"
 signature_check:    PASS
+
+# The mint records YES. A later POST /v1/redeem_outcome uses the record:
+input_keyset_id:    00abc123def456    # YES conditional keyset
+output_keyset_id:   009a1f293253e41e  # regular keyset
 ```
 
 ### Test 6: Invalid oracle signature
 
 ```shell
-# Attempt to redeem with invalid signature
+# Attempt to submit an invalid signature
 oracle_pubkey:      9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0
 oracle_sig:         ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 
-# Witness JSON (oracle_sigs array format)
-witness_json:       {"oracle_sigs":[{"oracle_pubkey":"9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0","oracle_sig":"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"}]}
-
-# Redemption via POST /v1/redeem_outcome: conditional keyset -> regular keyset
-input_keyset_id:    00abc123def456    # YES conditional keyset
-output_keyset_id:   009a1f293253e41e  # regular keyset
+# Request body of POST /v1/conditions/{condition_id}/attestation
+attestation_json:   {"oracle_sigs":[{"oracle_pubkey":"9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0","oracle_sig":"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff","outcome":"YES"}]}
 
 # Oracle signature verification
 outcome:            "YES"
@@ -137,30 +133,27 @@ signature_check:    FAIL
 error_code:         13010
 ```
 
-### Test 7: Redemption without witness
+### Test 7: Redemption without a recorded result
 
 ```shell
-# Attempt to redeem via POST /v1/redeem_outcome without witness
+# Attempt to redeem via POST /v1/redeem_outcome before the mint records a result
 input_keyset_id:    00abc123def456    # YES conditional keyset
 output_keyset_id:   009a1f293253e41e  # regular keyset
-witness:            null
 
-# POST /v1/redeem_outcome requires oracle witness
+# POST /v1/redeem_outcome requires a recorded result
 error_code:         13014
-error_message:      "Conditional keyset requires oracle witness"
+error_message:      "No attestation recorded for this condition"
 ```
 
 ## Trading (Same-Keyset Swap)
 
-### Test 8: Valid trade swap (no witness needed)
+### Test 8: Valid trade swap
 
 ```shell
 # Swap within same conditional keyset (trading)
 input_keyset_id:    00abc123def456    # YES conditional keyset
 output_keyset_id:   00abc123def456    # same YES conditional keyset
 
-# No witness needed - same keyset swap
-witness:            null
 result:             PASS
 ```
 
@@ -182,7 +175,7 @@ keysets:
 signed_outcome:     "CANDIDATE_B"
 oracle_sig:         <implementation_specific_signature>
 
-# Only CANDIDATE_B keyset holders can redeem (swap to regular keyset with witness)
+# After the mint records CANDIDATE_B, only CANDIDATE_B keyset holders can redeem
 # CANDIDATE_A and CANDIDATE_C keyset holders cannot redeem
 ```
 
@@ -392,8 +385,7 @@ redeem_json:        {
       "amount": 64,
       "id": "00abc123def456",
       "secret": "yes_secret_1",
-      "C": "02...",
-      "witness": "{\"oracle_sigs\":[{\"oracle_pubkey\":\"9be6fa256a022aafc98f24a71f0e37ab2ac6fe5b208a77a3d429b4b5c59f7ce0\",\"oracle_sig\":\"a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890\"}]}"
+      "C": "02..."
     }
   ],
   "outputs": [
