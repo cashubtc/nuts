@@ -53,7 +53,7 @@
 | 15015 | Coordinator authentication failed                  | [NUT-Exchange][exchange]                               |
 | 13049 | Conflicting valid oracle attestations              | [NUT-CTF][CTF], [NUT-CTF-numeric][CTF-numeric]         |
 
-Note for 11003 and 11004: a [NUT-CTF-settle][CTF-settle] mint that advertises `output_conflict_detail` adds the field `outputs` to the error response. The field lists each conflicting output and its state. See [Output conflict detail](CTF-settle.md#output-conflict-detail-optional).
+Note for 11003 and 11004: a [NUT-CTF-settle][CTF-settle] mint adds the field `outputs` to the error response of a `POST /v1/ctf/convert` request that has at least one `PAY_TO_UNLOCK` input. The field lists each conflicting output and its state. See [Output conflict detail](CTF-settle.md#output-conflict-detail).
 
 [00]: 00.md
 [01]: 01.md

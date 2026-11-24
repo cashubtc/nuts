@@ -86,11 +86,11 @@ Additional multi-party rules:
 4. Reject if any involved keyset has `input_fee_ppk == 0` unless admission control is in force _(without `F`, anyone can submit unlimited convert requests at no cost — a free-DoS vector)_.
 5. Each `PAY_TO_UNLOCK` `expiry` MUST precede the earliest explicit `final_expiry` among conditional keysets registered under this condition. It MUST NOT exceed the mint's current Unix time at settlement admission plus `max_expiry_seconds`. Use checked arithmetic. For a keyset without `final_expiry`, use that relative ceiling. The mint cannot inspect a blinded NUT-10 secret at NUT-03 issuance. Wallets MUST apply these bounds during preparation. This check does not prove creation time or guarantee that a mint will remain available for reclaim.
 
-## `request_digest` (optional)
+## `request_digest`
 
-Optional feature inherited from [NUT-Exchange][exchange] (advertised via `idempotent_retries` in [NUT-06][06] info). Enables idempotent retries: if a client's request commits but the response is lost, the client retries the identical request and the mint returns the cached response. Without it, clients fall back to [NUT-09][09] recovery, same as [NUT-03][03] swap.
+[NUT-Exchange][exchange] defines `request_digest` as optional. A mint that supports this NUT MUST support it, because the no-commit record of [Output conflict detail](#output-conflict-detail) uses it. The mint advertises it with `idempotent_retries: true` in [NUT-06][06] info. It enables idempotent retries for a request with `participants`: if a client's request commits but the response is lost, the client retries the identical request and the mint returns the cached response. Recovery through [NUT-07][07] and [NUT-09][09] is inherited unchanged.
 
-The CTF digest (when supported) commits to **all** semantic top-level fields:
+The CTF digest commits to **all** semantic top-level fields:
 
 ```
 req_canonical = bytes(condition_id, 32) || bytes(parent_collection_id, 32) || participant[0]_canonical || ... || participant[n-1]_canonical
@@ -102,11 +102,9 @@ coordinator_digest = tagged_hash("Cashu/ctf/convert/coordinator", req_canonical)
 
 **Coordinator authentication** is inherited from [NUT-Exchange][exchange]: if any canonical `PAY_TO_UNLOCK` input carries `coordinator_pubkey`, the request must carry `coordinator_sig` — a BIP-340 signature valid under the bound key over `coordinator_digest`. Version 1 permits one key per request; `coordinator_sig` must be absent otherwise and is verified before any idempotency-cache hit (error 15015 on failure). `coordinator_pubkey` is permitted in standard and pool mode.
 
-## Output conflict detail (optional)
+## Output conflict detail
 
-A mint advertises this feature with `output_conflict_detail: true` in the [NUT-06][06] setting of this endpoint. A mint that advertises it MUST also support `request_digest`.
-
-When the mint refuses a request that has at least one `PAY_TO_UNLOCK` input with error 11003 (outputs already signed) or 11004 (outputs are pending) because an output of the request is signed, or is pending in another operation, the error response MUST include the field `outputs`:
+When the mint refuses a request that has at least one `PAY_TO_UNLOCK` input with error 11003 (outputs already signed) or 11004 (outputs are pending) because an output of the request is signed, or is pending in another operation, the error response MUST include the field `outputs`, except at the record limit below:
 
 ```json
 {
@@ -128,7 +126,9 @@ A mint includes `outputs`, and writes the no-commit record, only for a request t
 
 **No-commit guarantee.** When the mint returns `outputs`, it MUST record, in the same database transaction as the refusal, that a request with this `request_digest` can never commit. A later identical request gets the same refusal, also after the other operation ends or is removed. The mint MUST write this record only after the inputs and their spending conditions pass verification, so that a request without valid inputs cannot add records. The mint MAY delete the record after the earliest `PAY_TO_UNLOCK` `expiry` of the request, because the request cannot commit after that time.
 
-A client MUST NOT expect `outputs` from a mint that does not advertise the feature. A client MUST ignore an unknown field in an error response ([NUT-00][00]).
+A mint MAY limit the number of records that it keeps. At its limit, the mint answers a new conflict without `outputs` and writes no record. It still answers a request that has a record with the list of that record.
+
+A refusal with error 11003 or 11004 that has no `outputs` is not a no-commit guarantee: the other operation can end, and an identical request can then commit. This rule does not change the meaning of any other error. A client MUST ignore an unknown field in an error response ([NUT-00][00]).
 
 ## Range orders (partial fill)
 
@@ -173,7 +173,7 @@ A single convert may mix `MINT` (buy + buy on complementary outcomes), `MERGE` (
 
 ## Mint info
 
-Same [NUT-06][06] setting as [NUT-CTF-split-merge][CTF-split-merge], extended with `max_participants` (≥ 2), `max_expiry_seconds` (wallet preparation lifetime and mint admission ceiling defined above), and the pool-mode fields from [NUT-Exchange-partial-fill][partial-fill]: `partial_fill` and `max_pool_entries`. `max_request_bytes` bounds the complete serialized request, including every manifest and selection. A mint that supports [output conflict detail](#output-conflict-detail-optional) adds `output_conflict_detail: true`. Such a mint also advertises `idempotent_retries: true`, because the feature requires `request_digest`.
+Same [NUT-06][06] setting as [NUT-CTF-split-merge][CTF-split-merge], extended with `max_participants` (≥ 2), `max_expiry_seconds` (wallet preparation lifetime and mint admission ceiling defined above), and the pool-mode fields from [NUT-Exchange-partial-fill][partial-fill]: `partial_fill` and `max_pool_entries`, and with `idempotent_retries`. `max_request_bytes` bounds the complete serialized request, including every manifest and selection. A mint that supports this NUT MUST advertise `idempotent_retries: true`, because [output conflict detail](#output-conflict-detail) requires `request_digest`.
 
 ## FAQ
 
@@ -192,6 +192,7 @@ The mint enforces each participant's own limit price (the rule 9p rate covenant 
 [02]: 02.md
 [03]: 03.md
 [06]: 06.md
+[07]: 07.md
 [09]: 09.md
 [CTF]: CTF.md
 [CTF-split-merge]: CTF-split-merge.md
