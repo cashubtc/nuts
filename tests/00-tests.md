@@ -507,7 +507,7 @@ Selecting `fee_index` `1`:
 }
 ```
 
-**Proof to two fixed txout quotes.** Splitting the swap's 8-sat proof between fixed [txout quotes](../XX.md#fixed-txout-quote) of 3 and 5, with the lock keys a seeded wallet derives at quote counters 2 and 3 of the [NUT-13](13-tests.md) test seed and identity, in that request order:
+**Proof to two fixed txout quotes.** Splitting the swap's 8-sat proof between fixed [txout quotes](../XX.md#fixed-txout-quote) of 3 and 5, locked to the two keys below, in that request order:
 
 ```json
 {
