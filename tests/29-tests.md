@@ -122,7 +122,7 @@ Expected behavior:
 
 ## Nutroot batch mint (v3 keysets)
 
-A [v3 batch](../29.md#nutroot-transactions-v3-keysets) is one transaction with every quote as an input, so `signatures[i]` signs quote `i`'s own [NUT-00 input digest](00-tests.md#transaction-transcripts) over the shared transcript. Combining two locked quotes (`quote-mint-0002` for 5 sats, `quote-mint-0003` for 3 sats) into the [NUT-00 mint vector](00-tests.md#transaction-transcripts)'s 8-sat output, with the [NUT-13 quote lock keys](13-tests.md#version-3-secret-derivation) of counters `0` and `1` as the lock keys:
+A [v3 batch](../29.md#nutroot-transactions-v3-keysets) is one transaction with every quote as an input, so `signatures[i]` signs quote `i`'s own [NUT-00 input digest](00-tests.md#transaction-transcripts) over the shared transcript. Combining two locked quotes (`quote-mint-0002` for 5 sats, `quote-mint-0003` for 3 sats) into the [NUT-00 mint vector](00-tests.md#transaction-transcripts)'s 8-sat output, locked to the private keys `8140af6b627ddf38f9148c7266dca12d396de9266859648df699727c5b205a99` and `5980da641d9391abed79f528dbea0b85a61cff419bc93bce744d105779413b7a`:
 
 ```json
 {

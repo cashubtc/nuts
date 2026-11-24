@@ -290,7 +290,7 @@ Each input's `Y` and container record, then the transcript and digests. Only the
 
 An output on the pre-v3 keyset hashes its 33-byte `B_`: for the 2-sat output with `B_` `033b1a9737a40cc3fd9b6af4b723632b76a67a36782596304612a6c2bfb5197e6d` ([legacy test 1](../legacy/tests/00-tests.md#blinded-messages)), the hash is `7ae916d2f757e0a11b21f273068e83839e4e0c70f72b1a8ad312fc6da40eb169` and the container `2100320100010202000800456a94ab4e1c460300207ae916d2f757e0a11b21f273068e83839e4e0c70f72b1a8ad312fc6da40eb169`.
 
-**Mint.** Mint quote `quote-mint-0001` (amount 8, none issued) with one 8-sat output, locked to the [NUT-13 quote lock key](13-tests.md#version-3-secret-derivation) of counter `0` (`0292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d209812`):
+**Mint.** Mint quote `quote-mint-0001` (amount 8, none issued) with one 8-sat output, locked to `0292905560a6a511a13e383ee27e220aeffc85b7a7bc293e6935b1d3678d209812` (private key `8140af6b627ddf38f9148c7266dca12d396de9266859648df699727c5b205a99`):
 
 ```json
 {
