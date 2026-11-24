@@ -6,7 +6,7 @@
 
 ---
 
-The `template` leaf is a [NUT-10](10.md#optional-leaves) condition leaf that is a covenant on where value goes.
+The `template` leaf is a [NUT-10](10.md#leaves-from-other-nuts) condition leaf that is a covenant on where value goes.
 
 | Leaf       | Type   | Fields               | Satisfied by                                                                                             |
 | ---------- | ------ | -------------------- | -------------------------------------------------------------------------------------------------------- |
