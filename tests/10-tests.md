@@ -154,7 +154,7 @@ The witnesses below sign an **illustrative** input digest, `SHA256("illustrative
 }
 ```
 
-Alice's script-path witness after the locktime:
+Alice's script-path witness after the locktime, over the script digest `e3b48916cf9e794ad1242edf3120d354cdd252057e2f685f4afef082fe9b5545`:
 
 ```json
 {
@@ -164,7 +164,7 @@ Alice's script-path witness after the locktime:
     "path": []
   },
   "signatures": [
-    "0b2ea247bfca1264db86907aef4cb19935ed9a5b2043a757259dcdb5c599372c230602f2cfc0cd8b11aa98ff17fbed91f38f07db817263fcc7c50c846715873e"
+    "8e78d060669184b2aad25d26dc7b332c3c75c4f669d3cfcb39c203e84ebaa8db61e8b28e161b2009b524c3bd8f554aaa498e7bf583b2870948b2c17bbca0dc7e"
   ]
 }
 ```
