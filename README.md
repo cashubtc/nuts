@@ -17,7 +17,6 @@ Wallets and mints that support [v3 keysets](02.md#keyset-id-v3) `MUST` implement
 | [04][04] | Minting tokens          |
 | [05][05] | Melting tokens          |
 | [06][06] | Mint info               |
-| [10][10] | Spending conditions     |
 | [20][20] | Signature on Mint Quote |
 
 ### Optional
@@ -27,6 +26,7 @@ Wallets and mints that support [v3 keysets](02.md#keyset-id-v3) `MUST` implement
 | [07][07] | Token state check                 | [Nutshell][py], [cashu-ts][ts], [cdk], [Minibits], [macadamia], [Sovran][sovran]                      | [Nutshell][py], [cdk-mintd], [nutmix] |
 | [08][08] | Overpaid Lightning fees           | [Nutshell][py], [cashu-ts][ts], [cdk], [Minibits], [macadamia]                                        | [Nutshell][py], [cdk-mintd], [nutmix] |
 | [09][09] | Signature restore                 | [Nutshell][py], [cashu-ts][ts], [cdk], [Cashu.me][cashume], [Minibits], [macadamia], [Sovran][sovran] | [Nutshell][py], [cdk-mintd], [nutmix] |
+| [10][10] | Spending conditions               | [Nutshell][py], [cdk], [cashu-ts][ts], [Minibits], [Sovran][sovran]                                   | [Nutshell][py], [cdk-mintd], [nutmix] |
 | [13][13] | Deterministic secrets             | [Nutshell][py], [cashu-ts][ts], [cdk], [macadamia], [Minibits], [Sovran][sovran]                      | -                                     |
 | [15][15] | Partial multi-path payments (MPP) | [Nutshell][py], [cdk]                                                                                 | [Nutshell][py], [cdk-mintd], [nutmix] |
 | [16][16] | Animated QR codes                 | [Cashu.me][cashume], [macadamia], [Minibits]                                                          | -                                     |
