@@ -352,7 +352,7 @@ The signature **MUST NOT** verify over a transcript that commits amount `8` or `
 }
 ```
 
-The mint vector with its quote locked to a script-only key, spent by a script-path witness:
+The mint vector with its quote locked to a script-only key, spent by a script-path witness over its [script digest](../10.md#script-path):
 
 ```json
 {
@@ -361,7 +361,8 @@ The mint vector with its quote locked to a script-only key, spent by a script-pa
   "digest": "33d8def7c0f5235c150863773e105568d44d079aa2f1d59149bb72254dc6df05",
   "input_id": "a639745001afaad8964370e8ddc1406bbf14d478c6d56819f188c9b10392fe45",
   "input_digest": "7c0b3967b3b7ba4e5daa7e8ea11607cff36062d6ff24863c8bdf31ee8346f8e4",
-  "signature": "{\"leaf\":\"00010200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9\",\"control\":{\"K\":\"028edfebd6fdea3e1d89359af20868a2e76315b36cdb1a79de497a1757ca7bd407\",\"path\":[]},\"signatures\":[\"b0656dbde143bd6825e141551cae68f1428a62ee1d74c0f8df8f735d5841471d6f20f3946658bdad225b6b30dc90cea956a0aede132edf6eb1415f95afb30ca2\"]}"
+  "script_digest": "d522db4366f326e882d0a83986b918e3c618ced7b0a503201a5254ace168141f",
+  "signature": "{\"leaf\":\"00010200010104002102f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9\",\"control\":{\"K\":\"028edfebd6fdea3e1d89359af20868a2e76315b36cdb1a79de497a1757ca7bd407\",\"path\":[]},\"signatures\":[\"96cc784d9030631c04fab051b404f070fa42dcf856f99f31dcc420b1f3876c27fd36f3360fe92ba532e54330be9cbc26cd6c8581fec4ff4e2ba65dfa5ce7cd3c\"]}"
 }
 ```
 
