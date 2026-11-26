@@ -36,7 +36,7 @@ A signing package carries one or more [script-path](10.md#script-path) spends aw
   - `slots`: each leaf key's [NUT-28][28] slot, a hint; a signer that matches no slot scans;
   - `signatures`: the signatures collected so far.
 
-A signer decodes the transcript to review the transaction, and **MUST** check each spend before signing: the leaf commits to `secret` through `control`, and `secret` belongs to the named input, its `hash_to_curve` equal to a proof input's `Y` or itself equal to a mint quote input's lock key. It then derives the [input digest](00.md#the-transaction-transcript) and appends BIP-340 signatures by the leaf keys it holds.
+A signer decodes the transcript to review the transaction, and **MUST** check each spend before signing: the leaf commits to `secret` through `control`, and `secret` belongs to the named input, its `hash_to_curve` equal to a proof input's `Y` or itself equal to a mint quote input's lock key. It then derives the [script digest](10.md#script-path) and appends BIP-340 signatures by the leaf keys it holds.
 
 The wallet that built the package holds any hashlock preimage, and assembles each witness at merge after checking the package's transcript against its transaction.
 
