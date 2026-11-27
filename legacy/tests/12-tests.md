@@ -1,5 +1,7 @@
 # NUT-12 Test vectors
 
+> Vectors for pre-v3 keysets. The current vectors are in [`tests/`](../../tests).
+
 ## `hash_e` function
 
 ```shell
